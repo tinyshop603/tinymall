@@ -21,16 +21,6 @@
               主页
             </router-link>
           </el-dropdown-item>
-          <el-dropdown-item>
-            <a target='_blank' href="https://github.com/linlinjava/tinymall">
-              GitHub
-            </a>
-          </el-dropdown-item>
-          <el-dropdown-item>
-            <a target='_blank' href="https://gitee.com/linlinjava/tinymall">
-              码云
-            </a>
-          </el-dropdown-item>
           <el-dropdown-item divided>
             <span @click="logout" style="display:block;">退出登录</span>
           </el-dropdown-item>
@@ -116,6 +106,7 @@ export default {
           border-radius: 10px;
         }
         .el-icon-caret-bottom {
+          display:none;
           position: absolute;
           right: -20px;
           top: 25px;

@@ -2,21 +2,21 @@
 // 本机开发时使用
 // var WxApiRoot = 'http://localhost:8082/wx/';
 // 局域网测试使用
-var WxApiRoot = 'http://172.16.56.157:8082/wx/';
+//var WxApiRoot = 'http://39.106.9.50:8082/wx/';
 // 云平台部署时使用
 //  var WxApiRoot = 'http://122.152.206.172:8082/wx/';
 // 云平台上线时使用
-// var WxApiRoot = 'https://www.example.com/wx/';
+ var WxApiRoot = 'https://www.attitude.one/wx/';
 
 // 以下是图片存储服务器API地址
 // 本机开发时使用
 // var StorageApi = 'http://localhost:8081/os/storage/create';
 // 局域网测试时使用
-var StorageApi = 'http://172.16.56.157:8081/os/storage/create';
+//var StorageApi = 'http://39.106.9.50:8081/os/storage/create';
 // 云平台部署时使用
 // var StorageApi = 'http://122.152.206.172:8081/os/storage/create';
 // 云平台上线时使用
-// var StorageApi = 'https://www.example.com/os/storage/create';
+ var StorageApi = 'https://www.attitude.one/os/storage/create';
 
 module.exports = {
     IndexUrl: WxApiRoot + 'home/index', //首页数据接口
