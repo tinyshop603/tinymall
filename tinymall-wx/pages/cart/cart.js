@@ -111,6 +111,26 @@ Page({
       });
     }
   },
+  //TODO wz-用于变更商品数量时计算总量，接口可优化
+  checkedNum: function (event) {
+    let itemIndex = event.target.dataset.itemIndex;
+    let that = this;
+
+    let productIds = [];
+    productIds.push(that.data.cartGoods[itemIndex].productId);
+      util.request(api.CartChecked, { productIds: productIds, isChecked: that.data.cartGoods[itemIndex].checked ? 1 : 0 }, 'POST').then(function (res) {
+        if (res.errno === 0) {
+          that.setData({
+            cartTotal: res.data.cartTotal
+          });
+        }
+
+        that.setData({
+          checkedAllStatus: that.isCheckedAll()
+        });
+      });
+  },
+
   getCheckedGoodsCount: function(){
     let checkedGoodsCount = 0;
     this.data.cartGoods.forEach(function (v) {
@@ -205,6 +225,7 @@ Page({
       cartGoods: this.data.cartGoods
     });
     this.updateCart(cartItem.productId, cartItem.goodsId, number, cartItem.id);
+    this.checkedNum(event);//wz-更新货物价格
   },
   addNumber: function (event) {
     let itemIndex = event.target.dataset.itemIndex;
@@ -215,6 +236,7 @@ Page({
       cartGoods: this.data.cartGoods
     });
     this.updateCart(cartItem.productId, cartItem.goodsId, number, cartItem.id);
+    this.checkedNum(event);//wz-更新货物价格
 
   },
   checkoutOrder: function () {

@@ -247,8 +247,23 @@ page{
     flex: 1;
 }
 
-.cart-view .item .selnum{
+.cart-view .item .b .selnum{
     display: none;
+} 
+
+.cart-view .item .d{
+    float: right;
+}
+
+.cart-view .item.edit .b .selnum{
+    display: none;
+} 
+
+.cart-view .item .selnum{
+    width: 235rpx;
+    height: 52rpx;
+    border: 1rpx solid #ccc;
+    display: flex;
 }
 
 .cart-view .item.edit .selnum{
