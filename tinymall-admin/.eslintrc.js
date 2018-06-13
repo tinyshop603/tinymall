@@ -38,10 +38,10 @@ module.exports = {
       'properties': 'always'
     }],
     'comma-dangle': [2, 'never'],
-    'comma-spacing': [2, {
-      'before': false,
-      'after': true
-    }],
+    // 'comma-spacing': [2, {
+    //   'before': false,
+    //   'after': true
+    // }],
     'comma-style': [2, 'last'],
     'constructor-super': 2,
     'curly': [2, 'multi-line'],
@@ -53,14 +53,14 @@ module.exports = {
       'after': true
     }],
     'handle-callback-err': [2, '^(err|error)$'],
-    'indent': [2, 2, {
-      'SwitchCase': 1
-    }],
+    // 'indent': [2, 2, {
+    //   'SwitchCase': 1
+    // }],
     'jsx-quotes': [2, 'prefer-single'],
-    'key-spacing': [2, {
-      'beforeColon': false,
-      'afterColon': true
-    }],
+    // 'key-spacing': [2, {
+    //   'beforeColon': false,
+    //   'afterColon': false
+    // }],
     'keyword-spacing': [2, {
       'before': true,
       'after': true
