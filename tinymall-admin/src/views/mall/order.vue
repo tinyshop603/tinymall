@@ -31,7 +31,7 @@
       <el-table-column align="center" min-width="100px" label="订单状态" prop="orderStatus">
       </el-table-column>
 
-      <el-table-column align="center" min-width="100px" label="是否删除" prop="isDelete">
+      <el-table-column align="center" v-if="isShowDeleteColumn" min-width="100px" label="是否删除" prop="isDelete">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isDelete ? 'success' : 'error' ">{{scope.row.isDelete ? '未删除' : '已删除'}}</el-tag>
         </template>
@@ -130,6 +130,7 @@ export default {
   },
   data() {
     return {
+      isShowDeleteColumn: false, // 是否显示订单表格删除状态的列
       list: undefined,
       total: undefined,
       listLoading: true,

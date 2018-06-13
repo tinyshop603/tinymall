@@ -5,6 +5,7 @@ import com.attitude.tinymall.db.service.LitemallCategoryService;
 import com.attitude.tinymall.core.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,6 +71,21 @@ public class WxCatalogController {
         data.put("currentSubCategory", currentSubCategory);
         return ResponseUtil.ok(data);
     }
+    @GetMapping("index/{parentId}/")
+    public Object indexWithLevel(@PathVariable Integer parentId) {
+
+
+        // 当前一级分类目录对应的二级分类目录
+        List<LitemallCategory> currentSubCategory = null;
+        if (null != parentId) {
+            currentSubCategory = categoryService.queryByPid(parentId);
+        }
+
+        Map<String, Object> data = new HashMap();
+        data.put("category", currentSubCategory);
+        return ResponseUtil.ok(data);
+    }
+
 
     /**
      * 当前分类栏目
@@ -103,4 +119,5 @@ public class WxCatalogController {
         data.put("currentSubCategory", currentSubCategory);
         return ResponseUtil.ok(data);
     }
+
 }
