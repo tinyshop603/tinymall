@@ -46,7 +46,8 @@
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleSend(scope.row)">发货</el-button>
-          <el-button type="primary" size="mini"  @click="handleRecv(scope.row)">收货</el-button>
+          <el-button type="primary" size="mini"  @click="handleCancelOrder(scope.row)">取消</el-button>
+          <el-button type="primary" size="mini"  @click="handleConfirmOrder(scope.row)">确认</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -160,6 +161,7 @@ export default {
     getList() {
       this.listLoading = true
       listOrder(this.listQuery).then(response => {
+        debugger
         this.list = response.data.data.items
         this.total = response.data.data.total
         this.listLoading = false
@@ -219,6 +221,22 @@ export default {
       })
     },
     handleRecv(row) {
+      this.resetForm(row)
+      this.recvDialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleCancelOrder(row) {
+      debugger
+      this.resetForm(row)
+      this.recvDialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleConfirmOrder(row) {
+      debugger
       this.resetForm(row)
       this.recvDialogFormVisible = true
       this.$nextTick(() => {
