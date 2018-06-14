@@ -2,9 +2,7 @@ import request from '@/utils/request'
 
 export function listOrder(query) {
   request.interceptors.response.use(response => {
-    let list = response.data.data.items
-    // 遍历list，添加按钮的状态
-    list = list.map((item) => {
+    response.data.data.items.map((item) => {
       item.sendBtnStatus = {
         'type': 'info',
         'disabled': true
@@ -19,8 +17,8 @@ export function listOrder(query) {
       }
       return item
     })
-    return response;
-  });
+    return response
+  })
   return request({
     url: '/order/list',
     method: 'get',

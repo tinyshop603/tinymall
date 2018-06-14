@@ -94,12 +94,7 @@
 
 </style>
 <script>
-import {
-  listOrder,
-  updateOrder
-}
-
-from '@/api/order'
+import { listOrder, updateOrder } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
   name: 'Order',
@@ -136,26 +131,40 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = true listOrder(this.listQuery).then(response => {
-        this.list = response.data.data.items this.total = response.data.data.total this.listLoading = false
+      this.listLoading = true
+      listOrder(this.listQuery).then(response => {
+        this.list = response.data.data.items
+        this.total = response.data.data.total
+        this.listLoading = false
       }).catch(() => {
-        this.list = [] this.total = 0 this.listLoading = false
+        this.list = []
+        this.total = 0
+        this.listLoading = false
       })
     },
     handleFilter() {
-      this.listQuery.page = 1 this.getList()
+      this.listQuery.page = 1
+      this.getList()
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val this.getList()
+      this.listQuery.limit = val
+      this.getList()
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val this.getList()
+      this.listQuery.page = val
+      this.getList()
     },
     resetForm(row) {
-      this.dataForm.id = row.id; this.dataForm.shipChannel = row.shipChannel this.dataForm.shipSn = row.shipSn this.dataForm.shipStartTime = row.shipStartTime this.dataForm.shipEndTime = row.shipEndTime
+      this.dataForm.id = row.id
+      this.dataForm.shipChannel = row.shipChannel
+      this.dataForm.shipSn = row.shipSn
+      this.dataForm.shipStartTime = row.shipStartTime
+      this.dataForm.shipEndTime = row.shipEndTime
     },
     handleSend(row) {
-      this.resetForm(row) this.sendDialogFormVisible = true this.$nextTick(() => {
+      this.resetForm(row)
+      this.sendDialogFormVisible = true
+      this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
@@ -166,10 +175,13 @@ export default {
             const updatedOrder = response.data.data
             for (const v of this.list) {
               if (v.id === updatedOrder.id) {
-                const index = this.list.indexOf(v) this.list.splice(index, 1, updatedOrder) break
+                const index = this.list.indexOf(v)
+                this.list.splice(index, 1, updatedOrder)
+                break
               }
             }
-            this.sendDialogFormVisible = false this.$notify({
+            this.sendDialogFormVisible = false
+            this.$notify({
               title: '成功',
               message: '更新成功',
               type: 'success',
@@ -180,17 +192,23 @@ export default {
       })
     },
     handleRecv(row) {
-      this.resetForm(row) this.recvDialogFormVisible = true this.$nextTick(() => {
+      this.resetForm(row)
+      this.recvDialogFormVisible = true
+      this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
     handleCancelOrder(row) {
-      this.resetForm(row) this.recvDialogFormVisible = true this.$nextTick(() => {
+      this.resetForm(row)
+      this.recvDialogFormVisible = true
+      this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
     handleConfirmOrder(row) {
-      debugger this.resetForm(row) this.recvDialogFormVisible = true this.$nextTick(() => {
+      this.resetForm(row)
+      this.recvDialogFormVisible = true
+      this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
@@ -201,10 +219,13 @@ export default {
             const updatedOrder = response.data.data
             for (const v of this.list) {
               if (v.id === updatedOrder.id) {
-                const index = this.list.indexOf(v) this.list.splice(index, 1, updatedOrder) break
+                const index = this.list.indexOf(v)
+                this.list.splice(index, 1, updatedOrder)
+                break
               }
             }
-            this.recvDialogFormVisible = false this.$notify({
+            this.recvDialogFormVisible = false
+            this.$notify({
               title: '成功',
               message: '更新成功',
               type: 'success',
@@ -216,9 +237,11 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import ('@/vendor/Export2Excel').then(excel => {
+      import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
-        const filterVal = ['id', 'orderSn', 'userId', 'orderStatis', 'isDelete', 'consignee', 'mobile', 'address'] excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息') this.downloadLoading = false
+        const filterVal = ['id', 'orderSn', 'userId', 'orderStatis', 'isDelete', 'consignee', 'mobile', 'address']
+        excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
+        this.downloadLoading = false
       })
     }
   }
