@@ -380,6 +380,9 @@ public class WxOrderController {
 
         Map<String, Object> data = new HashMap<>();
         data.put("orderId", orderId);
+        //想办法提醒管理端进行刷新
+
+
         return ResponseUtil.ok(data);
     }
 

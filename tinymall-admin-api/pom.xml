@@ -21,7 +21,11 @@
             <groupId>com.attitude</groupId>
             <artifactId>tinymall-db</artifactId>
         </dependency>
-
+        <!--实时通讯的框架-->
+        <dependency>
+            <groupId>com.corundumstudio.socketio</groupId>
+            <artifactId>netty-socketio</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
