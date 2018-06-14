@@ -112,6 +112,13 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>2.6.1</version>
             </dependency>
+
+            <!--实时通讯的框架-->
+            <dependency>
+                <groupId>com.corundumstudio.socketio</groupId>
+                <artifactId>netty-socketio</artifactId>
+                <version>1.7.15</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
