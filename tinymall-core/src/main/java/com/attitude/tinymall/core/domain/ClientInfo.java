@@ -1,6 +1,7 @@
-package com.attitude.tinymall.admin.domain;
+package com.attitude.tinymall.core.domain;
 
 import java.util.Date;
+
 public class ClientInfo {
   private String clientid;
   private Short connected;

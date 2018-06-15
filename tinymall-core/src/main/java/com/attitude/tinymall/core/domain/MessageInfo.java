@@ -1,4 +1,4 @@
-package com.attitude.tinymall.admin.domain;
+package com.attitude.tinymall.core.domain;
 
 public class MessageInfo {
   //源客户端id

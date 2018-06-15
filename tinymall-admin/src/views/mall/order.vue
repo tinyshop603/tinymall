@@ -129,6 +129,17 @@ export default {
   created() {
     this.getList()
   },
+  sockets: {
+    connect: function() {
+      console.log('socket connected')
+    },
+    orderEvent: function(val) {
+      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
+    }
+  },
+  mounted: function() {
+    this.$nextTick(function() {})
+  },
   methods: {
     getList() {
       this.listLoading = true
@@ -237,7 +248,7 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
+      import ('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
         const filterVal = ['id', 'orderSn', 'userId', 'orderStatis', 'isDelete', 'consignee', 'mobile', 'address']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
