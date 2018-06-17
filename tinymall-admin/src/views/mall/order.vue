@@ -94,7 +94,7 @@
 
 </style>
 <script>
-import { listOrder, updateOrder } from '@/api/order'
+import { listOrder, updateOrder ,getBtnStateByCode } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
   name: 'Order',
@@ -133,8 +133,14 @@ export default {
     connect: function() {
       console.log('socket connected')
     },
-    orderEvent: function(val) {
-      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
+    submitOrderEvent: function(jsonData) {
+      let newOrder = JSON.parse(jsonData)
+      newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.orderStatus))
+      this.list.unshift(newOrder)
+      console.log('---->订单提交' + jsonData)
+    },
+    cancelOrderEvent: function(jsonData) {
+      console.log('----->订单取消' + jsonData)
     }
   },
   mounted: function() {
@@ -248,7 +254,7 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import ('@/vendor/Export2Excel').then(excel => {
+      import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
         const filterVal = ['id', 'orderSn', 'userId', 'orderStatis', 'isDelete', 'consignee', 'mobile', 'address']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')

@@ -2,8 +2,7 @@ import request from '@/utils/request'
 
 export function listOrder(query) {
   request.interceptors.response.use(response => {
-    let list = response.data.data.items
-    list = list.map((item) => {
+    response.data.data.items = response.data.data.items.map((item) => {
       // 订单状态规则
       /**
        * 101,201,待发货
@@ -16,19 +15,7 @@ export function listOrder(query) {
        * 402:用户已签收却不点击确认收货，超期7天以后，则系统自动确认收货。 用户不能再点击确认收货按钮，但是可以评价订单商品。
        * 403:订单全部完成状态
        */
-      const orderStaCode = item.orderStatus
-      let btnStaCode
-      // 由于目前暂时为能够使用这么对状态码,故,将其进行简化
-      if (orderStaCode === 101 || orderStaCode === 101) {
-        btnStaCode = 601
-      } else if (orderStaCode === 102 || orderStaCode === 103) {
-        btnStaCode = 602
-      } else if (orderStaCode === 104) {
-        btnStaCode = 603
-      } else if (orderStaCode === 403) {
-        btnStaCode = 604
-      }
-      return Object.assign(item,_getBtnStateByCode(btnStaCode))
+      return Object.assign(item, getBtnStateByCode(item.orderStatus))
     })
     return response
   })
@@ -75,7 +62,18 @@ export function deleteOrder(data) {
  * @param  {[type]} code [description]
  * @return {[type]}      [description]
  */
-function _getBtnStateByCode(code) {
+export function getBtnStateByCode(orderStaCode) {
+  let code
+  // 由于目前暂时为能够使用这么对状态码,故,将其进行简化
+  if (orderStaCode === 101 || orderStaCode === 101) {
+    code = 601
+  } else if (orderStaCode === 102 || orderStaCode === 103) {
+    code = 602
+  } else if (orderStaCode === 104) {
+    code = 603
+  } else if (orderStaCode === 403) {
+    code = 604
+  }
   switch (code) {
     case 601: // 待发货的状态
       return getBtnsWithStatus(true, true, false)

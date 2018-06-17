@@ -418,7 +418,7 @@ public class WxCartController {
         if(userId == null){
             return ResponseUtil.ok(0);
         }
-        
+
         int goodsCount = 0;
         List<LitemallCart> cartList = cartService.queryByUid(userId);
         for(LitemallCart cart : cartList){

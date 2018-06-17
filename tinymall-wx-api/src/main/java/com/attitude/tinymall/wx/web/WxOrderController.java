@@ -1,5 +1,8 @@
 package com.attitude.tinymall.wx.web;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.attitude.tinymall.core.common.SocketEvent;
 import com.attitude.tinymall.core.domain.MessageInfo;
 import com.attitude.tinymall.core.util.ResponseUtil;
 import com.attitude.tinymall.db.domain.LitemallAddress;
@@ -26,6 +29,8 @@ import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
 import com.github.binarywang.wxpay.service.WxPayService;
 import io.socket.client.Socket;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,7 +102,7 @@ public class WxOrderController {
   /**
    * 消息传递信息
    */
-  private  MessageInfo  messageInfo ;
+  private MessageInfo<LitemallOrder> messageInfo;
 
   private Socket client;
 
@@ -105,7 +110,7 @@ public class WxOrderController {
   public void setClient(Socket client) {
     this.client = client;
     this.client.connect();
-    messageInfo= new MessageInfo();
+    messageInfo = new MessageInfo<>();
     //发起端
     messageInfo.setSourceClientId("wx-api");
     //目标端
@@ -149,6 +154,15 @@ public class WxOrderController {
 
     List<Short> orderStatus = OrderUtil.orderStatus(showType);
     List<LitemallOrder> orderList = orderService.queryByOrderStatus(userId, orderStatus);
+    //对上述的集合进行排序
+    orderList
+        .sort(Comparator.comparing(
+            LitemallOrder::getConfirmTime)
+            .thenComparing(LitemallOrder::getDeleted)
+            .reversed()
+            .thenComparing(LitemallOrder::getId));
+
+
     int count = orderService.countByOrderStatus(userId, orderStatus);
 
     List<Map<String, Object>> orderVoList = new ArrayList<>(orderList.size());
@@ -176,6 +190,7 @@ public class WxOrderController {
     }
     Map<String, Object> result = new HashMap<>();
     result.put("count", count);
+
     result.put("data", orderVoList);
 
     return ResponseUtil.ok(result);
@@ -373,8 +388,8 @@ public class WxOrderController {
     data.put("orderId", orderId);
     //想办法提醒管理端进行刷新
     messageInfo.setMsgType("order-submit");
-    messageInfo.setMsgContent(JacksonUtil.stringifyObject(order));
-    client.emit("orderEvent",messageInfo);
+    messageInfo.setDomainData(order);
+    client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
     return ResponseUtil.ok(data);
   }
 
@@ -435,9 +450,9 @@ public class WxOrderController {
     }
     txManager.commit(status);
     //想办法提醒管理端进行刷新
-    messageInfo.setMsgType("order-submit");
+    messageInfo.setMsgType("order-cancel");
     messageInfo.setMsgContent(JacksonUtil.stringifyObject(order));
-    client.emit("orderEvent",messageInfo);
+    client.emit(SocketEvent.CANCEL_ORDER, messageInfo);
     return ResponseUtil.ok();
   }
 

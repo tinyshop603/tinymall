@@ -1,5 +1,6 @@
 package com.attitude.tinymall.core.util;
 
+import com.attitude.tinymall.core.domain.MessageInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -125,10 +126,31 @@ public class JacksonUtil {
    * @return
    */
   public static String stringifyObject(Object o) {
+
+
     ObjectMapper mapper = new ObjectMapper();
     try {
       return mapper.writeValueAsString(o);
     } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  /**
+   * 将对象转换成字符串
+   * @param s
+   * @return
+   */
+  public static Object pareseObject(String s) {
+
+
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      return mapper.readValue(s,MessageInfo.class);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
       e.printStackTrace();
     }
     return null;

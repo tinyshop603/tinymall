@@ -1,8 +1,9 @@
 package com.attitude.tinymall.admin.handler;
 
+import com.alibaba.fastjson.JSONObject;
+import com.attitude.tinymall.core.common.SocketEvent;
 import com.attitude.tinymall.core.domain.ClientInfo;
 import com.attitude.tinymall.core.domain.MessageInfo;
-import com.attitude.tinymall.db.domain.LitemallOrder;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -42,6 +43,9 @@ public class MessageEventHandler {
   public void onConnect(SocketIOClient client) {
     String clientId = client.getHandshakeData().getSingleUrlParam("clientId");
     ClientInfo clientInfo = clientInfos.get(clientId);
+    if (null == clientInfo) {
+      clientInfo = new ClientInfo();
+    }
     Date nowTime = new Date(System.currentTimeMillis());
     clientInfo.setConnected((short) 1);
     clientInfo.setMostsignbits(client.getSessionId().getMostSignificantBits());
@@ -63,29 +67,53 @@ public class MessageEventHandler {
       clientInfo.setMostsignbits(null);
       clientInfo.setLeastsignbits(null);
       clientInfos.put(clientId, clientInfo);
-      logger.debug(clientId + "已断开连接");
     }
+    logger.debug(clientId + "已断开连接");
   }
 
   /**
    * 消息接收入口，当接收到消息后，查找发送目标客户端，并且向该客户端发送消息，且给自己发送消息
+   * 实时提交订单
    */
-  @OnEvent(value = "orderEvent")
-  public void onEvent(SocketIOClient client, AckRequest request, MessageInfo data) {
+  @OnEvent(value = SocketEvent.SUBMIT_ORDER)
+  public void onEventOrderSubmit(SocketIOClient client, AckRequest request, String jsonData) {
+    MessageInfo data = JSONObject.parseObject(jsonData, MessageInfo.class);
     String targetClientId = data.getTargetClientId();
     ClientInfo clientInfo = clientInfos.get(targetClientId);
     if (clientInfo != null && clientInfo.getConnected() != 0) {
       UUID uuid = new UUID(clientInfo.getMostsignbits(), clientInfo.getLeastsignbits());
       logger.debug(uuid.toString());
-      MessageInfo sendData = new MessageInfo();
-      sendData.setSourceClientId(data.getSourceClientId());
-      sendData.setTargetClientId(data.getTargetClientId());
-      sendData.setMsgType("chat");
-      // 此处传递消息应该是订单的信息
-      sendData.setMsgContent(data.getMsgContent());
-      client.sendEvent("orderEvent", sendData);
+//      MessageInfo sendData = new MessageInfo();
+//      sendData.setSourceClientId(data.getSourceClientId());
+//      sendData.setTargetClientId(data.getTargetClientId());
+//      sendData.setMsgType("chat");
+//       此处传递消息应该是订单的信息
+//      sendData.setMsgContent(data.getMsgContent());
+      String  jsonOrder = JSONObject.toJSONString(data.getDomainData());
+//      client.sendEvent(, jsonOrder);
       ///发送给管理员的客户端
-      server.getClient(uuid).sendEvent("orderEvent", sendData);
+      server.getClient(uuid).sendEvent(SocketEvent.SUBMIT_ORDER, jsonOrder);
+      logger.debug(jsonOrder);
     }
   }
+
+  /**
+   * 消息接收入口，当接收到消息后，查找发送目标客户端，并且向该客户端发送消息，且给自己发送消息
+   * 实时取消订单
+   */
+  @OnEvent(value = SocketEvent.CANCEL_ORDER)
+  public void onEventOrderCancel(SocketIOClient client, AckRequest request, String jsonData) {
+    MessageInfo data = JSONObject.parseObject(jsonData, MessageInfo.class);
+    String targetClientId = data.getTargetClientId();
+    ClientInfo clientInfo = clientInfos.get(targetClientId);
+    if (clientInfo != null && clientInfo.getConnected() != 0) {
+      UUID uuid = new UUID(clientInfo.getMostsignbits(), clientInfo.getLeastsignbits());
+      String  jsonOrder = JSONObject.toJSONString(data.getDomainData());
+      ///发送给管理员的客户端
+      server.getClient(uuid).sendEvent(SocketEvent.CANCEL_ORDER, jsonOrder);
+      logger.debug(jsonOrder);
+    }
+  }
+
+
 }

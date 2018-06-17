@@ -1,8 +1,8 @@
 package com.attitude.tinymall.core.domain;
 
+import java.io.Serializable;
 import java.util.Date;
-
-public class ClientInfo {
+public class ClientInfo implements Serializable {
   private String clientid;
   private Short connected;
   private Long mostsignbits;

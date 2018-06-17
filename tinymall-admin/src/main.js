@@ -20,7 +20,7 @@ Vue.use(Element, {
 })
 
 Vue.config.productionTip = false
-Vue.use(VueSocketio, 'http://172.16.6.86:7081?clientId=admin-api')
+Vue.use(VueSocketio, 'http://192.168.1.34:7081?clientId=admin-api')
 new Vue({
   el: '#app',
   router,
