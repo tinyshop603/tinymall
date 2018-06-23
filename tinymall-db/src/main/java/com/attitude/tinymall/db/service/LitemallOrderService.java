@@ -102,6 +102,7 @@ public class LitemallOrderService {
 
     public List<LitemallOrder> querySelective(Integer userId, String orderSn, Integer page, Integer size, String sort, String order) {
         LitemallOrderExample example = new LitemallOrderExample();
+        example.orderBy("add_time DESC");
         LitemallOrderExample.Criteria criteria = example.createCriteria();
 
         if(userId != null){

@@ -27,8 +27,8 @@
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width" prop="type">
         <template slot-scope="scope">
           <el-button :type="scope.row.sendBtnStatus.type" :disabled="scope.row.sendBtnStatus.disabled" size="mini" @click="handleSend(scope.row)">发货</el-button>
-          <el-button :type="scope.row.cancelBtnStatus.type" :disabled="scope.row.cancelBtnStatus.disabled" size="mini" @click="handleCancelOrder(scope.row)">取消</el-button>
-          <el-button :type="scope.row.confirmBtnStatus.type" :disabled="scope.row.confirmBtnStatus.disabled" size="mini" @click="handleConfirmOrder(scope.row)">确认</el-button>
+          <el-button :type="scope.row.cancelBtnStatus.type" :disabled="scope.row.cancelBtnStatus.disabled" size="mini" @click="handleCancelOrder(scope.row)">取消订单</el-button>
+          <el-button :type="scope.row.confirmBtnStatus.type" :disabled="scope.row.confirmBtnStatus.disabled" size="mini" @click="handleConfirmOrder(scope.row)">确认订单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -75,6 +75,9 @@
         <el-button type="primary" @click="recvData">确定</el-button>
       </div>
     </el-dialog>
+    <audio id="bgMusic">
+      <source src="../../media/eleme.mp3" type="audio/mp3">
+    </audio>
   </div>
 </template>
 <style>
@@ -94,7 +97,7 @@
 
 </style>
 <script>
-import { listOrder, updateOrder ,getBtnStateByCode } from '@/api/order'
+import { listOrder, updateOrder, getBtnStateByCode } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
   name: 'Order',
@@ -105,6 +108,7 @@ export default {
     return {
       isShowDeleteColumn: false, // 是否显示订单表格删除状态的列
       list: undefined,
+      player:undefined, // 后台音频播放器
       total: undefined,
       listLoading: true,
       listQuery: {
@@ -137,14 +141,17 @@ export default {
       let newOrder = JSON.parse(jsonData)
       newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.orderStatus))
       this.list.unshift(newOrder)
-      console.log('---->订单提交' + jsonData)
+      this.player.play()
     },
     cancelOrderEvent: function(jsonData) {
       console.log('----->订单取消' + jsonData)
     }
   },
   mounted: function() {
-    this.$nextTick(function() {})
+    const _this = this
+    this.$nextTick(function() {
+       _this.player = document.getElementById('bgMusic')
+    })
   },
   methods: {
     getList() {
