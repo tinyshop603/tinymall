@@ -38,38 +38,24 @@
     </div>
     <!-- 发货对话框 -->
     <el-dialog title="发货" :visible.sync="sendDialogFormVisible">
-      <el-form ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
-        <el-form-item label="快递公司" prop="shipChannel">
-          <el-input v-model="dataForm.shipChannel"></el-input>
-        </el-form-item>
-        <el-form-item label="快递编号" prop="shipSn">
-          <el-input v-model="dataForm.shipSn"></el-input>
-        </el-form-item>
-        <el-form-item label="快递发货时间" prop="shipStartTime">
-          <el-date-picker v-model="dataForm.shipStartTime" type="datetime" placeholder="选择日期时间"></el-date-picker>
-        </el-form-item>
-      </el-form>
+      确认发货后，您必须在30分钟内为客户送货到门，是否继续发货？
       <div slot="footer" class="dialog-footer">
         <el-button @click="sendDialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="sendData">确定</el-button>
       </div>
     </el-dialog>
+    <!-- 取消订单对话框 -->
+    <el-dialog title="取消订单" :visible.sync="cancelSendDialogFormVisible">
+      取消订单前，请确保已跟客户进行电话沟通，与客户协商后才可进行</br>
+      取消，否则会影响您的信誉，并且，订单取消后将无法对该订单做任</br>
+      何操作，确认继续取消？
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelSendDialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="cancelData">确定</el-button>
+      </div>
+    </el-dialog>
     <!-- 收货对话框 -->
     <el-dialog title="收货" :visible.sync="recvDialogFormVisible">
-      <el-form ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
-        <el-form-item label="快递公司" prop="shipChannel">
-          <el-input disabled v-model="dataForm.shipChannel"></el-input>
-        </el-form-item>
-        <el-form-item label="快递编号" prop="shipSn">
-          <el-input disabled v-model="dataForm.shipSn"></el-input>
-        </el-form-item>
-        <el-form-item label="快递发货时间" prop="shipStartTime">
-          <el-date-picker disabled v-model="dataForm.shipStartTime" type="datetime" placeholder="选择日期时间"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="快递收货时间" prop="shipEndTime">
-          <el-date-picker v-model="dataForm.shipEndTime" type="datetime" placeholder="选择日期时间"></el-date-picker>
-        </el-form-item>
-      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="recvDialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="recvData">确定</el-button>
@@ -97,7 +83,7 @@
 
 </style>
 <script>
-import { listOrder, updateOrder, getBtnStateByCode } from '@/api/order'
+import { listOrder, getBtnStateByCode, updateOrderCode, STATUS } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
   name: 'Order',
@@ -108,7 +94,7 @@ export default {
     return {
       isShowDeleteColumn: false, // 是否显示订单表格删除状态的列
       list: undefined,
-      player:undefined, // 后台音频播放器
+      player: undefined, // 后台音频播放器
       total: undefined,
       listLoading: true,
       listQuery: {
@@ -123,10 +109,12 @@ export default {
         shipChannel: undefined,
         shipSn: undefined,
         shipStartTime: undefined,
-        shipEndTime: undefined
+        shipEndTime: undefined,
+        orderStatus: undefined
       },
       sendDialogFormVisible: false,
       recvDialogFormVisible: false,
+      cancelSendDialogFormVisible: false,
       downloadLoading: false
     }
   },
@@ -150,7 +138,7 @@ export default {
   mounted: function() {
     const _this = this
     this.$nextTick(function() {
-       _this.player = document.getElementById('bgMusic')
+      _this.player = document.getElementById('bgMusic')
     })
   },
   methods: {
@@ -184,15 +172,17 @@ export default {
       this.dataForm.shipSn = row.shipSn
       this.dataForm.shipStartTime = row.shipStartTime
       this.dataForm.shipEndTime = row.shipEndTime
+      this.dataForm.orderStatus = row.orderStatus
     },
     handleSend(row) {
       this.resetForm(row)
       this.sendDialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate()
+      // })
     },
     sendData() {
+      /**
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           updateOrder(this.dataForm).then(response => {
@@ -214,49 +204,88 @@ export default {
           })
         }
       })
+      **/
+      // 更改当前的订单的状态为发货状态
+      this.dataForm.orderStatus = STATUS.SHIP
+      updateOrderCode(this.dataForm).then(response => {
+        const updatedOrder = response.data.data
+        for (const v of this.list) {
+          if (v.id === updatedOrder.id) {
+            const index = this.list.indexOf(v)
+            this.list.splice(index, 1, updatedOrder)
+            break
+          }
+        }
+        this.sendDialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
     handleRecv(row) {
       this.resetForm(row)
       this.recvDialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate()
+      // })
     },
     handleCancelOrder(row) {
       this.resetForm(row)
-      this.recvDialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      this.cancelSendDialogFormVisible = true
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate()
+      // })
     },
     handleConfirmOrder(row) {
       this.resetForm(row)
       this.recvDialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate()
+      // })
     },
     recvData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          updateOrder(this.dataForm).then(response => {
-            const updatedOrder = response.data.data
-            for (const v of this.list) {
-              if (v.id === updatedOrder.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, updatedOrder)
-                break
-              }
-            }
-            this.recvDialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
+      // 更改当前的订单的状态为发货状态
+      this.dataForm.orderStatus = STATUS.RECEIVE_COMPLETE
+      updateOrderCode(this.dataForm).then(response => {
+        const updatedOrder = response.data.data
+        for (const v of this.list) {
+          if (v.id === updatedOrder.id) {
+            const index = this.list.indexOf(v)
+            this.list.splice(index, 1, updatedOrder)
+            break
+          }
         }
+        this.recvDialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
+    cancelData() {
+      // 更改当前的订单的状态为发货状态
+      this.dataForm.orderStatus = STATUS.CANCEL
+      updateOrderCode(this.dataForm).then(response => {
+        const updatedOrder = response.data.data
+        for (const v of this.list) {
+          if (v.id === updatedOrder.id) {
+            const index = this.list.indexOf(v)
+            this.list.splice(index, 1, updatedOrder)
+            break
+          }
+        }
+        this.recvDialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
       })
     },
     handleDownload() {

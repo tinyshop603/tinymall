@@ -1,8 +1,24 @@
 import request from '@/utils/request'
 
+export const STATUS = {
+  CREATE: 101,
+  PAY: 201,
+  SHIP: 301,
+  CONFIRM: 401,
+  CANCEL: 102,
+  AUTO_CANCEL: 103,
+  REFUND: 202,
+  REFUND_CONFIRM: 203,
+  AUTO_CONFIRM: 402,
+  RECEIVE_COMPLETE: 403
+}
 export function listOrder(query) {
   request.interceptors.response.use(response => {
-    response.data.data.items = response.data.data.items.map((item) => {
+    let orderItems = response.data.data.items
+    if (!orderItems) {
+      orderItems = [response.data.data]
+    }
+    response.data.data.items = orderItems.map((item) => {
       // 订单状态规则
       /**
        * 101,201,待发货
@@ -44,6 +60,19 @@ export function readOrder(data) {
 export function updateOrder(data) {
   return request({
     url: '/order/update',
+    method: 'post',
+    data
+  })
+}
+/**
+ * [updateOrder 更新订单信息的状态吗]
+ * @author zhaoguiyang 2018-07-01
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+export function updateOrderCode(data) {
+  return request({
+    url: '/order/update/status/',
     method: 'post',
     data
   })
