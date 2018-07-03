@@ -51,7 +51,7 @@ public class LitemallCategoryService {
         return categoryMapper.selectByPrimaryKey(id);
     }
 
-    public List<LitemallCategory> querySelective(String id, String name, Integer page, Integer size, String sort, String order) {
+    public List<LitemallCategory> querySelective(String id,String name, String parentId, Integer page, Integer size, String sort, String order) {
         LitemallCategoryExample example = new LitemallCategoryExample();
         LitemallCategoryExample.Criteria criteria = example.createCriteria();
 
@@ -60,6 +60,9 @@ public class LitemallCategoryService {
         }
         if(!StringUtils.isEmpty(name)){
             criteria.andNameLike("%" + name + "%");
+        }
+        if (!StringUtils.isEmpty(parentId)){
+            criteria.andParentIdEqualTo(Integer.valueOf(parentId));
         }
         criteria.andDeletedEqualTo(false);
 
@@ -67,7 +70,7 @@ public class LitemallCategoryService {
         return categoryMapper.selectByExample(example);
     }
 
-    public int countSelective(String id, String name, Integer page, Integer size, String sort, String order) {
+    public int countSelective(String id, String name, String parentId,Integer page, Integer size, String sort, String order) {
         LitemallCategoryExample example = new LitemallCategoryExample();
         LitemallCategoryExample.Criteria criteria = example.createCriteria();
 
@@ -76,6 +79,9 @@ public class LitemallCategoryService {
         }
         if(!StringUtils.isEmpty(name)){
             criteria.andNameLike("%" + name + "%");
+        }
+        if (!StringUtils.isEmpty(parentId)){
+            criteria.andParentIdEqualTo(Integer.valueOf(parentId));
         }
         criteria.andDeletedEqualTo(false);
 

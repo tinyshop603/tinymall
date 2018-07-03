@@ -98,7 +98,7 @@ export function getBtnStateByCode(orderStaCode) {
     code = 601
   } else if (orderStaCode === 102 || orderStaCode === 103) {
     code = 602
-  } else if (orderStaCode === 104) {
+  } else if (orderStaCode === 104 || orderStaCode === 301) {
     code = 603
   } else if (orderStaCode === 403) {
     code = 604

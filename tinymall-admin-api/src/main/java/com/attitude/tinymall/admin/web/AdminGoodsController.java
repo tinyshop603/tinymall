@@ -23,7 +23,7 @@ public class AdminGoodsController {
 
     @GetMapping("/list")
     public Object list(@LoginAdmin Integer adminId,
-                       String goodsSn, String name,
+                       String goodsSn, String name,String categoryId,
                        @RequestParam(value = "page", defaultValue = "1") Integer page,
                        @RequestParam(value = "limit", defaultValue = "10") Integer limit,
                        String sort, String order){
@@ -31,8 +31,8 @@ public class AdminGoodsController {
             return ResponseUtil.unlogin();
         }
 
-        List<LitemallGoods> goodsList = goodsService.querySelective(goodsSn, name, page, limit, sort, order);
-        int total = goodsService.countSelective(goodsSn, name, page, limit, sort, order);
+        List<LitemallGoods> goodsList = goodsService.querySelective(goodsSn, name,categoryId, page, limit, sort, order);
+        int total = goodsService.countSelective(goodsSn, name, categoryId,page, limit, sort, order);
         Map<String, Object> data = new HashMap<>();
         data.put("total", total);
         data.put("items", goodsList);

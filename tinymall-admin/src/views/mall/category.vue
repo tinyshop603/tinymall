@@ -7,6 +7,8 @@
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入类目名称" v-model="listQuery.name">
       </el-input>
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入父类目ID" v-model="listQuery.parentId">
+      </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" @click="handleCreate" icon="el-icon-edit">添加</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出</el-button>
@@ -168,6 +170,7 @@ export default {
         limit: 20,
         id: undefined,
         name: undefined,
+        parentId: undefined,
         sort: '+id'
       },
       catL1: {},

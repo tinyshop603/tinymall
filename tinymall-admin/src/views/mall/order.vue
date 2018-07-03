@@ -219,7 +219,7 @@ export default {
         this.sendDialogFormVisible = false
         this.$notify({
           title: '成功',
-          message: '更新成功',
+          message: '发货成功',
           type: 'success',
           duration: 2000
         })
@@ -261,7 +261,7 @@ export default {
         this.recvDialogFormVisible = false
         this.$notify({
           title: '成功',
-          message: '更新成功',
+          message: '订单已完成',
           type: 'success',
           duration: 2000
         })
@@ -279,10 +279,10 @@ export default {
             break
           }
         }
-        this.recvDialogFormVisible = false
+        this.cancelSendDialogFormVisible = false
         this.$notify({
           title: '成功',
-          message: '更新成功',
+          message: '取消成功',
           type: 'success',
           duration: 2000
         })

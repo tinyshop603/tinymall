@@ -3,6 +3,8 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
+      <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入商品类目ID" v-model="listQuery.categoryId">
+      </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号" v-model="listQuery.goodsSn">
       </el-input>
       <el-input clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称" v-model="listQuery.name">
@@ -226,6 +228,7 @@ export default {
         limit: 20,
         goodsSn: undefined,
         name: undefined,
+        categoryId: undefined,
         sort: '+id'
       },
       dataForm: {
