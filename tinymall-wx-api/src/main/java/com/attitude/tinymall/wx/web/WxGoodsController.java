@@ -406,4 +406,107 @@ public class WxGoodsController {
         return ResponseUtil.ok(data);
     }
 
+    /**
+     * 分类首页
+     * @param id 商店ID
+     * @param page 分页页数
+     * @param size 分页大小
+     * @return 当前分类栏目；当前当前分类栏目；当前分类中商品列表
+     * @author wz
+     * @data 2018-6-17
+     *   成功则
+     *  {
+     *      errno: 0,
+     *      errmsg: '成功',
+     *      data:
+     *          {
+     *              categoryList: xxx,
+     *              currentCategory: xxx,
+     *              currentSubCategory: xxx
+     *          }
+     *  }
+     *   失败则 { errno: XXX, errmsg: XXX }
+     */
+    @GetMapping("index")
+    public Object index(Integer id,Integer page,Integer size) {
+        if(id == null){
+            return ResponseUtil.badArgument();
+        }
+        // 当前分类
+        LitemallCategory currentStore = categoryService.findById(id);
+        List<LitemallCategory> categoryList = categoryService.queryByPid(currentStore.getId());
+        Map<String, Object> data = new HashMap();
+        Integer categoryId = -1;
+        if(categoryList.size()>0){
+            LitemallCategory currentCategory = categoryList.get(0);
+            categoryId = currentCategory.getId();
+            data.put("currentCategory", currentCategory);
+        }
+        if(categoryId != -1){
+            //商品列表
+            List<LitemallGoods> goodsList = goodsService.querySelective(categoryId, null, null, null, null, page, size, null);
+            data.put("currentSubCategoryList", goodsList);
+        }
+        data.put("categoryList", categoryList);
+        return ResponseUtil.ok(data);
+    }
+    /**
+     * 根据条件搜素商品
+     *
+     * 1. 这里的前五个参数都是可选的，甚至都是空
+     * 2. 用户是可选登录，如果登录，则记录用户的搜索关键字
+     *
+     * @param categoryId 分类类目ID
+     * @param brandId 品牌商ID
+     * @param keyword 关键字
+     * @param isNew 是否新品
+     * @param isHot 是否热买
+     * @param userId 用户ID
+     * @param page 分页页数
+     * @param size 分页大小
+     * @param sort 排序方式
+     * @param order 排序类型，顺序或者降序
+     * @return 根据条件搜素的商品详情
+     *   成功则
+     *  {
+     *      errno: 0,
+     *      errmsg: '成功',
+     *      data:
+     *          {
+     *              goodsList: xxx,
+     *              filterCategoryList: xxx,
+     *              count: xxx
+     *          }
+     *  }
+     *   失败则 { errno: XXX, errmsg: XXX }
+     */
+    @GetMapping("current")
+    public Object current(Integer categoryId, Integer brandId, String keyword, Integer isNew, Integer isHot,
+                       @LoginUser Integer userId,
+                       @RequestParam(value = "page", defaultValue = "1") Integer page,
+                       @RequestParam(value = "size", defaultValue = "10") Integer size,
+                       String sort, String order) {
+
+        String sortWithOrder = SortUtil.goodsSort(sort, order);
+
+        //查询列表数据
+        // 当前分类
+        LitemallCategory currentCategory = categoryService.findById(categoryId);
+        List<LitemallGoods> goodsList = goodsService.querySelective(categoryId, brandId, keyword, isHot, isNew, page, size, sortWithOrder);
+//        int total = goodsService.countSelective(categoryId, brandId, keyword, isHot, isNew, page, size, sortWithOrder);
+
+        // 查询商品所属类目列表。
+        List<Integer> goodsCatIds = goodsService.getCatIds(brandId, keyword, isHot, isNew);
+//        List<LitemallCategory> categoryList = null;
+//        if(goodsCatIds.size() != 0) {
+//            categoryList = categoryService.queryL2ByIds(goodsCatIds);
+//        }
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("goodsList", goodsList);
+        data.put("currentCategory", currentCategory);
+//        data.put("filterCategoryList", categoryList);
+        return ResponseUtil.ok(data);
+    }
+
 }

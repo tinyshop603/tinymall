@@ -156,11 +156,17 @@ public class WxOrderController {
     List<LitemallOrder> orderList = orderService.queryByOrderStatus(userId, orderStatus);
     //对上述的集合进行排序
     orderList
-        .sort(Comparator.comparing(
-            LitemallOrder::getConfirmTime)
-            .thenComparing(LitemallOrder::getDeleted)
-            .reversed()
-            .thenComparing(LitemallOrder::getId));
+      .sort(Comparator.comparing(
+              LitemallOrder::getAddTime)
+              .thenComparing(LitemallOrder::getDeleted)
+              .reversed()
+              .thenComparing(LitemallOrder::getId));
+//    orderList
+//        .sort(Comparator.comparing(
+//            LitemallOrder::getConfirmTime)
+//            .thenComparing(LitemallOrder::getDeleted)
+//            .reversed()
+//            .thenComparing(LitemallOrder::getId));
 
 
     int count = orderService.countByOrderStatus(userId, orderStatus);
