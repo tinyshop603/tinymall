@@ -1,6 +1,6 @@
 {
   "pages": [
-    "pages/catalog/catalog",
+    "pages/catalog1/catalog",
     "pages/newGoods/newGoods",
     "pages/hotGoods/hotGoods",
     "pages/ucenter/index/index",        
@@ -45,7 +45,7 @@
     "color": "#666",
     "list": [
       {
-        "pagePath": "pages/catalog/catalog",
+        "pagePath": "pages/catalog1/catalog",
         "iconPath": "static/images/ic_menu_sort_nor.png",
         "selectedIconPath": "static/images/ic_menu_sort_pressed.png",
         "text": "分类"

@@ -277,10 +277,10 @@ Page({
     }
 
 
-    if (address.areaId == 0) {
-      util.showErrorToast('请输入省市区');
-      return false;
-    }
+    // if (address.areaId == 0) {
+    //   util.showErrorToast('请输入省市区');
+    //   return false;
+    // }
 
     if (address.address == '') {
       util.showErrorToast('请输入详细地址');

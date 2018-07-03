@@ -49,11 +49,16 @@
   </view>
   <view class="cate-item">
     <view class="b">
-      <navigator class="item {{(iindex + 1) % 2 == 0 ? 'item-b' : ''}}" url="/pages/goods/goods?id={{iitem.id}}" wx:for="{{goodsList}}" wx:key="id" wx:for-item="iitem" wx:for-index="iindex">
+      <view class="item {{(iindex + 1) % 2 == 0 ? 'item-b' : ''}}" wx:for="{{goodsList}}" wx:key="id" wx:for-item="iitem" wx:for-index="iindex">
         <image class="img" src="{{iitem.listPicUrl}}" background-size="cover"></image>
-        <text class="name">{{iitem.name}}</text>
-        <text class="price">￥{{iitem.retailPrice}}</text>
-      </navigator>
+        <view class="food-tit">
+          <text class="name">{{iitem.name}}</text>
+          <view class="addBtn">
+            <text class="price">￥{{iitem.retailPrice}}</text>	
+            <view class="btn" data-goodsId="{{iitem.id}}" bindtap="addToCart">+</view>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
   </view>

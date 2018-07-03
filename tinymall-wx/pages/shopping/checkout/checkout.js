@@ -104,6 +104,10 @@ Page({
     util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId }, 'POST').then(res => {
       if (res.errno === 0) {
         const orderId = res.data.orderId;
+        wx.redirectTo({
+          url: '/pages/payResult/payResult?status=1&orderId=' + orderId
+        });
+
 
         // 模拟支付成功，同理，后台也仅仅是返回一个成功的消息而已
         // wx.showModal({
@@ -133,36 +137,36 @@ Page({
         //   }
         // });
 
-        util.request(api.OrderPrepay, {
-          orderId: orderId
-        }, 'POST').then(function (res) {
-          if (res.errno === 0) {
-            const payParam = res.data;
-            console.log("支付过程开始")
-            wx.requestPayment({
-              'timeStamp': payParam.timeStamp,
-              'nonceStr': payParam.nonceStr,
-              'package': payParam.packageValue,
-              'signType': payParam.signType,
-              'paySign': payParam.paySign,
-              'success': function (res) {
-                console.log("支付过程成功")
-                wx.redirectTo({
-                  url: '/pages/payResult/payResult?status=1&orderId=' + orderId
-                });
-              },
-              'fail': function (res) {
-                console.log("支付过程失败")
-                wx.redirectTo({
-                  url: '/pages/payResult/payResult?status=0&orderId=' + orderId
-                });
-              },
-              'complete': function (res) {
-                console.log("支付过程结束")
-              }
-            });
-          }
-        });
+        // util.request(api.OrderPrepay, {
+        //   orderId: orderId
+        // }, 'POST').then(function (res) {
+        //   if (res.errno === 0) {
+        //     const payParam = res.data;
+        //     console.log("支付过程开始")
+        //     wx.requestPayment({
+        //       'timeStamp': payParam.timeStamp,
+        //       'nonceStr': payParam.nonceStr,
+        //       'package': payParam.packageValue,
+        //       'signType': payParam.signType,
+        //       'paySign': payParam.paySign,
+        //       'success': function (res) {
+        //         console.log("支付过程成功")
+        //         wx.redirectTo({
+        //           url: '/pages/payResult/payResult?status=1&orderId=' + orderId
+        //         });
+        //       },
+        //       'fail': function (res) {
+        //         console.log("支付过程失败")
+        //         wx.redirectTo({
+        //           url: '/pages/payResult/payResult?status=0&orderId=' + orderId
+        //         });
+        //       },
+        //       'complete': function (res) {
+        //         console.log("支付过程结束")
+        //       }
+        //     });
+        //   }
+        // });
 
       } else {
         wx.redirectTo({

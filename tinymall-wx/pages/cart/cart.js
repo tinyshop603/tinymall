@@ -19,6 +19,7 @@ Page({
     hasLogin: false
   },
   onLoad: function (options) {
+    
     // 页面初始化 options为页面跳转所带来的参数
   },
   onReady: function () {
@@ -28,9 +29,12 @@ Page({
     // 页面显示
     if (app.globalData.hasLogin){
       this.getCartList();
+    }else{
+      this.goLogin();
     }
 
     this.setData({
+      isEditCart: false,
       hasLogin: app.globalData.hasLogin
     });
 

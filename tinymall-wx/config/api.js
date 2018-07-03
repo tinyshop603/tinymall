@@ -2,9 +2,9 @@
 // 本机开发时使用
 // var WxApiRoot = 'http://localhost:8082/wx/';
 // 局域网测试使用
-var WxApiRoot = 'http://192.168.1.34:8082/wx/';
+//var WxApiRoot = 'http://39.106.9.50:8082/wx/';
 // 云平台部署时使用
-//  var WxApiRoot = 'http://122.152.206.172:8082/wx/';
+ var WxApiRoot = 'http://127.0.0.1:8082/wx/';
 // 云平台上线时使用
 //  var WxApiRoot = 'https://www.attitude.one/wx/';
 
@@ -22,12 +22,14 @@ module.exports = {
     IndexUrl: WxApiRoot + 'home/index', //首页数据接口
     CatalogList: WxApiRoot + 'catalog/index',  //分类目录全部分类数据接口
     CatalogCurrent: WxApiRoot + 'catalog/current',  //分类目录当前分类数据接口
-
+    
     AuthLoginByWeixin: WxApiRoot + 'auth/login_by_weixin', //微信登录
     AuthLoginByAccount: WxApiRoot + 'auth/login', //账号登录
     AuthRegister: WxApiRoot + 'auth/register', //账号注册
     AuthReset: WxApiRoot + 'auth/reset', //账号密码重置
 
+    CatalogAndGoodsList: WxApiRoot + 'goods/index',  //wz-新增接口：分类+商品列表
+    GoodsListCurrent: WxApiRoot + 'goods/current',  //wz-新增接口：当前分类商品列表
     GoodsCount: WxApiRoot + 'goods/count',  //统计商品总数
     GoodsList: WxApiRoot + 'goods/list',  //获得商品列表
     GoodsCategory: WxApiRoot + 'goods/category',  //获得分类数据

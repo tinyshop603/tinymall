@@ -57,6 +57,7 @@
 }
 
 .login-btn{
+    margin-top: 300rpx;
     margin: 60rpx 0 40rpx 0;
     height: 96rpx;
     line-height: 96rpx;
@@ -85,5 +86,24 @@
     height: 34rpx;
     float: right;
     font-size: 28rpx;
+    color: #999;
+}
+
+.form-box image{
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    width: 258rpx;
+    height: 258rpx;
+}
+
+.form-box text{
+    margin: 0 auto;
+    display: block;
+    width: 258rpx;
+    height: 59rpx;
+    line-height: 29rpx;
+    text-align: center;
+    font-size: 50rpx;
     color: #999;
 }

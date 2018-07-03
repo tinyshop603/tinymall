@@ -1,7 +1,8 @@
 <view class="container">
-    <view class="form-box">
-
-    	<view class="form-item">
+     <view class="form-box">
+        <image src="http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/noCart-a8fe3f12e5.png" />
+        <text>还没有登录</text>
+    	<!-- <view class="form-item">
     		<input class="username" value="{{username}}" bindinput="bindUsernameInput" placeholder="账号"/>
     		<image wx:if="{{ username.length > 0 }}" id="clear-username" class="clear" src="/static/images/clear_input.png" catchtap="clearInput"></image>
     	</view>
@@ -9,7 +10,7 @@
     	<view class="form-item">
     		<input class="password" value="{{password}}" password bindinput="bindPasswordInput" placeholder="密码"/>
     		<image class="clear" id="clear-password" wx:if="{{ password.length > 0 }}" src="/static/images/clear_input.png" catchtap="clearInput"></image>
-    	</view>
+    	</view>  -->
 
 		 <!-- <view class="form-item-code" wx-if="{{loginErrorCount >= 3}}">
 			<view class="form-item code-item">
@@ -19,14 +20,14 @@
 			<image class="code-img" src="https://dl.reg.163.com/cp?pd=yanxuan_web&pkid=SkeBZeG&random=1489903563234"></image>
 		</view>  -->
 
-    <button type="default" class="login-btn" bindtap="accountLogin">账号登录</button>
+    <!-- <button type="default" class="login-btn" bindtap="accountLogin">账号登录</button>
 
      <view class="form-item-text">
       <navigator url="/pages/auth/register/register" class="register">注册账号</navigator>
 			<navigator url="/pages/auth/reset/reset" class="reset">忘记密码</navigator>
-    </view> 
+    </view>  -->
 
-    <button type="primary" open-type="getUserInfo" class="login-btn" bindgetuserinfo="wxLogin">微信直接登录</button>
+    <button type="primary" open-type="getUserInfo" class="login-btn" bindgetuserinfo="wxLogin">微信登录</button>
 
     </view>
 </view>
