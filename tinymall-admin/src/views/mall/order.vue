@@ -247,7 +247,7 @@ export default {
       // })
     },
     recvData() {
-      // 更改当前的订单的状态为发货状态
+      // 更改当前的订单的状态为完成状态
       this.dataForm.orderStatus = STATUS.RECEIVE_COMPLETE
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
@@ -268,7 +268,7 @@ export default {
       })
     },
     cancelData() {
-      // 更改当前的订单的状态为发货状态
+      // 更改当前的订单的状态为取消状态
       this.dataForm.orderStatus = STATUS.CANCEL
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
