@@ -20,7 +20,7 @@ Vue.use(Element, {
   size: 'medium' // set element-ui default size
 })
 
-const sck = io('http://192.168.1.34:7081?clientId=admin-api', {
+const sck = io('http://39.106.9.50:7181?clientId=admin-api', {
   reconnectionAttempts: Number.MAX_SAFE_INTEGER,
   reconnectionDelay: 500,
   reconnectionDelayMax: 1000,
