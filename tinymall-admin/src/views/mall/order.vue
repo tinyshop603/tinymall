@@ -10,7 +10,9 @@
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
       <el-table-column type="expand">
-        <template slot-scope="props"></template>
+        <template slot-scope="props">
+          
+        </template>
       </el-table-column>
       <el-table-column align="center" width="100px" label="订单ID" prop="id" sortable></el-table-column>
       <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"></el-table-column>
@@ -55,7 +57,8 @@
       </div>
     </el-dialog>
     <!-- 收货对话框 -->
-    <el-dialog title="收货" :visible.sync="recvDialogFormVisible">
+    <el-dialog title="确定完成订单" :visible.sync="recvDialogFormVisible">
+    确定完成订单后,订单状态不可修改,请核实交易是否完成?
       <div slot="footer" class="dialog-footer">
         <el-button @click="recvDialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="recvData">确定</el-button>

@@ -1,5 +1,8 @@
 package com.attitude.tinymall.db.service;
 
+import com.attitude.tinymall.db.dao.LitemallGoodsMapper;
+import com.attitude.tinymall.db.domain.LitemallOrderWithGoods;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.dao.LitemallOrderMapper;
 import com.attitude.tinymall.db.domain.LitemallOrder;
@@ -100,7 +103,7 @@ public class LitemallOrderService {
         return orderMapper.updateByPrimaryKeySelective(order);
     }
 
-    public List<LitemallOrder> querySelective(Integer userId, String orderSn, Integer page, Integer size, String sort, String order) {
+    public List<LitemallOrderWithGoods> querySelective(Integer userId, String orderSn, Integer page, Integer size, String sort, String order) {
         LitemallOrderExample example = new LitemallOrderExample();
         example.orderBy("add_time DESC");
         LitemallOrderExample.Criteria criteria = example.createCriteria();
@@ -113,8 +116,10 @@ public class LitemallOrderService {
         }
         criteria.andDeletedEqualTo(false);
 
-        PageHelper.startPage(page, size);
-        return orderMapper.selectByExample(example);
+        Page<Object> objects = PageHelper.startPage(page, size);
+        List<LitemallOrderWithGoods> odersWithGoods = orderMapper.selectOdersWithGoods();
+
+        return odersWithGoods;
     }
 
     public int countSelective(Integer userId, String orderSn, Integer page, Integer size, String sort, String order) {

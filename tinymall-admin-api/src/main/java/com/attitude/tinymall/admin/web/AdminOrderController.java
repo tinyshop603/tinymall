@@ -1,5 +1,6 @@
 package com.attitude.tinymall.admin.web;
 
+import com.attitude.tinymall.db.domain.LitemallOrderWithGoods;
 import java.util.Comparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,16 +53,14 @@ public class AdminOrderController {
     if (adminId == null) {
       return ResponseUtil.fail401();
     }
-    List<LitemallOrder> orderList = orderService
+    List<LitemallOrderWithGoods> orderList = orderService
         .querySelective(userId, orderSn, page, limit, sort, order);
     int total = orderService.countSelective(userId, orderSn, page, limit, sort, order);
 
-    orderList
-        .sort(Comparator.comparing(
-            LitemallOrder::getAddTime)
-            .thenComparing(LitemallOrder::getDeleted)
-            .reversed()
-            .thenComparing(LitemallOrder::getId));
+//    orderList
+//        .sort(Comparator.comparing(litemallOrderWithGoods -> {
+//          litemallOrderWithGoods.getOrder();
+//        }));
 
     Map<String, Object> data = new HashMap<>();
     data.put("total", total);

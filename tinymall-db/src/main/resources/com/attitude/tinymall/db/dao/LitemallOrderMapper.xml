@@ -31,6 +31,28 @@
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
     <result column="deleted" jdbcType="BIT" property="deleted" />
   </resultMap>
+
+  <resultMap type="com.attitude.tinymall.db.domain.LitemallOrderWithGoods" id="Order_With_Goods">
+    <!--复用上面声明的订单-->
+    <association property="order" javaType="com.attitude.tinymall.db.domain.LitemallOrder" resultMap="BaseResultMap">
+    </association>
+    <collection column="id" property="goods" ofType="com.attitude.tinymall.db.domain.LitemallOrderGoods"
+      select="selectGoodsByOrder" >
+    </collection>
+  </resultMap>
+
+
+  <select id="selectGoodsByOrder" resultMap="com.attitude.tinymall.db.dao.LitemallOrderGoodsMapper.BaseResultMap">
+    SELECT * FROM tinymall_order_goods t WHERE t.order_id = #{id}
+  </select>
+
+  <select id="selectOdersWithGoods" resultMap="Order_With_Goods">
+    SELECT * from tinymall_order ORDER BY add_time DESC
+  </select>
+
+
+
+
   <sql id="Example_Where_Clause">
     <!--
       WARNING - @mbg.generated
@@ -64,6 +86,9 @@
       </foreach>
     </where>
   </sql>
+
+
+
   <sql id="Update_By_Example_Where_Clause">
     <!--
       WARNING - @mbg.generated
