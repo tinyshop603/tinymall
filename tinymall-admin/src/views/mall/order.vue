@@ -58,7 +58,8 @@
     </el-dialog>
     <!-- 收货对话框 -->
     <el-dialog title="确定完成订单" :visible.sync="recvDialogFormVisible">
-    确定完成订单后,订单状态不可修改,请核实交易是否完成?
+    确定订单完成前,请确认已经完成送货到门,并且已完成线下收付款,</br>
+  订单确认完成后不可再对该订单做任何操作,继续确认完成订单?</br>
       <div slot="footer" class="dialog-footer">
         <el-button @click="recvDialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="recvData">确定</el-button>
