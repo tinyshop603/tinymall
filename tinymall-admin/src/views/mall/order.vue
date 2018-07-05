@@ -11,26 +11,32 @@
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
       <el-table-column type="expand">
         <template slot-scope="props">
-          
+          <el-table size="small" :data="props.row.goods" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+          <el-table-column align="center" min-width="90px" label="商品条形码" prop="goodsSn"></el-table-column>
+          <el-table-column align="center" min-width="90px" label="商品名称" prop="goodsName"></el-table-column>
+          <el-table-column align="center" min-width="90px" label="商品数量" prop="number"></el-table-column>
+          <el-table-column align="center" min-width="90px" label="商品规格" prop="goodsSpecificationValues"></el-table-column>
+          <el-table-column align="center" min-width="90px" label="商品单价" prop="retailPrice"></el-table-column>
+          </el-table>                    
         </template>
       </el-table-column>
-      <el-table-column align="center" width="100px" label="订单ID" prop="id" sortable></el-table-column>
-      <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"></el-table-column>
-      <el-table-column align="center" min-width="100px" label="订单编号" prop="orderSn"></el-table-column>
-      <el-table-column align="center" min-width="100px" label="订单状态" prop="orderStatus"></el-table-column>
-      <el-table-column align="center" v-if="isShowDeleteColumn" min-width="100px" label="是否删除" prop="isDelete">
+      <el-table-column align="center" width="100px" label="下单时间" prop="order.addTime" sortable></el-table-column>
+      <el-table-column align="center" min-width="100px" label="用户昵称" prop="order.consignee"></el-table-column>
+      <el-table-column align="center" min-width="100px" label="用户地址" prop="order.address"></el-table-column>
+      <el-table-column align="center" min-width="100px" label="用户电话" prop="order.orderStatus"></el-table-column>
+      <el-table-column align="center" v-if="isShowDeleteColumn" min-width="100px" label="是否删除" prop="order.isDelete">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isDelete ? 'success' : 'error' "> { { scope.row.isDelete ? '未删除': '已删除' } }
+          <el-tag :type="scope.row.order.isDelete ? 'success' : 'error' "> { { scope.row.order.isDelete ? '未删除': '已删除' } }
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" min-width="100px" label="订单费用" prop="orderPrice"></el-table-column>
-      <el-table-column align="center" min-width="100px" label="实际费用" prop="actualPrice"></el-table-column>
-      <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width" prop="type">
+      <el-table-column align="center" min-width="100px" label="订单费用" prop="order.orderPrice"></el-table-column>
+      <el-table-column align="center" min-width="100px" label="实际费用" prop="order.actualPrice"></el-table-column>
+      <el-table-column align="center" label="操作" width="280" class-name="small-padding fixed-width" prop="type">
         <template slot-scope="scope">
-          <el-button :type="scope.row.sendBtnStatus.type" :disabled="scope.row.sendBtnStatus.disabled" size="mini" @click="handleSend(scope.row)">发货</el-button>
-          <el-button :type="scope.row.cancelBtnStatus.type" :disabled="scope.row.cancelBtnStatus.disabled" size="mini" @click="handleCancelOrder(scope.row)">取消订单</el-button>
-          <el-button :type="scope.row.confirmBtnStatus.type" :disabled="scope.row.confirmBtnStatus.disabled" size="mini" @click="handleConfirmOrder(scope.row)">确认订单</el-button>
+          <el-button :type="scope.row.sendBtnStatus.type" :disabled="scope.row.sendBtnStatus.disabled" size="small" @click="handleSend(scope.row.order)">发货</el-button>
+          <el-button :type="scope.row.cancelBtnStatus.type" :disabled="scope.row.cancelBtnStatus.disabled" size="small" @click="handleCancelOrder(scope.row.order)">取消订单</el-button>
+          <el-button :type="scope.row.confirmBtnStatus.type" :disabled="scope.row.confirmBtnStatus.disabled" size="small" @click="handleConfirmOrder(scope.row.order)">确认订单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -58,8 +64,8 @@
     </el-dialog>
     <!-- 收货对话框 -->
     <el-dialog title="确定完成订单" :visible.sync="recvDialogFormVisible">
-    确定订单完成前,请确认已经完成送货到门,并且已完成线下收付款,</br>
-  订单确认完成后不可再对该订单做任何操作,继续确认完成订单?</br>
+      确定订单完成前,请确认已经完成送货到门,并且已完成线下收付款,</br>
+      订单确认完成后不可再对该订单做任何操作,继续确认完成订单?</br>
       <div slot="footer" class="dialog-footer">
         <el-button @click="recvDialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="recvData">确定</el-button>
@@ -213,17 +219,11 @@ export default {
       this.dataForm.orderStatus = STATUS.SHIP
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
-        for (const v of this.list) {
-          if (v.id === updatedOrder.id) {
-            const index = this.list.indexOf(v)
-            this.list.splice(index, 1, updatedOrder)
-            break
-          }
-        }
+        this.updateOrderItemStatus(updatedOrder)
         this.sendDialogFormVisible = false
         this.$notify({
           title: '成功',
-          message: '发货成功',
+          message: '发货成功,请尽快送货',
           type: 'success',
           duration: 2000
         })
@@ -255,13 +255,7 @@ export default {
       this.dataForm.orderStatus = STATUS.RECEIVE_COMPLETE
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
-        for (const v of this.list) {
-          if (v.id === updatedOrder.id) {
-            const index = this.list.indexOf(v)
-            this.list.splice(index, 1, updatedOrder)
-            break
-          }
-        }
+        this.updateOrderItemStatus(updatedOrder)
         this.recvDialogFormVisible = false
         this.$notify({
           title: '成功',
@@ -276,13 +270,7 @@ export default {
       this.dataForm.orderStatus = STATUS.CANCEL
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
-        for (const v of this.list) {
-          if (v.id === updatedOrder.id) {
-            const index = this.list.indexOf(v)
-            this.list.splice(index, 1, updatedOrder)
-            break
-          }
-        }
+        this.updateOrderItemStatus(updatedOrder)
         this.cancelSendDialogFormVisible = false
         this.$notify({
           title: '成功',
@@ -300,6 +288,22 @@ export default {
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
         this.downloadLoading = false
       })
+    },
+    updateOrderItemStatus(updatedOrder) {
+      for (const v of this.list) {
+        if (v.order.id === updatedOrder.id) {
+          const index = this.list.indexOf(v)
+          const newObj = {
+            goods: v.goods,
+            order: updatedOrder,
+            sendBtnStatus: updatedOrder.sendBtnStatus,
+            cancelBtnStatus: updatedOrder.cancelBtnStatus,
+            confirmBtnStatus: updatedOrder.confirmBtnStatus
+          }
+          this.list.splice(index, 1, newObj)
+          break
+        }
+      }
     }
   }
 }

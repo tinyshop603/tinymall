@@ -31,7 +31,13 @@ export function listOrder(query) {
        * 402:用户已签收却不点击确认收货，超期7天以后，则系统自动确认收货。 用户不能再点击确认收货按钮，但是可以评价订单商品。
        * 403:订单全部完成状态
        */
-      return Object.assign(item, getBtnStateByCode(item.orderStatus))
+      let code
+      if (item.order) {
+        code = item.order.orderStatus
+      } else {
+        code = item.orderStatus
+      }
+      return Object.assign(item, getBtnStateByCode(code))
     })
     return response
   })
