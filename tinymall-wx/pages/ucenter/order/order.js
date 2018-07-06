@@ -14,6 +14,15 @@ Page({
     util.request(api.OrderList, { showType: that.data.showType}).then(function (res) {
       if (res.errno === 0) {
         console.log(res.data);
+        //wz-截取图片格式
+        if (res.data.data.length > 0) {
+          for (let i = 0; i < res.data.data.length; i++) {
+            for (let j = 0; j < res.data.data[i].goodsList.length; j++){
+              let oldPicUrl = res.data.data[i].goodsList[j].picUrl;
+              res.data.data[i].goodsList[j].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+            }           
+          }
+        }
         that.setData({
           orderList: res.data.data
         });

@@ -25,6 +25,13 @@ Page({
     let that = this;
     util.request(api.CartCheckout, { cartId: that.data.cartId, addressId: that.data.addressId, couponId: that.data.couponId }).then(function (res) {
       if (res.errno === 0) {
+        //wz-截取图片格式
+        if (res.data.checkedGoodsList.length > 0) {
+          for (let i = 0; i < res.data.checkedGoodsList.length; i++) {
+            let oldPicUrl = res.data.checkedGoodsList[i].picUrl;
+            res.data.checkedGoodsList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+          }
+        }
         that.setData({
           checkedGoodsList: res.data.checkedGoodsList,
           checkedAddress: res.data.checkedAddress,

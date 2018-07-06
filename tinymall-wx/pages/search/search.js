@@ -105,6 +105,13 @@ Page({
     let that = this;
     util.request(api.GoodsList, { keyword: that.data.keyword, page: that.data.page, size: that.data.size, sort: that.data.currentSortType, order: that.data.currentSortOrder, categoryId: that.data.categoryId }).then(function (res) {
       if (res.errno === 0) {
+        //wz-截取图片格式
+        if (res.data.goodsList.length > 0) {
+          for (let i = 0; i < res.data.goodsList.length; i++) {
+            let oldPicUrl = res.data.goodsList[i].listPicUrl;
+            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+          }
+        }
         that.setData({
           searchStatus: true,
           categoryFilter: false,
@@ -255,6 +262,13 @@ Page({
     let that = this;
     util.request(api.GoodsRelated, { id: goodid }).then(function (res) {
       if (res.errno === 0) {
+        //wz-截取图片格式
+        if (res.data.goodsList.length > 0) {
+          for (let i = 0; i < res.data.goodsList.length; i++) {
+            let oldPicUrl = res.data.goodsList[i].listPicUrl;
+            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+          }
+        }
         that.setData({
           relatedGoods: res.data.goodsList,
         });
