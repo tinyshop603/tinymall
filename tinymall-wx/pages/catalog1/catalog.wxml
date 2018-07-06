@@ -1,0 +1,33 @@
+<view class="container">
+  <view class="search">
+    <navigator url="/pages/search/search" class="input">
+      <image class="icon"></image>
+      <text class="txt">商品搜索, 共{{goodsCount}}款好物</text>
+    </navigator>
+  </view>
+  <view class="catalog">
+    <scroll-view class="nav" scroll-y="true">
+        <view class="item {{ currentCategory.id == item.id ? 'active' : ''}}" wx:for="{{categoryList}}" wx:key="id"  data-id="{{item.id}}" data-index="{{index}}" bindtap="switchCate">{{item.name}}</view>
+    </scroll-view>
+    <scroll-view class="cate" scroll-y="true">
+      <view class="r-right">
+        <!-- <scroll-view> -->
+          <block wx:for="{{currentSubCategoryList}}" wx:key="key">
+            <view class="listItem1" id="{{item.id}}">
+              <view class="itemImg">
+                 <image style="width:100%;height:100%;" src="{{item.listPicUrl}}"></image> 
+              </view>
+              <view class="food-tit">
+                <view style="font-size: 30rpx;">{{item.name}}</view>
+                <view class="addBtn">
+                  <text style="font-size: 38rpx;color:#f60;">{{item.retailPrice}}￥</text>		
+                  <view class="btn" data-goodsId="{{item.id}}" bindtap="addToCart">+</view>
+                </view>
+              </view>
+            </view>
+          </block>
+        <!-- </scroll-view> -->
+      </view>
+    </scroll-view>
+  </view>
+</view>

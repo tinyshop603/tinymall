@@ -48,7 +48,8 @@ public class OrderUtil {
         }
 
         if (status == 201) {
-            return "已付款";
+//            return "已付款";
+            return "订单已提交";
         }
 
         if (status == 202) {
