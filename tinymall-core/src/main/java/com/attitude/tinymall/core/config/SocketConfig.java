@@ -8,6 +8,7 @@ import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import com.corundumstudio.socketio.listener.DataListener;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +55,8 @@ public class SocketConfig {
     options.forceNew = true;
     //设置此连接只为微信服务端的连接
     options.query = "clientId=wx-api";
-    return IO.socket("http://"+host+":"+port+"/", options);
+    //直连的方式,直接使用IP服务进行连接直连,不能进行域名连接,会走代理的
+    return IO.socket("http://" + host + ":" + port + "/", options);
   }
 
   @Bean
