@@ -312,9 +312,9 @@ public class WxOrderController {
 
     // 根据订单商品总价计算运费，满88则免运费，否则8元；
     BigDecimal freightPrice = new BigDecimal(0.00);
-    if (checkedGoodsPrice.compareTo(new BigDecimal(88.00)) < 0) {
-      freightPrice = new BigDecimal(8.00);
-    }
+//    if (checkedGoodsPrice.compareTo(new BigDecimal(88.00)) < 0) {
+//      freightPrice = new BigDecimal(8.00);
+//    }
 
     // 可以使用的其他钱，例如用户积分
     BigDecimal integralPrice = new BigDecimal(0.00);
@@ -335,7 +335,8 @@ public class WxOrderController {
       order.setUserId(userId);
       order.setOrderSn(orderService.generateOrderSn(userId));
       order.setAddTime(LocalDateTime.now());
-      order.setOrderStatus(OrderUtil.STATUS_CREATE);
+//      order.setOrderStatus(OrderUtil.STATUS_CREATE);
+      order.setOrderStatus(OrderUtil.STATUS_PAY);
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
       String detailedAddress = detailedAddress(checkedAddress);
