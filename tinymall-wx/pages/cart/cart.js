@@ -52,6 +52,13 @@ Page({
     let that = this;
     util.request(api.CartList).then(function (res) {
       if (res.errno === 0) {
+        //wz-截取图片格式
+        if (res.data.cartList.length > 0) {
+          for (let i = 0; i < res.data.cartList.length; i++) {
+            let oldPicUrl = res.data.cartList[i].picUrl;
+            res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+          }
+        }
         that.setData({
           cartGoods: res.data.cartList,
           cartTotal: res.data.cartTotal
@@ -88,6 +95,13 @@ Page({
     if (!this.data.isEditCart) {
       util.request(api.CartChecked, { productIds: productIds, isChecked: that.data.cartGoods[itemIndex].checked ? 0 : 1 }, 'POST').then(function (res) {
         if (res.errno === 0) {
+          //wz-截取图片格式
+          if (res.data.cartList.length > 0) {
+            for (let i = 0; i < res.data.cartList.length; i++) {
+              let oldPicUrl = res.data.cartList[i].picUrl;
+              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+            }
+          }
           that.setData({
             cartGoods: res.data.cartList,
             cartTotal: res.data.cartTotal
@@ -155,6 +169,13 @@ Page({
       util.request(api.CartChecked, { productIds: productIds, isChecked: that.isCheckedAll() ? 0 : 1 }, 'POST').then(function (res) {
         if (res.errno === 0) {
           console.log(res.data);
+          //wz-截取图片格式
+          if (res.data.cartList.length > 0) {
+            for (let i = 0; i < res.data.cartList.length; i++) {
+              let oldPicUrl = res.data.cartList[i].picUrl;
+              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+            }
+          }
           that.setData({
             cartGoods: res.data.cartList,
             cartTotal: res.data.cartTotal
@@ -172,7 +193,7 @@ Page({
         v.checked = !checkedAllStatus;
         return v;
       });
-
+      
       that.setData({
         cartGoods: tmpCartData,
         checkedAllStatus: that.isCheckedAll(),
@@ -204,7 +225,7 @@ Page({
     }
 
   },
-  updateCart: function (productId, goodsId, number, id) {
+  updateCart: function (productId, goodsId, number, id, event) {
     let that = this;
 
     util.request(api.CartUpdate, {
@@ -216,6 +237,8 @@ Page({
       that.setData({
         checkedAllStatus: that.isCheckedAll()
       });
+      that.checkedNum(event);//wz-更新货物价格
+
     });
 
   },
@@ -228,8 +251,7 @@ Page({
     this.setData({
       cartGoods: this.data.cartGoods
     });
-    this.updateCart(cartItem.productId, cartItem.goodsId, number, cartItem.id);
-    this.checkedNum(event);//wz-更新货物价格
+    this.updateCart(cartItem.productId, cartItem.goodsId, number, cartItem.id, event);//wz-m更新货物价格
   },
   addNumber: function (event) {
     let itemIndex = event.target.dataset.itemIndex;
@@ -239,9 +261,7 @@ Page({
     this.setData({
       cartGoods: this.data.cartGoods
     });
-    this.updateCart(cartItem.productId, cartItem.goodsId, number, cartItem.id);
-    this.checkedNum(event);//wz-更新货物价格
-
+    this.updateCart(cartItem.productId, cartItem.goodsId, number, cartItem.id, event);//wz-m更新货物价格
   },
   checkoutOrder: function () {
     //获取已选择的商品
@@ -301,7 +321,13 @@ Page({
           v.checked = false;
           return v;
         });
-
+        //wz-截取图片格式
+        if (res.data.cartList.length > 0) {
+          for (let i = 0; i < res.data.cartList.length; i++) {
+            let oldPicUrl = res.data.cartList[i].picUrl;
+            res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+          }
+        }
         that.setData({
           cartGoods: cartList,
           cartTotal: res.data.cartTotal
