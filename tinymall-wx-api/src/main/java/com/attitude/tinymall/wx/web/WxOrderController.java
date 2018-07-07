@@ -336,7 +336,7 @@ public class WxOrderController {
       order.setOrderSn(orderService.generateOrderSn(userId));
       order.setAddTime(LocalDateTime.now());
 //      order.setOrderStatus(OrderUtil.STATUS_CREATE);
-      order.setOrderStatus(OrderUtil.STATUS_PAY);
+      order.setOrderStatus(OrderUtil.STATUS_CREATE);
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
       String detailedAddress = detailedAddress(checkedAddress);
