@@ -15,7 +15,7 @@ page{
 .orders-switch .item{
     display: inline-block;
     height: 82rpx;
-    width: 18%;
+    width: 25%;
     padding: 0 15rpx;
     text-align: center;
 }

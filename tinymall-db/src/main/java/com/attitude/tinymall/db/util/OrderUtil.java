@@ -40,7 +40,8 @@ public class OrderUtil {
         }
 
         if (status == 102) {
-            return "已取消";
+//            return "已取消";
+            return "提示：经过商家确认，该订单已取消。如有疑问，请直接联系店家";
         }
 
         if (status == 103) {
@@ -145,6 +146,10 @@ public class OrderUtil {
             status.add((short)401);
 //            系统超时自动取消，此时应该不支持评价
 //            status.add((short)402);
+        }
+        else if (showType.equals(5)) {
+            //商家取消订单
+            status.add((short)102);
         }
         else {
             return null;
