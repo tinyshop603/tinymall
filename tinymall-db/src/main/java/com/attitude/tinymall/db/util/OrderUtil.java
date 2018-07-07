@@ -36,7 +36,7 @@ public class OrderUtil {
         int status = order.getOrderStatus().intValue();
 
         if (status == 101) {
-            return "未付款";
+            return "提示：店家正在协调配送，请稍等片刻";
         }
 
         if (status == 102) {

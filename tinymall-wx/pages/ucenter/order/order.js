@@ -4,7 +4,7 @@ var api = require('../../../config/api.js');
 Page({
   data:{
     orderList: [],
-    showType: 2
+    showType: 1
   },
   onLoad:function(options){
     // 页面初始化 options为页面跳转所带来的参数

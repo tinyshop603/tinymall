@@ -11,6 +11,7 @@
     "pages/ucenter/orderDetail/orderDetail",
     "pages/ucenter/coupon/coupon",
     "pages/ucenter/collect/collect",
+    "pages/ucenter/aboutUs/aboutUs",
     "pages/auth/login/login",
     "pages/auth/register/register",
     "pages/auth/reset/reset",

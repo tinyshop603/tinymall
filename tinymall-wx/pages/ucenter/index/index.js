@@ -80,6 +80,15 @@ Page({
       wx.navigateTo({ url: "/pages/auth/login/login" });
     };
   },
+  //wz-2018-7-7
+  aboutUs(){
+    if (app.globalData.hasLogin) {
+      wx.navigateTo({ url: "/pages/ucenter/aboutUs/aboutUs" });
+    }
+    else {
+      wx.navigateTo({ url: "/pages/auth/login/login" });
+    };
+  },
   exitLogin: function () {
     wx.showModal({
       title: '',

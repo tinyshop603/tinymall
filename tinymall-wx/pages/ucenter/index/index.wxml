@@ -25,12 +25,12 @@
         <text class="txt">礼品卡</text>
       </view>
     </view> -->
-    <view class="item">
+    <!-- <view class="item">
       <view class="a" bindtap="goCollect">
-        <!-- <text class="icon collect"></text> -->
+         <text class="icon collect"></text> 
         <text class="txt">我的收藏</text>
       </view>
-    </view>
+    </view> -->
     <!-- <view class="item">
       <view class="a" bindtap="goFootprint">
         <text class="icon security"></text>
@@ -67,6 +67,13 @@
         <text class="txt">帮助中心</text>
       </view>
     </view> -->
+    <view class="item item-bottom">
+      <view class="a" bindtap="aboutUs">
+        <!-- <text class="icon help"></text> -->
+        <text class="txt">联系我们</text>
+      </view>
+    </view> 
+
   </view>
 
   <!--<view class="logout" bindtap="exitLogin">退出登录</view>-->
