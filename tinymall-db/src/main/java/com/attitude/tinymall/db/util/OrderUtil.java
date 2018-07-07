@@ -49,7 +49,7 @@ public class OrderUtil {
 
         if (status == 201) {
 //            return "已付款";
-            return "订单已提交";
+            return "提示：店家正在协调配送，请稍等片刻";
         }
 
         if (status == 202) {
@@ -61,11 +61,13 @@ public class OrderUtil {
         }
 
         if (status == 301) {
-            return "已发货";
+//            return "已发货";
+            return "提示：店家正在快马加鞭向您赶来";
         }
 
         if (status == 401) {
-            return "已收货";
+//            return "已收货";
+            return "店家已确认完成该订单，如有疑问，请直接联系店家";
         }
 
         if (status == 402) {
