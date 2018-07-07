@@ -29,7 +29,7 @@ Page({
         if (res.data.checkedGoodsList.length > 0) {
           for (let i = 0; i < res.data.checkedGoodsList.length; i++) {
             let oldPicUrl = res.data.checkedGoodsList[i].picUrl;
-            res.data.checkedGoodsList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+            res.data.checkedGoodsList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
           }
         }
         that.setData({

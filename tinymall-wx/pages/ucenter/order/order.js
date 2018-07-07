@@ -19,7 +19,7 @@ Page({
           for (let i = 0; i < res.data.data.length; i++) {
             for (let j = 0; j < res.data.data[i].goodsList.length; j++){
               let oldPicUrl = res.data.data[i].goodsList[j].picUrl;
-              res.data.data[i].goodsList[j].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+              res.data.data[i].goodsList[j].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
             }           
           }
         }

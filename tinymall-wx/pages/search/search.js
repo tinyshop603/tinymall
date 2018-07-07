@@ -109,7 +109,7 @@ Page({
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
             let oldPicUrl = res.data.goodsList[i].listPicUrl;
-            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
           }
         }
         that.setData({
@@ -266,7 +266,7 @@ Page({
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
             let oldPicUrl = res.data.goodsList[i].listPicUrl;
-            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
           }
         }
         that.setData({

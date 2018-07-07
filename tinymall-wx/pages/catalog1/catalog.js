@@ -4,7 +4,7 @@ var WxParse = require('../../lib/wxParse/wxParse.js');
 
 Page({
   data: {
-    storeid: 1043005,//龙腾超市
+    storeid: 1042785,//回龙观
     categoryList: [],
     currentCategory: {},
     currentSubCategoryList: {},
@@ -27,9 +27,18 @@ Page({
     userHasCollect: 0,
     checkedSpecPrice: 0,
     // collectBackImage: '/static/images/icon_collect.png',
-    relatedGoods: []
+    relatedGoods: [],
+    systemHeight:"0px"
   },
   onLoad: function () {
+    let that = this;
+    wx.getSystemInfo({
+      success: function (res) {
+        that.setData({
+          systemHeight: res.windowHeight - (res.windowWidth / 750) * 94 + "px"
+        })
+      }
+    })
     this.getCatalog();
   },
   getCatalog: function () {
@@ -43,7 +52,7 @@ Page({
         if (res.data.currentSubCategoryList.length > 0){
           for (let i=0; i < res.data.currentSubCategoryList.length;i++){
             let oldPicUrl = res.data.currentSubCategoryList[i].listPicUrl;
-            res.data.currentSubCategoryList[i].listPicUrl = oldPicUrl.substring(0,oldPicUrl.indexOf("?"));
+            res.data.currentSubCategoryList[i].listPicUrl = oldPicUrl.substring(0,oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
           }
         }
         that.setData({
@@ -67,7 +76,7 @@ Page({
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
             let oldPicUrl = res.data.goodsList[i].listPicUrl;
-            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"));
+            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
           }
         }
         that.setData({

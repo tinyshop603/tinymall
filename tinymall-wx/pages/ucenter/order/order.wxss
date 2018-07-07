@@ -92,12 +92,6 @@ page{
     float: left;
 }
 
-.order .h .r{
-    float: right;
-    color: #b4282d;
-    font-size: 24rpx;
-}
-
 .order .goods{
     display: flex;
     align-items: center;
@@ -146,17 +140,18 @@ page{
 }
 
 .order .b{
-    height: 103rpx;
-    line-height: 103rpx;
+    height: 113rpx;
+    line-height: 50rpx;
     margin-left: 31.25rpx;
     padding-right: 31.25rpx;
     border-top: 1px solid #f4f4f4;
     font-size: 30rpx;
     color: #333;
+    padding-top:5rpx;
 }
 
 .order .b .l{
-    float: left;
+    /* float: left; */
 }
 
 .order .b .r{
@@ -173,4 +168,10 @@ page{
     font-size: 28rpx;
     color: #fff;
     background: #b4282d;
+}
+
+.order .b .tips{
+    /* float: left; */
+    color: #b4282d;
+    font-size: 24rpx;
 }

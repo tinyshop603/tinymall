@@ -30,7 +30,7 @@
       <navigator url="../orderDetail/orderDetail?id={{item.id}}" class="order" open-type="redirect" wx:for="{{orderList}}" wx:key="id">
             <view class="h">
                 <view class="l">订单编号：{{item.orderSn}}</view>
-                <view class="r">{{item.orderStatusText}}</view>
+                
             </view>
             <view class="goods" wx:for="{{item.goodsList}}" wx:key="id" wx:for-item="gitem">
                 <view class="img">
@@ -44,6 +44,7 @@
             </view>
             <view class="b">
                 <view class="l">实付：￥{{item.actualPrice}}</view>
+                <view class="tips">{{item.orderStatusText}}</view>
             </view>
       </navigator>
     </view>
