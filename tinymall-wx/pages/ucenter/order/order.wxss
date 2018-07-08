@@ -123,6 +123,7 @@ page{
     line-height: 44rpx;
     color: #333;
     font-size: 30rpx;
+    overflow: hidden;
 }
 
 .order .goods .number{

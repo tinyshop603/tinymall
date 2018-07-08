@@ -140,6 +140,7 @@ page{
     line-height: 33rpx;
     color: #333;
     font-size: 30rpx;
+    overflow: hidden;
 }
 
 .order-goods .item .t .number{

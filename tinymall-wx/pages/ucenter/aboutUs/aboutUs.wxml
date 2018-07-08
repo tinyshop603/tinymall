@@ -1,19 +1,19 @@
 <view class="container">
    <view class="t">
     <view class="showPic" >
-      <image class="logo" src="/static/images/icon_collect_checked.png"/>
-      <text>v0.0.1</text>
+      <image class="logo" src="/static/images/logo.jpg"/>
+      <text>789便利店</text>
     </view>
    </view>
-   <view class="busPhone" data-reply-phone="18712721359" bindtap="phoneCall">
+   <view class="busPhone" data-reply-phone="18811452696" bindtap="phoneCall">
     <text class="l">联系电话</text>
     <view class="r">
-      <text >18712721359</text>
+      <text >18811452696</text>
       <image class="call" src="/static/images/address_right.png"/>
     </view>
    </view>
    <view class="busAddress">
-    <text class="l">店铺地址：xx路xxxx小区0000号</text>
+    <text class="l">商家地址：回龙观北店嘉园南区烟酒茶行</text>
     <text class="r"></text>
    </view>
 </view>
