@@ -90,11 +90,11 @@ page{
     color: #333;
 }
 
-.order-goods .h .status{
+/* .order-goods .h .status{
     float: right;
     font-size: 30rpx;
     color: #b4282d;
-}
+} */
 
 .order-goods .item{
     display: flex;
@@ -269,5 +269,17 @@ page{
 .order-bottom .pay-fee .txt{
     display: inline-block;
     width: 140rpx;
+    color: #b4282d;
+}
+
+.tips{
+  height: 81rpx;
+  line-height: 81rpx;
+}
+
+.tips .status{
+    display: inline-block;
+    width: 100%;
+    font-size: 25rpx;
     color: #b4282d;
 }

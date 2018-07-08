@@ -17,7 +17,6 @@
     <view class="order-goods">
         <view class="h">
             <view class="label">商品信息</view>
-            <view class="status">{{orderInfo.orderStatusText}}</view>
         </view>
         <view class="goods">
             <view class="item" wx:for="{{orderGoods}}" wx:key="id">
@@ -64,5 +63,9 @@
             <text class="label">实付：</text>
             <text class="txt">￥{{orderInfo.actualPrice}}</text>
         </view>
+        <view class="tips">
+          <view class="status">{{orderInfo.orderStatusText}}</view>
+        </view>
+        
     </view>
 </view>

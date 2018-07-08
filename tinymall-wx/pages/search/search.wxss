@@ -354,7 +354,8 @@ page{
 	 width:44rpx;
 	height:44rpx; 
 	box-sizing: border-box;
-	background:#3190e8;
+		/* background:#3190e8; */
+  background:#d51313;
 	border-radius: 50%;
 	color:#fff;
 	font-size: 28rpx;

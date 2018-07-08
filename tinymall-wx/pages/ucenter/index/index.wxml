@@ -70,7 +70,7 @@
     <view class="item item-bottom">
       <view class="a" bindtap="aboutUs">
         <!-- <text class="icon help"></text> -->
-        <text class="txt">联系我们</text>
+        <text class="txt">联系商家</text>
       </view>
     </view> 
 

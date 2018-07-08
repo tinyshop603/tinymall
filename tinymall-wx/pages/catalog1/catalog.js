@@ -46,8 +46,10 @@ Page({
     wx.showLoading({
       title: '加载中...',
     });
+    console.log("发送请求api:" + api.CatalogAndGoodsList+"&id:" + that.data.storeid + "&page:" + that.data.page + "&size:" + that.data.size);
     util.request(api.CatalogAndGoodsList, { id: that.data.storeid, page: that.data.page, size: that.data.size})
       .then(function (res) {
+        console.log("接受请求");
         //wz-截取图片格式
         if (res.data.currentSubCategoryList.length > 0){
           for (let i=0; i < res.data.currentSubCategoryList.length;i++){

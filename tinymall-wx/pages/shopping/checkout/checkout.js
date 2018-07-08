@@ -108,12 +108,51 @@ Page({
       util.showErrorToast('请选择收货地址');
       return false;
     }
+
+    //获取当前时间戳
+    var timestamp = Date.parse(new Date());
+    timestamp = timestamp / 1000;
+    //获取当前时间
+    var n = timestamp * 1000;
+    var date = new Date(n);
+    //时
+    var h = date.getHours();
+    //分
+    var m = date.getMinutes();
+    //营业时间：8:30~24:00
+    var ifOpen = false;
+    if(h>8){
+      ifOpen=true;
+    }else if(h=8 && m>30){
+      ifOpen = true;
+    }
+    if(!ifOpen){
+      wx.showModal({
+        title: '当前时间尚未营业',
+        content:'营业时间:8:30~24:00',
+        showCancel:false,
+      })
+      return false;
+    }
+
+
     util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId }, 'POST').then(res => {
       if (res.errno === 0) {
         const orderId = res.data.orderId;
         wx.redirectTo({
           url: '/pages/payResult/payResult?status=1&orderId=' + orderId
         });
+
+
+      } else {
+        wx.redirectTo({
+          url: '/pages/payResult/payResult?status=0&orderId=' + orderId
+        });
+      }
+    });
+  }
+})
+
 
 
         // 模拟支付成功，同理，后台也仅仅是返回一个成功的消息而已
@@ -174,12 +213,3 @@ Page({
         //     });
         //   }
         // });
-
-      } else {
-        wx.redirectTo({
-          url: '/pages/payResult/payResult?status=0&orderId=' + orderId
-        });
-      }
-    });
-  }
-})

@@ -22,6 +22,13 @@ Page({
     }).then(function (res) {
       if (res.errno === 0) {
         console.log(res.data);
+        //wz-截取图片格式
+        if (res.data.orderGoods.length > 0) {
+          for (let i = 0; i < res.data.orderGoods.length; i++) {
+            let oldPicUrl = res.data.orderGoods[i].picUrl;
+            res.data.orderGoods[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+          }
+        }
         that.setData({
           orderInfo: res.data.orderInfo,
           orderGoods: res.data.orderGoods,

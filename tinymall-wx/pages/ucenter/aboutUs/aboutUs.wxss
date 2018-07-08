@@ -1,0 +1,79 @@
+page{
+  min-height: 100%;
+  background-color: #f4f4f4;
+}
+
+.container{
+  height: 100%;
+  width: 100%;
+}
+
+.t{
+  height: 400rpx;
+  width: 100%;
+  background-color: #fff;
+  margin-top: 5rpx;
+}
+.t .showPic{
+  padding-top: 100rpx;
+  padding-left: 295rpx;
+}
+.t .showPic .logo{
+  width: 160rpx;
+  height: 160rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.t .showPic text{
+  display: block;
+  margin: 20rpx 32rpx;
+  font-size:36rpx;
+
+}
+
+.busPhone{
+  height:130rpx;
+  width:100%;
+  background-color: #fff;
+  margin-top: 35rpx;
+}
+
+.busPhone .l{
+  float:left;
+  line-height: 128rpx;
+  font-size: 35rpx;
+  margin-left: 55rpx;
+}
+.busPhone .r{
+  float:right;
+  margin-right: 18rpx;
+}
+.busPhone .r text{
+  line-height: 128rpx;
+  font-size: 33rpx;
+  color: #a2a2a2;
+  margin-right: 18rpx;
+}
+.busPhone .r .call{
+  float:right;
+  margin-top: 40.5rpx;
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.busAddress{
+  height:130rpx;
+  width:100%;
+  background-color: #fff;
+  margin-top: 35rpx;
+}
+.busAddress .l{
+  float:left;
+  line-height: 128rpx;
+  font-size: 35rpx;
+  margin-left: 55rpx;
+}
