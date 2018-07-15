@@ -99,6 +99,8 @@ public class WxCartController {
      * 添加商品加入购物车
      * 如果已经存在购物车货品，则添加数量；
      * 否则添加新的购物车货品项。
+     * 因为程序减少了一层和免去了诸多复杂功能，因此直接使用goodId查找productId
+     * 理论上讲，productId与GoodId是一一对应的
      *
      * @param userId 用户ID
      * @param cart 购物车商品信息， { goodsId: xxx, productId: xxx, number: xxx }
@@ -123,6 +125,10 @@ public class WxCartController {
         Integer productId = cart.getProductId();
         Integer number = cart.getNumber().intValue();
         Integer goodsId = cart.getGoodsId();
+        if(productId == null){
+            List<LitemallProduct> productList = productService.queryByGid(goodsId);
+            productId = productList.get(0).getId();
+        }
         if(!ObjectUtils.allNotNull(productId, number, goodsId)){
             return ResponseUtil.badArgument();
         }
@@ -158,6 +164,7 @@ public class WxCartController {
             }
 
             cart.setId(null);
+            cart.setProductId(productId);
             cart.setGoodsSn(goods.getGoodsSn());
             cart.setGoodsName((goods.getName()));
             cart.setPicUrl(goods.getPrimaryPicUrl());

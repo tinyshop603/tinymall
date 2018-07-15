@@ -78,6 +78,9 @@ public class WxGoodsController {
     @Autowired
     private LitemallGoodsSpecificationService goodsSpecificationService;
 
+    private String replacePic = "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+
+
     /**
      * 商品详情
      *
@@ -253,12 +256,14 @@ public class WxGoodsController {
      *   失败则 { errno: XXX, errmsg: XXX }
      */
     @GetMapping("list")
-    public Object list(Integer categoryId, Integer brandId, String keyword, Integer isNew, Integer isHot,
+    public Object list(Integer storeId, Integer categoryId, Integer brandId, String keyword, Integer isNew, Integer isHot,
                        @LoginUser Integer userId,
                        @RequestParam(value = "page", defaultValue = "1") Integer page,
                        @RequestParam(value = "size", defaultValue = "10") Integer size,
                        String sort, String order) {
-
+        if(storeId == null){
+            return ResponseUtil.badArgument();
+        }
         String sortWithOrder = SortUtil.goodsSort(sort, order);
 
         //添加到搜索历史
@@ -270,9 +275,15 @@ public class WxGoodsController {
             searchHistoryVo.setFrom("wx");
             searchHistoryService.save(searchHistoryVo);
         }
-
+        List<LitemallCategory> categoryListById = categoryService.queryIdByPid(storeId);
+        List<Integer> categoryIds = new ArrayList<>();
+        if(categoryListById.size()>0){
+            for(int i=0; i<categoryListById.size(); i++){
+                categoryIds.add(categoryListById.get(i).getId());
+            }
+        }
         //查询列表数据
-        List<LitemallGoods> goodsList = goodsService.querySelective(categoryId, brandId, keyword, isHot, isNew, page, size, sortWithOrder);
+        List<LitemallGoods> goodsList = goodsService.querySelective(categoryId, brandId, keyword, isHot, isNew, page, size, sortWithOrder, categoryIds);
         int total = goodsService.countSelective(categoryId, brandId, keyword, isHot, isNew, page, size, sortWithOrder);
 
         // 查询商品所属类目列表。
@@ -399,8 +410,18 @@ public class WxGoodsController {
      *   失败则 { errno: XXX, errmsg: XXX }
      */
     @GetMapping("count")
-    public Object count() {
-        Integer goodsCount = goodsService.queryOnSale();
+    public Object count(Integer storeid) {
+        if(storeid == null){
+            return ResponseUtil.badArgument();
+        }
+        List<LitemallCategory> categoryList = categoryService.queryIdByPid(storeid);
+        List<Integer> categoryId = new ArrayList<>();
+        if(categoryList.size()>0){
+            for(int i=0; i<categoryList.size(); i++){
+                categoryId.add(categoryList.get(i).getId());
+            }
+        }
+        Integer goodsCount = goodsService.queryOnSale(categoryId);
         Map<String, Object> data = new HashMap<>();
         data.put("goodsCount", goodsCount);
         return ResponseUtil.ok(data);
@@ -408,12 +429,13 @@ public class WxGoodsController {
 
     /**
      * 分类首页
-     * @param id 商店ID
+     * @param storeId 商店ID
      * @param page 分页页数
      * @param size 分页大小
-     * @return 当前分类栏目；当前当前分类栏目；当前分类中商品列表
+     * @return 所有分类栏目；当前分类栏目；当前分类栏目中商品列表
      * @author wz
      * @data 2018-6-17
+     * TODO:由于需要修改图片格式，格式在API统一做修改后传到前台
      *   成功则
      *  {
      *      errno: 0,
@@ -428,23 +450,30 @@ public class WxGoodsController {
      *   失败则 { errno: XXX, errmsg: XXX }
      */
     @GetMapping("index")
-    public Object index(Integer id,Integer page,Integer size) {
-        if(id == null){
+    public Object index(Integer storeId,Integer page,Integer size) {
+        if(storeId == null){
             return ResponseUtil.badArgument();
         }
         // 当前分类
-        LitemallCategory currentStore = categoryService.findById(id);
-        List<LitemallCategory> categoryList = categoryService.queryByPid(currentStore.getId());
+        List<LitemallCategory> categoryList = categoryService.queryByPid(storeId);
         Map<String, Object> data = new HashMap();
-        Integer categoryId = -1;
+        int categoryId = 0;
         if(categoryList.size()>0){
             LitemallCategory currentCategory = categoryList.get(0);
             categoryId = currentCategory.getId();
             data.put("currentCategory", currentCategory);
         }
-        if(categoryId != -1){
+        if(categoryId != 0){
             //商品列表
-            List<LitemallGoods> goodsList = goodsService.querySelective(categoryId, null, null, null, null, page, size, null);
+            List<LitemallGoods> goodsList = goodsService.querySelective(categoryId, null, null, null, null, page, size, null,null);
+            //截取图片格式
+            if (goodsList.size() > 0){
+                for (int i=0; i < goodsList.size(); i++){
+                    String oldPicUrl = goodsList.get(i).getListPicUrl();
+                    String newPicUrl = oldPicUrl.substring(0,oldPicUrl.indexOf("?"))+replacePic;
+                    goodsList.get(i).setListPicUrl(newPicUrl);
+                }
+            }
             data.put("currentSubCategoryList", goodsList);
         }
         data.put("categoryList", categoryList);
@@ -466,7 +495,9 @@ public class WxGoodsController {
      * @param size 分页大小
      * @param sort 排序方式
      * @param order 排序类型，顺序或者降序
+     * @param categoryId 分类类目数组，查询方式扩展 wz
      * @return 根据条件搜素的商品详情
+     * todo:商品图片修改
      *   成功则
      *  {
      *      errno: 0,
@@ -492,11 +523,17 @@ public class WxGoodsController {
         //查询列表数据
         // 当前分类
         LitemallCategory currentCategory = categoryService.findById(categoryId);
-        List<LitemallGoods> goodsList = goodsService.querySelective(categoryId, brandId, keyword, isHot, isNew, page, size, sortWithOrder);
-//        int total = goodsService.countSelective(categoryId, brandId, keyword, isHot, isNew, page, size, sortWithOrder);
-
+        List<LitemallGoods> goodsList = goodsService.querySelective(categoryId, brandId, keyword, isHot, isNew, page, size, sortWithOrder,null);
+        //截取图片格式
+        if (goodsList.size() > 0){
+            for (int i=0; i < goodsList.size(); i++){
+                String oldPicUrl = goodsList.get(i).getListPicUrl();
+                String newPicUrl = oldPicUrl.substring(0,oldPicUrl.indexOf("?"))+replacePic;
+                goodsList.get(i).setListPicUrl(newPicUrl);
+            }
+        }
         // 查询商品所属类目列表。
-        List<Integer> goodsCatIds = goodsService.getCatIds(brandId, keyword, isHot, isNew);
+//        List<Integer> goodsCatIds = goodsService.getCatIds(brandId, keyword, isHot, isNew);
 //        List<LitemallCategory> categoryList = null;
 //        if(goodsCatIds.size() != 0) {
 //            categoryList = categoryService.queryL2ByIds(goodsCatIds);
