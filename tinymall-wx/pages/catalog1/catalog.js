@@ -1,10 +1,10 @@
 var util = require('../../utils/util.js');
 var api = require('../../config/api.js');
-var WxParse = require('../../lib/wxParse/wxParse.js');
-
+// var WxParse = require('../../lib/wxParse/wxParse.js');
+var app = getApp();
 Page({
   data: {
-    storeid: 1042785,//回龙观
+    storeId: 1042785,//回龙观
     categoryList: [],
     currentCategory: {},
     currentSubCategoryList: {},
@@ -26,7 +26,6 @@ Page({
     productList: [],
     userHasCollect: 0,
     checkedSpecPrice: 0,
-    // collectBackImage: '/static/images/icon_collect.png',
     relatedGoods: [],
     systemHeight:"0px"
   },
@@ -46,17 +45,8 @@ Page({
     wx.showLoading({
       title: '加载中...',
     });
-    console.log("发送请求api:" + api.CatalogAndGoodsList+"&id:" + that.data.storeid + "&page:" + that.data.page + "&size:" + that.data.size);
-    util.request(api.CatalogAndGoodsList, { id: that.data.storeid, page: that.data.page, size: that.data.size})
+    util.request(api.CatalogAndGoodsList, { storeId: that.data.storeId, page: that.data.page, size: that.data.size})
       .then(function (res) {
-        console.log("接受请求");
-        //wz-截取图片格式
-        if (res.data.currentSubCategoryList.length > 0){
-          for (let i=0; i < res.data.currentSubCategoryList.length;i++){
-            let oldPicUrl = res.data.currentSubCategoryList[i].listPicUrl;
-            res.data.currentSubCategoryList[i].listPicUrl = oldPicUrl.substring(0,oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-          }
-        }
         that.setData({
           categoryList: res.data.categoryList,
           currentCategory: res.data.currentCategory,
@@ -64,26 +54,19 @@ Page({
         });
         wx.hideLoading();
       });
-    util.request(api.GoodsCount).then(function (res) {
+    util.request(api.GoodsCount, { storeid:that.data.storeId}).then(function (res) {
       that.setData({
         goodsCount: res.data.goodsCount
       });
     });
   },
-  getCurrentCategory: function (id) {
+  getCurrentCategory: function (categoryId) {
     let that = this;
-    util.request(api.GoodsListCurrent, { categoryId: id, page: that.data.page, size: that.data.size })//左侧点击事件
+    util.request(api.GoodsListCurrent, { categoryId: categoryId, page: that.data.page, size: that.data.size })//左侧点击事件
       .then(function (res) {
-        //wz-截取图片格式
-        if (res.data.goodsList.length > 0) {
-          for (let i = 0; i < res.data.goodsList.length; i++) {
-            let oldPicUrl = res.data.goodsList[i].listPicUrl;
-            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-          }
-        }
         that.setData({
           currentCategory: res.data.currentCategory,
-          currentSubCategoryList: res.data.goodsList//TODO没有更新currentCategory
+          currentSubCategoryList: res.data.goodsList
         });
       });
   },
@@ -132,9 +115,19 @@ Page({
   },
   onHide: function () {
     // 页面隐藏
+    wx.removeTabBarBadge({
+      index: 1
+    });
   },
   onUnload: function () {
     // 页面关闭
+  },
+  //右上角转发分享功能
+  onShareAppMessage: function (){
+    return{
+      title:'烟酒茶行',
+      path:'/pages/catalog1/catalog'
+    }
   },
   getList: function () {
     var that = this;
@@ -154,39 +147,43 @@ Page({
 
     this.getCurrentCategory(event.currentTarget.dataset.id);
   },
+  // addToCart: function(event){
+  //   var that = this;
+  //   that.getGoodsInfo(event.currentTarget.dataset.goodsid, event);
+  // },
   addToCart: function(event){
     var that = this;
-    that.getGoodsInfo(event.currentTarget.dataset.goodsid, event);
-  },
-  addToCart2: function(event){
-    var that = this;
-    //根据选中的规格，判断是否有对应的sku信息
-    let checkedProductArray = this.getCheckedProductItem(this.getCheckedSpecKey());
-    if (!checkedProductArray || checkedProductArray.length <= 0) {
-      //找不到对应的product信息，提示没有库存
-      wx.showToast({
-        image: '/static/images/icon_error.png',
-        title: '没有库存'
-      });
-      return false;
-    }
+    // //根据选中的规格，判断是否有对应的sku信息
+    // let checkedProductArray = this.getCheckedProductItem(this.getCheckedSpecKey());
+    // if (!checkedProductArray || checkedProductArray.length <= 0) {
+    //   //找不到对应的product信息，提示没有库存
+    //   wx.showToast({
+    //     image: '/static/images/icon_error.png',
+    //     title: '没有库存'
+    //   });
+    //   return false;
+    // }
 
-    let checkedProduct = checkedProductArray[0];
+    // let checkedProduct = checkedProductArray[0];
     //验证库存
-    if (checkedProduct.goodsNumber <= 0) {
-      wx.showToast({
-        image: '/static/images/icon_error.png',
-        title: '没有库存'
-      });
-      return false;
-    }
+    // if (checkedProduct.goodsNumber <= 0) {
+    //   wx.showToast({
+    //     image: '/static/images/icon_error.png',
+    //     title: '没有库存'
+    //   });
+    //   return false;
+    // }
     //添加到购物车
-    util.request(api.CartAdd, { goodsId: event.currentTarget.dataset.goodsid, number: 1, productId: checkedProduct.id }, "POST")//TODO第三个参数不确定
+    util.request(api.CartAdd, { goodsId: event.currentTarget.dataset.goodsid, number: 1}, "POST")//TODO第三个参数不确定
       .then(function (res) {
         let _res = res;
         if (_res.errno == 0) {
           wx.showToast({
             title: '添加成功'
+          });
+          wx.setTabBarBadge({
+            index: 1,
+            text: _res.data.toString()
           });
         } else {
           wx.showToast({
@@ -197,109 +194,109 @@ Page({
         }
       });
   },
-  getCheckedProductItem: function (key) {
-    return this.data.productList.filter(function (v) {
-      if (v.goodsSpecificationIds.toString() == key.toString()) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-  },
-  getCheckedSpecKey: function () {
-    let checkedValue = this.getCheckedSpecValue().map(function (v) {
-      return v.valueId;
-    });
-    return checkedValue;
-  },
-  //获取选中的规格信息
-  getCheckedSpecValue: function () {
-    let checkedValues = [];
-    let _specificationList = this.data.specificationList;
-    for (let i = 0; i < _specificationList.length; i++) {
-      let _checkedObj = {
-        name: _specificationList[i].name,
-        valueId: 0,
-        valueText: ''
-      };
-      for (let j = 0; j < _specificationList[i].valueList.length; j++) {
-        if (_specificationList[i].valueList[j].checked) {
-          _checkedObj.valueId = _specificationList[i].valueList[j].id;
-          _checkedObj.valueText = _specificationList[i].valueList[j].value;
-        }
-      }
-      checkedValues.push(_checkedObj);
-    }
+  // getCheckedProductItem: function (key) {
+  //   return this.data.productList.filter(function (v) {
+  //     if (v.goodsSpecificationIds.toString() == key.toString()) {
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   });
+  // },
+  // getCheckedSpecKey: function () {
+  //   let checkedValue = this.getCheckedSpecValue().map(function (v) {
+  //     return v.valueId;
+  //   });
+  //   return checkedValue;
+  // },
+  // //获取选中的规格信息
+  // getCheckedSpecValue: function () {
+  //   let checkedValues = [];
+  //   let _specificationList = this.data.specificationList;
+  //   for (let i = 0; i < _specificationList.length; i++) {
+  //     let _checkedObj = {
+  //       name: _specificationList[i].name,
+  //       valueId: 0,
+  //       valueText: ''
+  //     };
+  //     for (let j = 0; j < _specificationList[i].valueList.length; j++) {
+  //       if (_specificationList[i].valueList[j].checked) {
+  //         _checkedObj.valueId = _specificationList[i].valueList[j].id;
+  //         _checkedObj.valueText = _specificationList[i].valueList[j].value;
+  //       }
+  //     }
+  //     checkedValues.push(_checkedObj);
+  //   }
 
-    return checkedValues;
-  },
+  //   return checkedValues;
+  // },
   //获取商品详情
-  getGoodsInfo: function (goodid, event) {
-    let that = this;
-    util.request(api.GoodsDetail, { id: goodid }).then(function (res) {
-      if (res.errno === 0) {
+  // getGoodsInfo: function (goodid, event) {
+  //   let that = this;
+  //   util.request(api.GoodsDetail, { id: goodid }).then(function (res) {
+  //     if (res.errno === 0) {
 
-        let _specificationList = res.data.specificationList
-        // 如果仅仅存在一种货品，那么商品页面初始化时默认checked
-        if (_specificationList.length == 1) {
-          if (_specificationList[0].valueList.length == 1) {
-            _specificationList[0].valueList[0].checked = true
+  //       let _specificationList = res.data.specificationList
+  //       // 如果仅仅存在一种货品，那么商品页面初始化时默认checked
+  //       if (_specificationList.length == 1) {
+  //         if (_specificationList[0].valueList.length == 1) {
+  //           _specificationList[0].valueList[0].checked = true
 
-            // 如果仅仅存在一种货品，那么商品价格应该和货品价格一致
-            // 这里检测一下
-            let _productPrice = res.data.productList[0].retailPrice;
-            let _goodsPrice = res.data.info.retailPrice;
-            if (_productPrice != _goodsPrice) {
-              console.error('商品数量价格和货品不一致');
-            }
+  //           // 如果仅仅存在一种货品，那么商品价格应该和货品价格一致
+  //           // 这里检测一下
+  //           let _productPrice = res.data.productList[0].retailPrice;
+  //           let _goodsPrice = res.data.info.retailPrice;
+  //           if (_productPrice != _goodsPrice) {
+  //             console.error('商品数量价格和货品不一致');
+  //           }
 
-            that.setData({
-              checkedSpecText: _specificationList[0].valueList[0].value,
-              tmpSpecText: '已选择：' + _specificationList[0].valueList[0].value,
-            });
-          }
-        }
+  //           that.setData({
+  //             checkedSpecText: _specificationList[0].valueList[0].value,
+  //             tmpSpecText: '已选择：' + _specificationList[0].valueList[0].value,
+  //           });
+  //         }
+  //       }
 
-        that.setData({
-          goods: res.data.info,
-          attribute: res.data.attribute,
-          issueList: res.data.issue,
-          comment: res.data.comment,
-          brand: res.data.brand,
-          specificationList: res.data.specificationList,
-          productList: res.data.productList,
-          userHasCollect: res.data.userHasCollect,
-          checkedSpecPrice: res.data.info.retailPrice
-        });
+  //       that.setData({
+  //         goods: res.data.info,
+  //         attribute: res.data.attribute,
+  //         issueList: res.data.issue,
+  //         comment: res.data.comment,
+  //         brand: res.data.brand,
+  //         specificationList: res.data.specificationList,
+  //         productList: res.data.productList,
+  //         userHasCollect: res.data.userHasCollect,
+  //         checkedSpecPrice: res.data.info.retailPrice
+  //       });
 
-        // if (res.data.userHasCollect == 1) {
-        //   that.setData({
-        //     collectBackImage: that.data.hasCollectImage
-        //   });
-        // } else {
-        //   that.setData({
-        //     collectBackImage: that.data.noCollectImage
-        //   });
-        // }
+  //       // if (res.data.userHasCollect == 1) {
+  //       //   that.setData({
+  //       //     collectBackImage: that.data.hasCollectImage
+  //       //   });
+  //       // } else {
+  //       //   that.setData({
+  //       //     collectBackImage: that.data.noCollectImage
+  //       //   });
+  //       // }
 
-        WxParse.wxParse('goodsDetail', 'html', res.data.info.goodsDesc, that);
+  //       WxParse.wxParse('goodsDetail', 'html', res.data.info.goodsDesc, that);
 
-        that.getGoodsRelated(goodid, event);
-      }
-    });
+  //       that.getGoodsRelated(goodid, event);
+  //     }
+  //   });
 
-  },
-  getGoodsRelated: function (goodid,event) {
-    let that = this;
-    util.request(api.GoodsRelated, { id: goodid }).then(function (res) {
-      if (res.errno === 0) {
-        that.setData({
-          relatedGoods: res.data.goodsList,
-        });
-        that.addToCart2(event);
-      }
-    });
+  // },
+  // getGoodsRelated: function (goodid,event) {
+  //   let that = this;
+  //   util.request(api.GoodsRelated, { id: goodid }).then(function (res) {
+  //     if (res.errno === 0) {
+  //       that.setData({
+  //         relatedGoods: res.data.goodsList,
+  //       });
+  //       that.addToCart2(event);
+  //     }
+  //   });
 
-  },
+  // },
   
 })

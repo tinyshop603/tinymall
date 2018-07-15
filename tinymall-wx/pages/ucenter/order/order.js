@@ -6,6 +6,13 @@ Page({
     orderList: [],
     showType: 1
   },
+  //右上角转发分享功能
+  onShareAppMessage: function () {
+    return {
+      title: '烟酒茶行',
+      path: '/pages/catalog1/catalog'
+    }
+  },
   onLoad:function(options){
     // 页面初始化 options为页面跳转所带来的参数
   },

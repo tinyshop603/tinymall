@@ -27,7 +27,7 @@ page{
 }
 .t .showPic text{
   display: block;
-  margin: 20rpx 32rpx;
+  margin-top: 20rpx;
   font-size:36rpx;
 
 }

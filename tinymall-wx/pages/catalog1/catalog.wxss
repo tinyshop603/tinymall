@@ -178,6 +178,25 @@ page {
     display: flex;
     overflow: hidden;
 }
+.listItem1 .food-tit .addBtn text{
+  font-size: 38rpx;
+  color:#f60;
+}
+
+.notOnSale{
+  width:100%;
+  z-index:9999;
+  top:0;
+  left:0;
+  opacity:0.3; 
+}
+.notOnSale .food-tit .addBtn text{
+  color:#666;
+}
+.notOnSale .food-tit .addBtn .btn{
+  background: #999;
+}
+
 
 .itemImg{
 	width:170rpx;

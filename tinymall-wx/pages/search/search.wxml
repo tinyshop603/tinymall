@@ -37,11 +37,11 @@
         <text class="txt">综合</text>
       </view>
       <view class="item by-price {{currentSortType == 'price' ? 'active' : ''}} {{currentSortOrder == 'asc'  ? 'asc' : 'desc'}}" bindtap="openSortFilter" id="priceSort">
-        <text class="txt">价格</text>
+         <text class="txt">价格</text> 
       </view>
-      <view class="item {{currentSortType == 'category' ? 'active' : ''}}" bindtap="openSortFilter" id="categoryFilter">
+      <!-- <view class="item {{currentSortType == 'category' ? 'active' : ''}}" bindtap="openSortFilter" id="categoryFilter">
         <text class="txt">分类</text>
-      </view>
+      </view> -->
     </view>
     <view class="sort-box-category" wx-if="{{categoryFilter}}">
       <view class="item {{item.checked ? 'active' : ''}}" wx:for="{{filterCategory}}" wx:key="id" data-category-index="{{index}}" bindtap="selectCategory">{{item.name}}</view>
