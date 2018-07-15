@@ -57,10 +57,14 @@ public class LitemallGoodsService {
         return (int)goodsMapper.countByExample(example);
     }
 
-    public List<LitemallGoods> querySelective(Integer catId, Integer brandId, String keyword, Integer isHot, Integer isNew, Integer offset, Integer limit, String sort) {
+    //wz-增加categoryIds字段以适应一次获取多区域商品
+    public List<LitemallGoods> querySelective(Integer catId, Integer brandId, String keyword, Integer isHot, Integer isNew, Integer offset, Integer limit, String sort, List<Integer> categoryIds) {
         LitemallGoodsExample example = new LitemallGoodsExample();
         LitemallGoodsExample.Criteria criteria = example.createCriteria();
 
+        if(categoryIds != null){
+            criteria.andCategoryIdIn(categoryIds);
+        }
         if(catId != null && catId != 0){
             criteria.andCategoryIdEqualTo(catId);
         }
@@ -85,7 +89,7 @@ public class LitemallGoodsService {
             PageHelper.startPage(offset, limit);
         }
 
-        Column[] columns = new Column[]{Column.id, Column.name, Column.listPicUrl, Column.retailPrice};
+        Column[] columns = new Column[]{Column.id, Column.name, Column.listPicUrl, Column.retailPrice, Column.isOnSale};
         return goodsMapper.selectByExampleSelective(example ,columns);
     }
 
@@ -126,9 +130,9 @@ public class LitemallGoodsService {
         return goodsMapper.selectByExample(example);
     }
 
-    public Integer queryOnSale() {
+    public Integer queryOnSale(List<Integer> categoryId) {
         LitemallGoodsExample example = new LitemallGoodsExample();
-        example.or().andIsOnSaleEqualTo(true).andDeletedEqualTo(false);
+        example.or().andIsOnSaleEqualTo(true).andCategoryIdIn(categoryId).andDeletedEqualTo(false);
         return (int)goodsMapper.countByExample(example);
     }
 

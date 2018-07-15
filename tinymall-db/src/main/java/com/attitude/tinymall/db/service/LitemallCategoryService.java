@@ -3,6 +3,7 @@ package com.attitude.tinymall.db.service;
 import com.attitude.tinymall.db.dao.LitemallCategoryMapper;
 import com.attitude.tinymall.db.domain.LitemallCategory;
 import com.attitude.tinymall.db.domain.LitemallCategoryExample;
+import com.attitude.tinymall.db.domain.LitemallCategory.Column;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -14,6 +15,13 @@ import java.util.List;
 public class LitemallCategoryService {
     @Resource
     private LitemallCategoryMapper categoryMapper;
+
+    public List<LitemallCategory> queryIdByPid(int pid) {
+        LitemallCategoryExample example = new LitemallCategoryExample();
+        example.or().andParentIdEqualTo(pid).andLevelEqualTo("L2") .andDeletedEqualTo(false);
+        Column[] columns = new Column[]{Column.id};
+        return categoryMapper.selectByExampleSelective(example,columns);
+    }
 
     public List<LitemallCategory> queryL1WithoutRecommend(int offset, int limit) {
         LitemallCategoryExample example = new LitemallCategoryExample();
