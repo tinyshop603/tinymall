@@ -2,11 +2,11 @@
 // 本机开发时使用
 // var WxApiRoot = 'http://localhost:8082/wx/';
 // 局域网测试使用
-// var WxApiRoot = 'http://192.168.1.7:8082/wx/';
+//var WxApiRoot = 'http://192.168.1.34:8082/wx/';
 // 云平台部署时使用
 //  var WxApiRoot = 'http://127.0.0.1:8082/wx/';
 // 云平台上线时使用
-var WxApiRoot = 'https://www.bjguangchi.top/wx/';
+ var WxApiRoot = 'https://www.bjguangchi.top/wx/';
 
 // 以下是图片存储服务器API地址
 // 本机开发时使用
