@@ -36,6 +36,17 @@ Page({
     // 页面显示
     if (app.globalData.hasLogin){
       this.getCartList();
+      util.request(api.CartGoodsCount).then(function (res) {
+        if (res.errno === 0) {
+          if (res.data != 0) {
+            wx.setTabBarBadge({
+              index: 1,
+              text: res.data.toString()
+            });
+          }
+
+        }
+      });
     }else{
       this.goLogin();
     }
@@ -147,6 +158,11 @@ Page({
         if (res.errno === 0) {
           that.setData({
             cartTotal: res.data.cartTotal
+          });
+          //显示bar文本
+          wx.setTabBarBadge({
+            index: 1,
+            text: res.data.cartTotal.goodsCount.toString()
           });
         }
 
@@ -285,7 +301,10 @@ Page({
     if (checkedGoods.length <= 0) {
       return false;
     }
-
+    //后期需要改
+    // wx.removeTabBarBadge({
+    //   index: 1
+    // });
     // storage中设置了cartId，则是购物车购买
     try {
       wx.setStorageSync('cartId', 0);
@@ -338,6 +357,11 @@ Page({
         that.setData({
           cartGoods: cartList,
           cartTotal: res.data.cartTotal
+        });
+        //显示bar文本
+        wx.setTabBarBadge({
+          index: 1,
+          text: res.data.cartTotal.goodsCount.toString()
         });
       }
 

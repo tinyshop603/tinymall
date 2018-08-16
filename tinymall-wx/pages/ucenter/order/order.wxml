@@ -27,7 +27,7 @@
     </view>
 
     <view class="orders">
-      <navigator url="../orderDetail/orderDetail?id={{item.id}}" class="order" open-type="redirect" wx:for="{{orderList}}" wx:key="id">
+      <navigator url="../orderDetail/orderDetail?id={{item.id}}" class="order" open-type="navigate" wx:for="{{orderList}}" wx:key="id">
             <view class="h">
                 <view class="l">订单编号：{{item.orderSn}}</view>
                 

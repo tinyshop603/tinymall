@@ -37,7 +37,7 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "仿网易严选",
     "navigationBarTextStyle": "black",
-    "enablePullDownRefresh": true
+    "enablePullDownRefresh": false
   },
   "tabBar": {
     "backgroundColor": "#fafafa",

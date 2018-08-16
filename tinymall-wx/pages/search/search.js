@@ -5,7 +5,7 @@ var WxParse = require('../../lib/wxParse/wxParse.js');
 var app = getApp()
 Page({
   data: {
-    storeId: 1042785,//回龙观
+    storeId: 1042876,//回龙观
     keywrod: '',
     searchStatus: false,
     goodsList: [],
@@ -315,6 +315,11 @@ Page({
           wx.showToast({
             title: '添加成功'
           });
+          //显示bar文本
+          // wx.setTabBarBadge({
+          //   index: 1,
+          //   text: _res.data.toString()
+          // });
         } else {
           wx.showToast({
             image: '/static/images/icon_error.png',

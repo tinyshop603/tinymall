@@ -4,7 +4,8 @@ var api = require('../../config/api.js');
 var app = getApp();
 Page({
   data: {
-    storeId: 1042785,//回龙观
+    scrolltop:208,
+    storeId: 1042876,//回龙观
     categoryList: [],
     currentCategory: {},
     currentSubCategoryList: {},
@@ -112,12 +113,35 @@ Page({
   },
   onShow: function () {
     // 页面显示
+    var that = this;
+    util.request(api.CartGoodsCount).then(function (res) {
+      if (res.errno === 0) {
+        if (res.data != 0){
+          wx.setTabBarBadge({
+            index: 1,
+            text: res.data.toString()
+          });
+        }
+        
+      }
+    });
+    // 页面显示
+    // if (app.globalData.goodsNum > 0){
+    //   wx.setTabBarBadge({
+    //     index: 1,
+    //     text: app.globalData.goodsNum.toString()
+    //   });
+    // }else{
+    //   wx.removeTabBarBadge({
+    //     index: 1
+    //   });
+    // }
   },
   onHide: function () {
     // 页面隐藏
-    wx.removeTabBarBadge({
-      index: 1
-    });
+    // wx.removeTabBarBadge({
+    //   index: 1
+    // });
   },
   onUnload: function () {
     // 页面关闭
@@ -181,6 +205,7 @@ Page({
           wx.showToast({
             title: '添加成功'
           });
+          //显示bar文本
           wx.setTabBarBadge({
             index: 1,
             text: _res.data.toString()

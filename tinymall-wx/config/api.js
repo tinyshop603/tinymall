@@ -2,7 +2,7 @@
 // 本机开发时使用
 // var WxApiRoot = 'http://localhost:8082/wx/';
 // 局域网测试使用
-// var WxApiRoot = 'http://192.168.1.7:8082/wx/';
+// var WxApiRoot = 'http://192.168.1.6:8082/wx/';
 // 云平台部署时使用
 //  var WxApiRoot = 'http://127.0.0.1:8082/wx/';
 // 云平台上线时使用
@@ -12,7 +12,7 @@ var WxApiRoot = 'https://www.bjguangchi.top/wx/';
 // 本机开发时使用
 // var StorageApi = 'http://localhost:8081/os/storage/create';
 // 局域网测试时使用
-// var StorageApi = 'http://192.168.1.7:8081/os/storage/create';
+// var StorageApi = 'http://192.168.1.6:8081/os/storage/create';
 // 云平台部署时使用
 // var StorageApi = 'http://122.152.206.172:8081/os/storage/create';
 // 云平台上线时使用

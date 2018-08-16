@@ -194,9 +194,9 @@ Page({
     // 页面隐藏
   },
   onUnload: function () {
-    wx.navigateTo({
-      url: '../order/order',
-    })
+    // wx.navigateTo({
+    //   url: '../order/order',
+    // })
     // 页面关闭
   }
 })

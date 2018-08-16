@@ -1,4 +1,4 @@
-<scroll-view class="container" style="height: 100%;">
+<view class="container" style="height: 100%;">
   <view class="search-header">
     <view class="input-box">
       <image class="icon" src="http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png"></image>
@@ -67,4 +67,4 @@
     <image class="icon" src="http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/noSearchResult-7572a94f32.png"></image>
     <text class="text">您寻找的商品还未上架</text>
   </view>
-</scroll-view>
+</view>
