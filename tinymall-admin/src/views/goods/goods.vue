@@ -54,25 +54,25 @@
       <el-table-column align="center" width="100px" label="商品ID" prop="id" sortable>
       </el-table-column>
       
-      <el-table-column align="center" min-width="100px" label="商品编号" prop="goodsSn">
+      <el-table-column v-if="false" align="center" min-width="100px" label="商品编号" prop="goodsSn">
       </el-table-column>
 
       <el-table-column align="center" min-width="100px" label="名称" prop="name">
       </el-table-column>
 
-      <el-table-column align="center" min-width="100px" label="专柜价格" prop="counterPrice">
+      <el-table-column v-if="false" align="center" min-width="100px" label="专柜价格" prop="counterPrice">
       </el-table-column>
 
       <el-table-column align="center" min-width="100px" label="当前价格" prop="retailPrice">
       </el-table-column>
 
-      <el-table-column align="center" min-width="100px" label="是否新品" prop="isNew">
+      <el-table-column v-if="false" align="center" min-width="100px" label="是否新品" prop="isNew">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{scope.row.isNew ? '新品' : '非新品'}}</el-tag>
         </template>
       </el-table-column> 
 
-      <el-table-column align="center" min-width="100px" label="是否热品" prop="isHot">
+      <el-table-column v-if="false" align="center" min-width="100px" label="是否热品" prop="isHot">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{scope.row.isHot ? '热品' : '非热品'}}</el-tag>
         </template>
@@ -112,13 +112,13 @@
         <el-form-item label="商品名称" prop="name">
           <el-input v-model="dataForm.name"></el-input>
         </el-form-item>        
-        <el-form-item label="专柜价格" prop="counterPrice">
+        <el-form-item v-if="false" label="专柜价格" prop="counterPrice">
           <el-input v-model="dataForm.counterPrice"></el-input>
         </el-form-item>
         <el-form-item label="当前价格" prop="retailPrice">
           <el-input v-model="dataForm.retailPrice"></el-input>
         </el-form-item>                
-        <el-form-item label="是否新品" prop="isNew">
+        <el-form-item v-if="false" label="是否新品" prop="isNew">
           <el-select v-model="dataForm.isNew" placeholder="请选择">
             <el-option label="新品" :value="true">
             </el-option>
@@ -126,7 +126,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="是否热品" prop="isHot">
+        <el-form-item v-if="false" label="是否热品" prop="isHot">
           <el-select v-model="dataForm.isHot" placeholder="请选择">
             <el-option label="热品" :value="true">
             </el-option>

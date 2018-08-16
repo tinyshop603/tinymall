@@ -102,7 +102,7 @@ public class WxOrderController {
   /**
    * 消息传递信息
    */
-  private MessageInfo<LitemallOrder> messageInfo;
+  private MessageInfo<LitemallOrderWithGoods> messageInfo;
 
   private Socket client;
 
@@ -395,7 +395,11 @@ public class WxOrderController {
     data.put("orderId", orderId);
     //想办法提醒管理端进行刷新
     messageInfo.setMsgType("order-submit");
-    messageInfo.setDomainData(order);
+    LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
+    orderWithGoods.setOrder(order);
+    // 查找此订单的商品信息
+    orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
+    messageInfo.setDomainData(orderWithGoods);
     client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
     return ResponseUtil.ok(data);
   }

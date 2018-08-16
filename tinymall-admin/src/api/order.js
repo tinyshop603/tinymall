@@ -10,7 +10,7 @@ export const STATUS = {
   REFUND: 202,
   REFUND_CONFIRM: 203,
   AUTO_CONFIRM: 402,
-  RECEIVE_COMPLETE: 403
+  RECEIVE_COMPLETE: 401
 }
 export function listOrder(query) {
   request.interceptors.response.use(response => {
@@ -106,7 +106,7 @@ export function getBtnStateByCode(orderStaCode) {
     code = 602
   } else if (orderStaCode === 104 || orderStaCode === 301) {
     code = 603
-  } else if (orderStaCode === 403) {
+  } else if (orderStaCode === 403 || orderStaCode === 401) {
     code = 604
   }
   switch (code) {

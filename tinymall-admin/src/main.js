@@ -20,7 +20,7 @@ Vue.use(Element, {
   size: 'medium' // set element-ui default size
 })
 /**
-const sck = io('http://39.106.9.50:8777?clientId=admin-api', {
+const sck = io('http://192.168.1.34:8777?clientId=admin-api', {
   reconnectionAttempts: Number.MAX_SAFE_INTEGER,
   reconnectionDelay: 500,
   reconnectionDelayMax: 1000,
@@ -28,13 +28,14 @@ const sck = io('http://39.106.9.50:8777?clientId=admin-api', {
   autoConnect: true
 })
 **/
-const sck = io('https://www.bjguangchi.top/socket.io/?clientId=admin-api', {
+const sck = io('https://www.bjguangchi.top/?clientId=admin-api', {
   reconnectionAttempts: Number.MAX_SAFE_INTEGER,
   reconnectionDelay: 7000,
   reconnectionDelayMax: 7000,
   timeout: 7000,
   autoConnect: true
 })
+
 Vue.use(VueSocketio, sck)
 Vue.config.productionTip = false
 new Vue({

@@ -22,13 +22,13 @@
       </el-form-item>
 
       <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
-
-      <div class="tips">
+      <!-- 暂时隐藏掉不相干的信息 -->
+      <div class="tips" style="display: none;">
         <span>管理员用户名 : admin123</span>
         <span>管理员密码 : admin123</span>
       </div>
 
-      <el-button class="thirdparty-button" type="primary" @click="showDialog=true">第三方登录</el-button>
+      <el-button  class="thirdparty-button" type="primary" style="display: none;" @click="showDialog=true">第三方登录</el-button>
     </el-form>
 
     <el-dialog title="第三方登录" :visible.sync="showDialog" append-to-body>
