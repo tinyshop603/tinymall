@@ -103,3 +103,4 @@ application-local.yml
 application-ut-local.yml
 build-repo
 logs
+**/node_**/**
