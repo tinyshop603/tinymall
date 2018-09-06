@@ -13,7 +13,6 @@
       <el-button class="filter-item" type="primary" @click="handleCreate" icon="el-icon-edit">添加</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
-
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
@@ -87,11 +86,18 @@
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini"  @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="danger" size="mini"  @click="handleBeforeDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
+        <!-- 删除条目的询问操作 -->
+    <el-dialog title="确认删除" :visible.sync="deleteGoodItem">
+      商品删除后不可恢复,确认删除？
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="deleteGoodItem = false">取消</el-button>
+        <el-button type="primary" @click="handleDelete">确定</el-button>
+      </div>
+    </el-dialog>
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
@@ -107,7 +113,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
         <el-form-item label="商品编号" prop="goodsSn">
-          <el-input v-model="dataForm.goodsSn"></el-input>
+          <el-input v-model="dataForm.goodsSn" placeholder="商品条形码"></el-input>
         </el-form-item>
         <el-form-item label="商品名称" prop="name">
           <el-input v-model="dataForm.name"></el-input>
@@ -116,7 +122,7 @@
           <el-input v-model="dataForm.counterPrice"></el-input>
         </el-form-item>
         <el-form-item label="当前价格" prop="retailPrice">
-          <el-input v-model="dataForm.retailPrice"></el-input>
+          <el-input v-model="dataForm.retailPrice" placeholder="请输入商品价格"></el-input>
         </el-form-item>                
         <el-form-item v-if="false" label="是否新品" prop="isNew">
           <el-select v-model="dataForm.isNew" placeholder="请选择">
@@ -143,31 +149,31 @@
           </el-select>
         </el-form-item>
             
-        <el-form-item label="首页主图">
+        <el-form-item v-if="false" label="首页主图">
           <el-input v-model="dataForm.listPicUrl"></el-input>
         </el-form-item>
         
-        <el-form-item label="宣传画廊">
+        <el-form-item v-if="false" label="宣传画廊">
           <el-input v-model="dataForm.gallery"></el-input>
         </el-form-item>            
         
-        <el-form-item label="商品介绍">
+        <el-form-item v-if="false" label="商品介绍">
           <el-input v-model="dataForm.goodsBrief"></el-input>
         </el-form-item> 
             
-        <el-form-item style="width: 700px;" label="商品详细介绍">
+        <el-form-item v-if="false" style="width: 700px;" label="商品详细介绍">
           <editor :init="editorInit" v-model="dataForm.goodsDesc"></editor>
         </el-form-item>
         
-        <el-form-item label="商品主图">
+        <el-form-item v-if="false" label="商品主图">
           <el-input v-model="dataForm.primaryPicUrl"></el-input>
         </el-form-item>
             
         <el-form-item label="商品单位">
-          <el-input v-model="dataForm.goodsUnit"></el-input>
+          <el-input v-model="dataForm.goodsUnit" placeholder="个/瓶/箱 等计量单位"></el-input>
         </el-form-item>
             
-        <el-form-item label="关键字">
+        <el-form-item v-if="false" label="关键字">
           <el-input v-model="dataForm.keyword"></el-input>
         </el-form-item>
             
@@ -175,7 +181,7 @@
           <el-input v-model="dataForm.categoryId"></el-input>
         </el-form-item>      
         
-        <el-form-item label="品牌商ID">
+        <el-form-item v-if="false" label="品牌商ID">
           <el-input v-model="dataForm.brandId"></el-input>              
         </el-form-item>          
       </el-form>
@@ -250,6 +256,8 @@ export default {
         brandId: undefined
       },
       dialogFormVisible: false,
+      deleteGoodItem: false,
+      delteRow:{},
       dialogStatus: '',
       textMap: {
         update: '编辑',
@@ -381,14 +389,20 @@ export default {
         }
       })
     },
-    handleDelete(row) {
-      deleteGoods(row).then(response => {
+    handleBeforeDelete(row){
+      this.deleteGoodItem = true
+      this.delteRow = row
+    },
+    handleDelete() {
+      // 增加是否删除的询问操作
+      deleteGoods(this.delteRow).then(response => {
         this.$notify({
           title: '成功',
           message: '删除成功',
           type: 'success',
           duration: 2000
         })
+        this.deleteGoodItem = false
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
       })
