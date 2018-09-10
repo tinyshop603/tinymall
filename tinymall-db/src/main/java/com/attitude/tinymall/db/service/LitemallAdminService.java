@@ -6,12 +6,14 @@ import com.attitude.tinymall.db.dao.LitemallAdminMapper;
 import com.attitude.tinymall.db.domain.LitemallAdmin;
 import com.attitude.tinymall.db.domain.LitemallAdmin.Column;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 @Service
+@Transactional
 public class LitemallAdminService {
     @Resource
     private LitemallAdminMapper adminMapper;
@@ -20,6 +22,10 @@ public class LitemallAdminService {
         LitemallAdminExample example = new LitemallAdminExample();
         example.or().andUsernameEqualTo(username).andDeletedEqualTo(false);
         return adminMapper.selectByExample(example);
+    }
+
+    public LitemallAdmin findAdminByOwnerId(String ownerId) {
+        return adminMapper.findAdminByOwnerId(ownerId);
     }
 
     private final Column[] result = new Column[]{Column.id, Column.username, Column.avatar};
