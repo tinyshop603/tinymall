@@ -17,12 +17,14 @@
 // var StorageApi = 'http://122.152.206.172:8081/os/storage/create';
 // 云平台上线时使用
 var StorageApi = 'https://www.bjguangchi.top/os/storage/create';
-
+// 新增的api反馈形式,将所有的api在请求的时候带上该商家的唯一标示
 let APP_ID = 'wx6453a69f8a24f675'+'/';
 
 WxApiRoot +=APP_ID;
 
 module.exports = {
+    FirstScreenUrl: WxApiRoot+'mall/category', // 首屏的分类效果
+
     IndexUrl: WxApiRoot + 'home/index', //首页数据接口
     CatalogList: WxApiRoot + 'catalog/index',  //分类目录全部分类数据接口
     CatalogCurrent: WxApiRoot + 'catalog/current',  //分类目录当前分类数据接口
@@ -70,10 +72,10 @@ module.exports = {
     SearchHelper: WxApiRoot + 'search/helper',  //搜索帮助
     SearchClearHistory: WxApiRoot + 'search/clearhistory',  //搜索历史清楚
 
-  AddressList: WxApiRoot+'address/list',  //收货地址列表
-  AddressDetail: WxApiRoot+ 'address/detail',  //收货地址详情
-  AddressSave: WxApiRoot+ 'address/save',  //保存收货地址
-  AddressDelete: WxApiRoot+ 'address/delete',  //保存收货地址
+    AddressList: WxApiRoot+'address/list',  //收货地址列表
+    AddressDetail: WxApiRoot+ 'address/detail',  //收货地址详情
+    AddressSave: WxApiRoot+ 'address/save',  //保存收货地址
+    AddressDelete: WxApiRoot+ 'address/delete',  //保存收货地址
 
     RegionList: WxApiRoot + 'region/list',  //获取区域列表
 

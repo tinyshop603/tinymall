@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/comment")
+@RequestMapping("/admin/{userName}/comment")
 public class AdminCommentController {
     private final Log logger = LogFactory.getLog(AdminCommentController.class);
 

@@ -30,8 +30,8 @@ public class WxMallController {
   @Autowired
   private LitemallGoodsService goodsService;
 
-  @GetMapping("/{appid}/")
-  public Object getMallDetail(@PathVariable String appid) {
+  @GetMapping
+  public Object getMallDetail(@PathVariable("storeId") String appid) {
     LitemallAdmin litemallAdmin = litemallAdminService.findAdminByOwnerId(appid);
 
     // 此处查询出的数据必定size为1或者0
@@ -53,9 +53,9 @@ public class WxMallController {
 
   }
 
-  @GetMapping("/{appid}/category")
-  public Object getMallCategoryDetail(@PathVariable String appid) {
-    final String REPLACE_PIC = "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+  @GetMapping("/category")
+  public Object getMallCategoryDetail(@PathVariable("storeId") String appid) {
+    final String replacePic = "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
     LitemallAdmin litemallAdmin = litemallAdminService.findAdminByOwnerId(appid);
     // 此处查询出的数据必定size为1或者0
     List<LitemallCategory> litemallCategories = categoryService
@@ -85,7 +85,7 @@ public class WxMallController {
       if (goodsList.size() > 0) {
         for (int i = 0; i < goodsList.size(); i++) {
           String oldPicUrl = goodsList.get(i).getListPicUrl();
-          String newPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + REPLACE_PIC;
+          String newPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + replacePic;
           goodsList.get(i).setListPicUrl(newPicUrl);
         }
       }

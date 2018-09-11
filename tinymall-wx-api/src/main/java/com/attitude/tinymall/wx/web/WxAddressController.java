@@ -155,7 +155,7 @@ public class WxAddressController {
         if (address.getId() == null || address.getId().equals(0)) {
             address.setId(null);
             address.setUserId(userId);
-            addressService.add(address);
+            addressService.add(address,appId);
         } else {
             address.setUserId(userId);
             addressService.update(address);

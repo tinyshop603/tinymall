@@ -15,6 +15,13 @@ service.interceptors.request.use(config => {
   if (store.getters.token) {
     config.headers['X-Token'] = getToken() // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
   }
+  if (store.getters.name) {
+    // 全局拦截,增加userName进行传过去,当做PathValible,登陆登出不进行处理
+    if (!(config.url.includes('login') ||  config.url.includes('admin'))) {
+      config.url = ('/'+store.getters.name)+ config.url
+      debugger
+    }
+  }
   return config
 }, error => {
   // Do something with request error

@@ -360,6 +360,9 @@
       <if test="deleted != null">
         deleted,
       </if>
+      <if test="adminId != null">
+        admin_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -431,6 +434,9 @@
       <if test="deleted != null">
         #{deleted,jdbcType=BIT},
       </if>
+      <if test="adminId != null">
+      #{adminId,jdbcType=BIT},
+    </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.attitude.tinymall.db.domain.LitemallOrderExample" resultType="java.lang.Long">

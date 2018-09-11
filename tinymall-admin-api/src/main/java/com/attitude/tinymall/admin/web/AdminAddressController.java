@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/address")
+@RequestMapping("/admin/{userName}/address")
 public class AdminAddressController {
     private final Log logger = LogFactory.getLog(AdminAddressController.class);
 
@@ -83,7 +83,7 @@ public class AdminAddressController {
             return ResponseUtil.fail(403, "手机号格式不正确");
         }
 
-        addressService.add(address);
+        addressService.add(address,"");
 
         Map<String, Object> addressVo = toVo(address);
         return ResponseUtil.ok(addressVo);

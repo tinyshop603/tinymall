@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/keyword")
+@RequestMapping("/admin/{userName}/keyword")
 public class AdminKeywordController {
     private final Log logger = LogFactory.getLog(AdminKeywordController.class);
 

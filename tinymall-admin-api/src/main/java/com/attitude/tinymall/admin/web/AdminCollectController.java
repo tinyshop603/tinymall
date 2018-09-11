@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/collect")
+@RequestMapping("/admin/{userName}/collect")
 public class AdminCollectController {
     private final Log logger = LogFactory.getLog(AdminCollectController.class);
 

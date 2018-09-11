@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/index")
+@RequestMapping("/admin/{userName}/index")
 public class AdminIndexController {
     private final Log logger = LogFactory.getLog(AdminIndexController.class);
 

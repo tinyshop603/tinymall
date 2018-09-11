@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/goods-attribute")
+@RequestMapping("/admin/{userName}/goods-attribute")
 public class AdminGoodsAttributeController {
     private final Log logger = LogFactory.getLog(AdminGoodsAttributeController.class);
 

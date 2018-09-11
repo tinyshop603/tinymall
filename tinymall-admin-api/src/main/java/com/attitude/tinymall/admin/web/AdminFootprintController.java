@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/footprint")
+@RequestMapping("/admin/{userName}/footprint")
 public class AdminFootprintController {
     private final Log logger = LogFactory.getLog(AdminFootprintController.class);
 

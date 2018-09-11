@@ -161,14 +161,6 @@ public class WxOrderController {
               .thenComparing(LitemallOrder::getDeleted)
               .reversed()
               .thenComparing(LitemallOrder::getId));
-//    orderList
-//        .sort(Comparator.comparing(
-//            LitemallOrder::getConfirmTime)
-//            .thenComparing(LitemallOrder::getDeleted)
-//            .reversed()
-//            .thenComparing(LitemallOrder::getId));
-
-
     int count = orderService.countByOrderStatus(userId, orderStatus);
 
     List<Map<String, Object>> orderVoList = new ArrayList<>(orderList.size());
@@ -271,7 +263,7 @@ public class WxOrderController {
    * XXX }
    */
   @PostMapping("submit")
-  public Object submit(@LoginUser Integer userId, @RequestBody String body) {
+  public Object submit(@LoginUser Integer userId, @RequestBody String body,@PathVariable("storeId") String appId) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -348,7 +340,7 @@ public class WxOrderController {
       order.setOrderPrice(orderTotalPrice);
       order.setActualPrice(actualPrice);
       // 添加订单表项
-      orderService.add(order);
+      orderService.add(order,appId);
       orderId = order.getId();
 
       for (LitemallCart cartGoods : checkedGoodsList) {

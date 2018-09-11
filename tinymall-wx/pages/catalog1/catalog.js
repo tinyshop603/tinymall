@@ -46,7 +46,7 @@ Page({
     wx.showLoading({
       title: '加载中...',
     });
-    util.request(api.CatalogAndGoodsList, { storeId: that.data.storeId, page: that.data.page, size: that.data.size})
+    util.request(api.FirstScreenUrl, { storeId: that.data.storeId, page: that.data.page, size: that.data.size})
       .then(function (res) {
         that.setData({
           categoryList: res.data.categoryList,

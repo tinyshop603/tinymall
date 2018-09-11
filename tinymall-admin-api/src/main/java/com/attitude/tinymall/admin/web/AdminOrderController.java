@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/order")
+@RequestMapping("/admin/{userName}/order")
 public class AdminOrderController {
 
   private final Log logger = LogFactory.getLog(AdminOrderController.class);

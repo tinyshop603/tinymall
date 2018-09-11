@@ -269,6 +269,9 @@
       <if test="deleted != null">
         deleted,
       </if>
+      <if test="adminId != null">
+        admin_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -300,6 +303,9 @@
       </if>
       <if test="deleted != null">
         #{deleted,jdbcType=BIT},
+      </if>
+      <if test="adminId != null">
+        #{adminId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

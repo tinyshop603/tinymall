@@ -1,6 +1,8 @@
 package com.attitude.tinymall.db.service;
 
+import com.attitude.tinymall.db.dao.LitemallAdminMapper;
 import com.attitude.tinymall.db.dao.LitemallGoodsMapper;
+import com.attitude.tinymall.db.domain.LitemallAdmin;
 import com.attitude.tinymall.db.domain.LitemallOrderWithGoods;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -21,14 +23,21 @@ import java.util.Random;
 public class LitemallOrderService {
     @Resource
     private LitemallOrderMapper orderMapper;
-
-    public int add(LitemallOrder order) {
+    @Resource
+    private LitemallAdminMapper adminMapper;
+    public int add(LitemallOrder order,String appId) {
+        LitemallAdmin litemallAdmin = adminMapper.findAdminByOwnerId(appId);
+        if (null != litemallAdmin) {
+            // 关联外键
+            order.setAdminId(litemallAdmin.getId());
+        }
         return orderMapper.insertSelective(order);
     }
 
-    public List<LitemallOrder> query(Integer userId) {
+    public List<LitemallOrder> query(Integer userId,String appId) {
         LitemallOrderExample example = new LitemallOrderExample();
-        example.or().andUserIdEqualTo(userId).andDeletedEqualTo(false);
+        LitemallAdmin litemallAdmin = adminMapper.findAdminByOwnerId(appId);
+        example.or().andUserIdEqualTo(userId).andDeletedEqualTo(false).andAdminIdEqualTo(litemallAdmin.getId());
         return orderMapper.selectByExample(example);
     }
 
