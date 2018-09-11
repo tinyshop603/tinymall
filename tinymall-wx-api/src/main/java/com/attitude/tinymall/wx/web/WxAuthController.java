@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/auth")
+@RequestMapping("/wx/{storeId}/auth")
 public class WxAuthController {
     private final Log logger = LogFactory.getLog(WxAuthController.class);
 

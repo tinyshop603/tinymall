@@ -1,12 +1,12 @@
 // 以下是业务服务器API地址
 // 本机开发时使用
-// var WxApiRoot = 'http://localhost:8082/wx/';
+ var WxApiRoot = 'http://localhost:8082/wx/';
 // 局域网测试使用
 // var WxApiRoot = 'http://192.168.1.6:8082/wx/';
 // 云平台部署时使用
 //  var WxApiRoot = 'http://127.0.0.1:8082/wx/';
 // 云平台上线时使用
-var WxApiRoot = 'https://www.bjguangchi.top/wx/';
+// var WxApiRoot = 'https://www.bjguangchi.top/wx/';
 
 // 以下是图片存储服务器API地址
 // 本机开发时使用
@@ -17,6 +17,10 @@ var WxApiRoot = 'https://www.bjguangchi.top/wx/';
 // var StorageApi = 'http://122.152.206.172:8081/os/storage/create';
 // 云平台上线时使用
 var StorageApi = 'https://www.bjguangchi.top/os/storage/create';
+
+let APP_ID = 'wx6453a69f8a24f675'+'/';
+
+WxApiRoot +=APP_ID;
 
 module.exports = {
     IndexUrl: WxApiRoot + 'home/index', //首页数据接口
@@ -66,10 +70,10 @@ module.exports = {
     SearchHelper: WxApiRoot + 'search/helper',  //搜索帮助
     SearchClearHistory: WxApiRoot + 'search/clearhistory',  //搜索历史清楚
 
-    AddressList: WxApiRoot + 'address/list',  //收货地址列表
-    AddressDetail: WxApiRoot + 'address/detail',  //收货地址详情
-    AddressSave: WxApiRoot + 'address/save',  //保存收货地址
-    AddressDelete: WxApiRoot + 'address/delete',  //保存收货地址
+  AddressList: WxApiRoot+'address/list',  //收货地址列表
+  AddressDetail: WxApiRoot+ 'address/detail',  //收货地址详情
+  AddressSave: WxApiRoot+ 'address/save',  //保存收货地址
+  AddressDelete: WxApiRoot+ 'address/delete',  //保存收货地址
 
     RegionList: WxApiRoot + 'region/list',  //获取区域列表
 
@@ -86,5 +90,6 @@ module.exports = {
     FootprintList: WxApiRoot + 'footprint/list',  //足迹列表
     FootprintDelete: WxApiRoot + 'footprint/delete',  //删除足迹
 
-    StorageUpload: StorageApi,  //图片上传
+    StorageUpload: StorageApi  //图片上传
+
 };

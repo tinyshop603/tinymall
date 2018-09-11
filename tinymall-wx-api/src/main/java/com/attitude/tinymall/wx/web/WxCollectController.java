@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/collect")
+@RequestMapping("/wx/{storeId}/collect")
 public class WxCollectController {
     @Autowired
     private LitemallCollectService collectService;

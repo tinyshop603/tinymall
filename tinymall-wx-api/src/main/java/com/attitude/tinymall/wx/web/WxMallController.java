@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/wx/mall")
+@RequestMapping("/wx/{storeId}/mall")
 public class WxMallController {
 
   @Autowired

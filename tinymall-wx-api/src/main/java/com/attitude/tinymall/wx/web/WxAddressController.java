@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/address")
+@RequestMapping("/wx/{storeId}/address")
 public class WxAddressController {
     private final Log logger = LogFactory.getLog(WxAddressController.class);
 
@@ -133,7 +133,7 @@ public class WxAddressController {
      *   失败则 { errno: XXX, errmsg: XXX }
      */
     @PostMapping("save")
-    public Object save(@LoginUser Integer userId, @RequestBody LitemallAddress address) {
+    public Object save(@LoginUser Integer userId, @RequestBody LitemallAddress address,@PathVariable("storeId") String appId) {
         if(userId == null){
             return ResponseUtil.unlogin();
         }

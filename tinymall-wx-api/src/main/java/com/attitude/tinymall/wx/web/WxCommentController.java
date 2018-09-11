@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/comment")
+@RequestMapping("/wx/{storeId}/comment")
 public class WxCommentController {
     @Autowired
     private LitemallCommentService commentService;

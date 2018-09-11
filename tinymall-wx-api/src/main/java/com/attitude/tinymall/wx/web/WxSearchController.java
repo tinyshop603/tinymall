@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/search")
+@RequestMapping("/wx/{storeId}/search")
 public class WxSearchController {
     @Autowired
     private LitemallKeywordService keywordsService;
