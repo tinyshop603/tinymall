@@ -15,58 +15,68 @@ import java.util.List;
 @Service
 @Transactional
 public class LitemallAdminService {
-    @Resource
-    private LitemallAdminMapper adminMapper;
 
-    public List<LitemallAdmin> findAdmin(String username) {
-        LitemallAdminExample example = new LitemallAdminExample();
-        example.or().andUsernameEqualTo(username).andDeletedEqualTo(false);
-        return adminMapper.selectByExample(example);
+  @Resource
+  private LitemallAdminMapper adminMapper;
+
+  public LitemallAdmin findAdmin(String username) {
+    LitemallAdminExample example = new LitemallAdminExample();
+    example.or().andUsernameEqualTo(username).andDeletedEqualTo(false);
+    List<LitemallAdmin> litemallAdmins = adminMapper.selectByExample(example);
+    // 经过若干主键的限制,限制了该数据的list最大为1
+    LitemallAdmin res = null;
+    if (litemallAdmins != null && litemallAdmins.size() > 0) {
+      res = litemallAdmins.get(0);
     }
+    return res;
+  }
 
-    public LitemallAdmin findAdminByOwnerId(String ownerId) {
-        return adminMapper.findAdminByOwnerId(ownerId);
+  public LitemallAdmin findAdminByOwnerId(String ownerId) {
+    return adminMapper.findAdminByOwnerId(ownerId);
+  }
+
+  private final Column[] result = new Column[]{Column.id, Column.username, Column.avatar};
+
+  public List<LitemallAdmin> querySelective(String username, Integer page, Integer limit,
+      String sort, String order) {
+    LitemallAdminExample example = new LitemallAdminExample();
+    LitemallAdminExample.Criteria criteria = example.createCriteria();
+
+    if (!StringUtils.isEmpty(username)) {
+      criteria.andUsernameLike("%" + username + "%");
     }
+    criteria.andDeletedEqualTo(false);
 
-    private final Column[] result = new Column[]{Column.id, Column.username, Column.avatar};
-    public List<LitemallAdmin> querySelective(String username, Integer page, Integer limit, String sort, String order) {
-        LitemallAdminExample example = new LitemallAdminExample();
-        LitemallAdminExample.Criteria criteria = example.createCriteria();
+    PageHelper.startPage(page, limit);
+    return adminMapper.selectByExampleSelective(example, result);
+  }
 
-        if(!StringUtils.isEmpty(username)){
-            criteria.andUsernameLike("%" + username + "%");
-        }
-        criteria.andDeletedEqualTo(false);
+  public int countSelective(String username, Integer page, Integer size, String sort,
+      String order) {
+    LitemallAdminExample example = new LitemallAdminExample();
+    LitemallAdminExample.Criteria criteria = example.createCriteria();
 
-        PageHelper.startPage(page, limit);
-        return adminMapper.selectByExampleSelective(example, result);
+    if (!StringUtils.isEmpty(username)) {
+      criteria.andUsernameLike("%" + username + "%");
     }
+    criteria.andDeletedEqualTo(false);
 
-    public int countSelective(String username, Integer page, Integer size, String sort, String order) {
-        LitemallAdminExample example = new LitemallAdminExample();
-        LitemallAdminExample.Criteria criteria = example.createCriteria();
+    return (int) adminMapper.countByExample(example);
+  }
 
-        if(!StringUtils.isEmpty(username)){
-            criteria.andUsernameLike("%" + username + "%");
-        }
-        criteria.andDeletedEqualTo(false);
+  public void updateById(LitemallAdmin admin) {
+    adminMapper.updateByPrimaryKeySelective(admin);
+  }
 
-        return (int)adminMapper.countByExample(example);
-    }
+  public void deleteById(Integer id) {
+    adminMapper.logicalDeleteByPrimaryKey(id);
+  }
 
-    public void updateById(LitemallAdmin admin) {
-        adminMapper.updateByPrimaryKeySelective(admin);
-    }
+  public void add(LitemallAdmin admin) {
+    adminMapper.insertSelective(admin);
+  }
 
-    public void deleteById(Integer id) {
-        adminMapper.logicalDeleteByPrimaryKey(id);
-    }
-
-    public void add(LitemallAdmin admin) {
-        adminMapper.insertSelective(admin);
-    }
-
-    public LitemallAdmin findById(Integer id) {
-        return adminMapper.selectByPrimaryKeySelective(id, result);
-    }
+  public LitemallAdmin findById(Integer id) {
+    return adminMapper.selectByPrimaryKeySelective(id, result);
+  }
 }

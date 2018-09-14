@@ -161,7 +161,7 @@
 </style>
 
 <script>
-import { listCategory, listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
+import { listCategory, listMainCategory,listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
@@ -217,7 +217,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      listCategory(this.listQuery).then(response => {
+      listMainCategory(this.listQuery).then(response => {
         this.list = response.data.data.items
         this.total = response.data.data.total
         this.listLoading = false

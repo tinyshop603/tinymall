@@ -1,11 +1,15 @@
 package com.attitude.tinymall.db.service;
 
+import com.attitude.tinymall.db.dao.LitemallAdminMapper;
 import com.attitude.tinymall.db.dao.LitemallCategoryMapper;
 import com.attitude.tinymall.db.domain.LitemallAdmin;
 import com.attitude.tinymall.db.domain.LitemallCategory;
 import com.attitude.tinymall.db.domain.LitemallCategoryExample;
 import com.attitude.tinymall.db.domain.LitemallCategory.Column;
 import com.github.pagehelper.PageHelper;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -20,9 +24,76 @@ public class LitemallCategoryService {
   @Resource
   private LitemallCategoryMapper categoryMapper;
 
+  @Resource
+  private LitemallAdminService litemallAdminService;
+
+  public String getAdminCategoryIdByUserName(String userName) {
+    if (StringUtils.isEmpty(userName)) {
+      return null;
+    } else {
+      LitemallAdmin admin = litemallAdminService.findAdmin(userName);
+      return this.getAdminCategoryIdByAdminId(admin.getId());
+    }
+
+  }
+
+  public String getAdminCategoryIdByAdminId(Integer adminId) {
+    // 最高权限的adminId
+    if (adminId == null || adminId <= 0) {
+      return null;
+    }
+    // 根据Parent Id 查询出 Id ,当做parentId进行塞入进去
+    List<LitemallCategory> parentCategorys = this.queryIdByPid(adminId);
+    // 此时查询出来的必须是1或者是0条数据
+    String parentId = null;
+    if (parentCategorys != null && parentCategorys.size() > 0) {
+      parentId = parentCategorys.get(0).getId().toString();
+    }
+    return parentId;
+  }
+
+  /**
+   * 获取店铺的所有大分类信息
+   * 此处进行了分页的行为
+   */
+  public List<LitemallCategory> getAdminMallCategoryByAdminId(Integer adminId, Integer page,
+      Integer limit, String sort, String order) {
+    return this
+        .querySelective(null, null, this.getAdminCategoryIdByAdminId(adminId), page, limit, sort,
+            order);
+  }
+
+  /**
+   * 获取店铺分类的总数
+   * @param adminId
+   * @param page
+   * @param limit
+   * @param sort
+   * @param order
+   * @return
+   */
+  public int countAdminMallCategoryByAdminId(Integer adminId, Integer page, Integer limit,
+      String sort, String order) {
+    return this
+        .countSelective(null, null, this.getAdminCategoryIdByAdminId(adminId), page, limit, sort,
+            order);
+  }
+
+  public List<Integer> getAdminMallCategoryIdsByAdminId(Integer adminId) {
+   return this.getAdminMallCategoryByAdminId(adminId,0,Integer.MAX_VALUE,null,null)
+        .stream()
+        .mapToInt(LitemallCategory::getId)
+        .boxed()
+        .collect(Collectors.toList());
+  }
+
+
+
+
+
   public List<LitemallCategory> queryIdByPid(int pid) {
     LitemallCategoryExample example = new LitemallCategoryExample();
-    example.or().andParentIdEqualTo(pid).andLevelEqualTo("L2").andDeletedEqualTo(false);
+    example.or().andParentIdEqualTo(pid).andLevelEqualTo("L1").andDeletedEqualTo(false);
     Column[] columns = new Column[]{Column.id};
     return categoryMapper.selectByExampleSelective(example, columns);
   }
