@@ -53,11 +53,16 @@ public class AdminAdminController {
             return ResponseUtil.unlogin();
         }
 
+        if (adminId != 0){
+            return ResponseUtil.fail403();
+        }
+
         List<LitemallAdmin> adminList = adminService.querySelective(username, page, limit, sort, order);
         int total = adminService.countSelective(username, page, limit, sort, order);
         Map<String, Object> data = new HashMap<>();
         data.put("total", total);
         data.put("items", adminList);
+
 
         return ResponseUtil.ok(data);
     }
@@ -98,7 +103,7 @@ public class AdminAdminController {
         }
 
         Integer anotherAdminId = admin.getId();
-        if(anotherAdminId.intValue() == 1){
+        if(anotherAdminId.intValue() == 0){
             return ResponseUtil.fail(403, "超级管理员不能修改");
         }
 
@@ -113,7 +118,7 @@ public class AdminAdminController {
         }
 
         Integer anotherAdminId = admin.getId();
-        if(anotherAdminId.intValue() == 1){
+        if(anotherAdminId.intValue() == 0){
             return ResponseUtil.fail(403, "超级管理员不能删除");
         }
         adminService.deleteById(anotherAdminId);

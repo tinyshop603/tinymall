@@ -16,83 +16,90 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/{userName}/goods-specification")
 public class AdminGoodsSpecificationController {
-    private final Log logger = LogFactory.getLog(AdminGoodsSpecificationController.class);
 
-    @Autowired
-    private LitemallGoodsSpecificationService goodsSpecificationService;
+  private final Log logger = LogFactory.getLog(AdminGoodsSpecificationController.class);
 
-    @GetMapping("/list")
-    public Object list(@LoginAdmin Integer adminId,
-                       Integer goodsId,
-                       @RequestParam(value = "page", defaultValue = "1") Integer page,
-                       @RequestParam(value = "limit", defaultValue = "10") Integer limit,
-                       String sort, String order){
-        if(adminId == null){
-            return ResponseUtil.unlogin();
-        }
+  @Autowired
+  private LitemallGoodsSpecificationService goodsSpecificationService;
 
-        List<LitemallGoodsSpecification> goodsSpecificationList = goodsSpecificationService.querySelective(goodsId, page, limit, sort, order);
-        int total = goodsSpecificationService.countSelective(goodsId, page, limit, sort, order);
-        Map<String, Object> data = new HashMap<>();
-        data.put("total", total);
-        data.put("items", goodsSpecificationList);
-
-        return ResponseUtil.ok(data);
+  @GetMapping("/list")
+  public Object list(@LoginAdmin Integer adminId,
+      Integer goodsId,
+      @RequestParam(value = "page", defaultValue = "1") Integer page,
+      @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+      String sort, String order) {
+    if (adminId == null) {
+      return ResponseUtil.unlogin();
     }
 
-    @PostMapping("/create")
-    public Object create(@LoginAdmin Integer adminId, @RequestBody LitemallGoodsSpecification goodsSpecification){
-        if(adminId == null){
-            return ResponseUtil.unlogin();
-        }
-        goodsSpecificationService.add(goodsSpecification);
-        return ResponseUtil.ok(goodsSpecification);
+    // 此处已经处理了相关的商品属性信息
+    List<LitemallGoodsSpecification> goodsSpecificationList = goodsSpecificationService
+        .querySelective(goodsId, adminId, page, limit, sort, order);
+    int total = goodsSpecificationService
+        .countSelective(goodsId, adminId, page, limit, sort, order);
+    Map<String, Object> data = new HashMap<>();
+    data.put("total", total);
+    data.put("items", goodsSpecificationList);
+
+    return ResponseUtil.ok(data);
+  }
+
+  @PostMapping("/create")
+  public Object create(@LoginAdmin Integer adminId,
+      @RequestBody LitemallGoodsSpecification goodsSpecification) {
+    if (adminId == null) {
+      return ResponseUtil.unlogin();
+    }
+    goodsSpecificationService.add(goodsSpecification);
+    return ResponseUtil.ok(goodsSpecification);
+  }
+
+  @GetMapping("/read")
+  public Object read(@LoginAdmin Integer adminId, Integer id) {
+    if (adminId == null) {
+      return ResponseUtil.unlogin();
     }
 
-    @GetMapping("/read")
-    public Object read(@LoginAdmin Integer adminId, Integer id){
-        if(adminId == null){
-            return ResponseUtil.unlogin();
-        }
-
-        if(id == null){
-            return ResponseUtil.badArgument();
-        }
-
-        LitemallGoodsSpecification goodsSpecification = goodsSpecificationService.findById(id);
-        return ResponseUtil.ok(goodsSpecification);
+    if (id == null) {
+      return ResponseUtil.badArgument();
     }
 
-    @PostMapping("/update")
-    public Object update(@LoginAdmin Integer adminId, @RequestBody LitemallGoodsSpecification goodsSpecification){
-        if(adminId == null){
-            return ResponseUtil.unlogin();
-        }
-        goodsSpecificationService.updateById(goodsSpecification);
-        return ResponseUtil.ok(goodsSpecification);
+    LitemallGoodsSpecification goodsSpecification = goodsSpecificationService.findById(id);
+    return ResponseUtil.ok(goodsSpecification);
+  }
+
+  @PostMapping("/update")
+  public Object update(@LoginAdmin Integer adminId,
+      @RequestBody LitemallGoodsSpecification goodsSpecification) {
+    if (adminId == null) {
+      return ResponseUtil.unlogin();
+    }
+    goodsSpecificationService.updateById(goodsSpecification);
+    return ResponseUtil.ok(goodsSpecification);
+  }
+
+  @PostMapping("/delete")
+  public Object delete(@LoginAdmin Integer adminId,
+      @RequestBody LitemallGoodsSpecification goodsSpecification) {
+    if (adminId == null) {
+      return ResponseUtil.unlogin();
+    }
+    goodsSpecificationService.deleteById(goodsSpecification.getId());
+    return ResponseUtil.ok();
+  }
+
+  @GetMapping("/volist")
+  public Object volist(@LoginAdmin Integer adminId, Integer id) {
+    if (adminId == null) {
+      return ResponseUtil.unlogin();
     }
 
-    @PostMapping("/delete")
-    public Object delete(@LoginAdmin Integer adminId, @RequestBody LitemallGoodsSpecification goodsSpecification){
-        if(adminId == null){
-            return ResponseUtil.unlogin();
-        }
-        goodsSpecificationService.deleteById(goodsSpecification.getId());
-        return ResponseUtil.ok();
+    if (id == null) {
+      return ResponseUtil.badArgument();
     }
 
-    @GetMapping("/volist")
-    public Object volist(@LoginAdmin Integer adminId, Integer id){
-        if(adminId == null){
-            return ResponseUtil.unlogin();
-        }
-
-        if(id == null){
-            return ResponseUtil.badArgument();
-        }
-
-        Object goodsSpecificationVoList = goodsSpecificationService.getSpecificationVoList(id);
-        return ResponseUtil.ok(goodsSpecificationVoList);
-    }
+    Object goodsSpecificationVoList = goodsSpecificationService.getSpecificationVoList(id);
+    return ResponseUtil.ok(goodsSpecificationVoList);
+  }
 
 }

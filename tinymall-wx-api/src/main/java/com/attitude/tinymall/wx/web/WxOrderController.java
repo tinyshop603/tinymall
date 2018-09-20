@@ -96,13 +96,15 @@ public class WxOrderController {
   private LitemallRegionService regionService;
   @Autowired
   private LitemallProductService productService;
+  @Autowired
+  private LitemallAdminService adminService;
 
   @Autowired
   private WxPayService wxPayService;
   /**
    * 消息传递信息
    */
-  private MessageInfo<LitemallOrderWithGoods> messageInfo;
+  private MessageInfo<Map> messageInfo;
 
   private Socket client;
 
@@ -321,6 +323,7 @@ public class WxOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     Integer orderId = null;
     LitemallOrder order = null;
+    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
     try {
       // 订单
       order = new LitemallOrder();
@@ -339,6 +342,7 @@ public class WxOrderController {
       order.setIntegralPrice(integralPrice);
       order.setOrderPrice(orderTotalPrice);
       order.setActualPrice(actualPrice);
+      order.setAdminId(admin.getId());
       // 添加订单表项
       orderService.add(order,appId);
       orderId = order.getId();
@@ -391,7 +395,10 @@ public class WxOrderController {
     orderWithGoods.setOrder(order);
     // 查找此订单的商品信息
     orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-    messageInfo.setDomainData(orderWithGoods);
+    Map<String,Object> dataSoc = new HashMap<>(2);
+    dataSoc.put("storeUserName",admin.getUsername());
+    dataSoc.put("orderData",orderWithGoods);
+    messageInfo.setDomainData(dataSoc);
     client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
     return ResponseUtil.ok(data);
   }
@@ -454,6 +461,7 @@ public class WxOrderController {
     txManager.commit(status);
     //想办法提醒管理端进行刷新
     messageInfo.setMsgType("order-cancel");
+    Map<String,Object> socketData = new HashMap<>(2);
     messageInfo.setMsgContent(JacksonUtil.stringifyObject(order));
     client.emit(SocketEvent.CANCEL_ORDER, messageInfo);
     return ResponseUtil.ok();

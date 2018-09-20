@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Service
+@Deprecated
 public class LitemallFootprintService {
     @Resource
     private LitemallFootprintMapper footprintMapper;

@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/{userName}/footprint")
+@Deprecated
 public class AdminFootprintController {
     private final Log logger = LogFactory.getLog(AdminFootprintController.class);
 

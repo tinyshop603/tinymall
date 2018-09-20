@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/{userName}/region")
+@Deprecated
 public class AdminRegionController {
     private final Log logger = LogFactory.getLog(AdminRegionController.class);
 

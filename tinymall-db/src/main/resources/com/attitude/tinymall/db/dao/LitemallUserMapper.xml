@@ -22,6 +22,7 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
     <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId"/>
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--
@@ -231,13 +232,13 @@
       birthday, last_login_time, last_login_ip, 
       user_level, nickname, mobile, 
       register_ip, avatar, weixin_openid, 
-      `status`, add_time, deleted
+      `status`, add_time, deleted,admin_id
       )
     values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, 
       #{birthday,jdbcType=DATE}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{lastLoginIp,jdbcType=VARCHAR}, 
       #{userLevel,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{registerIp,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{weixinOpenid,jdbcType=VARCHAR}, 
-      #{status,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
+      #{status,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT},#{adminId}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.attitude.tinymall.db.domain.LitemallUser">
@@ -583,4 +584,7 @@
     update tinymall_user set deleted = 1
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="listUsersByAdminId" resultMap="BaseResultMap">
+    select * from tinymall_user where admin_id = #{adminId}
+  </select>
 </mapper>

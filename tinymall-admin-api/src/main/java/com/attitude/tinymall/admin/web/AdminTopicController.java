@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/{userName}/topic")
+@Deprecated
 public class AdminTopicController {
     private final Log logger = LogFactory.getLog(AdminTopicController.class);
 

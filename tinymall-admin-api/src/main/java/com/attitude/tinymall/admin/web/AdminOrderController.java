@@ -54,13 +54,9 @@ public class AdminOrderController {
       return ResponseUtil.fail401();
     }
     List<LitemallOrderWithGoods> orderList = orderService
-        .querySelective(userId, orderSn, page, limit, sort, order);
-    int total = orderService.countSelective(userId, orderSn, page, limit, sort, order);
+        .listAdminOrdersByAdminId(adminId,userId, orderSn, page, limit, sort, order);
+    int total = orderService.countAdminOrdersByAdminId(adminId,userId, orderSn);
 
-//    orderList
-//        .sort(Comparator.comparing(litemallOrderWithGoods -> {
-//          litemallOrderWithGoods.getOrder();
-//        }));
 
     Map<String, Object> data = new HashMap<>();
     data.put("total", total);

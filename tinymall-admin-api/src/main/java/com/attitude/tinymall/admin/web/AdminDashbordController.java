@@ -17,34 +17,46 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/{userName}/dashboard")
 public class AdminDashbordController {
-    private final Log logger = LogFactory.getLog(AdminDashbordController.class);
 
-    @Autowired
-    private LitemallUserService userService;
-    @Autowired
-    private LitemallGoodsService goodsService;
-    @Autowired
-    private LitemallProductService productService;
-    @Autowired
-    private LitemallOrderService orderService;
+  private final Log logger = LogFactory.getLog(AdminDashbordController.class);
 
-    @GetMapping("")
-    public Object info(@LoginAdmin Integer adminId){
-        if(adminId == null){
-            return ResponseUtil.unlogin();
-        }
+  @Autowired
+  private LitemallUserService userService;
+  @Autowired
+  private LitemallGoodsService goodsService;
+  @Autowired
+  private LitemallProductService productService;
+  @Autowired
+  private LitemallOrderService orderService;
 
-        int userTotal = userService.count();
-        int goodsTotal = goodsService.count();
-        int productTotal = productService.count();
-        int orderTotal = orderService.count();
-        Map<String, Integer> data = new HashMap<>();
-        data.put("userTotal", userTotal);
-        data.put("goodsTotal", goodsTotal);
-        data.put("productTotal", productTotal);
-        data.put("orderTotal", orderTotal);
-
-        return ResponseUtil.ok(data);
+  @GetMapping("")
+  public Object info(@LoginAdmin Integer adminId) {
+    if (adminId == null) {
+      return ResponseUtil.unlogin();
     }
+    int userTotal;
+    int goodsTotal;
+    int productTotal;
+    int orderTotal;
+    if (adminId == 0) {
+      userTotal = userService.count();
+      goodsTotal = goodsService.count();
+      productTotal = productService.count();
+      orderTotal = orderService.count();
+    } else {
+      userTotal = userService.countByAdminId(adminId);
+      goodsTotal = goodsService.countByAdminId(adminId);
+      productTotal = productService.countByAdminId(adminId);
+      orderTotal = orderService.countByAdminId(adminId);
+    }
+
+    Map<String, Integer> data = new HashMap<>(4);
+    data.put("userTotal", userTotal);
+    data.put("goodsTotal", goodsTotal);
+    data.put("productTotal", productTotal);
+    data.put("orderTotal", orderTotal);
+
+    return ResponseUtil.ok(data);
+  }
 
 }

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.domain.LitemallGoods;
 import com.attitude.tinymall.db.domain.LitemallGoods.Column;
 import com.attitude.tinymall.db.dao.LitemallGoodsMapper;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -253,6 +254,10 @@ public class LitemallGoodsService {
     return (int) goodsMapper.countByExample(example);
   }
 
+  public int countByAdminId(Integer adminId) {
+    return this.getAdminGoodsIds(adminId).size();
+  }
+
   public List<Integer> getCatIds(Integer brandId, String keyword, Integer isHot, Integer isNew) {
     LitemallGoodsExample example = new LitemallGoodsExample();
     LitemallGoodsExample.Criteria criteria = example.createCriteria();
@@ -278,5 +283,16 @@ public class LitemallGoodsService {
       cats.add(goods.getCategoryId());
     }
     return cats;
+  }
+
+  public List<Integer> getAdminGoodsIds(Integer adminId) {
+    // 获取该店铺的所有的商品,此处不必考虑量的问题,原因是一步向前端扔,二数据量不会过大,,若产生效率问题:考虑表加上冗余外键
+    List<LitemallGoods> litemallGoodsOfAdmin = this
+        .listGoodsByAdminId(adminId, null, null, null, 0, Integer.MAX_VALUE, null, null);
+    return litemallGoodsOfAdmin
+        .stream()
+        .mapToInt(LitemallGoods::getId)
+        .boxed()
+        .collect(Collectors.toList());
   }
 }

@@ -47,7 +47,11 @@
   </select>
 
   <select id="selectOdersWithGoods" resultMap="Order_With_Goods">
-    SELECT * from tinymall_order ORDER BY add_time DESC
+    SELECT * from tinymall_order
+     <if test="adminId != 0 ">
+       where admin_id = #{adminId}
+     </if>
+     ORDER BY add_time DESC
   </select>
 
 

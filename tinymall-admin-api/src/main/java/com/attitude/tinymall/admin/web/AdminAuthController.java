@@ -58,9 +58,6 @@ public class AdminAuthController {
         return ResponseUtil.ok(adminToken.getToken());
     }
 
-    /*
-     *
-     */
     @PostMapping("/logout")
     public Object login(@LoginAdmin Integer adminId){
         if(adminId == null){

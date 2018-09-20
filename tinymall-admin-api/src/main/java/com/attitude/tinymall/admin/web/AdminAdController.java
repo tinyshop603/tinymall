@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/{userName}/ad")
+@Deprecated
 public class AdminAdController {
     private final Log logger = LogFactory.getLog(AdminAdController.class);
 

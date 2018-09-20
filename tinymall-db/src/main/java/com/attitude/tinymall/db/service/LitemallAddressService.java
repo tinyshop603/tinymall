@@ -65,6 +65,46 @@ public class LitemallAddressService {
     addressMapper.updateByExampleSelective(address, example);
   }
 
+  public List<LitemallAddress> listAdminAddressByAdminId(Integer adminId, Integer userId,
+      String name, Integer page,
+      Integer limit, String sort, String order) {
+    LitemallAddressExample example = new LitemallAddressExample();
+    LitemallAddressExample.Criteria criteria = example.createCriteria();
+
+    if (userId != null) {
+      criteria.andUserIdEqualTo(userId);
+    }
+    if (adminId != 0) {
+      criteria.andAdminIdEqualTo(adminId);
+    }
+    if (!StringUtils.isEmpty(name)) {
+      criteria.andNameLike("%" + name + "%");
+    }
+    criteria.andDeletedEqualTo(false);
+
+    PageHelper.startPage(page, limit);
+    return addressMapper.selectByExample(example);
+  }
+
+  public int countAdminAddressByAdminId(Integer adminId,Integer userId, String name) {
+
+    LitemallAddressExample example = new LitemallAddressExample();
+    LitemallAddressExample.Criteria criteria = example.createCriteria();
+
+    if (userId != null) {
+      criteria.andUserIdEqualTo(userId);
+    }
+    if (adminId != 0) {
+      criteria.andAdminIdEqualTo(adminId);
+    }
+    if (!StringUtils.isEmpty(name)) {
+      criteria.andNameLike("%" + name + "%");
+    }
+    criteria.andDeletedEqualTo(false);
+
+    return (int) addressMapper.countByExample(example);
+  }
+
   public List<LitemallAddress> querySelective(Integer userId, String name, Integer page,
       Integer limit, String sort, String order) {
     LitemallAddressExample example = new LitemallAddressExample();

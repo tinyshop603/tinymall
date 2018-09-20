@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/{userName}/history")
+@Deprecated
 public class AdminHistoryController {
     private final Log logger = LogFactory.getLog(AdminHistoryController.class);
 

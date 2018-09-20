@@ -93,6 +93,7 @@
 
 </style>
 <script>
+import store from '@/store'
 import { listOrder, getBtnStateByCode, updateOrderCode, STATUS } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
@@ -136,10 +137,13 @@ export default {
       console.log('socket connected')
     },
     submitOrderEvent: function(jsonData) {
-      let newOrder = JSON.parse(jsonData)
-      newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.order.orderStatus))
-      this.list.unshift(newOrder)
-      this.player.play()
+      let socData = JSON.parse(jsonData)
+      if (socData.storeUserName == store.getters.name) {
+        let newOrder = socData.orderData
+        newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.order.orderStatus))
+        this.list.unshift(newOrder)
+        this.player.play()
+    }
     },
     cancelOrderEvent: function(jsonData) {
       console.log('----->订单取消' + jsonData)
