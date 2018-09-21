@@ -71,7 +71,8 @@ public class LitemallOrderService {
         String now = df.format(LocalDate.now());
         String orderSn = now + getRandomNum(6);
         while(countByOrderSn(userId, orderSn) != 0){
-            orderSn = getRandomNum(6);
+//            orderSn = getRandomNum(6);//原代码
+            orderSn = now + getRandomNum(6);//认为认为原代码错误进行的修改 wz-2018-9-9
         }
         return orderSn;
     }
