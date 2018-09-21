@@ -5,6 +5,7 @@ page{
 
 .container{
   min-height: 100%;
+  height:100%;
   background-color: #f4f4f4;
 }
 
@@ -72,7 +73,7 @@ page{
 .no-search{
     height: auto;
     overflow: hidden;
-    margin-top: 191rpx;
+    margin-top: 165rpx;
 }
 
 .search-keywords{

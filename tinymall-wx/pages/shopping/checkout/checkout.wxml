@@ -52,6 +52,21 @@
                 <text class="txt">￥{{freightPrice}}元</text>
             </view>
         </view>
+        <picker class="picker" bindchange='bindPickerChange' value='{{pickerIndex}}' range='{{array}}'>
+          <view class="order-picker">
+            <view class='l'>
+              <text class="name">支付方式</text>
+              <text class="txt">{{array[pickerIndex]}}</text>
+            </view>
+            <view class="r">
+                <image src="/static/images/address_right.png"></image>
+            </view>
+          </view>
+        </picker>
+        <view class="order-item">
+            <input name="input" class="like" focus="true" bindconfirm="onKeywordConfirm" placeholder="口味，偏好" />
+        </view>
+        
         <!-- <view class="order-item no-border">
             <view class="l">
                 <text class="name">优惠券</text>
@@ -80,6 +95,6 @@
 
     <view class="order-total">
         <view class="l">实付：￥{{actualPrice}}</view>
-        <view class="r" bindtap="submitOrder">下单</view>
+        <view class="r" bindtap="submitOrder">{{array[pickerIndex]}}</view>
     </view>
 </view>

@@ -6,7 +6,7 @@
     </navigator>
   </view>
   <view class="catalog">
-    <scroll-view class="nav" scroll-top="{{scrolltop}}" scroll-y="true" style="height:{{systemHeight}}">
+    <scroll-view class="nav" scroll-top="0" scroll-y="true" style="height:{{systemHeight}}">
         <view class="item {{ currentCategory.id == item.id ? 'active' : ''}}" wx:for="{{categoryList}}" wx:key="id"  data-id="{{item.id}}" data-index="{{index}}" bindtap="switchCate">{{item.name}}</view>
     </scroll-view>
     <scroll-view class="cate" scroll-y="true" style="height:{{systemHeight}}">

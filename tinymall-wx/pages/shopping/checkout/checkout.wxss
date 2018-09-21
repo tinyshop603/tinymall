@@ -159,6 +159,10 @@ page{
     border-bottom: 1px solid #d9d9d9;
 }
 
+.order-box .order-item .like{
+  width:100%;
+}
+
 .order-box .order-item .l{
     float: left;
     height: 52rpx;
@@ -178,6 +182,49 @@ page{
 
 .order-box .order-item.no-border{
     border-bottom: none;
+}
+
+.order-box .order-picker{
+    height: 108.3rpx;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    margin-left: 31.25rpx;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.order-box .order-picker .l{
+    flex: 1;
+    height: 43rpx;
+    line-height: 43rpx;
+    padding-top: 35rpx;
+}
+
+.order-box .order-picker .l .name{
+    float: left;
+    font-size: 30rpx;
+    color: #666;
+}
+
+.order-box .order-picker .l .txt{
+    float: right;
+    font-size: 30rpx;
+    color: #666;
+}
+
+.order-box .order-picker .r{
+    float: right;
+    margin-top: 15.5rpx;
+    width: 77rpx;
+    height: 77rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.order-box .order-picker .r image{
+    width: 52.078rpx;
+    height: 52.078rpx;
 }
 
 .goods-items{

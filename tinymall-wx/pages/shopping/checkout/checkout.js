@@ -16,7 +16,25 @@ Page({
     actualPrice: 0.00,     //实际需要支付的总价
     cartId: 0,
     addressId: 0,
-    couponId: 0
+    couponId: 0,
+    liketext:"",
+    pickerIndex: 0,
+    array:['在线支付','货到付款'],
+    objectArray:[
+      {
+        id:0,
+        name:'在线支付'
+      },
+      {
+        id:1,
+        name:'货到付款'
+      }
+    ]
+  },
+  bindPickerChange: function (e) {
+    this.setData({
+      pickerIndex: e.detail.value
+    })
   },
   //右上角转发分享功能
   onShareAppMessage: function () {
@@ -111,6 +129,7 @@ Page({
 
   },
   submitOrder: function () {
+    var that = this;
     if (this.data.addressId <= 0) {
       util.showErrorToast('请选择收货地址');
       return false;
@@ -127,23 +146,79 @@ Page({
     //分
     var m = date.getMinutes();
     //营业时间：8:30~24:00
-    var ifOpen = false;
-    if(h>8){
-      ifOpen=true;
-    }else if(h=8 && m>30){
-      ifOpen = true;
-    }
-    if(!ifOpen){
-      wx.showModal({
-        title: '当前时间尚未营业',
-        content:'营业时间:8:30~24:00',
-        showCancel:false,
-      })
-      return false;
+     var ifOpen = false;
+     if(h>8){
+       ifOpen=true;
+     }else if(h=8 && m>30){
+       ifOpen = true;
+     }
+     if(!ifOpen){
+       wx.showModal({
+         title: '当前时间尚未营业',
+         content:'营业时间:8:30~24:00',
+         showCancel:false,
+       })
+       return false;
+     }
+    
+    //判断支付方式
+    if (that.data.pickerIndex == 0){
+      that.submitPrepay();
+    } else if (that.data.pickerIndex == 1){
+      that.submitAfterpay();
     }
 
 
-    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId }, 'POST').then(res => {
+    
+       
+  },
+  
+  //微信支付
+  submitPrepay:function(){
+    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex }, 'POST').then(res => {
+      if (res.errno === 0) {
+        const orderId = res.data.orderId;
+        util.request(api.OrderPrepay, {
+          orderId: orderId
+        }, 'POST').then(function (res) {
+          if (res.errno === 0) {
+            const payParam = res.data;
+            console.log("支付过程开始")
+            wx.requestPayment({
+              'timeStamp': payParam.timeStamp,
+              'nonceStr': payParam.nonceStr,
+              'package': payParam.packageValue,
+              'signType': payParam.signType,
+              'paySign': payParam.paySign,
+              'success': function (res) {
+                console.log("支付过程成功")
+                wx.redirectTo({
+                  url: '/pages/payResult/payResult?status=1&orderId=' + orderId
+                });
+              },
+              'fail': function (res) {
+                console.log("支付过程失败")
+                wx.redirectTo({
+                  url: '/pages/payResult/payResult?status=0&orderId=' + orderId
+                });
+              },
+              'complete': function (res) {
+                console.log("支付过程结束")
+              }
+            });
+          }
+        });
+      } else {
+        wx.redirectTo({
+          url: '/pages/payResult/payResult?status=0&orderId=' + orderId
+        });
+      }
+    });
+  },
+
+  //货到付款
+  submitAfterpay:function(){
+    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex }, 'POST').then(res => {
       if (res.errno === 0) {
         const orderId = res.data.orderId;
         wx.redirectTo({
@@ -156,6 +231,12 @@ Page({
           url: '/pages/payResult/payResult?status=0&orderId=' + orderId
         });
       }
+    });
+  },
+  //TODO 需要测试 可能直接失去焦点
+  onKeywordConfirm:function(event){
+    this.setData({
+      'liketext': event.detail.value
     });
   }
 })
