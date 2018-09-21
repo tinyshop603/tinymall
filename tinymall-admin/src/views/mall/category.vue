@@ -163,6 +163,7 @@
 <script>
 import { listCategory, listMainCategory,listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
 import waves from '@/directive/waves' // 水波纹指令
+import store from '@/store'
 
 export default {
   name: 'Category',
@@ -187,8 +188,8 @@ export default {
         id: undefined,
         name: '',
         keyword: '',
-        level: 'L1',
-        parentId: '',
+        level: 'L2',
+        parentId: store.state.user.shopId,
         isShow: 'true',
         frontName: '',
         frontDesc: '',
@@ -249,8 +250,8 @@ export default {
         id: undefined,
         name: '',
         keyword: '',
-        level: 'L1',
-        parentId: '',
+        level: 'L2',
+        parentId: store.state.user.shopId,
         isShow: 'true',
         frontName: '',
         frontDesc: '',
@@ -264,6 +265,7 @@ export default {
     },
     handleCreate() {
       this.resetForm()
+      // 设置默认值
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {

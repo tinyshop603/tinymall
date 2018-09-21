@@ -14,7 +14,8 @@ export const STATUS = {
 }
 export function listOrder(query) {
   request.interceptors.response.use(response => {
-    let orderItems = response.data.data.items
+    if (response.data && response.data.data) {
+         let orderItems = response.data.data.items
     if (!orderItems) {
       orderItems = [response.data.data]
     }
@@ -39,6 +40,7 @@ export function listOrder(query) {
       }
       return Object.assign(item, getBtnStateByCode(code))
     })
+    }
     return response
   })
   return request({

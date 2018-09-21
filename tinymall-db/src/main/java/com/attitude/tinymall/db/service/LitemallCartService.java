@@ -1,9 +1,11 @@
 package com.attitude.tinymall.db.service;
 
 import com.attitude.tinymall.db.domain.LitemallCartExample;
+import com.attitude.tinymall.db.domain.LitemallUser;
 import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.dao.LitemallCartMapper;
 import com.attitude.tinymall.db.domain.LitemallCart;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,6 +18,8 @@ public class LitemallCartService {
   private LitemallCartMapper cartMapper;
   @Resource
   private LitemallGoodsService goodsService;
+  @Resource
+  private LitemallUserService userService;
 
 
   public LitemallCart queryExist(Integer goodsId, Integer productId, Integer userId) {
@@ -79,7 +83,8 @@ public class LitemallCartService {
   }
 
 
-  public List<LitemallCart> listAdminCartsByAdminId(Integer adminId, Integer userId, Integer goodsId,
+  public List<LitemallCart> listAdminCartsByAdminId(Integer adminId, Integer userId,
+      Integer goodsId,
       Integer page, Integer limit, String sort, String order) {
     LitemallCartExample example = new LitemallCartExample();
     LitemallCartExample.Criteria criteria = example.createCriteria();
@@ -88,6 +93,14 @@ public class LitemallCartService {
 
     if (adminGoodsIds.size() > 0) {
       criteria.andGoodsIdIn(adminGoodsIds);
+    }
+
+    List<Integer> adminUsers = userService.queryByAdminId(adminId).stream()
+        .mapToInt(LitemallUser::getId).boxed().collect(
+            Collectors.toList());
+
+    if (adminUsers.size() > 0) {
+      criteria.andUserIdIn(adminUsers);
     }
 
     if (userId != null) {
@@ -108,6 +121,14 @@ public class LitemallCartService {
 
     if (userId != null) {
       criteria.andUserIdEqualTo(userId);
+    }
+
+    List<Integer> adminUsers = userService.queryByAdminId(adminId).stream()
+        .mapToInt(LitemallUser::getId).boxed().collect(
+            Collectors.toList());
+
+    if (adminUsers.size() > 0) {
+      criteria.andUserIdIn(adminUsers);
     }
 
     List<Integer> adminGoodsIds = goodsService.getAdminGoodsIds(adminId);

@@ -134,9 +134,7 @@ public class LitemallOrderService {
     criteria.andDeletedEqualTo(false);
 
     Page<Object> objects = PageHelper.startPage(page, size);
-    List<LitemallOrderWithGoods> odersWithGoods = orderMapper.selectOdersWithGoods(adminId);
-
-    return odersWithGoods;
+    return orderMapper.selectOdersWithGoods(adminId);
   }
 
   public int countAdminOrdersByAdminId(Integer adminId, Integer userId, String orderSn) {
