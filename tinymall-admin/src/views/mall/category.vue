@@ -67,10 +67,19 @@
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini"  @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="danger" size="mini"  @click="handleBeforeDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+        <!-- 删除条目的询问操作 -->
+    <el-dialog title="确认删除" :visible.sync="deleteGoodItem">
+      商品删除后不可恢复,确认删除？
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="deleteGoodItem = false">取消</el-button>
+        <el-button type="primary" @click="handleDelete">确定</el-button>
+      </div>
+    </el-dialog>
 
     <!-- 分页 -->
     <div class="pagination-container">
@@ -102,25 +111,25 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="图标" prop="iconUrl">
+        <el-form-item  v-if="false" label="图标" prop="iconUrl">
           <el-input v-model="dataForm.iconUrl"></el-input>
           <el-upload action="http://localhost:8080/storage/create" :show-file-list="false" :on-success="handleIconUrl">
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
-        <el-form-item label="首页横幅" prop="bannerUrl">
+        <el-form-item  v-if="false" label="首页横幅" prop="bannerUrl">
           <el-input v-model="dataForm.bannerUrl"></el-input>
           <el-upload action="http://localhost:8080/storage/create" :show-file-list="false" :on-success="handleBannerUrl">
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
-        </el-form-item>
-          <el-form-item label="类目页标题" prop="frontName">
+        </el-form-item >
+        <el-form-item v-if="false" label="类目页标题" prop="frontName">
           <el-input v-model="dataForm.frontName"></el-input>
         </el-form-item>
-        <el-form-item label="类目页介绍" prop="frontDesc">
+        <el-form-item v-if="false"  label="类目页介绍" prop="frontDesc">
           <el-input v-model="dataForm.frontDesc"></el-input>
         </el-form-item>
-        <el-form-item label="类目页横幅" prop="wapBannerUrl">
+        <el-form-item  v-if="false" label="类目页横幅" prop="wapBannerUrl">
           <el-input v-model="dataForm.wapBannerUrl"></el-input>
           <el-upload action="http://localhost:8080/storage/create" :show-file-list="false" :on-success="handleWapBannerUrl">
             <el-button size="small" type="primary">点击上传</el-button>
@@ -193,6 +202,7 @@ export default {
         update: '编辑',
         create: '创建'
       },
+      deleteGoodItem: false,
       rules: {
         name: [{ required: true, message: '类目名称不能为空', trigger: 'blur' }],
         keyword: [{ required: true, message: '类目关键字不能为空', trigger: 'blur' }]
@@ -321,6 +331,10 @@ export default {
         }
       })
     },
+    handleBeforeDelete(row){
+      this.deleteGoodItem = true
+      this.delteRow = row
+    },
     handleDelete(row) {
       deleteCategory(row).then(response => {
         this.$notify({
@@ -329,6 +343,7 @@ export default {
           type: 'success',
           duration: 2000
         })
+        this.deleteGoodItem = false
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
       })
