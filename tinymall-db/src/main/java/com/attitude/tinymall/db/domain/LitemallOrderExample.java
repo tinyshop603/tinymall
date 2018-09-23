@@ -242,6 +242,11 @@ public class LitemallOrderExample {
             return (Criteria) this;
         }
 
+        public Criteria andAdminIdEqualTo(Integer value) {
+            addCriterion("admin_id =", value, "adminId");
+            return (Criteria) this;
+        }
+
         public Criteria andIdNotEqualTo(Integer value) {
             addCriterion("id <>", value, "id");
             return (Criteria) this;

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/brand")
+@RequestMapping("/wx/{storeId}/brand")
 public class WxBrandController {
     private final Log logger = LogFactory.getLog(WxBrandController.class);
 

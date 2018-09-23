@@ -47,7 +47,11 @@
   </select>
 
   <select id="selectOdersWithGoods" resultMap="Order_With_Goods">
-    SELECT * from tinymall_order ORDER BY add_time DESC
+    SELECT * from tinymall_order
+     <if test="adminId != 0 ">
+       where admin_id = #{adminId}
+     </if>
+     ORDER BY add_time DESC
   </select>
 
 
@@ -360,6 +364,9 @@
       <if test="deleted != null">
         deleted,
       </if>
+      <if test="adminId != null">
+        admin_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -431,6 +438,9 @@
       <if test="deleted != null">
         #{deleted,jdbcType=BIT},
       </if>
+      <if test="adminId != null">
+      #{adminId,jdbcType=BIT},
+    </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.attitude.tinymall.db.domain.LitemallOrderExample" resultType="java.lang.Long">

@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/goods")
+@RequestMapping("/wx/{storeId}/goods")
 public class WxGoodsController {
     private final Log logger = LogFactory.getLog(WxGoodsController.class);
 

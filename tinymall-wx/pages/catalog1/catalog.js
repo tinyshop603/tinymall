@@ -12,7 +12,6 @@ Page({
     currentSubCategoryList: {},
     systemHeight: ""
   },
-
   onLoad: function () {
     let that = this;
     //根据手机可用高度动态赋予容器高度
@@ -33,35 +32,31 @@ Page({
   onReady: function () {
     // 页面渲染完成
   },
-
   onShow: function () {
     // 页面显示
     var that = this;
     //TODO 是否要登录
     util.request(api.CartGoodsCount).then(function (res) {
       if (res.errno === 0) {
-        if (res.data != 0) {
+        if (res.data != 0){
           wx.setTabBarBadge({
             index: 1,
             text: res.data.toString()
           });
         }
-
+        
       }
     });
   },
-
   onHide: function () {
     // 页面隐藏
     // wx.removeTabBarBadge({
     //   index: 1
     // });
   },
-
   onUnload: function () {
     // 页面关闭
   },
-
   //右上角转发分享功能
   onShareAppMessage: function () {
     return {
@@ -77,7 +72,7 @@ Page({
     wx.showLoading({
       title: '加载中...',
     });
-    
+
     util.request(api.CatalogAndGoodsList, { storeId: that.data.storeId, page: that.data.page, size: that.data.size})
       .then(function (res) {
         that.setData({

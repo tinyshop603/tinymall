@@ -40,12 +40,11 @@ public class AdminAuthController {
             return ResponseUtil.badArgument();
         }
 
-        List<LitemallAdmin> adminList = adminService.findAdmin(username);
-        Assert.state(adminList.size() < 2, "同一个用户名存在两个账户");
-        if(adminList.size() == 0){
+        LitemallAdmin admin = adminService.findAdmin(username);
+        if(admin == null){
             return ResponseUtil.badArgumentValue();
         }
-        LitemallAdmin admin = adminList.get(0);
+
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if(!encoder.matches(password, admin.getPassword())){
@@ -59,9 +58,6 @@ public class AdminAuthController {
         return ResponseUtil.ok(adminToken.getToken());
     }
 
-    /*
-     *
-     */
     @PostMapping("/logout")
     public Object login(@LoginAdmin Integer adminId){
         if(adminId == null){

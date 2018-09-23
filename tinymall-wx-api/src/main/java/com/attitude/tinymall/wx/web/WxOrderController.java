@@ -75,7 +75,7 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/wx/order")
+@RequestMapping("/wx/{storeId}/order")
 public class WxOrderController {
 
   private final Log logger = LogFactory.getLog(WxOrderController.class);
@@ -97,13 +97,15 @@ public class WxOrderController {
   private LitemallRegionService regionService;
   @Autowired
   private LitemallProductService productService;
+  @Autowired
+  private LitemallAdminService adminService;
 
   @Autowired
   private WxPayService wxPayService;
   /**
    * 消息传递信息
    */
-  private MessageInfo<LitemallOrderWithGoods> messageInfo;
+  private MessageInfo<Map> messageInfo;
 
   private Socket client;
 
@@ -162,14 +164,6 @@ public class WxOrderController {
               .thenComparing(LitemallOrder::getDeleted)
               .reversed()
               .thenComparing(LitemallOrder::getId));
-//    orderList
-//        .sort(Comparator.comparing(
-//            LitemallOrder::getConfirmTime)
-//            .thenComparing(LitemallOrder::getDeleted)
-//            .reversed()
-//            .thenComparing(LitemallOrder::getId));
-
-
     int count = orderService.countByOrderStatus(userId, orderStatus);
 
     List<Map<String, Object>> orderVoList = new ArrayList<>(orderList.size());
@@ -272,7 +266,7 @@ public class WxOrderController {
    * XXX }
    */
   @PostMapping("submit")
-  public Object submit(@LoginUser Integer userId, @RequestBody String body) {
+  public Object submit(@LoginUser Integer userId, @RequestBody String body,@PathVariable("storeId") String appId) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -331,6 +325,7 @@ public class WxOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     Integer orderId = null;
     LitemallOrder order = null;
+    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
     try {
       // 订单
       order = new LitemallOrder();
@@ -353,8 +348,9 @@ public class WxOrderController {
       order.setIntegralPrice(integralPrice);
       order.setOrderPrice(orderTotalPrice);
       order.setActualPrice(actualPrice);
+      order.setAdminId(admin.getId());
       // 添加订单表项
-      orderService.add(order);
+      orderService.add(order,appId);
       orderId = order.getId();
 
       for (LitemallCart cartGoods : checkedGoodsList) {
@@ -405,7 +401,10 @@ public class WxOrderController {
     orderWithGoods.setOrder(order);
     // 查找此订单的商品信息
     orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-    messageInfo.setDomainData(orderWithGoods);
+    Map<String,Object> dataSoc = new HashMap<>(2);
+    dataSoc.put("storeUserName",admin.getUsername());
+    dataSoc.put("orderData",orderWithGoods);
+    messageInfo.setDomainData(dataSoc);
     client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
     return ResponseUtil.ok(data);
   }
@@ -473,6 +472,7 @@ public class WxOrderController {
     txManager.commit(status);
     //想办法提醒管理端进行刷新
     messageInfo.setMsgType("order-cancel");
+    Map<String,Object> socketData = new HashMap<>(2);
     messageInfo.setMsgContent(JacksonUtil.stringifyObject(order));
     client.emit(SocketEvent.CANCEL_ORDER, messageInfo);
     return ResponseUtil.ok();
