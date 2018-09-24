@@ -114,7 +114,7 @@ public class WxGoodsController {
             return ResponseUtil.badArgument();
         }
 
-        // 商品信息
+        // 商品信息count
         LitemallGoods info = goodsService.findById(id);
 
         // 商品属性
@@ -416,12 +416,13 @@ public class WxGoodsController {
         }
         List<LitemallCategory> categoryList = categoryService.queryIdByPid(storeid);
         List<Integer> categoryId = new ArrayList<>();
+        Integer goodsCount = 0;
         if(categoryList.size()>0){
             for(int i=0; i<categoryList.size(); i++){
                 categoryId.add(categoryList.get(i).getId());
             }
+            goodsCount = goodsService.queryOnSale(categoryId);
         }
-        Integer goodsCount = goodsService.queryOnSale(categoryId);
         Map<String, Object> data = new HashMap<>();
         data.put("goodsCount", goodsCount);
         return ResponseUtil.ok(data);

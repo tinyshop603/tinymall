@@ -93,7 +93,7 @@ public class LitemallCategoryService {
 
   public List<LitemallCategory> queryIdByPid(int pid) {
     LitemallCategoryExample example = new LitemallCategoryExample();
-    example.or().andParentIdEqualTo(pid).andLevelEqualTo("L1").andDeletedEqualTo(false);
+    example.or().andParentIdEqualTo(pid).andLevelEqualTo("L2").andDeletedEqualTo(false);
     Column[] columns = new Column[]{Column.id};
     return categoryMapper.selectByExampleSelective(example, columns);
   }

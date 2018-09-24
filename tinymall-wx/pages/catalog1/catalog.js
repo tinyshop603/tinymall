@@ -64,7 +64,6 @@ Page({
       path: '/pages/catalog1/catalog'
     }
   },
-
   //TODO 当前只支持每页获取最多20（可调）个商品，将来会做懒加载技术
     //TODO 是否能通过一次请求获取以下信息
   getCatalog: function () {
@@ -73,7 +72,8 @@ Page({
       title: '加载中...',
     });
 
-    util.request(api.CatalogAndGoodsList, { storeId: that.data.storeId, page: that.data.page, size: that.data.size})
+    // util.request(api.CatalogAndGoodsList, { storeId: that.data.storeId, page: that.data.page, size: that.data.size})
+    util.request(api.FirstScreenUrl, { storeId: that.data.storeId, page: that.data.page, size: that.data.size })
       .then(function (res) {
         that.setData({
           categoryList: res.data.categoryList,
@@ -97,7 +97,6 @@ Page({
     }
     this.getCurrentCategory(event.currentTarget.dataset.id);
   },
-
   //TODO 当前只支持每页获取最多20（可调）个商品，将来会做懒加载技术
   getCurrentCategory: function (categoryId) {
     let that = this;
