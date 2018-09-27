@@ -17,7 +17,7 @@ Page({
     cartId: 0,
     addressId: 0,
     couponId: 0,
-    liketext:"",
+    remark:"",
     pickerIndex: 0,
     array:['在线支付','货到付款'],
     objectArray:[
@@ -175,7 +175,7 @@ Page({
   
   //微信支付
   submitPrepay:function(){
-    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex }, 'POST').then(res => {
+    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex, remarkText: this.data.remark }, 'POST').then(res => {
       if (res.errno === 0) {
         const orderId = res.data.orderId;
         util.request(api.OrderPrepay, {
@@ -218,7 +218,7 @@ Page({
 
   //货到付款
   submitAfterpay:function(){
-    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex }, 'POST').then(res => {
+    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex, remarkText: this.data.remark }, 'POST').then(res => {
       if (res.errno === 0) {
         const orderId = res.data.orderId;
         wx.redirectTo({
@@ -236,7 +236,7 @@ Page({
   //TODO 需要测试 可能直接失去焦点
   onKeywordConfirm:function(event){
     this.setData({
-      'liketext': event.detail.value
+      'remark': event.detail.value
     });
   }
 })

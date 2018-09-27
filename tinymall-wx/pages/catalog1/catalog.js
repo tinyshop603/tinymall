@@ -5,7 +5,7 @@ Page({
   data: {
     storeId: "",
     page: 1,
-    size: 20,
+    size: 100,
     goodsCount: 0,
     categoryList: [],
     currentCategory: {},

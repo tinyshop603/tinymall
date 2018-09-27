@@ -21,7 +21,7 @@ Page({
     defaultKeyword: {},
     hotKeyword: [],
     page: 1,
-    size: 20,
+    size: 100,
     categoryId: 0,
 
     clickid: 0,

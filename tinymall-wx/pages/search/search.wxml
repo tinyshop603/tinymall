@@ -54,7 +54,7 @@
         <view class="food-tit">
           <text class="name">{{iitem.name}}</text>
           <view class="addBtn">
-            <text class="price">￥{{iitem.retailPrice}}</text>	
+            <text class="price">￥{{iitem.counterPrice}}</text>	
             <view class="btn" data-goodsId="{{iitem.id}}" bindtap="addToCart">+</view>
           </view>
         </view>
