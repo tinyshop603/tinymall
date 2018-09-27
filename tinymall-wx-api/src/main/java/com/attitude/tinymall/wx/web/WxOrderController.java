@@ -277,6 +277,7 @@ public class WxOrderController {
     Integer addressId = JacksonUtil.parseInteger(body, "addressId");
     Integer couponId = JacksonUtil.parseInteger(body, "couponId");
     Integer modeId = JacksonUtil.parseInteger(body, "modeId");
+    String remarkText = JacksonUtil.parseString(body, "remarkText");
     if (cartId == null || addressId == null || couponId == null) {
       return ResponseUtil.badArgument();
     }
@@ -349,6 +350,7 @@ public class WxOrderController {
       order.setOrderPrice(orderTotalPrice);
       order.setActualPrice(actualPrice);
       order.setAdminId(admin.getId());
+      order.setRemark(remarkText);
       // 添加订单表项
       orderService.add(order,appId);
       orderId = order.getId();
