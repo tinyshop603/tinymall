@@ -96,7 +96,7 @@ public class LitemallGoodsService {
     }
 
     Column[] columns = new Column[]{Column.id, Column.name, Column.listPicUrl, Column.retailPrice,
-        Column.isOnSale};
+        Column.isOnSale,Column.counterPrice};
     return goodsMapper.selectByExampleSelective(example, columns);
   }
 
