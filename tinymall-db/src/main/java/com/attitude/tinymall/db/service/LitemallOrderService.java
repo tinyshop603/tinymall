@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -226,7 +227,10 @@ public class LitemallOrderService {
 
   public List<LitemallOrder> queryUnconfirm() {
     LitemallOrderExample example = new LitemallOrderExample();
-    example.or().andOrderStatusEqualTo(OrderUtil.STATUS_SHIP).andShipEndTimeIsNotNull()
+    List<Short> unconfirmIds = new ArrayList<Short>();
+    unconfirmIds.add(OrderUtil.STATUS_SHIP);
+    unconfirmIds.add(OrderUtil.STATUS_AFTER_SHIP);
+    example.or().andOrderStatusIn(unconfirmIds).andShipEndTimeIsNotNull()
             .andDeletedEqualTo(false);
     return orderMapper.selectByExample(example);
   }

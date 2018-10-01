@@ -266,7 +266,7 @@ public class AdminOrderController {
    * 注意，因为是相隔半小时检查，因此导致有订单是超时一个小时以后才设置取消状态。 TODO 这里可以进一步地配合用户订单查询时订单未付款检查，如果订单超时半小时则取消。
    * 这里暂时取消自动检查订单的逻辑
    */
-//    @Scheduled(fixedDelay = 30*60*1000)
+  @Scheduled(fixedDelay = 30*60*1000)
   public void checkOrderUnpaid() {
     logger.debug(LocalDateTime.now());
 
@@ -331,7 +331,11 @@ public class AdminOrderController {
         continue;
       }
       // 设置订单已取消状态
-      order.setOrderStatus(OrderUtil.STATUS_AUTO_CONFIRM);
+      if(order.getOrderStatus()==301){
+        order.setOrderStatus(OrderUtil.STATUS_AUTO_CONFIRM);
+      }else {
+        order.setOrderStatus(OrderUtil.STATUS_AFTER_AUTO_CONFIRM);
+      }
       order.setConfirmTime(now);
       orderService.updateById(order);
     }

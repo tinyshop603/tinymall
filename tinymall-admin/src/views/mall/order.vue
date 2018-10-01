@@ -220,7 +220,11 @@ export default {
       })
       **/
       // 更改当前的订单的状态为发货状态
-      this.dataForm.orderStatus = STATUS.SHIP
+      if(this.dataForm.orderStatus === 201){
+        this.dataForm.orderStatus = STATUS.SHIP//微信支付
+      }else{
+        this.dataForm.orderStatus = STATUS.AFTER_SHIP//货到付款
+      }
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
         this.updateOrderItemStatus(updatedOrder)
@@ -256,7 +260,11 @@ export default {
     },
     recvData() {
       // 更改当前的订单的状态为完成状态
-      this.dataForm.orderStatus = STATUS.RECEIVE_COMPLETE
+      if(this.dataForm.orderStatus === 201){
+        this.dataForm.orderStatus = STATUS.RECEIVE_COMPLETE//微信支付
+      }else{
+        this.dataForm.orderStatus = STATUS.AFTER_CONFIRM//货到付款
+      }
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
         this.updateOrderItemStatus(updatedOrder)
@@ -271,7 +279,12 @@ export default {
     },
     cancelData() {
       // 更改当前的订单的状态为取消状态
-      this.dataForm.orderStatus = STATUS.CANCEL
+      if(this.dataForm.orderStatus === 201){
+         this.dataForm.orderStatus = STATUS.CANCEL//微信支付
+      }else{
+        this.dataForm.orderStatus = STATUS.AFTER_CANCEL//货到付款
+      }
+     
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
         this.updateOrderItemStatus(updatedOrder)
