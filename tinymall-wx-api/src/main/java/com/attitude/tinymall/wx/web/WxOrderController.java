@@ -574,7 +574,7 @@ public class WxOrderController {
    *
    * 注意，这里pay-notify是示例地址，开发者应该设立一个隐蔽的回调地址
    */
-  @GetMapping("pay-notify")
+  @PostMapping("pay-notify")
   public Object payNotify(HttpServletRequest request, HttpServletResponse response) {
     try {
       String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
