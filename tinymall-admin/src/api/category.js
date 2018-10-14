@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function listMainCategory(query) {
+  return request({
+    url: '/category',
+    method: 'get',
+    params: query
+  })
+}
+
 export function listCategory(query) {
   return request({
     url: '/category/list',

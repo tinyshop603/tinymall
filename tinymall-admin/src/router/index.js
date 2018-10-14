@@ -64,9 +64,9 @@ export const asyncRouterMap = [
     children: [
       { path: 'user', component: _import('user/user'), name: 'user', meta: { title: '会员管理', noCache: true }},
       { path: 'address', component: _import('user/address'), name: 'address', meta: { title: '收货地址', noCache: true }},
-      { path: 'collect', component: _import('user/collect'), name: 'collect', meta: { title: '会员收藏', noCache: true }},
-      { path: 'footprint', component: _import('user/footprint'), name: 'footprint', meta: { title: '会员足迹', noCache: true }},
-      { path: 'history', component: _import('user/history'), name: 'history', meta: { title: '搜索历史', noCache: true }},
+      // { path: 'collect', component: _import('user/collect'), name: 'collect', meta: { title: '会员收藏', noCache: true }},
+      // { path: 'footprint', component: _import('user/footprint'), name: 'footprint', meta: { title: '会员足迹', noCache: true }},
+      // { path: 'history', component: _import('user/history'), name: 'history', meta: { title: '搜索历史', noCache: true }},
       { path: 'cart', component: _import('user/cart'), name: 'cart', meta: { title: '购物车', noCache: true }}
     ]
   },
@@ -81,12 +81,12 @@ export const asyncRouterMap = [
       icon: 'chart'
     },
     children: [
-      { path: 'region', component: _import('mall/region'), name: 'region', meta: { title: '行政区域', noCache: true }},
-      { path: 'brand', component: _import('mall/brand'), name: 'brand', meta: { title: '品牌制造商', noCache: true }},
+      // { path: 'region', component: _import('mall/region'), name: 'region', meta: { title: '行政区域', noCache: true }},
+      // { path: 'brand', component: _import('mall/brand'), name: 'brand', meta: { title: '品牌制造商', noCache: true }},
       { path: 'category', component: _import('mall/category'), name: 'category', meta: { title: '商品类目', noCache: true }},
       { path: 'order', component: _import('mall/order'), name: 'order', meta: { title: '订单管理', noCache: true }},
-      { path: 'issue', component: _import('mall/issue'), name: 'issue', meta: { title: '通用问题', noCache: true }},
-      { path: 'keyword', component: _import('mall/keyword'), name: 'keyword', meta: { title: '关键词', noCache: true }}
+      // { path: 'issue', component: _import('mall/issue'), name: 'issue', meta: { title: '通用问题', noCache: true }},
+      // { path: 'keyword', component: _import('mall/keyword'), name: 'keyword', meta: { title: '关键词', noCache: true }}
     ]
   },
 
@@ -101,32 +101,33 @@ export const asyncRouterMap = [
     },
     children: [
       { path: 'goods', component: _import('goods/goods'), name: 'goods', meta: { title: '商品管理', noCache: true }},
-      { path: 'attribute', component: _import('goods/attribute'), name: 'attribute', meta: { title: '商品参数', noCache: true }},
-      { path: 'specification', component: _import('goods/specification'), name: 'specification', meta: { title: '商品规格', noCache: true }},
-      { path: 'product', component: _import('goods/product'), name: 'product', meta: { title: '货品管理', noCache: true }},
+      // { path: 'attribute', component: _import('goods/attribute'), name: 'attribute', meta: { title: '商品参数', noCache: true }},
+      // { path: 'specification', component: _import('goods/specification'), name: 'specification', meta: { title: '商品规格', noCache: true }},
+      // { path: 'product', component: _import('goods/product'), name: 'product', meta: { title: '货品管理', noCache: true }},
       { path: 'comment', component: _import('goods/comment'), name: 'comment', meta: { title: '用户评论', noCache: true }}
     ]
   },
-  {
-    path: '/promotion',
-    component: Layout,
-    redirect: 'noredirect',
-    name: 'promotionManage',
-    meta: {
-      title: '推广管理',
-      icon: 'chart'
-    },
-    children: [
-      { path: 'ad', component: _import('promotion/ad'), name: 'ad', meta: { title: '广告列表', noCache: true }},
-      { path: 'topic', component: _import('promotion/topic'), name: 'topic', meta: { title: '专题管理', noCache: true }}
-    ]
-  },
+  // {
+  //   path: '/promotion',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: 'promotionManage',
+  //   meta: {
+  //     title: '推广管理',
+  //     icon: 'chart'
+  //   },
+  //   children: [
+  //     { path: 'ad', component: _import('promotion/ad'), name: 'ad', meta: { title: '广告列表', noCache: true }},
+  //     { path: 'topic', component: _import('promotion/topic'), name: 'topic', meta: { title: '专题管理', noCache: true }}
+  //   ]
+  // },
   {
     path: '/sys',
     component: Layout,
     redirect: 'noredirect',
     name: 'sysManage',
     meta: {
+      roles: ['admin'],
       title: '系统管理',
       icon: 'chart'
     },

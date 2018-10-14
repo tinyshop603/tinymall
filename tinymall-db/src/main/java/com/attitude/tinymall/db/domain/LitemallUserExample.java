@@ -232,6 +232,11 @@ public class LitemallUserExample {
             return (Criteria) this;
         }
 
+        public Criteria andAdminIdEqualTo(Integer value){
+            addCriterion("admin_id =", value, "adminId");
+            return (Criteria) this;
+        }
+
         public Criteria andIdIsNotNull() {
             addCriterion("id is not null");
             return (Criteria) this;

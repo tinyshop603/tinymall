@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/wx/region")
+@RequestMapping("/wx/{storeId}/region")
 public class WxRegionController {
     private final Log logger = LogFactory.getLog(WxRegionController.class);
 

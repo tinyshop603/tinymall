@@ -1,4 +1,4 @@
-<view class="container" style="height: 100%;">
+<view class="container">
   <view class="search-header">
     <view class="input-box">
       <image class="icon" src="http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png"></image>
@@ -54,7 +54,7 @@
         <view class="food-tit">
           <text class="name">{{iitem.name}}</text>
           <view class="addBtn">
-            <text class="price">￥{{iitem.retailPrice}}</text>	
+            <text class="price">￥{{iitem.counterPrice}}</text>	
             <view class="btn" data-goodsId="{{iitem.id}}" bindtap="addToCart">+</view>
           </view>
         </view>

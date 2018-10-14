@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication(scanBasePackages={"com.attitude.tinymall.core", "com.attitude.tinymall.wx","com.attitude.tinymall.db"})
 @MapperScan("com.attitude.tinymall.db.dao")
-@EnableTransactionManagement
 @EnableScheduling
 public class Application {
     public static void main(String[] args) {

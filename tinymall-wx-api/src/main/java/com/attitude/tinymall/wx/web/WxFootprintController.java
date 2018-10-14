@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/footprint")
+@RequestMapping("/wx/{storeId}/footprint")
 public class WxFootprintController {
     @Autowired
     private LitemallFootprintService footprintService;

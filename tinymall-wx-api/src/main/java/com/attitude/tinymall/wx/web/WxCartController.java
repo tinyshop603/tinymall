@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/cart")
+@RequestMapping("/wx/{storeId}/cart")
 public class WxCartController {
     private final Log logger = LogFactory.getLog(WxCartController.class);
 

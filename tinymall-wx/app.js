@@ -13,6 +13,7 @@ App({
     });
   },
   globalData: {
-    hasLogin: false
+    hasLogin: false,
+    storeId: 1042876//回龙观
   }
 })

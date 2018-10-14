@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/topic")
+@RequestMapping("/wx/{storeId}/topic")
 public class WxTopicController {
     @Autowired
     private LitemallTopicService topicService;

@@ -15,58 +15,59 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/user")
+@RequestMapping("/admin/{userName}/user")
 public class AdminUserController {
-    private final Log logger = LogFactory.getLog(AdminUserController.class);
 
-    @Autowired
-    private LitemallUserService userService;
+  private final Log logger = LogFactory.getLog(AdminUserController.class);
 
-    @GetMapping("/list")
-    public Object list(@LoginAdmin Integer adminId,
-                       String username, String mobile,
-                       @RequestParam(value = "page", defaultValue = "1") Integer page,
-                       @RequestParam(value = "limit", defaultValue = "10") Integer limit,
-                       String sort, String order){
-        if(adminId == null){
-            return ResponseUtil.fail401();
-        }
-        List<LitemallUser> userList = userService.querySelective(username, mobile, page, limit, sort, order);
-        int total = userService.countSeletive(username, mobile, page, limit, sort, order);
-        Map<String, Object> data = new HashMap<>();
-        data.put("total", total);
-        data.put("items", userList);
+  @Autowired
+  private LitemallUserService userService;
 
-        return ResponseUtil.ok(data);
+  @GetMapping("/list")
+  public Object list(@LoginAdmin Integer adminId,
+      String username, String mobile,
+      @RequestParam(value = "page", defaultValue = "1") Integer page,
+      @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+      String sort, String order) {
+    if (adminId == null) {
+      return ResponseUtil.fail401();
+    }
+    List<LitemallUser> userList = userService.listUsersByAdminId(adminId, username, mobile, page, limit, sort, order);
+    int total = userService.countUsersByAdminId(adminId, username, mobile);
+    Map<String, Object> data = new HashMap<>();
+    data.put("total", total);
+    data.put("items", userList);
+
+    return ResponseUtil.ok(data);
+  }
+
+  @GetMapping("/username")
+  public Object username(String username) {
+    if (StringUtil.isEmpty(username)) {
+      return ResponseUtil.fail402();
     }
 
-    @GetMapping("/username")
-    public Object username(String username){
-        if(StringUtil.isEmpty(username)){
-            return ResponseUtil.fail402();
-        }
-
-        int total = userService.countSeletive(username, null, null, null, null, null);
-        if(total == 0){
-            return ResponseUtil.ok("不存在");
-        }
-        return ResponseUtil.ok("已存在");
+    int total = userService.countSeletive(username, null, null, null, null, null);
+    if (total == 0) {
+      return ResponseUtil.ok("不存在");
     }
+    return ResponseUtil.ok("已存在");
+  }
 
 
-    @PostMapping("/create")
-    public Object create(@LoginAdmin Integer adminId, @RequestBody LitemallUser user){
-        logger.debug(user);
+  @PostMapping("/create")
+  public Object create(@LoginAdmin Integer adminId, @RequestBody LitemallUser user) {
+    logger.debug(user);
 
-        userService.add(user);
-        return ResponseUtil.ok(user);
-    }
+    userService.add(user);
+    return ResponseUtil.ok(user);
+  }
 
-    @PostMapping("/update")
-    public Object update(@LoginAdmin Integer adminId, @RequestBody LitemallUser user){
-        logger.debug(user);
+  @PostMapping("/update")
+  public Object update(@LoginAdmin Integer adminId, @RequestBody LitemallUser user) {
+    logger.debug(user);
 
-        userService.update(user);
-        return ResponseUtil.ok(user);
-    }
+    userService.update(user);
+    return ResponseUtil.ok(user);
+  }
 }

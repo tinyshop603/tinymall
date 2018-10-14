@@ -1,11 +1,14 @@
 var util = require('../../utils/util.js');
 var api = require('../../config/api.js');
 var WxParse = require('../../lib/wxParse/wxParse.js');
-
-var app = getApp()
+var app = getApp();
+//TODO 历史记录:没有对字体长度做限制<28
 Page({
   data: {
-    storeId: 1042876,//回龙观
+    storeId: "",
+
+
+
     keywrod: '',
     searchStatus: false,
     goodsList: [],
@@ -18,7 +21,7 @@ Page({
     defaultKeyword: {},
     hotKeyword: [],
     page: 1,
-    size: 20,
+    size: 100,
     categoryId: 0,
 
     clickid: 0,
@@ -54,7 +57,10 @@ Page({
     });
   },
   onLoad: function () {
-
+    //商店ID赋值
+    this.setData({
+      storeId: app.globalData.storeId
+    })
     this.getSearchKeyword();
   },
 

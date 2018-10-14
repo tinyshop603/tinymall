@@ -13,108 +13,154 @@ import java.util.List;
 
 @Service
 public class LitemallCommentService {
-    @Resource
-    private LitemallCommentMapper commentMapper;
 
-    public List<LitemallComment> queryGoodsByGid(Integer id, int offset, int limit) {
-        LitemallCommentExample example = new LitemallCommentExample();
-        example.setOrderByClause(LitemallComment.Column.addTime.desc());
-        example.or().andValueIdEqualTo(id).andTypeIdEqualTo((byte)0).andDeletedEqualTo(false);
-        PageHelper.startPage(offset, limit);
-        return commentMapper.selectByExample(example);
+  @Resource
+  private LitemallCommentMapper commentMapper;
+  @Resource
+  private LitemallGoodsService goodsService;
+
+  public List<LitemallComment> queryGoodsByGid(Integer id, int offset, int limit) {
+    LitemallCommentExample example = new LitemallCommentExample();
+    example.setOrderByClause(LitemallComment.Column.addTime.desc());
+    example.or().andValueIdEqualTo(id).andTypeIdEqualTo((byte) 0).andDeletedEqualTo(false);
+    PageHelper.startPage(offset, limit);
+    return commentMapper.selectByExample(example);
+  }
+
+  public int countGoodsByGid(Integer id, int offset, int limit) {
+    LitemallCommentExample example = new LitemallCommentExample();
+    example.or().andValueIdEqualTo(id).andTypeIdEqualTo((byte) 0).andDeletedEqualTo(false);
+    return (int) commentMapper.countByExample(example);
+  }
+
+  public List<LitemallComment> query(Byte typeId, Integer valueId, Integer showType, Integer offset,
+      Integer limit) {
+    LitemallCommentExample example = new LitemallCommentExample();
+    example.setOrderByClause(LitemallComment.Column.addTime.desc());
+    if (showType == 0) {
+      example.or().andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andDeletedEqualTo(false);
+    } else if (showType == 1) {
+      example.or().andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andHasPictureEqualTo(true)
+          .andDeletedEqualTo(false);
+    } else {
+      Assert.state(false, "showType不支持");
+    }
+    PageHelper.startPage(offset, limit);
+    return commentMapper.selectByExample(example);
+  }
+
+  public int count(Byte typeId, Integer valueId, Integer showType, Integer offset, Integer size) {
+    LitemallCommentExample example = new LitemallCommentExample();
+    if (showType == 0) {
+      example.or().andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andDeletedEqualTo(false);
+    } else if (showType == 1) {
+      example.or().andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andHasPictureEqualTo(true)
+          .andDeletedEqualTo(false);
+    } else {
+      Assert.state(false, "");
+    }
+    return (int) commentMapper.countByExample(example);
+  }
+
+  public Integer save(LitemallComment comment) {
+    return commentMapper.insertSelective(comment);
+  }
+
+
+  public void update(LitemallComment comment) {
+    commentMapper.updateByPrimaryKeySelective(comment);
+  }
+
+
+  public List<LitemallComment> listAdminCommentsByAdminId(Integer adminId, String userId,
+      String valueId, Integer page, Integer size, String sort, String order) {
+    LitemallCommentExample example = new LitemallCommentExample();
+    example.setOrderByClause(LitemallComment.Column.addTime.desc());
+    LitemallCommentExample.Criteria criteria = example.createCriteria();
+
+    List<Integer> adminGoodsIds = goodsService.getAdminGoodsIds(adminId);
+    if (adminGoodsIds.size() > 0) {
+      criteria.andValueIdIn(adminGoodsIds);
     }
 
-    public int countGoodsByGid(Integer id, int offset, int limit) {
-        LitemallCommentExample example = new LitemallCommentExample();
-        example.or().andValueIdEqualTo(id).andTypeIdEqualTo((byte)0).andDeletedEqualTo(false);
-        return (int)commentMapper.countByExample(example);
+    if (!StringUtils.isEmpty(userId)) {
+      criteria.andUserIdEqualTo(Integer.valueOf(userId));
     }
-
-    public List<LitemallComment> query(Byte typeId, Integer valueId, Integer showType, Integer offset, Integer limit) {
-        LitemallCommentExample example = new LitemallCommentExample();
-        example.setOrderByClause(LitemallComment.Column.addTime.desc());
-        if(showType == 0) {
-            example.or().andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andDeletedEqualTo(false);
-        }
-        else if(showType == 1){
-            example.or().andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andHasPictureEqualTo(true).andDeletedEqualTo(false);
-        }
-        else{
-            Assert.state(false, "showType不支持");
-        }
-        PageHelper.startPage(offset, limit);
-        return commentMapper.selectByExample(example);
+    if (!StringUtils.isEmpty(valueId)) {
+      criteria.andValueIdEqualTo(Integer.valueOf(valueId)).andTypeIdEqualTo((byte) 0);
     }
+    criteria.andDeletedEqualTo(false);
 
-    public int count(Byte typeId, Integer valueId, Integer showType, Integer offset, Integer size){
-        LitemallCommentExample example = new LitemallCommentExample();
-        if(showType == 0) {
-            example.or().andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andDeletedEqualTo(false);
-        }
-        else if(showType == 1){
-            example.or().andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andHasPictureEqualTo(true).andDeletedEqualTo(false);
-        }
-        else{
-            Assert.state(false, "");
-        }
-        return (int)commentMapper.countByExample(example);
+    PageHelper.startPage(page, size);
+    return commentMapper.selectByExample(example);
+  }
+
+  public int countAdminCommentsByAdminId(Integer adminId, String userId, String valueId) {
+    LitemallCommentExample example = new LitemallCommentExample();
+    LitemallCommentExample.Criteria criteria = example.createCriteria();
+    List<Integer> adminGoodsIds = goodsService.getAdminGoodsIds(adminId);
+    if (adminGoodsIds.size() > 0) {
+      criteria.andValueIdIn(adminGoodsIds);
     }
-
-    public Integer save(LitemallComment comment) {
-        return commentMapper.insertSelective(comment);
+    if (!StringUtils.isEmpty(userId)) {
+      criteria.andUserIdEqualTo(Integer.valueOf(userId));
     }
-
-
-    public void update(LitemallComment comment) {
-        commentMapper.updateByPrimaryKeySelective(comment);
+    if (!StringUtils.isEmpty(valueId)) {
+      criteria.andValueIdEqualTo(Integer.valueOf(valueId)).andTypeIdEqualTo((byte) 0);
     }
+    criteria.andDeletedEqualTo(false);
+
+    return (int) commentMapper.countByExample(example);
+  }
 
 
-    public List<LitemallComment> querySelective(String userId, String valueId, Integer page, Integer size, String sort, String order) {
-        LitemallCommentExample example = new LitemallCommentExample();
-        example.setOrderByClause(LitemallComment.Column.addTime.desc());
-        LitemallCommentExample.Criteria criteria = example.createCriteria();
+  public List<LitemallComment> querySelective(String userId, String valueId, Integer page,
+      Integer size, String sort, String order) {
+    LitemallCommentExample example = new LitemallCommentExample();
+    example.setOrderByClause(LitemallComment.Column.addTime.desc());
+    LitemallCommentExample.Criteria criteria = example.createCriteria();
 
-        if(!StringUtils.isEmpty(userId)){
-            criteria.andUserIdEqualTo(Integer.valueOf(userId));
-        }
-        if(!StringUtils.isEmpty(valueId)){
-            criteria.andValueIdEqualTo(Integer.valueOf(valueId)).andTypeIdEqualTo((byte)0);
-        }
-        criteria.andDeletedEqualTo(false);
-
-        PageHelper.startPage(page, size);
-        return commentMapper.selectByExample(example);
+    if (!StringUtils.isEmpty(userId)) {
+      criteria.andUserIdEqualTo(Integer.valueOf(userId));
     }
-
-    public int countSelective(String userId, String valueId, Integer page, Integer size, String sort, String order) {
-        LitemallCommentExample example = new LitemallCommentExample();
-        LitemallCommentExample.Criteria criteria = example.createCriteria();
-
-        if(!StringUtils.isEmpty(userId)){
-            criteria.andUserIdEqualTo(Integer.valueOf(userId));
-        }
-        if(!StringUtils.isEmpty(valueId)){
-            criteria.andValueIdEqualTo(Integer.valueOf(valueId)).andTypeIdEqualTo((byte)0);
-        }
-        criteria.andDeletedEqualTo(false);
-
-        return (int)commentMapper.countByExample(example);
+    if (!StringUtils.isEmpty(valueId)) {
+      criteria.andValueIdEqualTo(Integer.valueOf(valueId)).andTypeIdEqualTo((byte) 0);
     }
+    criteria.andDeletedEqualTo(false);
 
-    public void updateById(LitemallComment comment) {
-        commentMapper.updateByPrimaryKeySelective(comment);
-    }
+    PageHelper.startPage(page, size);
+    return commentMapper.selectByExample(example);
+  }
 
-    public void deleteById(Integer id) {
-        commentMapper.logicalDeleteByPrimaryKey(id);
-    }
+  public int countSelective(String userId, String valueId, Integer page, Integer size, String sort,
+      String order) {
+    LitemallCommentExample example = new LitemallCommentExample();
+    LitemallCommentExample.Criteria criteria = example.createCriteria();
 
-    public void add(LitemallComment comment) {
-        commentMapper.insertSelective(comment);
+    if (!StringUtils.isEmpty(userId)) {
+      criteria.andUserIdEqualTo(Integer.valueOf(userId));
     }
+    if (!StringUtils.isEmpty(valueId)) {
+      criteria.andValueIdEqualTo(Integer.valueOf(valueId)).andTypeIdEqualTo((byte) 0);
+    }
+    criteria.andDeletedEqualTo(false);
 
-    public LitemallComment findById(Integer id) {
-        return commentMapper.selectByPrimaryKey(id);
-    }
+    return (int) commentMapper.countByExample(example);
+  }
+
+  public void updateById(LitemallComment comment) {
+    commentMapper.updateByPrimaryKeySelective(comment);
+  }
+
+  public void deleteById(Integer id) {
+    commentMapper.logicalDeleteByPrimaryKey(id);
+  }
+
+  public void add(LitemallComment comment) {
+    commentMapper.insertSelective(comment);
+  }
+
+  public LitemallComment findById(Integer id) {
+    return commentMapper.selectByPrimaryKey(id);
+  }
 }

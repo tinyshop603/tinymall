@@ -92,4 +92,12 @@ public class BCryptPasswordEncoder {
 
         return BCrypt.checkpw(rawPassword.toString(), encodedPassword);
     }
+
+    public static void main(String[] args) {
+        BCryptPasswordEncoder crp = new BCryptPasswordEncoder();
+        String encode = crp.encode("xiaozhu");
+        System.out.println(encode);
+
+    }
+
 }
