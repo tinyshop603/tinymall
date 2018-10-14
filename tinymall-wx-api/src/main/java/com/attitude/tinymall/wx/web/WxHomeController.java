@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/home")
+@RequestMapping("/wx/{storeId}/home")
 public class WxHomeController {
     private final Log logger = LogFactory.getLog(WxHomeController.class);
 

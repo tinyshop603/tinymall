@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/cart")
+@RequestMapping("/admin/{userName}/cart")
 public class AdminCartController {
     private final Log logger = LogFactory.getLog(AdminCartController.class);
 
@@ -39,8 +39,8 @@ public class AdminCartController {
         if(adminId == null){
             return ResponseUtil.fail401();
         }
-        List<LitemallCart> cartList = cartService.querySelective(userId, goodsId, page, limit, sort, order);
-        int total = cartService.countSelective(userId, goodsId, page, limit, sort, order);
+        List<LitemallCart> cartList = cartService.listAdminCartsByAdminId(adminId,userId, goodsId, page, limit, sort, order);
+        int total = cartService.countAdminCartByAdminId(adminId,userId, goodsId);
 
         Map<String, Object> data = new HashMap<>();
         data.put("total", total);

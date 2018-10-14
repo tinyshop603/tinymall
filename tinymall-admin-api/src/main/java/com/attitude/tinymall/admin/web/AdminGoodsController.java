@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/goods")
+@RequestMapping("/admin/{userName}/goods")
 public class AdminGoodsController {
     private final Log logger = LogFactory.getLog(AdminGoodsController.class);
 
@@ -30,9 +30,9 @@ public class AdminGoodsController {
         if(adminId == null){
             return ResponseUtil.unlogin();
         }
-
-        List<LitemallGoods> goodsList = goodsService.querySelective(goodsSn, name,categoryId, page, limit, sort, order);
-        int total = goodsService.countSelective(goodsSn, name, categoryId,page, limit, sort, order);
+        // 将该用户下的所有的category全部抓取出来,查询所有的商品是该用户的
+        List<LitemallGoods> goodsList = goodsService.listGoodsByAdminId(adminId,goodsSn, name,categoryId, page, limit, sort, order);
+        int total = goodsService.countGoodsByAdminId(adminId,goodsSn, name, categoryId);
         Map<String, Object> data = new HashMap<>();
         data.put("total", total);
         data.put("items", goodsList);

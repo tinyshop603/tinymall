@@ -1,5 +1,7 @@
 package com.attitude.tinymall.admin.web;
 
+import com.attitude.tinymall.db.domain.LitemallAdmin;
+import com.attitude.tinymall.db.service.LitemallAdminService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.admin.annotation.LoginAdmin;
@@ -14,12 +16,41 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/category")
+@RequestMapping("/admin/{userName}/category")
 public class AdminCategoryController {
     private final Log logger = LogFactory.getLog(AdminCategoryController.class);
 
     @Autowired
     private LitemallCategoryService categoryService;
+
+    @Autowired
+    private LitemallAdminService adminService;
+
+    @GetMapping
+    public Object getHomeCategory(@LoginAdmin Integer adminId,
+        @RequestParam(value = "page", defaultValue = "1") Integer page,
+        @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+        String sort, String order){
+        if(adminId == null){
+            return ResponseUtil.unlogin();
+        }
+        // 根据Parent Id 查询出 Id ,当做parentId进行塞入进去
+        List<LitemallCategory> parentCategorys = categoryService.queryIdByPid(adminId);
+        // 此时查询出来的必须是1或者是0条数据
+        String parentId = null;
+        if (parentCategorys != null && parentCategorys.size() > 0){
+            parentId = parentCategorys.get(0).getId().toString();
+        }
+
+        List<LitemallCategory> collectList = categoryService.getAdminMallCategoryByAdminId(adminId,page, limit, sort, order);
+        int total = categoryService.countAdminMallCategoryByAdminId(adminId,page, limit, sort, order);
+        Map<String, Object> data = new HashMap<>();
+        data.put("total", total);
+        data.put("items", collectList);
+
+        return ResponseUtil.ok(data);
+    }
+
 
     @GetMapping("/list")
     public Object list(@LoginAdmin Integer adminId,

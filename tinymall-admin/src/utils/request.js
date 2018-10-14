@@ -6,7 +6,7 @@ import { getToken } from '@/utils/auth'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000 // request timeout
+  timeout: 30*1000 // request timeout
 })
 
 // request interceptor
@@ -14,6 +14,12 @@ service.interceptors.request.use(config => {
   // Do something before request is sent
   if (store.getters.token) {
     config.headers['X-Token'] = getToken() // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+  }
+  if (store.getters.name) {
+    // 全局拦截,增加userName进行传过去,当做PathValible,登陆登出不进行处理,
+    if (!(config.url.includes('login') ||  config.url.includes('admin'))) {
+      config.url = ('/'+store.getters.name)+ config.url
+    }
   }
   return config
 }, error => {

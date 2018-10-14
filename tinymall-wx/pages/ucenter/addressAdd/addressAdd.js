@@ -305,6 +305,7 @@ Page({
       provinceName: address.provinceName,
       cityName: address.cityName,
       countyName: address.areaName
+
     }, 'POST').then(function (res) {
       if (res.errno === 0) {
         wx.navigateBack();

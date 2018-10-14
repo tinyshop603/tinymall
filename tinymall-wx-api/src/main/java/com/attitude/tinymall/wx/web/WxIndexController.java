@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/wx/index")
+@RequestMapping("/wx/{storeId}/index")
 public class WxIndexController {
     private final Log logger = LogFactory.getLog(WxIndexController.class);
 

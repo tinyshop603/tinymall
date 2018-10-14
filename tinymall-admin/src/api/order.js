@@ -10,11 +10,17 @@ export const STATUS = {
   REFUND: 202,
   REFUND_CONFIRM: 203,
   AUTO_CONFIRM: 402,
-  RECEIVE_COMPLETE: 401
+  RECEIVE_COMPLETE: 401,
+  AFTER_PAY:1,
+  AFTER_CANCEL:2,
+  AFTER_SHIP:3,
+  AFTER_CONFIRM:4,
+  AFTER_AUTO_CONFIRM:5
 }
 export function listOrder(query) {
   request.interceptors.response.use(response => {
-    let orderItems = response.data.data.items
+    if (response.data && response.data.data) {
+         let orderItems = response.data.data.items
     if (!orderItems) {
       orderItems = [response.data.data]
     }
@@ -39,6 +45,7 @@ export function listOrder(query) {
       }
       return Object.assign(item, getBtnStateByCode(code))
     })
+    }
     return response
   })
   return request({
@@ -100,13 +107,13 @@ export function deleteOrder(data) {
 export function getBtnStateByCode(orderStaCode) {
   let code
   // 由于目前暂时为能够使用这么对状态码,故,将其进行简化
-  if (orderStaCode === 101 || orderStaCode === 101) {
+  if (orderStaCode === 201 || orderStaCode === 1) {
     code = 601
-  } else if (orderStaCode === 102 || orderStaCode === 103) {
+  } else if (orderStaCode === 102 || orderStaCode === 103 || orderStaCode === 2) {
     code = 602
-  } else if (orderStaCode === 104 || orderStaCode === 301) {
+  } else if (orderStaCode === 104 || orderStaCode === 301 || orderStaCode === 3) {
     code = 603
-  } else if (orderStaCode === 403 || orderStaCode === 401) {
+  } else if (orderStaCode === 402 || orderStaCode === 401 || orderStaCode === 4 || orderStaCode === 5) {
     code = 604
   }
   switch (code) {

@@ -11,6 +11,8 @@ const user = {
     avatar: '',
     introduction: '',
     roles: [],
+    shopId: '',
+    adminId: '',
     setting: {
       articlePlatform: []
     }
@@ -40,6 +42,12 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_SHOP_ID: (state, shopId) => {
+      state.shopId = shopId
+    },
+    SET_ADMIN_ID: (state, adminId) => {
+      state.adminId = adminId
     }
   },
 
@@ -68,6 +76,8 @@ const user = {
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
+          commit('SET_SHOP_ID', data.shopId)
+          commit('SET_ADMIN_ID', data.adminId)
           resolve(response)
         }).catch(error => {
           reject(error)

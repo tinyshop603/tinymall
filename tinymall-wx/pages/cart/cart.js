@@ -43,6 +43,10 @@ Page({
               index: 1,
               text: res.data.toString()
             });
+          }else{
+            wx.removeTabBarBadge({
+              index: 1
+            });
           }
 
         }

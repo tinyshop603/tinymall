@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang3.StringUtils;
 import com.attitude.tinymall.db.domain.*;
 import com.attitude.tinymall.db.service.*;
 import com.attitude.tinymall.core.util.JacksonUtil;
@@ -74,7 +75,7 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/wx/order")
+@RequestMapping("/wx/{storeId}/order")
 public class WxOrderController {
 
   private final Log logger = LogFactory.getLog(WxOrderController.class);
@@ -96,13 +97,15 @@ public class WxOrderController {
   private LitemallRegionService regionService;
   @Autowired
   private LitemallProductService productService;
+  @Autowired
+  private LitemallAdminService adminService;
 
   @Autowired
   private WxPayService wxPayService;
   /**
    * 消息传递信息
    */
-  private MessageInfo<LitemallOrderWithGoods> messageInfo;
+  private MessageInfo<Map> messageInfo;
 
   private Socket client;
 
@@ -161,14 +164,6 @@ public class WxOrderController {
               .thenComparing(LitemallOrder::getDeleted)
               .reversed()
               .thenComparing(LitemallOrder::getId));
-//    orderList
-//        .sort(Comparator.comparing(
-//            LitemallOrder::getConfirmTime)
-//            .thenComparing(LitemallOrder::getDeleted)
-//            .reversed()
-//            .thenComparing(LitemallOrder::getId));
-
-
     int count = orderService.countByOrderStatus(userId, orderStatus);
 
     List<Map<String, Object>> orderVoList = new ArrayList<>(orderList.size());
@@ -271,7 +266,7 @@ public class WxOrderController {
    * XXX }
    */
   @PostMapping("submit")
-  public Object submit(@LoginUser Integer userId, @RequestBody String body) {
+  public Object submit(@LoginUser Integer userId, @RequestBody String body,@PathVariable("storeId") String appId) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -281,6 +276,8 @@ public class WxOrderController {
     Integer cartId = JacksonUtil.parseInteger(body, "cartId");
     Integer addressId = JacksonUtil.parseInteger(body, "addressId");
     Integer couponId = JacksonUtil.parseInteger(body, "couponId");
+    Integer modeId = JacksonUtil.parseInteger(body, "modeId");
+    String remarkText = JacksonUtil.parseString(body, "remarkText");
     if (cartId == null || addressId == null || couponId == null) {
       return ResponseUtil.badArgument();
     }
@@ -329,14 +326,19 @@ public class WxOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     Integer orderId = null;
     LitemallOrder order = null;
+    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
     try {
       // 订单
       order = new LitemallOrder();
       order.setUserId(userId);
       order.setOrderSn(orderService.generateOrderSn(userId));
       order.setAddTime(LocalDateTime.now());
-//      order.setOrderStatus(OrderUtil.STATUS_CREATE);
-      order.setOrderStatus(OrderUtil.STATUS_CREATE);
+      if(modeId == 0){
+        order.setOrderStatus(OrderUtil.STATUS_CREATE);//微信支付
+      }else{
+        order.setOrderStatus(OrderUtil.STATUS_AFTER_PAY);//货到付款
+      }
+
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
       String detailedAddress = detailedAddress(checkedAddress);
@@ -347,8 +349,10 @@ public class WxOrderController {
       order.setIntegralPrice(integralPrice);
       order.setOrderPrice(orderTotalPrice);
       order.setActualPrice(actualPrice);
+      order.setAdminId(admin.getId());
+      order.setRemark(remarkText);
       // 添加订单表项
-      orderService.add(order);
+      orderService.add(order,appId);
       orderId = order.getId();
 
       for (LitemallCart cartGoods : checkedGoodsList) {
@@ -399,7 +403,10 @@ public class WxOrderController {
     orderWithGoods.setOrder(order);
     // 查找此订单的商品信息
     orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-    messageInfo.setDomainData(orderWithGoods);
+    Map<String,Object> dataSoc = new HashMap<>(2);
+    dataSoc.put("storeUserName",admin.getUsername());
+    dataSoc.put("orderData",orderWithGoods);
+    messageInfo.setDomainData(dataSoc);
     client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
     return ResponseUtil.ok(data);
   }
@@ -441,7 +448,12 @@ public class WxOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     try {
       // 设置订单已取消状态
-      order.setOrderStatus(OrderUtil.STATUS_CANCEL);
+      if(order.getOrderStatus()==001){//货到付款 用户取消分支wz
+        order.setOrderStatus(OrderUtil.STATUS_AFTER_CANCEL);
+      }else{
+        order.setOrderStatus(OrderUtil.STATUS_CANCEL);
+      }
+
       order.setEndTime(LocalDateTime.now());
       orderService.update(order);
 
@@ -462,6 +474,7 @@ public class WxOrderController {
     txManager.commit(status);
     //想办法提醒管理端进行刷新
     messageInfo.setMsgType("order-cancel");
+    Map<String,Object> socketData = new HashMap<>(2);
     messageInfo.setMsgContent(JacksonUtil.stringifyObject(order));
     client.emit(SocketEvent.CANCEL_ORDER, messageInfo);
     return ResponseUtil.ok();
@@ -477,7 +490,7 @@ public class WxOrderController {
    * @return 订单操作结果 成功则 { errno: 0, errmsg: '模拟付款支付成功' } 失败则 { errno: XXX, errmsg: XXX }
    */
   @PostMapping("prepay")
-  public Object prepay(@LoginUser Integer userId, @RequestBody String body) {
+  public Object prepay(@LoginUser Integer userId, @RequestBody String body, HttpServletRequest request) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -502,22 +515,28 @@ public class WxOrderController {
 
     LitemallUser user = userService.findById(userId);
     String openid = user.getWeixinOpenid();
+
     if (openid == null) {
       return ResponseUtil.fail(403, "订单不能支付");
     }
     WxPayMpOrderResult result = null;
     try {
+      // TODO 还没有考虑好使用哪种方式获取用户IP
+      String userIp = user.getLastLoginIp();
+      String getIp = getIp2(request);
       WxPayUnifiedOrderRequest orderRequest = new WxPayUnifiedOrderRequest();
       orderRequest.setOutTradeNo(order.getOrderSn());
       orderRequest.setOpenid(openid);
       // TODO 更有意义的显示名称
       orderRequest.setBody("tinymall小商场-订单测试支付");
-      // 元转成分
       // 这里仅支付1分
-      // TODO 这里1分钱需要改成实际订单金额
-      orderRequest.setTotalFee(1);
-      // TODO 用户IP地址
-      orderRequest.setSpbillCreateIp("123.12.12.123");
+      // TODO 单位转换元转分 测试时使用分
+        BigDecimal radix = new BigDecimal(100);
+        BigDecimal realFee = order.getActualPrice().multiply(radix);
+//        orderRequest.setTotalFee(realFee.intValue());
+      orderRequest.setTotalFee(1);//测试用例 每次一分
+      // 用户终端IP地址
+      orderRequest.setSpbillCreateIp(getIp);
 
       result = wxPayService.createOrder(orderRequest);
     } catch (Exception e) {
@@ -529,6 +548,25 @@ public class WxOrderController {
     return ResponseUtil.ok(result);
   }
 
+  // 通过用户请求获取用户IP WZ
+  public static String getIp2(HttpServletRequest request) {
+    String ip = request.getHeader("X-Forwarded-For");
+    if(StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)){
+      //多次反向代理后会有多个ip值，第一个ip才是真实ip
+      int index = ip.indexOf(",");
+      if(index != -1){
+        return ip.substring(0,index);
+      }else{
+        return ip;
+      }
+    }
+    ip = request.getHeader("X-Real-IP");
+    if(StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)){
+      return ip;
+    }
+    return request.getRemoteAddr();
+  }
+
   /**
    * 付款成功回调接口 1. 检测当前订单是否是付款状态 2. 设置订单付款成功状态相关信息 3. 响应微信支付平台
    *
@@ -536,7 +574,7 @@ public class WxOrderController {
    *
    * 注意，这里pay-notify是示例地址，开发者应该设立一个隐蔽的回调地址
    */
-  @PostMapping("pay-notify")
+  @GetMapping("pay-notify")
   public Object payNotify(HttpServletRequest request, HttpServletResponse response) {
     try {
       String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
@@ -566,8 +604,8 @@ public class WxOrderController {
       order.setPayId(payId);
       order.setPayTime(LocalDateTime.now());
       order.setOrderStatus(OrderUtil.STATUS_PAY);
-      orderService.updateById(order);
 
+      orderService.updateById(order);
       return WxPayNotifyResponse.success("处理成功!");
     } catch (Exception e) {
       logger.error("微信回调结果异常,异常原因 " + e.getMessage());
@@ -642,8 +680,12 @@ public class WxOrderController {
     if (!handleOption.isConfirm()) {
       return ResponseUtil.fail(403, "订单不能确认收货");
     }
+    if(order.getOrderStatus()==003){
+      order.setOrderStatus(OrderUtil.STATUS_AFTER_CONFIRM);//货到付款分支，用户确定收货；wz
+    }else{
+      order.setOrderStatus(OrderUtil.STATUS_CONFIRM);
+    }
 
-    order.setOrderStatus(OrderUtil.STATUS_CONFIRM);
     order.setConfirmTime(LocalDateTime.now());
     orderService.update(order);
     return ResponseUtil.ok();

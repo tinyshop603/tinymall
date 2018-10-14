@@ -3,10 +3,10 @@
         <!-- <view class="item {{ showType == 0 ? 'active' : ''}}" bindtap="switchTab" data-index='0'>
             <view class="txt">全部</view>
         </view> -->
-        <!-- <view class="item {{ showType == 1 ? 'active' : ''}}" bindtap="switchTab" data-index='1'>
-            <view class="txt">待付款</view>
-        </view> -->
         <view class="item {{ showType == 1 ? 'active' : ''}}" bindtap="switchTab" data-index='1'>
+            <view class="txt">待付款</view>
+        </view>
+        <view class="item {{ showType == 2 ? 'active' : ''}}" bindtap="switchTab" data-index='2'>
             <view class="txt">待发货</view>
         </view>
         <view class="item {{ showType == 3 ? 'active' : ''}}" bindtap="switchTab" data-index='3'>

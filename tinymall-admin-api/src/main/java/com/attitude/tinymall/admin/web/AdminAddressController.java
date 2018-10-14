@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/address")
+@RequestMapping("/admin/{userName}/address")
 public class AdminAddressController {
     private final Log logger = LogFactory.getLog(AdminAddressController.class);
 
@@ -56,8 +56,8 @@ public class AdminAddressController {
             return ResponseUtil.fail401();
         }
 
-        List<LitemallAddress> addressList = addressService.querySelective(userId, name, page, limit, sort, order);
-        int total = addressService.countSelective(userId, name, page, limit, sort, order);
+        List<LitemallAddress> addressList = addressService.listAdminAddressByAdminId(adminId,userId, name, page, limit, sort, order);
+        int total = addressService.countAdminAddressByAdminId(adminId,userId, name);
 
         List<Map<String, Object>> addressVoList = new ArrayList<>(addressList.size());
         for(LitemallAddress address : addressList){
@@ -83,7 +83,9 @@ public class AdminAddressController {
             return ResponseUtil.fail(403, "手机号格式不正确");
         }
 
-        addressService.add(address);
+        address.setAdminId(adminId);
+
+        addressService.add(address,"");
 
         Map<String, Object> addressVo = toVo(address);
         return ResponseUtil.ok(addressVo);

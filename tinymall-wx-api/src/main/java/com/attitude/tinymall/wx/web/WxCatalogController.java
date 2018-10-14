@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/catalog")
+@RequestMapping("/wx/{storeId}/catalog")
 public class WxCatalogController {
     @Autowired
     private LitemallCategoryService categoryService;
