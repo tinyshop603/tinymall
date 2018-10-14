@@ -35,7 +35,7 @@ public class AdminCategoryController {
             return ResponseUtil.unlogin();
         }
         // 根据Parent Id 查询出 Id ,当做parentId进行塞入进去
-        List<LitemallCategory> parentCategorys = categoryService.queryIdByPid(adminId);
+        List<LitemallCategory> parentCategorys = categoryService.queryIdByPid(adminId,"L1");
         // 此时查询出来的必须是1或者是0条数据
         String parentId = null;
         if (parentCategorys != null && parentCategorys.size() > 0){

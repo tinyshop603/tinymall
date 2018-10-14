@@ -40,7 +40,7 @@ public class AdminAdminController {
     data.put("name", admin.getUsername());
     data.put("avatar", admin.getAvatar());
     data.put("adminId", adminId);
-    data.put("shopId",categoryService.queryIdByPid(adminId).get(0).getId());
+    data.put("shopId",categoryService.queryIdByPid(adminId,"L1").get(0).getId());
 
     // 目前roles不支持，这里简单设置admin
     List<String> roles = new ArrayList<>();

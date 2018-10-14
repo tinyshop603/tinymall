@@ -19,20 +19,20 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" class="demo-table-expand">
-            <el-form-item label="首页主图">
+            <el-form-item v-if="false" label="首页主图">
               <span>{{ props.row.listPicUrl }}</span>
             </el-form-item>
-            <el-form-item label="宣传画廊">
+            <el-form-item v-if="false" label="宣传画廊">
               <span>{{ props.row.gallery }}</span>
             </el-form-item>
             <el-form-item label="商品介绍">
               <span>{{ props.row.goodsBrief }}</span>
             </el-form-item>
-            <el-form-item label="商品详细介绍">
+            <el-form-item v-if="false" label="商品详细介绍">
               <span>{{ props.row.goodsDesc }}</span>
             </el-form-item>
             <el-form-item label="商品主图">
-              <span>{{ props.row.primaryPicUrl }}</span>
+              <img :src="props.row.primaryPicUrl" class="image"></img>
             </el-form-item>
             <el-form-item label="商品单位">
               <span>{{ props.row.goodsUnit }}</span>
@@ -43,7 +43,7 @@
             <el-form-item label="类目ID">
               <span>{{ props.row.categoryId }}</span>
             </el-form-item>
-            <el-form-item label="品牌商ID">
+            <el-form-item v-if="false" label="品牌商ID">
               <span>{{ props.row.brandId }}</span>
             </el-form-item>
           </el-form>
