@@ -471,7 +471,12 @@ public class WxGoodsController {
             if (goodsList.size() > 0){
                 for (int i=0; i < goodsList.size(); i++){
                     String oldPicUrl = goodsList.get(i).getListPicUrl();
-                    String newPicUrl = oldPicUrl.substring(0,oldPicUrl.indexOf("?"))+replacePic;
+                    String newPicUrl = new String();
+                    if(oldPicUrl.equalsIgnoreCase("fuss10")){
+                      newPicUrl =  oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + replacePic;
+                    }else{
+                      newPicUrl = oldPicUrl;
+                    }
                     goodsList.get(i).setListPicUrl(newPicUrl);
                 }
             }
@@ -529,7 +534,12 @@ public class WxGoodsController {
         if (goodsList.size() > 0){
             for (int i=0; i < goodsList.size(); i++){
                 String oldPicUrl = goodsList.get(i).getListPicUrl();
-                String newPicUrl = oldPicUrl.substring(0,oldPicUrl.indexOf("?"))+replacePic;
+                String newPicUrl = new String();
+                if(oldPicUrl.equalsIgnoreCase("fuss10")){
+                  newPicUrl =  oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + replacePic;
+                }else{
+                  newPicUrl = oldPicUrl;
+                }
                 goodsList.get(i).setListPicUrl(newPicUrl);
             }
         }
