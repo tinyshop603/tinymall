@@ -108,5 +108,5 @@ storage/
 tinymall-admin/tinymall/
 tinymall-admin/dist/
 #不上传配置文件
-**/application-*.properties
+# **/application-*.properties
 
