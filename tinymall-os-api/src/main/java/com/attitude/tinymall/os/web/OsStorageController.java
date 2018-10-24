@@ -34,7 +34,7 @@ public class OsStorageController {
     private ObjectStorageConfig osConfig;
 
     private String generateUrl(String key){
-        return "http://" + osConfig.getAddress() + ":" + osConfig.getPort() + "/os/storage/fetch/" + key;
+        return  osConfig.getAddress() + "/os/storage/fetch/" + key;
     }
 
     private String generateKey(String originalFilename){

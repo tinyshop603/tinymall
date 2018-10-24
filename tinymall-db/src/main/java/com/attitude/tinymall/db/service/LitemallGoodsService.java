@@ -237,6 +237,7 @@ public class LitemallGoodsService {
   }
 
   public void updateById(LitemallGoods goods) {
+    goods.setListPicUrl(goods.getPrimaryPicUrl());
     goodsMapper.updateByPrimaryKeySelective(goods);
   }
 
