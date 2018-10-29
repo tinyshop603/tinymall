@@ -86,7 +86,7 @@ public class WxMallController {
         for (int i = 0; i < goodsList.size(); i++) {
           String oldPicUrl = goodsList.get(i).getListPicUrl();
           String newPicUrl = new String();
-          if(oldPicUrl.equalsIgnoreCase("fuss10")){
+          if(oldPicUrl.indexOf("fuss10")!= -1){
             newPicUrl =  oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + replacePic;
           }else{
             newPicUrl = oldPicUrl;
