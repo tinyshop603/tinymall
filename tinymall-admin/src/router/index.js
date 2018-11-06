@@ -126,14 +126,15 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: 'sysManage',
+    alwaysShow: true ,
     meta: {
-      roles: ['admin'],
       title: '系统管理',
       icon: 'chart'
     },
     children: [
-      { path: 'admin', component: _import('sys/admin'), name: 'admin', meta: { title: '管理员', noCache: true }},
-      { path: 'os', component: _import('sys/os'), name: 'os', meta: { title: '对象存储', noCache: true }}
+      { path: 'admin', component: _import('sys/admin'), name: 'admin', meta: { title: '管理员', roles: ['admin'], noCache: true }},
+      { path: 'os', component: _import('sys/os'), name: 'os', meta: { title: '对象存储', roles: ['admin'], noCache: true }},
+      { path: 'printer', component: _import('sys/printer'), name: 'ad', meta: { title: '打印机设置', noCache: true }}
     ]
   },
 
