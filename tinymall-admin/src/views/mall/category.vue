@@ -45,7 +45,7 @@
       <el-table-column align="center" min-width="100px" label="名称" prop="name">
       </el-table-column>
 
-      <el-table-column align="center" min-width="100px" label="关键字" prop="keyword">
+      <el-table-column  v-if="false" align="center" min-width="100px" label="关键字" prop="keyword">
       </el-table-column>
       
       <el-table-column align="center" min-width="100px" label="级别" prop="level"
@@ -94,7 +94,7 @@
         <el-form-item label="类目名称" prop="name">
           <el-input v-model="dataForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="类目关键字" prop="keyword">
+        <el-form-item v-if="false" label="类目关键字" prop="keyword">
           <el-input v-model="dataForm.keyword"></el-input>
         </el-form-item>
         <el-form-item label="类目级别" prop="level">
@@ -111,6 +111,14 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="是否显示" prop="isShow">
+                  <el-select v-model="dataForm.isShow" placeholder="请选择">
+                    <el-option label="可显示" :value="true">
+                    </el-option>
+                    <el-option label="不可显示" :value="false">
+                    </el-option>
+                  </el-select>
+         </el-form-item>
         <el-form-item  v-if="false" label="图标" prop="iconUrl">
           <el-input v-model="dataForm.iconUrl"></el-input>
           <el-upload action="http://localhost:8080/storage/create" :show-file-list="false" :on-success="handleIconUrl">
@@ -190,7 +198,7 @@ export default {
         keyword: '',
         level: 'L2',
         parentId: store.state.user.shopId,
-        isShow: 'true',
+        isShow: true,
         frontName: '',
         frontDesc: '',
         iconUrl: undefined,
@@ -206,7 +214,7 @@ export default {
       deleteGoodItem: false,
       rules: {
         name: [{ required: true, message: '类目名称不能为空', trigger: 'blur' }],
-        keyword: [{ required: true, message: '类目关键字不能为空', trigger: 'blur' }]
+        keyword: [{ required: false, message: '类目关键字不能为空', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -252,7 +260,7 @@ export default {
         keyword: '',
         level: 'L2',
         parentId: store.state.user.shopId,
-        isShow: 'true',
+        isShow: true,
         frontName: '',
         frontDesc: '',
         iconUrl: undefined,
