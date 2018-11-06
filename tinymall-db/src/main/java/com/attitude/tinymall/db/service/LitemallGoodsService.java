@@ -246,6 +246,8 @@ public class LitemallGoodsService {
   }
 
   public void add(LitemallGoods goods) {
+    goods.setListPicUrl(goods.getPrimaryPicUrl());
+
     goodsMapper.insertSelective(goods);
   }
 

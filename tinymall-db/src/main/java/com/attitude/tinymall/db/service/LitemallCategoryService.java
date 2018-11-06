@@ -177,9 +177,9 @@ public class LitemallCategoryService {
   }
 
   public void updateById(LitemallCategory category) {
-    if (category.getParentId() > LitemallAdmin.USER_LIMIT) {
+   /* if (category.getParentId() > LitemallAdmin.USER_LIMIT) {
       throw new RuntimeException("非法的parentId");
-    }
+    }*/
     categoryMapper.updateByPrimaryKeySelective(category);
   }
 
