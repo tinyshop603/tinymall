@@ -333,12 +333,13 @@ public class WxOrderController {
       order.setUserId(userId);
       order.setOrderSn(orderService.generateOrderSn(userId));
       order.setAddTime(LocalDateTime.now());
-      if(modeId == 0){
+      if(modeId == 1){
         order.setOrderStatus(OrderUtil.STATUS_CREATE);//微信支付
+
       }else{
         order.setOrderStatus(OrderUtil.STATUS_AFTER_PAY);//货到付款
       }
-
+      order.setPaymentWay(modeId);
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
       String detailedAddress = detailedAddress(checkedAddress);
@@ -377,17 +378,17 @@ public class WxOrderController {
       cartService.clearGoods(userId);
 
       // 商品货品数量减少
-      for (LitemallCart checkGoods : checkedGoodsList) {
-        Integer productId = checkGoods.getProductId();
-        LitemallProduct product = productService.findById(productId);
-
-        Integer remainNumber = product.getGoodsNumber() - checkGoods.getNumber();
-        if (remainNumber < 0) {
-          throw new RuntimeException("下单的商品货品数量大于库存量");
-        }
-        product.setGoodsNumber(remainNumber);
-        productService.updateById(product);
-      }
+//      for (LitemallCart checkGoods : checkedGoodsList) {
+//        Integer productId = checkGoods.getProductId();
+//        LitemallProduct product = productService.findById(productId);
+//
+//        Integer remainNumber = product.getGoodsNumber() - checkGoods.getNumber();
+//        if (remainNumber < 0) {
+//          throw new RuntimeException("下单的商品货品数量大于库存量");
+//        }
+//        product.setGoodsNumber(remainNumber);
+//        productService.updateById(product);
+//      }
     } catch (Exception ex) {
       txManager.rollback(status);
       logger.error("系统内部错误", ex);
