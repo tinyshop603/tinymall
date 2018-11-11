@@ -242,11 +242,6 @@ public class LitemallOrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andAdminIdEqualTo(Integer value) {
-            addCriterion("admin_id =", value, "adminId");
-            return (Criteria) this;
-        }
-
         public Criteria andIdNotEqualTo(Integer value) {
             addCriterion("id <>", value, "id");
             return (Criteria) this;
@@ -289,6 +284,66 @@ public class LitemallOrderExample {
 
         public Criteria andIdNotBetween(Integer value1, Integer value2) {
             addCriterion("id not between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIsNull() {
+            addCriterion("admin_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIsNotNull() {
+            addCriterion("admin_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdEqualTo(Integer value) {
+            addCriterion("admin_id =", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotEqualTo(Integer value) {
+            addCriterion("admin_id <>", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdGreaterThan(Integer value) {
+            addCriterion("admin_id >", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("admin_id >=", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdLessThan(Integer value) {
+            addCriterion("admin_id <", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdLessThanOrEqualTo(Integer value) {
+            addCriterion("admin_id <=", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIn(List<Integer> values) {
+            addCriterion("admin_id in", values, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotIn(List<Integer> values) {
+            addCriterion("admin_id not in", values, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdBetween(Integer value1, Integer value2) {
+            addCriterion("admin_id between", value1, value2, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("admin_id not between", value1, value2, "adminId");
             return (Criteria) this;
         }
 
@@ -1739,6 +1794,136 @@ public class LitemallOrderExample {
 
         public Criteria andDeletedNotBetween(Boolean value1, Boolean value2) {
             addCriterion("deleted not between", value1, value2, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkIsNull() {
+            addCriterion("remark is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkIsNotNull() {
+            addCriterion("remark is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkEqualTo(String value) {
+            addCriterion("remark =", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotEqualTo(String value) {
+            addCriterion("remark <>", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkGreaterThan(String value) {
+            addCriterion("remark >", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkGreaterThanOrEqualTo(String value) {
+            addCriterion("remark >=", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLessThan(String value) {
+            addCriterion("remark <", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLessThanOrEqualTo(String value) {
+            addCriterion("remark <=", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLike(String value) {
+            addCriterion("remark like", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotLike(String value) {
+            addCriterion("remark not like", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkIn(List<String> values) {
+            addCriterion("remark in", values, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotIn(List<String> values) {
+            addCriterion("remark not in", values, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkBetween(String value1, String value2) {
+            addCriterion("remark between", value1, value2, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotBetween(String value1, String value2) {
+            addCriterion("remark not between", value1, value2, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayIsNull() {
+            addCriterion("payment_way is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayIsNotNull() {
+            addCriterion("payment_way is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayEqualTo(Boolean value) {
+            addCriterion("payment_way =", value, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayNotEqualTo(Boolean value) {
+            addCriterion("payment_way <>", value, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayGreaterThan(Boolean value) {
+            addCriterion("payment_way >", value, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("payment_way >=", value, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayLessThan(Boolean value) {
+            addCriterion("payment_way <", value, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayLessThanOrEqualTo(Boolean value) {
+            addCriterion("payment_way <=", value, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayIn(List<Boolean> values) {
+            addCriterion("payment_way in", values, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayNotIn(List<Boolean> values) {
+            addCriterion("payment_way not in", values, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayBetween(Boolean value1, Boolean value2) {
+            addCriterion("payment_way between", value1, value2, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("payment_way not between", value1, value2, "paymentWay");
             return (Criteria) this;
         }
     }
