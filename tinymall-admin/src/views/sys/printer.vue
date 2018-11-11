@@ -1,27 +1,25 @@
 <template>
   <div class="app-container calendar-list-container">
-    <!-- 查询和其他操作 -->
+    <!-- 操作按钮 -->
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search">测试打印</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit">打印预览</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit">保存配置</el-button>
+      <el-button class="filter-item" type="primary" @click="printerTest" v-waves icon="el-icon-printer">测试打印</el-button>
+      <el-button class="filter-item" type="primary" @click="printerPreview" v-waves icon="el-icon-search">打印预览</el-button>
+      <el-button class="filter-item" type="primary" @click="savePrinterConfig" v-waves icon="el-icon-edit">保存配置</el-button>
     </div>
-    <!-- 查询结果 -->
+    <!-- 打印机配置界面 -->
     <el-container style="height: 500px; border: 1px solid #eee">
        <el-aside width="30%" style="background-color: rgb(238, 241, 246)" >
           <el-menu>
-            <el-menu-item :index="printer" v-for="(printer,i) in printers"><el-radio @change="selectedPrinterChangeCallback" v-model="selectedPrinter" :label="i" border>{{printer}}</el-radio></el-menu-item>
+            <el-menu-item :index="printer" v-for="(printer,i) in printers"><el-radio v-waves @change="selectedPrinterChangeCallback" v-model="selectedPrinter" :label="i" border>{{printer}}</el-radio></el-menu-item>
           </el-menu>
        </el-aside>
        <el-main>
-        <el-table :data="printerDetails" height="250" @current-change="handleCurrentChange" highlight-current-row>
-          <el-table-column prop="page" label="纸张规格" width="600">
+        <el-table :data="printerDetails" height="450" @current-change="handleSelectedPageChange" highlight-current-row  ref="singleTable">
+          <el-table-column v-waves prop="page" label="纸张规格" width="600">
           </el-table-column>
         </el-table>
       </el-main>
     </el-container>  
-    <!-- 分页 -->
-    <!-- 添加或修改对话框 -->
   </div>
 </template>
 <style>
@@ -41,8 +39,12 @@
 
 </style>
 <script>
-import { getLodop } from '@/api/printer'
+import { 
+  getLodop, getPrinterList, printerTestPrint,
+  getDefaultPrinter, getDefaultPrinterPageList, 
+  getPageListByPrinterNo, printerPreview } from '@/api/printer'
 import waves from '@/directive/waves' // 水波纹指令
+import store from '@/store'
 
 export default {
   name: 'PrinterConfig',
@@ -54,58 +56,47 @@ export default {
       printerDetails:[],
       printers:[],
       selectedPrinter:0,
-      currentRow:null
+      selectedPage:null
     }
   },
   created() {
-  
   },
   mounted: function() {
     this.$nextTick(function() {
       // // 这样设计的原因是必须等文档挂接完毕之后才可调用,此处修改data数据
       const LODOP = getLodop()
-      this.printers = this.getPrinterList(LODOP)
-      let defaultPrinter = this.getDefaultPrinter(LODOP)
-      this.printerDetails = this.getDefaultPrinterPageList(LODOP).map((item)=> {return {'page':item}}) 
+      this.printers = getPrinterList(LODOP)
+      let defaultPrinter = getDefaultPrinter(LODOP)
+      this.printerDetails = getDefaultPrinterPageList(LODOP).map((item)=> {return {'page':item}}) 
       // 默认选中系统的默认打印机
       this.selectedPrinter = this.printers.findIndex((item)=> item===defaultPrinter)
-
-
-      // debugger
+      // 默认选中第一页纸
+      // 
+      let that  = this 
+      setTimeout(function(){
+        that.$refs.singleTable.setCurrentRow(that.printerDetails[0]);
+      },0)
     })
   },
   methods: {
-  /**
-   * 获取本机的打印设备信息,返回打印机的名称
-   * @author zhaoguiyang 2018-11-05
-   * @return {[type]} [description]
-   */
-    getPrinterList(LODOP) {
-      if (!LODOP) {
-        alert('没有打印机插件')
-      }
-      let printers = []
-      var iPrinterCount = LODOP.GET_PRINTER_COUNT();
-      for (var i = 0; i < iPrinterCount; i++) {
-        printers.push(LODOP.GET_PRINTER_NAME(i));
-      };
-      return printers
-    },
-    getDefaultPrinter(LODOP){
-      return LODOP.GET_PRINTER_NAME(-1)
-    },
-    getDefaultPrinterPageList(LODOP){
-      return this.getPageListByPrinterNo(LODOP,-1)
-    },
-    getPageListByPrinterNo(LODOP,num){
-      var strResult=LODOP.GET_PAGESIZES_LIST(num,'-');
-      return strResult.split('-')
-    },
     selectedPrinterChangeCallback(printer){
-      this.printerDetails = this.getPageListByPrinterNo(LODOP,printer).map((item)=> {return {'page':item}})
+      this.printerDetails = getPageListByPrinterNo(LODOP,printer).map((item)=> {return {'page':item}})
+      this.$refs.singleTable.setCurrentRow(this.printerDetails[0]);
     },
-    handleCurrentChange(val) {
-      this.currentRow = val;
+    handleSelectedPageChange(val) {
+      this.selectedPage = val;
+      // alert(val.page)
+    },
+    savePrinterConfig(){
+     this.$store.dispatch('SavePrinterConfig', {'index':this.selectedPrinter,'pageName':this.selectedPage.page})
+    },
+    printerPreview(){
+      printerPreview(getLodop(),this.selectedPrinter,this.selectedPage.page)
+    },
+    printerTest(){
+      printerTestPrint(getLodop(),this.selectedPrinter,this.selectedPage.page)
+      console.log(store.getters.printerIndex)
+      console.log(store.getters.printerPageName)
     }
   }
 }
