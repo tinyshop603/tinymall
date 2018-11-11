@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -133,6 +134,12 @@ public class LitemallOrderService {
       criteria.andOrderSnEqualTo(orderSn);
     }
     criteria.andDeletedEqualTo(false);
+    List<Short> unshowOrderStatus = new ArrayList<Short>();
+    unshowOrderStatus.add((short)101);//订单生成，未支付；
+    unshowOrderStatus.add((short)102);//下单后未支付用户取消；
+    unshowOrderStatus.add((short)103);//下单后未支付超时系统自动取消
+    unshowOrderStatus.add((short)2);//货到付款用户取消订单
+    criteria.andOrderStatusNotIn(unshowOrderStatus);
 
     Page<Object> objects = PageHelper.startPage(page, size);
     return orderMapper.selectOdersWithGoods(adminId);
