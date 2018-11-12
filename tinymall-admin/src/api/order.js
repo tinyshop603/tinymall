@@ -91,6 +91,22 @@ export function updateOrderCode(data) {
   })
 }
 
+/**
+ * [updateOrder 确认退款]
+ * @author wz 2018-11-012
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+export function refundOrder(data) {
+  return request({
+    url: '/order/refundConfirm/',
+    method: 'post',
+    data:{
+      orderId:data.id
+    }
+  })
+}
+
 export function deleteOrder(data) {
   return request({
     url: '/order/delete',
@@ -115,16 +131,20 @@ export function getBtnStateByCode(orderStaCode) {
     code = 603
   } else if (orderStaCode === 402 || orderStaCode === 401 || orderStaCode === 4 || orderStaCode === 5) {
     code = 604
+  } else if (orderStaCode === 202){
+    code = 605
   }
   switch (code) {
     case 601: // 待发货的状态
-      return getBtnsWithStatus(true, true, false)
+      return getBtnsWithStatus(true, true, false, false)
     case 602: // 取消状态
-      return getBtnsWithStatus(false, false, false)
+      return getBtnsWithStatus(false, false, false, false)
     case 603: // 待确认状态
-      return getBtnsWithStatus(false, true, true)
+      return getBtnsWithStatus(false, true, true, false)
     case 604: // 订单全部完成
-      return getBtnsWithStatus(false, false, false)
+      return getBtnsWithStatus(false, false, false, false)
+    case 605://退款操作
+      return getBtnsWithStatus(false, false, false, true)
     default:
       return getBtnsWithStatus(true, true, true)
   }
@@ -139,11 +159,12 @@ export function getBtnStateByCode(orderStaCode) {
  * @param  {Boolean} isActiveConfirm [是否激活确认按钮]
  * @return {[type]}                  [description]
  */
-function getBtnsWithStatus(isActiveSend, isActiveCancel, isActiveConfirm) {
+function getBtnsWithStatus(isActiveSend, isActiveCancel, isActiveConfirm, isActiveRefund) {
   return {
     sendBtnStatus: _getBtnByStates(isActiveSend),
     cancelBtnStatus: _getBtnByStates(isActiveCancel),
-    confirmBtnStatus: _getBtnByStates(isActiveConfirm)
+    confirmBtnStatus: _getBtnByStates(isActiveConfirm),
+    refundBtnStatus: _getRefundBtnByStates(isActiveRefund)
   }
 }
 /**
@@ -158,6 +179,15 @@ function _getBtnByStates(valid) {
     'disabled': true
   } : {
     'type': 'primary',
+    'disabled': false
+  }
+}
+function _getRefundBtnByStates(valid) {
+  return !valid ? {
+    'type': 'info',
+    'disabled': true
+  } : {
+    'type': 'danger',
     'disabled': false
   }
 }

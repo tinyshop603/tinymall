@@ -180,14 +180,14 @@ public class AdminOrderController {
     if (order == null) {
       return ResponseUtil.badArgument();
     }
-    if (!order.getUserId().equals(adminId)) {
+    if (!order.getAdminId().equals(adminId)) {
       return ResponseUtil.badArgumentValue();
     }
-
-    OrderHandleOption handleOption = OrderUtil.build(order);
-    if (!handleOption.isRefund()) {
-      return ResponseUtil.fail(403, "订单不能取消");
-    }
+  //wz-当订单已经进入202状态，则不用检查
+//    OrderHandleOption handleOption = OrderUtil.build(order);
+//    if (!handleOption.isRefund()) {
+//      return ResponseUtil.fail(403, "订单不能取消");
+//    }
 
     // 开启事务管理
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
@@ -214,7 +214,7 @@ public class AdminOrderController {
     }
     txManager.commit(status);
 
-    return ResponseUtil.ok();
+    return ResponseUtil.ok(order);
   }
 
   /**

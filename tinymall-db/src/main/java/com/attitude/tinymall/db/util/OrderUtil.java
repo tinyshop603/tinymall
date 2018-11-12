@@ -187,6 +187,7 @@ public class OrderUtil {
             // 待发货订单
             status.add((short)201);//微信支付
             status.add((short)001);//货到付款
+            status.add((short)202);//货到付款，申请退款
         }
         else if (showType.equals(3)) {
             // 待收货订单
