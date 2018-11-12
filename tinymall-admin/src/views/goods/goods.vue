@@ -64,6 +64,8 @@
 
       <el-table-column align="center" min-width="100px" label="当前价格" prop="retailPrice">
       </el-table-column>
+      <el-table-column align="center" min-width="100px" label="父类目ID" prop="categoryId">
+      </el-table-column>
 
       <el-table-column v-if="false" align="center" min-width="100px" label="是否新品" prop="isNew">
         <template slot-scope="scope">
