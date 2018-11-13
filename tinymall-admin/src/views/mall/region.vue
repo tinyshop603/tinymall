@@ -49,32 +49,32 @@ import { listRegion } from '@/api/region'
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'Keyword',
-  directives: {
+  name:'Keyword',
+  directives:{
     waves
   },
   data() {
     return {
-      list: undefined,
-      total: undefined,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        name: undefined,
-        code: undefined,
-        sort: '+id'
+      list:undefined,
+      total:undefined,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        name:undefined,
+        code:undefined,
+        sort:'+id'
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
-  filters: {
+  filters:{
     typeFilter(status) {
       const typeMap = {
-        '1': '省',
-        '2': '市',
-        '3': '区',
-        '4': '街道'
+        '1':'省',
+        '2':'市',
+        '3':'区',
+        '4':'街道'
       }
       return typeMap[status]
     }
@@ -82,7 +82,7 @@ export default {
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listRegion(this.listQuery).then(response => {

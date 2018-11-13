@@ -67,45 +67,45 @@ import { listGoodsAttribute, createGoodsAttribute, updateGoodsAttribute, deleteG
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'GoodsAttribute',
-  directives: {
+  name:'GoodsAttribute',
+  directives:{
     waves
   },
   data() {
     return {
-      list: null,
-      total: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        goodsId: undefined,
-        sort: '+id'
+      list:null,
+      total:null,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:10,
+        goodsId:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        goodsId: undefined,
-        attribute: undefined,
-        value: undefined
+      dataForm:{
+        id:undefined,
+        goodsId:undefined,
+        attribute:undefined,
+        value:undefined
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        goodsId: [{ required: true, message: '商品ID不能为空', trigger: 'blur' }],
-        attribute: [{ required: true, message: '商品参数名称不能为空', trigger: 'blur' }],
-        value: [{ required: true, message: '商品参数值不能为空', trigger: 'blur' }]
+      rules:{
+        goodsId:[{ required:true, message:'商品ID不能为空', trigger:'blur' }],
+        attribute:[{ required:true, message:'商品参数名称不能为空', trigger:'blur' }],
+        value:[{ required:true, message:'商品参数值不能为空', trigger:'blur' }]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listGoodsAttribute(this.listQuery).then(response => {
@@ -132,10 +132,10 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        goodsId: undefined,
-        attribute: undefined,
-        value: undefined
+        id:undefined,
+        goodsId:undefined,
+        attribute:undefined,
+        value:undefined
       }
     },
     handleCreate() {
@@ -153,10 +153,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -183,10 +183,10 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -195,10 +195,10 @@ export default {
     handleDelete(row) {
       deleteGoodsAttribute(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

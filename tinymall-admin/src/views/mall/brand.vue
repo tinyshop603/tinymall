@@ -142,50 +142,50 @@ import { createStorage } from '@/api/storage'
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'Brand',
-  directives: {
+  name:'Brand',
+  directives:{
     waves
   },
   data() {
     return {
-      list: undefined,
-      total: undefined,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        id: undefined,
-        name: undefined,
-        sort: '+id'
+      list:undefined,
+      total:undefined,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        id:undefined,
+        name:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        name: '',
-        simpleDesc: '',
-        floorPrice: undefined,
-        picUrl: undefined,
-        listPicUrl: undefined,
-        appListPicUrl: undefined,
-        isShow: undefined,
-        isNew: undefined,
-        newPicUrl: undefined
+      dataForm:{
+        id:undefined,
+        name:'',
+        simpleDesc:'',
+        floorPrice:undefined,
+        picUrl:undefined,
+        listPicUrl:undefined,
+        appListPicUrl:undefined,
+        isShow:undefined,
+        isNew:undefined,
+        newPicUrl:undefined
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        name: [{ required: true, message: '类目名称不能为空', trigger: 'blur' }]
+      rules:{
+        name:[{ required:true, message:'类目名称不能为空', trigger:'blur' }]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listBrand(this.listQuery).then(response => {
@@ -212,16 +212,16 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        name: '',
-        simpleDesc: '',
-        floorPrice: undefined,
-        picUrl: undefined,
-        listPicUrl: undefined,
-        appListPicUrl: undefined,
-        isShow: undefined,
-        isNew: undefined,
-        newPicUrl: undefined
+        id:undefined,
+        name:'',
+        simpleDesc:'',
+        floorPrice:undefined,
+        picUrl:undefined,
+        listPicUrl:undefined,
+        appListPicUrl:undefined,
+        isShow:undefined,
+        isNew:undefined,
+        newPicUrl:undefined
       }
     },
     handleCreate() {
@@ -275,10 +275,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -305,10 +305,10 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -317,10 +317,10 @@ export default {
     handleDelete(row) {
       deleteBrand(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

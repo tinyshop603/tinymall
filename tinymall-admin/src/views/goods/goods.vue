@@ -260,59 +260,59 @@ import BackToTop from '@/components/BackToTop'
 import Editor from '@tinymce/tinymce-vue'
 
 export default {
-  name: 'Goods',
-  components: { BackToTop, Editor },
-  directives: { waves },
+  name:'Goods',
+  components:{ BackToTop, Editor },
+  directives:{ waves },
   data() {
     return {
-      imageUrl: '',
-      list: undefined,
-      total: undefined,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        goodsSn: undefined,
-        name: undefined,
-        categoryId: undefined,
-        sort: '+id'
+      imageUrl:'',
+      list:undefined,
+      total:undefined,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        goodsSn:undefined,
+        name:undefined,
+        categoryId:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        goodsSn: undefined,
-        name: undefined,
-        counterPrice: undefined,
-        retailPrice: undefined,
-        isHot: false,
-        isNew: true,
-        isOnSale: true,
-        listPicUrl: undefined,
-        primaryPicUrl: undefined,
-        goodsBrief: undefined,
-        goodsDesc: '',
-        keywords: undefined,
-        gallery: undefined,
-        categoryId: undefined,
-        brandId: undefined,
+      dataForm:{
+        id:undefined,
+        goodsSn:undefined,
+        name:undefined,
+        counterPrice:undefined,
+        retailPrice:undefined,
+        isHot:false,
+        isNew:true,
+        isOnSale:true,
+        listPicUrl:undefined,
+        primaryPicUrl:undefined,
+        goodsBrief:undefined,
+        goodsDesc:'',
+        keywords:undefined,
+        gallery:undefined,
+        categoryId:undefined,
+        brandId:undefined
       },
-      dialogFormVisible: false,
-      deleteGoodItem: false,
+      dialogFormVisible:false,
+      deleteGoodItem:false,
       delteRow:{},
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        goodsSn: [{ required: true, message: '商品编号不能为空', trigger: 'blur' }],
-        name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
+      rules:{
+        goodsSn:[{ required:true, message:'商品编号不能为空', trigger:'blur' }],
+        name:[{ required:true, message:'商品名称不能为空', trigger:'blur' }]
       },
-      downloadLoading: false,
-      editorInit: {
-        language: 'zh_CN',
-        plugins: ['advlist anchor autolink autoresize autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime legacyoutput link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
-        toolbar: ['bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript ', 'hr bullist numlist link image charmap preview anchor pagebreak fullscreen media table emoticons forecolor backcolor'],
-        images_upload_handler: function(blobInfo, success, failure) {
+      downloadLoading:false,
+      editorInit:{
+        language:'zh_CN',
+        plugins:['advlist anchor autolink autoresize autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime legacyoutput link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar:['bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript ', 'hr bullist numlist link image charmap preview anchor pagebreak fullscreen media table emoticons forecolor backcolor'],
+        images_upload_handler:function(blobInfo, success, failure) {
           const formData = new FormData()
           formData.append('file', blobInfo.blob())
           createStorage(formData).then(res => {
@@ -327,19 +327,19 @@ export default {
   created() {
     this.getList()
   },
-  methods: {
-        uploadUrl(item) {
+  methods:{
+    uploadUrl(item) {
 
-        const formData = new FormData()
-        formData.append('file', item.file)
-        createStorage(formData).then(res => {
-          this.dataForm.primaryPicUrl = res.data.data.url
-          this.imageUrl = res.data.data.url
+      const formData = new FormData()
+      formData.append('file', item.file)
+      createStorage(formData).then(res => {
+        this.dataForm.primaryPicUrl = res.data.data.url
+        this.imageUrl = res.data.data.url
 
-        }).catch(() => {
-          this.$message.error('上传失败，请重新上传')
-        })
-      },
+      }).catch(() => {
+        this.$message.error('上传失败，请重新上传')
+      })
+    },
     getList() {
       this.listLoading = true
       listGoods(this.listQuery).then(response => {
@@ -366,22 +366,22 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        goodsSn: undefined,
-        name: undefined,
-        counterPrice: undefined,
-        retailPrice: undefined,
-        isHot: false,
-        isNew: true,
-        isOnSale: true,
-        listPicUrl: undefined,
-        primaryPicUrl: undefined,
-        goodsBrief: undefined,
-        goodsDesc: '',
-        keywords: undefined,
-        gallery: undefined,
-        categoryId: undefined,
-        brandId: undefined
+        id:undefined,
+        goodsSn:undefined,
+        name:undefined,
+        counterPrice:undefined,
+        retailPrice:undefined,
+        isHot:false,
+        isNew:true,
+        isOnSale:true,
+        listPicUrl:undefined,
+        primaryPicUrl:undefined,
+        goodsBrief:undefined,
+        goodsDesc:'',
+        keywords:undefined,
+        gallery:undefined,
+        categoryId:undefined,
+        brandId:undefined
       }
     },
     filterLevel(value, row) {
@@ -402,10 +402,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -432,16 +432,16 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
       })
     },
-    handleBeforeDelete(row){
+    handleBeforeDelete(row) {
       this.deleteGoodItem = true
       this.delteRow = row
     },
@@ -449,10 +449,10 @@ export default {
       // 增加是否删除的询问操作
       deleteGoods(this.delteRow).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         this.deleteGoodItem = false
         const index = this.list.indexOf(row)

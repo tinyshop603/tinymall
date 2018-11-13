@@ -169,61 +169,61 @@
 </style>
 
 <script>
-import { listCategory, listMainCategory,listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
+import { listCategory, listMainCategory, listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
 import waves from '@/directive/waves' // 水波纹指令
 import store from '@/store'
 
 export default {
-  name: 'Category',
-  directives: {
+  name:'Category',
+  directives:{
     waves
   },
   data() {
     return {
-      list: undefined,
-      total: undefined,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        id: undefined,
-        name: undefined,
-        parentId: undefined,
-        sort: '+id'
+      list:undefined,
+      total:undefined,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        id:undefined,
+        name:undefined,
+        parentId:undefined,
+        sort:'+id'
       },
-      catL1: {},
-      dataForm: {
-        id: undefined,
-        name: '',
-        keyword: '',
-        level: 'L2',
-        parentId: store.state.user.shopId,
-        isShow: true,
-        frontName: '',
-        frontDesc: '',
-        iconUrl: undefined,
-        bannerUrl: undefined,
-        wapBannerUrl: undefined
+      catL1:{},
+      dataForm:{
+        id:undefined,
+        name:'',
+        keyword:'',
+        level:'L2',
+        parentId:store.state.user.shopId,
+        isShow:true,
+        frontName:'',
+        frontDesc:'',
+        iconUrl:undefined,
+        bannerUrl:undefined,
+        wapBannerUrl:undefined
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      deleteGoodItem: false,
-      rules: {
-        name: [{ required: true, message: '类目名称不能为空', trigger: 'blur' }],
-        keyword: [{ required: false, message: '类目关键字不能为空', trigger: 'blur' }]
+      deleteGoodItem:false,
+      rules:{
+        name:[{ required:true, message:'类目名称不能为空', trigger:'blur' }],
+        keyword:[{ required:false, message:'类目关键字不能为空', trigger:'blur' }]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
     this.getCatL1()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listMainCategory(this.listQuery).then(response => {
@@ -255,17 +255,17 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        name: '',
-        keyword: '',
-        level: 'L2',
-        parentId: store.state.user.shopId,
-        isShow: true,
-        frontName: '',
-        frontDesc: '',
-        iconUrl: undefined,
-        bannerUrl: undefined,
-        wapBannerUrl: undefined
+        id:undefined,
+        name:'',
+        keyword:'',
+        level:'L2',
+        parentId:store.state.user.shopId,
+        isShow:true,
+        frontName:'',
+        frontDesc:'',
+        iconUrl:undefined,
+        bannerUrl:undefined,
+        wapBannerUrl:undefined
       }
     },
     filterLevel(value, row) {
@@ -302,10 +302,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -332,26 +332,26 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
       })
     },
-    handleBeforeDelete(row){
+    handleBeforeDelete(row) {
       this.deleteGoodItem = true
       this.delteRow = row
     },
     handleDelete(row) {
       deleteCategory(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         this.deleteGoodItem = false
         const index = this.list.indexOf(row)

@@ -39,81 +39,81 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import {
-    getLodop,
-    printCredential
+  getLodop,
+  printCredential
 } from '@/api/printer'
 
 export default {
-    components: {
-        Breadcrumb,
-        Hamburger,
-        Screenfull
+  components:{
+    Breadcrumb,
+    Hamburger,
+    Screenfull
+  },
+  computed:{
+    ...mapGetters([
+      'sidebar',
+      'name',
+      'avatar'
+    ])
+  },
+  mounted:function() {
+    const _this = this
+    this.$nextTick(function() {
+      _this.player = document.getElementById('bgMusic')
+    })
+  },
+  sockets:{
+    connect:function() {
+      console.log('socket connected')
     },
-    computed: {
-        ...mapGetters([
-            'sidebar',
-            'name',
-            'avatar'
-        ])
-    },
-    mounted: function() {
-        const _this = this
-        this.$nextTick(function() {
-            _this.player = document.getElementById('bgMusic')
-        })
-    },
-    sockets: {
-        connect: function() {
-            console.log('socket connected')
-        },
-        submitOrderEvent: function(jsonData) {
-            let socData = JSON.parse(jsonData)
-            console.log(socData)
-            if (socData.storeUserName == store.getters.name) {
-                let newOrder = socData.orderData
-                this.player.play()
-                let credentialData = {
-                    "shopName": "789便利店",
-                    "shopQRurl": "https://www.bjguangchi.top/static/789shop-b.png",
-                    "payStyle": "在线支付(已支付)",
-                    "orderNO": `订单编号:${newOrder.order.orderSn}`,
-                    "orderTime": `下单时间:${new Date(newOrder.order.addTime).toLocaleString('chinese', { hour12: false })}`,
-                    "buyGoods": newOrder.goods.map(good => ({
-                        "name": good.goodsName,
-                        "number": good.number,
-                        "price": good.retailPrice
-                    })),
-                    "others": [{
-                        "name": "配送费",
-                        "value": "0元"
-                    }],
-                    "orignTotalPrice": newOrder.order.orderPrice,
-                    "trueTotalPrice": newOrder.order.actualPrice,
-                    "customerInfo": {
-                        "name": newOrder.order.consignee,
-                        "phoneNumber": newOrder.order.mobile,
-                        "address": newOrder.order.address
-                    }
-                }
-                setTimeout(() =>
-                    printCredential(getLodop(), store.getters.printerIndex, credentialData),
-                    this.player.duration * 1000 + 500)
-            }
-        },
-        cancelOrderEvent: function(jsonData) {
-            console.log('----->订单取消' + jsonData)
+    submitOrderEvent:function(jsonData) {
+            const socData = JSON.parse(jsonData)
+      console.log(socData)
+      if (socData.storeUserName == store.getters.name) {
+                const newOrder = socData.orderData
+        this.player.play()
+                const credentialData = {
+                    'shopName': '789便利店',
+                    'shopQRurl': 'https://www.bjguangchi.top/static/789shop-b.png',
+                    'payStyle': '在线支付(已支付)',
+                    'orderNO':`订单编号:${newOrder.order.orderSn}`,
+                    'orderTime':`下单时间:${new Date(newOrder.order.addTime).toLocaleString('chinese', { hour12:false })}`,
+                    'buyGoods':newOrder.goods.map(good => ({
+                        'name':good.goodsName,
+                        'number':good.number,
+                        'price':good.retailPrice
+          })),
+                    'others':[{
+                        'name': '配送费',
+                        'value': '0元'
+          }],
+                    'orignTotalPrice':newOrder.order.orderPrice,
+                    'trueTotalPrice':newOrder.order.actualPrice,
+                    'customerInfo':{
+                        'name':newOrder.order.consignee,
+                        'phoneNumber':newOrder.order.mobile,
+                        'address':newOrder.order.address
+          }
         }
+        setTimeout(() =>
+          printCredential(getLodop(), store.getters.printerIndex, credentialData),
+        this.player.duration * 1000 + 500)
+      }
     },
-    methods: {
-        toggleSideBar() {
-            this.$store.dispatch('toggleSideBar')
-        },
-        logout() {
-            this.$store.dispatch('LogOut').then(() => {
-                location.reload() // In order to re-instantiate the vue-router object to avoid bugs
-            })
-        }
+    cancelOrderEvent:function(jsonData) {
+      console.log('----->订单取消' + jsonData)
     }
+  },
+  methods:{
+    toggleSideBar() {
+      this.$store.dispatch('toggleSideBar')
+    },
+    logout() {
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload() // In order to re-instantiate the vue-router object to avoid bugs
+      })
+    }
+  }
 }
 </script>
 

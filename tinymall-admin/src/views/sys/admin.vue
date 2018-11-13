@@ -71,8 +71,8 @@ import { createStorage } from '@/api/storage'
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'Admin',
-  directives: {
+  name:'Admin',
+  directives:{
     waves
   },
   data() {
@@ -96,46 +96,46 @@ export default {
       }
     }
     return {
-      list: null,
-      total: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        username: undefined,
-        sort: '+id'
+      list:null,
+      total:null,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        username:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        username: undefined,
-        password: undefined,
-        checkPassword: undefined,
-        avatar: undefined
+      dataForm:{
+        id:undefined,
+        username:undefined,
+        password:undefined,
+        checkPassword:undefined,
+        avatar:undefined
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        username: [{ required: true, message: '管理员名称不能为空', trigger: 'blur' }],
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' },
-          { validator: validatePass, trigger: 'blur' }
+      rules:{
+        username:[{ required:true, message:'管理员名称不能为空', trigger:'blur' }],
+        password:[
+          { required:true, message:'密码不能为空', trigger:'blur' },
+          { validator:validatePass, trigger:'blur' }
         ],
-        checkPassword: [
-          { required: true, message: '密码不能为空', trigger: 'blur' },
-          { validator: validatePass2, trigger: 'blur' }
+        checkPassword:[
+          { required:true, message:'密码不能为空', trigger:'blur' },
+          { validator:validatePass2, trigger:'blur' }
         ]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listAdmin(this.listQuery).then(response => {
@@ -162,11 +162,11 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        username: undefined,
-        password: undefined,
-        checkPassword: undefined,
-        avatar: undefined
+        id:undefined,
+        username:undefined,
+        password:undefined,
+        checkPassword:undefined,
+        avatar:undefined
       }
     },
     uploadAvatar(item) {
@@ -193,10 +193,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -223,10 +223,10 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -235,10 +235,10 @@ export default {
     handleDelete(row) {
       deleteAdmin(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

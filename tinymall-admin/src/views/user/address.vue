@@ -107,59 +107,59 @@ import { listSubRegion } from '@/api/region'
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'UserAddress',
-  directives: {
+  name:'UserAddress',
+  directives:{
     waves
   },
   data() {
     return {
-      list: null,
-      total: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        name: undefined,
-        userId: undefined,
-        sort: '+id'
+      list:null,
+      total:null,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        name:undefined,
+        userId:undefined,
+        sort:'+id'
       },
-      provinces: {},
-      cities: {},
-      areas: {},
-      dataForm: {
-        id: undefined,
-        userId: undefined,
-        name: undefined,
-        mobile: undefined,
-        address: undefined,
-        isDefault: undefined,
-        provinceId: undefined,
-        cityId: undefined,
-        areaId: undefined
+      provinces:{},
+      cities:{},
+      areas:{},
+      dataForm:{
+        id:undefined,
+        userId:undefined,
+        name:undefined,
+        mobile:undefined,
+        address:undefined,
+        isDefault:undefined,
+        provinceId:undefined,
+        cityId:undefined,
+        areaId:undefined
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        userId: [{ required: true, message: '用户ID不能为空', trigger: 'blur' }],
-        name: [{ required: true, message: '收货人名称不能为空', trigger: 'blur' }],
-        mobile: [{ required: true, message: '收货人手机号码不能为空', trigger: 'blur' }],
-        provinceId: [{ required: true, message: '收货人所在省不能为空', trigger: 'blur' }],
-        cityId: [{ required: true, message: '收货人所在市不能为空', trigger: 'blur' }],
-        areaId: [{ required: true, message: '收货人所在区不能为空', trigger: 'blur' }],
-        address: [{ required: true, message: '收货人地址不能为空', trigger: 'blur' }]
+      rules:{
+        userId:[{ required:true, message:'用户ID不能为空', trigger:'blur' }],
+        name:[{ required:true, message:'收货人名称不能为空', trigger:'blur' }],
+        mobile:[{ required:true, message:'收货人手机号码不能为空', trigger:'blur' }],
+        provinceId:[{ required:true, message:'收货人所在省不能为空', trigger:'blur' }],
+        cityId:[{ required:true, message:'收货人所在市不能为空', trigger:'blur' }],
+        areaId:[{ required:true, message:'收货人所在区不能为空', trigger:'blur' }],
+        address:[{ required:true, message:'收货人地址不能为空', trigger:'blur' }]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
     this.getProvinces()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listAddress(this.listQuery).then(response => {
@@ -173,7 +173,7 @@ export default {
       })
     },
     getProvinces() {
-      listSubRegion({ id: 0 }).then(response => {
+      listSubRegion({ id:0 }).then(response => {
         this.provinces = response.data.data
       })
     },
@@ -185,7 +185,7 @@ export default {
       this.dataForm.cityId = undefined
       this.areas = {}
       this.dataForm.areaId = undefined
-      listSubRegion({ id: val }).then(response => {
+      listSubRegion({ id:val }).then(response => {
         this.cities = response.data.data
       })
     },
@@ -195,7 +195,7 @@ export default {
       }
       this.areas = {}
       this.dataForm.areaId = undefined
-      listSubRegion({ id: val }).then(response => {
+      listSubRegion({ id:val }).then(response => {
         this.areas = response.data.data
       })
     },
@@ -216,15 +216,15 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        userId: undefined,
-        name: undefined,
-        mobile: undefined,
-        address: undefined,
-        isDefault: undefined,
-        provinceId: undefined,
-        cityId: undefined,
-        areaId: undefined
+        id:undefined,
+        userId:undefined,
+        name:undefined,
+        mobile:undefined,
+        address:undefined,
+        isDefault:undefined,
+        provinceId:undefined,
+        cityId:undefined,
+        areaId:undefined
       }
     },
     handleCreate() {
@@ -244,10 +244,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -257,10 +257,10 @@ export default {
       this.dataForm = Object.assign({}, row)
       this.cities = {}
       this.areas = {}
-      listSubRegion({ id: this.dataForm.provinceId }).then(response => {
+      listSubRegion({ id:this.dataForm.provinceId }).then(response => {
         this.cities = response.data.data
       })
-      listSubRegion({ id: this.dataForm.cityId }).then(response => {
+      listSubRegion({ id:this.dataForm.cityId }).then(response => {
         this.areas = response.data.data
       })
       this.dialogStatus = 'update'
@@ -283,10 +283,10 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -295,10 +295,10 @@ export default {
     handleDelete(row) {
       deleteAddress(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

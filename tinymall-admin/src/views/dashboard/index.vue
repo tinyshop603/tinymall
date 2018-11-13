@@ -52,18 +52,18 @@ import { info } from '@/api/dashboard'
 import CountTo from 'vue-count-to'
 
 export default {
-  components: {
+  components:{
     CountTo
   },
   data() {
     return {
-      userTotal: 0,
-      goodsTotal: 0,
-      productTotal: 0,
-      orderTotal: 0
+      userTotal:0,
+      goodsTotal:0,
+      productTotal:0,
+      orderTotal:0
     }
   },
-  methods: {
+  methods:{
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)
     }

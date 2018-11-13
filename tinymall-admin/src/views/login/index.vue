@@ -46,8 +46,8 @@
 import SocialSign from './socialsignin'
 
 export default {
-  components: { SocialSign },
-  name: 'login',
+  components:{ SocialSign },
+  name:'login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (validateUsername == null) {
@@ -64,20 +64,20 @@ export default {
       }
     }
     return {
-      loginForm: {
-        username: '',
-        password: ''
+      loginForm:{
+        username:'',
+        password:''
       },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+      loginRules:{
+        username:[{ required:true, trigger:'blur', validator:validateUsername }],
+        password:[{ required:true, trigger:'blur', validator:validatePassword }]
       },
-      passwordType: 'password',
-      loading: false,
-      showDialog: false
+      passwordType:'password',
+      loading:false,
+      showDialog:false
     }
   },
-  methods: {
+  methods:{
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -91,7 +91,7 @@ export default {
           this.loading = true
           this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
             this.loading = false
-            this.$router.push({ path: '/' })
+            this.$router.push({ path:'/' })
           }).catch(() => {
             this.loading = false
           })

@@ -39,16 +39,16 @@
 
 </style>
 <script>
-import { 
+import {
   getLodop, getPrinterList, printerTestPrint,
-  getDefaultPrinter, getDefaultPrinterPageList, 
+  getDefaultPrinter, getDefaultPrinterPageList,
   getPageListByPrinterNo, printerPreview } from '@/api/printer'
 import waves from '@/directive/waves' // 水波纹指令
 import store from '@/store'
 
 export default {
-  name: 'PrinterConfig',
-  directives: {
+  name:'PrinterConfig',
+  directives:{
     waves
   },
   data() {
@@ -61,40 +61,40 @@ export default {
   },
   created() {
   },
-  mounted: function() {
+  mounted:function() {
     this.$nextTick(function() {
       // // 这样设计的原因是必须等文档挂接完毕之后才可调用,此处修改data数据
       const LODOP = getLodop()
       this.printers = getPrinterList(LODOP)
-      let defaultPrinter = getDefaultPrinter(LODOP)
-      this.printerDetails = getDefaultPrinterPageList(LODOP).map((item)=> {return {'page':item}}) 
+      const defaultPrinter = getDefaultPrinter(LODOP)
+      this.printerDetails = getDefaultPrinterPageList(LODOP).map((item) => { return { 'page':item } })
       // 默认选中系统的默认打印机
-      this.selectedPrinter = this.printers.findIndex((item)=> item===defaultPrinter)
+      this.selectedPrinter = this.printers.findIndex((item) => item === defaultPrinter)
       // 默认选中第一页纸
-      // 
-      let that  = this 
-      setTimeout(function(){
-        that.$refs.singleTable.setCurrentRow(that.printerDetails[0]);
-      },0)
+      //
+      const that = this
+      setTimeout(function() {
+        that.$refs.singleTable.setCurrentRow(that.printerDetails[0])
+      }, 0)
     })
   },
-  methods: {
-    selectedPrinterChangeCallback(printer){
-      this.printerDetails = getPageListByPrinterNo(LODOP,printer).map((item)=> {return {'page':item}})
-      this.$refs.singleTable.setCurrentRow(this.printerDetails[0]);
+  methods:{
+    selectedPrinterChangeCallback(printer) {
+      this.printerDetails = getPageListByPrinterNo(LODOP, printer).map((item) => { return { 'page':item } })
+      this.$refs.singleTable.setCurrentRow(this.printerDetails[0])
     },
     handleSelectedPageChange(val) {
-      this.selectedPage = val;
+      this.selectedPage = val
       // alert(val.page)
     },
-    savePrinterConfig(){
-     this.$store.dispatch('SavePrinterConfig', {'index':this.selectedPrinter,'pageName':this.selectedPage.page})
+    savePrinterConfig() {
+      this.$store.dispatch('SavePrinterConfig', { 'index':this.selectedPrinter, 'pageName':this.selectedPage.page })
     },
-    printerPreview(){
-      printerPreview(getLodop(),this.selectedPrinter,this.selectedPage.page)
+    printerPreview() {
+      printerPreview(getLodop(), this.selectedPrinter, this.selectedPage.page)
     },
-    printerTest(){
-      printerTestPrint(getLodop(),this.selectedPrinter,this.selectedPage.page)
+    printerTest() {
+      printerTestPrint(getLodop(), this.selectedPrinter, this.selectedPage.page)
       console.log(store.getters.printerIndex)
       console.log(store.getters.printerPageName)
     }

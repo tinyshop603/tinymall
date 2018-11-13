@@ -61,43 +61,43 @@ import { listIssue, createIssue, updateIssue, deleteIssue } from '@/api/issue'
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'Issue',
-  directives: {
+  name:'Issue',
+  directives:{
     waves
   },
   data() {
     return {
-      list: null,
-      total: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        question: undefined,
-        sort: '+id'
+      list:null,
+      total:null,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        question:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        question: '',
-        answer: ''
+      dataForm:{
+        id:undefined,
+        question:'',
+        answer:''
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        question: [{ required: true, message: '问题不能为空', trigger: 'blur' }],
-        answer: [{ required: true, message: '回复不能为空', trigger: 'blur' }]
+      rules:{
+        question:[{ required:true, message:'问题不能为空', trigger:'blur' }],
+        answer:[{ required:true, message:'回复不能为空', trigger:'blur' }]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listIssue(this.listQuery).then(response => {
@@ -124,9 +124,9 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        question: '',
-        answer: ''
+        id:undefined,
+        question:'',
+        answer:''
       }
     },
     handleCreate() {
@@ -144,10 +144,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -174,10 +174,10 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -186,10 +186,10 @@ export default {
     handleDelete(row) {
       deleteIssue(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

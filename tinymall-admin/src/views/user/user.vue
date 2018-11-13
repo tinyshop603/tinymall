@@ -119,8 +119,8 @@ import { fetchList, createUser, updateUser } from '@/api/user'
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'User',
-  directives: {
+  name:'User',
+  directives:{
     waves
   },
   data() {
@@ -144,54 +144,54 @@ export default {
       }
     }
     return {
-      list: null,
-      total: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        username: undefined,
-        mobile: undefined,
-        sort: '+id'
+      list:null,
+      total:null,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        username:undefined,
+        mobile:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        username: '',
-        mobile: '',
-        password: undefined,
-        checkPassword: undefined,
-        gender: '男',
-        userLevel: '普通用户',
-        birthday: undefined,
-        status: '可用'
+      dataForm:{
+        id:undefined,
+        username:'',
+        mobile:'',
+        password:undefined,
+        checkPassword:undefined,
+        gender:'男',
+        userLevel:'普通用户',
+        birthday:undefined,
+        status:'可用'
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-        mobile: [{ required: true, message: '手机号码不能为空', trigger: 'blur' }],
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' },
-          { validator: validatePass, trigger: 'blur' }
+      rules:{
+        username:[{ required:true, message:'用户名不能为空', trigger:'blur' }],
+        mobile:[{ required:true, message:'手机号码不能为空', trigger:'blur' }],
+        password:[
+          { required:true, message:'密码不能为空', trigger:'blur' },
+          { validator:validatePass, trigger:'blur' }
         ],
-        checkPassword: [
-          { required: true, message: '密码不能为空', trigger: 'blur' },
-          { validator: validatePass2, trigger: 'blur' }
+        checkPassword:[
+          { required:true, message:'密码不能为空', trigger:'blur' },
+          { validator:validatePass2, trigger:'blur' }
         ]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
-  filters: {
+  filters:{
     statusFilter(status) {
       const statusMap = {
-        '可用': 'success',
-        '禁用': 'info',
-        '删除': 'danger'
+        '可用':'success',
+        '禁用':'info',
+        '删除':'danger'
       }
       return statusMap[status]
     }
@@ -199,7 +199,7 @@ export default {
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
@@ -226,15 +226,15 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        username: '',
-        mobile: '',
-        pass: undefined,
-        checkPass: undefined,
-        gender: '男',
-        userLevel: '普通用户',
-        birthday: undefined,
-        status: '可用'
+        id:undefined,
+        username:'',
+        mobile:'',
+        pass:undefined,
+        checkPass:undefined,
+        gender:'男',
+        userLevel:'普通用户',
+        birthday:undefined,
+        status:'可用'
       }
     },
     filterStatus(value, row) {
@@ -255,10 +255,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -285,10 +285,10 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -296,10 +296,10 @@ export default {
     },
     handleDelete(row) {
       this.$notify({
-        title: '警告',
-        message: '用户删除操作不支持！',
-        type: 'warning',
-        duration: 3000
+        title:'警告',
+        message:'用户删除操作不支持！',
+        type:'warning',
+        duration:3000
       })
     },
     handleDownload() {
