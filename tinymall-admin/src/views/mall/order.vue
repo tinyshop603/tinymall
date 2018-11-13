@@ -134,7 +134,7 @@ export default {
       console.log('socket connected')
     },
     submitOrderEvent:function(jsonData) {
-            const socData = JSON.parse(jsonData)
+      const socData = JSON.parse(jsonData)
       if (socData.storeUserName == store.getters.name) {
         let newOrder = socData.orderData
         newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.order.orderStatus))

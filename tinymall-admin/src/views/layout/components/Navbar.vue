@@ -67,32 +67,32 @@ export default {
       console.log('socket connected')
     },
     submitOrderEvent:function(jsonData) {
-            const socData = JSON.parse(jsonData)
+      const socData = JSON.parse(jsonData)
       console.log(socData)
       if (socData.storeUserName == store.getters.name) {
-                const newOrder = socData.orderData
+        const newOrder = socData.orderData
         this.player.play()
-                const credentialData = {
-                    'shopName': '789便利店',
-                    'shopQRurl': 'https://www.bjguangchi.top/static/789shop-b.png',
-                    'payStyle': '在线支付(已支付)',
-                    'orderNO':`订单编号:${newOrder.order.orderSn}`,
-                    'orderTime':`下单时间:${new Date(newOrder.order.addTime).toLocaleString('chinese', { hour12:false })}`,
-                    'buyGoods':newOrder.goods.map(good => ({
-                        'name':good.goodsName,
-                        'number':good.number,
-                        'price':good.retailPrice
+        const credentialData = {
+          'shopName':'789便利店',
+          'shopQRurl':'https://www.bjguangchi.top/static/789shop-b.png',
+          'payStyle':'在线支付(已支付)',
+          'orderNO':`订单编号:${newOrder.order.orderSn}`,
+          'orderTime':`下单时间:${new Date(newOrder.order.addTime).toLocaleString('chinese', { hour12:false })}`,
+          'buyGoods':newOrder.goods.map(good => ({
+            'name':good.goodsName,
+            'number':good.number,
+            'price':good.retailPrice
           })),
-                    'others':[{
-                        'name': '配送费',
-                        'value': '0元'
+          'others':[{
+            'name':'配送费',
+            'value':'0元'
           }],
-                    'orignTotalPrice':newOrder.order.orderPrice,
-                    'trueTotalPrice':newOrder.order.actualPrice,
-                    'customerInfo':{
-                        'name':newOrder.order.consignee,
-                        'phoneNumber':newOrder.order.mobile,
-                        'address':newOrder.order.address
+          'orignTotalPrice':newOrder.order.orderPrice,
+          'trueTotalPrice':newOrder.order.actualPrice,
+          'customerInfo':{
+            'name':newOrder.order.consignee,
+            'phoneNumber':newOrder.order.mobile,
+            'address':newOrder.order.address
           }
         }
         setTimeout(() =>

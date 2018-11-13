@@ -329,13 +329,11 @@ export default {
   },
   methods:{
     uploadUrl(item) {
-
       const formData = new FormData()
       formData.append('file', item.file)
       createStorage(formData).then(res => {
         this.dataForm.primaryPicUrl = res.data.data.url
         this.imageUrl = res.data.data.url
-
       }).catch(() => {
         this.$message.error('上传失败，请重新上传')
       })
@@ -445,7 +443,7 @@ export default {
       this.deleteGoodItem = true
       this.delteRow = row
     },
-    handleDelete() {
+    handleDelete(row) {
       // 增加是否删除的询问操作
       deleteGoods(this.delteRow).then(response => {
         this.$notify({
