@@ -1,6 +1,6 @@
 const printer = {
   state: {
-    index: -1,// 打印机的索引
+    index: -1, // 打印机的索引,-1代表默认的打印机
     pageName: '' //打印机的纸张
   },
 
@@ -14,7 +14,7 @@ const printer = {
   },
 
   actions: {
-    SavePrinterConfig({commit}, printer){
+    SavePrinterConfig({ commit }, printer) {
       commit('SET_INDEX', printer.index)
       commit('SET_PAGE_NAME', printer.pageName)
     }

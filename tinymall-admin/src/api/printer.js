@@ -1,4 +1,3 @@
-import QR_CODE from '@/api/base64Images'
 var CreatedOKLodop7766 = null,
   CLodopIsLocal
 
@@ -296,14 +295,16 @@ function fillPrinterData(LODOP, printData) {
 
   /// 添加二维码的图片
   marginLeft = 0
-  const IMAGE_SIZE = 100
-  LODOP.ADD_PRINT_IMAGE(topY += 20, marginLeft + (MAX_PAGE_WITH / 3), IMAGE_SIZE, IMAGE_SIZE, "<img border='0' src='" + printData.shopQRurl + "' />");
+  const IMAGE_SIZE = 180
+  LODOP.ADD_PRINT_IMAGE(topY += 20, marginLeft + (MAX_PAGE_WITH / 3 - 50), IMAGE_SIZE, IMAGE_SIZE, "<img border='0' src='" + printData.shopQRurl + "' />");
   LODOP.SET_PRINT_STYLEA(0, "Stretch", 2); //按原图比例(不变形)缩放模式
 
   // 添加关注我们
   marginLeft = 0
-  LODOP.ADD_PRINT_TEXT(topY += (IMAGE_SIZE - 30), marginLeft += (MAX_PAGE_WITH / 3 + 10), MAX_PAGE_WITH, 10, "关注我们");
-  LODOP.ADD_PRINT_TEXT(topY += 30, marginLeft, MAX_PAGE_WITH, 10, "");
+  LODOP.ADD_PRINT_TEXT(topY += (IMAGE_SIZE - 10), marginLeft += (MAX_PAGE_WITH / 3 - 15), MAX_PAGE_WITH, 10, "关注我们");
+  LODOP.SET_PRINT_STYLEA(0, "FontSize", 15)
+  // LODOP.ADD_PRINT_TEXT(topY += 20, marginLeft, MAX_PAGE_WITH, 10, "");
+
 
 
   LODOP.SET_PRINT_PAGESIZE(3, MAX_PAGE_WITH * 3, 0, "");
@@ -312,7 +313,7 @@ function fillPrinterData(LODOP, printData) {
 function getTestData() {
   return {
     "shopName": "789便利店",
-    "shopQRurl": "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80",
+    "shopQRurl": "https://www.bjguangchi.top/static/789shop-b.png",
     "payStyle": "在线支付(已支付)",
     "orderNO": "订单编号:20180270281272",
     "orderTime": "下单时间:2018/04/06 13:11:11",
@@ -353,15 +354,21 @@ function getTestData() {
   }
 }
 
-export function printerPreview(LODOP, printerIndex, pageName) {
+export function printerPreview(LODOP, printerIndex) {
   LODOP.PRINT_INIT("超市小票打印");
-  LODOP.SET_PRINTER_INDEX(printerIndex);
+  LODOP.SET_PRINTER_INDEXA(printerIndex);
   fillPrinterData(LODOP, getTestData());
   LODOP.PREVIEW();
 }
-export function printerTestPrint(LODOP, printerIndex, pageName) {
+export function printerTestPrint(LODOP, printerIndex) {
   LODOP.PRINT_INIT("超市小票打印");
-  LODOP.SET_PRINTER_INDEX(printerIndex);
+  LODOP.SET_PRINTER_INDEXA(printerIndex);
   fillPrinterData(LODOP, getTestData());
+  LODOP.PRINT();
+}
+export function printCredential(LODOP, printerIndex, data) {
+  LODOP.PRINT_INIT("小票打印");
+  LODOP.SET_PRINTER_INDEXA(printerIndex);
+  fillPrinterData(LODOP, data);
   LODOP.PRINT();
 }
