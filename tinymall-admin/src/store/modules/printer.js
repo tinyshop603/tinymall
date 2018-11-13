@@ -1,7 +1,7 @@
 const printer = {
   state: {
     index: -1, // 打印机的索引,-1代表默认的打印机
-    pageName: '' //打印机的纸张
+    pageName: '' // 打印机的纸张
   },
 
   mutations: {

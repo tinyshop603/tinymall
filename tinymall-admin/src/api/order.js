@@ -131,7 +131,7 @@ export function getBtnStateByCode(orderStaCode) {
     code = 603
   } else if (orderStaCode === 402 || orderStaCode === 401 || orderStaCode === 4 || orderStaCode === 5) {
     code = 604
-  } else if (orderStaCode === 202){
+  } else if (orderStaCode === 202) {
     code = 605
   }
   switch (code) {
@@ -143,7 +143,7 @@ export function getBtnStateByCode(orderStaCode) {
       return getBtnsWithStatus(false, true, true, false)
     case 604: // 订单全部完成
       return getBtnsWithStatus(false, false, false, false)
-    case 605://退款操作
+    case 605:// 退款操作
       return getBtnsWithStatus(false, false, false, true)
     default:
       return getBtnsWithStatus(true, true, true)

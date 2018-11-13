@@ -84,7 +84,7 @@ export const asyncRouterMap = [
       // { path: 'region', component: _import('mall/region'), name: 'region', meta: { title: '行政区域', noCache: true }},
       // { path: 'brand', component: _import('mall/brand'), name: 'brand', meta: { title: '品牌制造商', noCache: true }},
       { path: 'category', component: _import('mall/category'), name: 'category', meta: { title: '商品类目', noCache: true }},
-      { path: 'order', component: _import('mall/order'), name: 'order', meta: { title: '订单管理', noCache: true }},
+      { path: 'order', component: _import('mall/order'), name: 'order', meta: { title: '订单管理', noCache: true }}
       // { path: 'issue', component: _import('mall/issue'), name: 'issue', meta: { title: '通用问题', noCache: true }},
       // { path: 'keyword', component: _import('mall/keyword'), name: 'keyword', meta: { title: '关键词', noCache: true }}
     ]

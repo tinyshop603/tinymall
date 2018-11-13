@@ -6,7 +6,7 @@ import { getToken } from '@/utils/auth'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 30*1000 // request timeout
+  timeout: 30 * 1000 // request timeout
 })
 
 // request interceptor
@@ -17,8 +17,8 @@ service.interceptors.request.use(config => {
   }
   if (store.getters.name) {
     // 全局拦截,增加userName进行传过去,当做PathValible,登陆登出不进行处理,
-    if (!(config.url.includes('login') ||  config.url.includes('admin'))) {
-      config.url = ('/'+store.getters.name)+ config.url
+    if (!(config.url.includes('login') || config.url.includes('admin'))) {
+      config.url = ('/' + store.getters.name) + config.url
     }
   }
   return config
