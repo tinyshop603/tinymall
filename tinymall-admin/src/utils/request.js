@@ -5,8 +5,8 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api的base_url
-  timeout: 30 * 1000 // request timeout
+  baseURL:process.env.BASE_API, // api的base_url
+  timeout:30 * 1000 // request timeout
 })
 
 // request interceptor
@@ -34,14 +34,14 @@ service.interceptors.response.use(
     const res = response.data
     if (res.errno === 502) {
       MessageBox.alert('系统内部错误，请联系管理员维护', '错误', {
-        confirmButtonText: '确定',
-        type: 'error'
+        confirmButtonText:'确定',
+        type:'error'
       })
       return Promise.reject('error')
     } else if (res.errno !== 0) {
       MessageBox.alert('超时自动退出系统，请重新登录', '已退出', {
-        confirmButtonText: '重新登录',
-        type: 'error'
+        confirmButtonText:'重新登录',
+        type:'error'
       }).then(() => {
         store.dispatch('FedLogOut').then(() => {
           location.reload()
@@ -54,9 +54,9 @@ service.interceptors.response.use(
   }, error => {
     console.log('err' + error)// for debug
     Message({
-      message: '登录连接超时（后台不能连接，请联系系统管理员）',
-      type: 'error',
-      duration: 5 * 1000
+      message:'登录连接超时（后台不能连接，请联系系统管理员）',
+      type:'error',
+      duration:5 * 1000
     })
     return Promise.reject(error)
   })

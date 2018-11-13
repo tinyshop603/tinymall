@@ -2,56 +2,56 @@ import { loginByUsername, logout, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
-  state: {
-    user: '',
-    status: '',
-    code: '',
-    token: getToken(),
-    name: '',
-    avatar: '',
-    introduction: '',
-    roles: [],
-    shopId: '',
-    adminId: '',
-    setting: {
-      articlePlatform: []
+  state:{
+    user:'',
+    status:'',
+    code:'',
+    token:getToken(),
+    name:'',
+    avatar:'',
+    introduction:'',
+    roles:[],
+    shopId:'',
+    adminId:'',
+    setting:{
+      articlePlatform:[]
     }
   },
 
-  mutations: {
-    SET_CODE: (state, code) => {
+  mutations:{
+    SET_CODE:(state, code) => {
       state.code = code
     },
-    SET_TOKEN: (state, token) => {
+    SET_TOKEN:(state, token) => {
       state.token = token
     },
-    SET_INTRODUCTION: (state, introduction) => {
+    SET_INTRODUCTION:(state, introduction) => {
       state.introduction = introduction
     },
-    SET_SETTING: (state, setting) => {
+    SET_SETTING:(state, setting) => {
       state.setting = setting
     },
-    SET_STATUS: (state, status) => {
+    SET_STATUS:(state, status) => {
       state.status = status
     },
-    SET_NAME: (state, name) => {
+    SET_NAME:(state, name) => {
       state.name = name
     },
-    SET_AVATAR: (state, avatar) => {
+    SET_AVATAR:(state, avatar) => {
       state.avatar = avatar
     },
-    SET_ROLES: (state, roles) => {
+    SET_ROLES:(state, roles) => {
       state.roles = roles
     },
-    SET_SHOP_ID: (state, shopId) => {
+    SET_SHOP_ID:(state, shopId) => {
       state.shopId = shopId
     },
-    SET_ADMIN_ID: (state, adminId) => {
+    SET_ADMIN_ID:(state, adminId) => {
       state.adminId = adminId
     }
   },
 
-  actions: {
+  actions:{
     // 用户名登录
     LoginByUsername({ commit }, userInfo) {
       const username = userInfo.username.trim()

@@ -17,7 +17,7 @@ import './permission' // permission control
 // import './mock' // simulation data
 
 Vue.use(Element, {
-  size: 'medium' // set element-ui default size
+  size:'medium' // set element-ui default size
 })
 /**
 const sck = io('http://192.168.0.114:8777?clientId=admin-api', {
@@ -29,19 +29,19 @@ const sck = io('http://192.168.0.114:8777?clientId=admin-api', {
 })
 **/
 const sck = io('https://www.bjguangchi.top/?clientId=admin-api', {
-  reconnectionAttempts: Number.MAX_SAFE_INTEGER,
-  reconnectionDelay: 7000,
-  reconnectionDelayMax: 7000,
-  timeout: 7000,
-  autoConnect: true
+  reconnectionAttempts:Number.MAX_SAFE_INTEGER,
+  reconnectionDelay:7000,
+  reconnectionDelayMax:7000,
+  timeout:7000,
+  autoConnect:true
 })
 
 Vue.use(VueSocketio, sck)
 Vue.config.productionTip = false
 new Vue({
-  el: '#app',
+  el:'#app',
   router,
   store,
-  template: '<App/>',
-  components: { App }
+  template:'<App/>',
+  components:{ App }
 })

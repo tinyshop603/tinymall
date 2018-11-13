@@ -15,13 +15,13 @@ export function parseTime(time, cFormat) {
     date = new Date(time)
   }
   const formatObj = {
-    y: date.getFullYear(),
-    m: date.getMonth() + 1,
-    d: date.getDate(),
-    h: date.getHours(),
-    i: date.getMinutes(),
-    s: date.getSeconds(),
-    a: date.getDay()
+    y:date.getFullYear(),
+    m:date.getMonth() + 1,
+    d:date.getDate(),
+    h:date.getHours(),
+    i:date.getMinutes(),
+    s:date.getSeconds(),
+    a:date.getDay()
   }
   const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
     let value = formatObj[key]
@@ -172,7 +172,7 @@ export function toggleClass(element, className) {
 
 export const pickerOptions = [
   {
-    text: '今天',
+    text:'今天',
     onClick(picker) {
       const end = new Date()
       const start = new Date(new Date().toDateString())
@@ -180,7 +180,7 @@ export const pickerOptions = [
       picker.$emit('pick', [start, end])
     }
   }, {
-    text: '最近一周',
+    text:'最近一周',
     onClick(picker) {
       const end = new Date(new Date().toDateString())
       const start = new Date()
@@ -188,7 +188,7 @@ export const pickerOptions = [
       picker.$emit('pick', [start, end])
     }
   }, {
-    text: '最近一个月',
+    text:'最近一个月',
     onClick(picker) {
       const end = new Date(new Date().toDateString())
       const start = new Date()
@@ -196,7 +196,7 @@ export const pickerOptions = [
       picker.$emit('pick', [start, end])
     }
   }, {
-    text: '最近三个月',
+    text:'最近三个月',
     onClick(picker) {
       const end = new Date(new Date().toDateString())
       const start = new Date()

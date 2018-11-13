@@ -1,16 +1,16 @@
 import request from '@/utils/request'
 
 export const STATUS = {
-  CREATE: 101,
-  PAY: 201,
-  SHIP: 301,
-  CONFIRM: 401,
-  CANCEL: 102,
-  AUTO_CANCEL: 103,
-  REFUND: 202,
-  REFUND_CONFIRM: 203,
-  AUTO_CONFIRM: 402,
-  RECEIVE_COMPLETE: 401,
+  CREATE:101,
+  PAY:201,
+  SHIP:301,
+  CONFIRM:401,
+  CANCEL:102,
+  AUTO_CANCEL:103,
+  REFUND:202,
+  REFUND_CONFIRM:203,
+  AUTO_CONFIRM:402,
+  RECEIVE_COMPLETE:401,
   AFTER_PAY:1,
   AFTER_CANCEL:2,
   AFTER_SHIP:3,
@@ -20,11 +20,11 @@ export const STATUS = {
 export function listOrder(query) {
   request.interceptors.response.use(response => {
     if (response.data && response.data.data) {
-         let orderItems = response.data.data.items
-    if (!orderItems) {
-      orderItems = [response.data.data]
-    }
-    response.data.data.items = orderItems.map((item) => {
+      let orderItems = response.data.data.items
+      if (!orderItems) {
+        orderItems = [response.data.data]
+      }
+      response.data.data.items = orderItems.map((item) => {
       // 订单状态规则
       /**
        * 101,201,待发货
@@ -37,43 +37,43 @@ export function listOrder(query) {
        * 402:用户已签收却不点击确认收货，超期7天以后，则系统自动确认收货。 用户不能再点击确认收货按钮，但是可以评价订单商品。
        * 403:订单全部完成状态
        */
-      let code
-      if (item.order) {
-        code = item.order.orderStatus
-      } else {
-        code = item.orderStatus
-      }
-      return Object.assign(item, getBtnStateByCode(code))
-    })
+        let code
+        if (item.order) {
+          code = item.order.orderStatus
+        } else {
+          code = item.orderStatus
+        }
+        return Object.assign(item, getBtnStateByCode(code))
+      })
     }
     return response
   })
   return request({
-    url: '/order/list',
-    method: 'get',
-    params: query
+    url:'/order/list',
+    method:'get',
+    params:query
   })
 }
 
 export function createOrder(data) {
   return request({
-    url: '/order/create',
-    method: 'post',
+    url:'/order/create',
+    method:'post',
     data
   })
 }
 export function readOrder(data) {
   return request({
-    url: '/order/read',
-    method: 'get',
+    url:'/order/read',
+    method:'get',
     data
   })
 }
 
 export function updateOrder(data) {
   return request({
-    url: '/order/update',
-    method: 'post',
+    url:'/order/update',
+    method:'post',
     data
   })
 }
@@ -85,8 +85,8 @@ export function updateOrder(data) {
  */
 export function updateOrderCode(data) {
   return request({
-    url: '/order/update/status/',
-    method: 'post',
+    url:'/order/update/status/',
+    method:'post',
     data
   })
 }
@@ -99,8 +99,8 @@ export function updateOrderCode(data) {
  */
 export function refundOrder(data) {
   return request({
-    url: '/order/refundConfirm/',
-    method: 'post',
+    url:'/order/refundConfirm/',
+    method:'post',
     data:{
       orderId:data.id
     }
@@ -109,8 +109,8 @@ export function refundOrder(data) {
 
 export function deleteOrder(data) {
   return request({
-    url: '/order/delete',
-    method: 'post',
+    url:'/order/delete',
+    method:'post',
     data
   })
 }
@@ -161,10 +161,10 @@ export function getBtnStateByCode(orderStaCode) {
  */
 function getBtnsWithStatus(isActiveSend, isActiveCancel, isActiveConfirm, isActiveRefund) {
   return {
-    sendBtnStatus: _getBtnByStates(isActiveSend),
-    cancelBtnStatus: _getBtnByStates(isActiveCancel),
-    confirmBtnStatus: _getBtnByStates(isActiveConfirm),
-    refundBtnStatus: _getRefundBtnByStates(isActiveRefund)
+    sendBtnStatus:_getBtnByStates(isActiveSend),
+    cancelBtnStatus:_getBtnByStates(isActiveCancel),
+    confirmBtnStatus:_getBtnByStates(isActiveConfirm),
+    refundBtnStatus:_getRefundBtnByStates(isActiveRefund)
   }
 }
 /**
@@ -175,19 +175,19 @@ function getBtnsWithStatus(isActiveSend, isActiveCancel, isActiveConfirm, isActi
  */
 function _getBtnByStates(valid) {
   return !valid ? {
-    'type': 'info',
-    'disabled': true
+    'type':'info',
+    'disabled':true
   } : {
-    'type': 'primary',
-    'disabled': false
+    'type':'primary',
+    'disabled':false
   }
 }
 function _getRefundBtnByStates(valid) {
   return !valid ? {
-    'type': 'info',
-    'disabled': true
+    'type':'info',
+    'disabled':true
   } : {
-    'type': 'danger',
-    'disabled': false
+    'type':'danger',
+    'disabled':false
   }
 }
