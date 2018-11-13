@@ -152,7 +152,7 @@ Page({
      }else if(h=8 && m>30){
        ifOpen = true;
      }
-     if(!ifOpen){
+     if(!true){
        wx.showModal({
          title: '当前时间尚未营业',
          content:'营业时间:8:30~24:00',
