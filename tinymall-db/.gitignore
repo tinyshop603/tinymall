@@ -1,3 +1,5 @@
 
 /target/
 /tinymall-db.iml
+/mybatis-generator/generatorConfig.xml
+/src/main/resources/application.properties

@@ -123,7 +123,7 @@ public class LitemallCategoryService {
 
   public List<LitemallCategory> queryByPid(Integer pid) {
     LitemallCategoryExample example = new LitemallCategoryExample();
-    example.or().andParentIdEqualTo(pid).andDeletedEqualTo(false);
+    example.or().andParentIdEqualTo(pid).andIsShowEqualTo(true).andDeletedEqualTo(false);
     return categoryMapper.selectByExample(example);
   }
 
