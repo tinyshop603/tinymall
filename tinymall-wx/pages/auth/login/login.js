@@ -39,10 +39,14 @@ Page({
 
       user.loginByWeixin(e.detail.userInfo).then(res => {
         app.globalData.hasLogin = true;
-
-        wx.navigateBack({
-          delta: 1
-        })
+        if (getCurrentPages().length>1){//非购物车入口
+          wx.navigateBack({
+            delta: 1
+          })
+        }else{//购物车入口
+          wx.switchTab({ url: "../../cart/cart" });
+        }
+       
       }).catch((err) => {
         app.globalData.hasLogin = false;
         util.showErrorToast('微信登录失败');
@@ -135,5 +139,8 @@ Page({
         });
         break;
     }
+  },
+  goFirstPage : function(){
+    wx.switchTab({ url: "../../catalog1/catalog" });
   }
 })

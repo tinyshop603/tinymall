@@ -68,7 +68,7 @@ Page({
     // 页面关闭
   },
   goLogin() {
-    wx.navigateTo({ url: "/pages/auth/login/login" });
+    wx.redirectTo({ url: "/pages/auth/login/login" });
   },
   getCartList: function () {
     let that = this;
@@ -78,7 +78,10 @@ Page({
         if (res.data.cartList.length > 0) {
           for (let i = 0; i < res.data.cartList.length; i++) {
             let oldPicUrl = res.data.cartList[i].picUrl;
-            res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+            if(oldPicUrl.indexOf("fuss10") != -1){
+              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+            }
+            
           }
         }
         that.setData({
@@ -121,7 +124,9 @@ Page({
           if (res.data.cartList.length > 0) {
             for (let i = 0; i < res.data.cartList.length; i++) {
               let oldPicUrl = res.data.cartList[i].picUrl;
-              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+              if(oldPicUrl.indexOf("fuss10") != -1){
+                res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+              }
             }
           }
           that.setData({
@@ -200,7 +205,9 @@ Page({
           if (res.data.cartList.length > 0) {
             for (let i = 0; i < res.data.cartList.length; i++) {
               let oldPicUrl = res.data.cartList[i].picUrl;
-              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+              if(oldPicUrl.indexOf("fuss10") != -1){
+                res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+              }           
             }
           }
           that.setData({
@@ -355,7 +362,9 @@ Page({
         if (res.data.cartList.length > 0) {
           for (let i = 0; i < res.data.cartList.length; i++) {
             let oldPicUrl = res.data.cartList[i].picUrl;
-            res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+            if(oldPicUrl.indexOf("fuss10") != -1){
+              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+            }          
           }
         }
         that.setData({

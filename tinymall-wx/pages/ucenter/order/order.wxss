@@ -152,27 +152,35 @@ page{
 }
 
 .order .b .l{
-    /* float: left; */
+    float: left;
 }
 
 .order .b .r{
     float: right;
 }
 
-.order .b .btn{
-    margin-top: 19rpx;
-    height: 64.5rpx;
-    line-height: 64.5rpx;
-    text-align: center;
-    padding: 0 20rpx;
-    border-radius: 5rpx;
-    font-size: 28rpx;
-    color: #fff;
-    background: #b4282d;
+.order .b .r .btn{
+    float: right;
 }
 
-.order .b .tips{
+.order .b .r .active{
+    background: #b4282d;
+    color: #fff;
+}
+
+.order .b .btn{
+    line-height: 66rpx;
+    border-radius: 5rpx;
+    text-align: center;
+    margin: 0 15rpx;
+    padding: 0 20rpx;
+    height: 66rpx;
+}
+
+.order .tips{
     /* float: left; */
     color: #b4282d;
-    font-size: 24rpx;
+    font-size: 28rpx;
+    padding-left: 28rpx;
+    padding-bottom: 18rpx;
 }

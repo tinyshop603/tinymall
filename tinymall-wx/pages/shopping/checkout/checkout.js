@@ -18,20 +18,20 @@ Page({
     addressId: 0,
     couponId: 0,
     remark:"",
-    pickerIndex: 0,
-    array:['在线支付','货到付款'],
+    pickerIndex: 1,
+    array: ['货到付款', '在线支付'],
     objectArray:[
       {
         id:0,
-        name:'在线支付'
+        name:'货到付款'
       },
       {
-        id:1,
-        name:'货到付款'
+        id: 1,
+        name: '在线支付'
       }
     ]
   },
-  bindPickerChange: function (e) {
+  pickerIndex: function (e) {
     this.setData({
       pickerIndex: e.detail.value
     })
@@ -54,7 +54,9 @@ Page({
         if (res.data.checkedGoodsList.length > 0) {
           for (let i = 0; i < res.data.checkedGoodsList.length; i++) {
             let oldPicUrl = res.data.checkedGoodsList[i].picUrl;
-            res.data.checkedGoodsList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+            if(oldPicUrl.indexOf("fuss10") != -1){
+              res.data.checkedGoodsList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+            }          
           }
         }
         that.setData({
@@ -160,11 +162,11 @@ Page({
        })
        return false;
      }
-    
+
     //判断支付方式
-    if (that.data.pickerIndex == 0){
+    if (that.data.pickerIndex == 1){
       that.submitPrepay();
-    } else if (that.data.pickerIndex == 1){
+    } else if (that.data.pickerIndex == 0){
       that.submitAfterpay();
     }
 
@@ -175,7 +177,8 @@ Page({
   
   //微信支付
   submitPrepay:function(){
-    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex, remarkText: this.data.remark }, 'POST').then(res => {
+    var that = this;
+    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex, remarkText: this.data.remark}, 'POST').then(res => {
       if (res.errno === 0) {
         const orderId = res.data.orderId;
         util.request(api.OrderPrepay, {
@@ -184,6 +187,7 @@ Page({
           if (res.errno === 0) {
             const payParam = res.data;
             console.log("支付过程开始")
+            that.hideLoading();
             wx.requestPayment({
               'timeStamp': payParam.timeStamp,
               'nonceStr': payParam.nonceStr,
@@ -203,6 +207,7 @@ Page({
                 });
               },
               'complete': function (res) {
+                that.hideLoading();
                 console.log("支付过程结束")
               }
             });
@@ -218,7 +223,8 @@ Page({
 
   //货到付款
   submitAfterpay:function(){
-    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex, remarkText: this.data.remark }, 'POST').then(res => {
+    var that = this;
+    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex, remarkText: this.data.remark}, 'POST').then(res => {
       if (res.errno === 0) {
         const orderId = res.data.orderId;
         wx.redirectTo({
@@ -231,8 +237,38 @@ Page({
           url: '/pages/payResult/payResult?status=0&orderId=' + orderId
         });
       }
+      that.hideLoading();
     });
   },
+
+  showLoading: function(message) {
+    if(wx.showLoading) {
+      // 基础库 1.1.0 微信6.5.6版本开始支持，低版本需做兼容处理
+      wx.showLoading({
+        title: message,
+        mask: true
+      });
+    } else {
+      // 低版本采用Toast兼容处理并将时间设为20秒以免自动消失
+      wx.showToast({
+        title: message,
+        icon: 'loading',
+        mask: true,
+        duration: 20000
+      });
+    }
+  },
+ 
+ hideLoading : function() {
+    if (wx.hideLoading) {
+      // 基础库 1.1.0 微信6.5.6版本开始支持，低版本需做兼容处理
+      wx.hideLoading();
+    } else {
+      wx.hideToast();
+    }
+  },
+
+
   //TODO 需要测试 可能直接失去焦点
   onKeywordConfirm:function(event){
     this.setData({
