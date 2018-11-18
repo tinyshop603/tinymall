@@ -1,6 +1,8 @@
 package com.attitude.tinymall.admin.web;
 
 import com.attitude.tinymall.db.domain.LitemallOrderWithGoods;
+
+import java.math.BigDecimal;
 import java.util.Comparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +17,7 @@ import com.attitude.tinymall.db.service.LitemallProductService;
 import com.attitude.tinymall.db.util.OrderHandleOption;
 import com.attitude.tinymall.db.util.OrderUtil;
 import com.attitude.tinymall.core.util.ResponseUtil;
+import com.attitude.tinymall.core.util.PayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -25,8 +28,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.SortedMap;
 import java.util.List;
 import java.util.Map;
+import java.text.DecimalFormat;
 
 @RestController
 @RequestMapping("/admin/{userName}/order")
@@ -188,7 +194,7 @@ public class AdminOrderController {
 //    if (!handleOption.isRefund()) {
 //      return ResponseUtil.fail(403, "订单不能取消");
 //    }
-
+      Map refundTest =  refundTest(order);
     // 开启事务管理
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
     def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -197,6 +203,8 @@ public class AdminOrderController {
       // 设置订单取消状态
       order.setOrderStatus(OrderUtil.STATUS_REFUND_CONFIRM);
       orderService.update(order);
+
+      //调取接口
 
       // 商品货品数量增加
       List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
@@ -215,6 +223,78 @@ public class AdminOrderController {
     txManager.commit(status);
 
     return ResponseUtil.ok(order);
+  }
+
+  /**
+   * 申请退款
+   * @return
+   */
+
+  public @ResponseBody Map<String, Object> refundTest(LitemallOrder order) {
+      Map<String,Object> result = new HashMap<String,Object>();
+      String appId="wx6453a69f8a24f675";
+//      wx.app-secret=c51b6a185879719654ebe665cc60fadc
+      String mchId="1509399431";
+      String key="JHujOtLrJB0C8mQ3KslEPWsur6UR4Aic";
+      String currTime = PayUtil.getCurrTime();
+      String strTime = currTime.substring(8, currTime.length());
+      String strRandom = PayUtil.buildRandom(4) + "";
+      String nonceStr = strTime + strRandom;
+      String outRefundNo = "wx@re@"+PayUtil.getTimeStamp();
+      String outTradeNo = "";
+
+      DecimalFormat df = new DecimalFormat("######0");
+//      BigDecimal radix = new BigDecimal(100);
+//      BigDecimal realFee = order.getActualPrice().multiply(radix);
+//      Integer fee = realFee.intValue();
+      //测试用例
+      Integer fee = 1;
+      SortedMap<String, String> packageParams = new TreeMap<String, String>();
+      packageParams.put("appid", appId);
+      packageParams.put("mch_id", mchId);//微信支付分配的商户号
+      packageParams.put("nonce_str", nonceStr);//随机字符串，不长于32位
+      packageParams.put("op_user_id", mchId);//操作员帐号, 默认为商户号
+      //out_refund_no只能含有数字、字母和字符_-|*@
+      packageParams.put("out_refund_no", outRefundNo);//商户系统内部的退款单号，商户系统内部唯一，同一退款单号多次请求只退一笔
+      packageParams.put("out_trade_no", outTradeNo);//商户侧传给微信的订单号32位
+      packageParams.put("refund_fee", fee.toString());
+      packageParams.put("total_fee", fee.toString());
+      packageParams.put("transaction_id", "4200000227201811183047933544");//微信生成的订单号，在支付通知中有返回
+      String sign = PayUtil.createSign(packageParams,key);
+
+      String refundUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+      String xmlParam="<xml>"+
+              "<appid>"+appId+"</appid>"+
+              "<mch_id>"+mchId+"</mch_id>"+
+              "<nonce_str>"+nonceStr+"</nonce_str>"+
+              "<op_user_id>"+mchId+"</op_user_id>"+
+              "<out_refund_no>"+outRefundNo+"</out_refund_no>"+
+              "<out_trade_no>"+outTradeNo+"</out_trade_no>"+
+              "<refund_fee>"+fee+"</refund_fee>"+
+              "<total_fee>"+fee+"</total_fee>"+
+              "<transaction_id>"+"4200000227201811183047933544"+"</transaction_id>"+
+              "<sign>"+sign+"</sign>"+
+              "</xml>";
+      String resultStr = PayUtil.post(refundUrl, xmlParam);
+      //解析结果
+      try {
+          Map map =  PayUtil.doXMLParse(resultStr);
+          String returnCode = map.get("return_code").toString();
+          if(returnCode.equals("SUCCESS")){
+              String resultCode = map.get("result_code").toString();
+              if(resultCode.equals("SUCCESS")){
+                  result.put("status", "success");
+              }else{
+                  result.put("status", "fail");
+              }
+          }else{
+              result.put("status", "fail");
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+          result.put("status", "fail");
+      }
+      return result;
   }
 
   /**
