@@ -13,39 +13,39 @@
 
 <script>
 export default {
-  name: 'BackToTop',
-  props: {
-    visibilityHeight: {
-      type: Number,
-      default: 400
+  name:'BackToTop',
+  props:{
+    visibilityHeight:{
+      type:Number,
+      default:400
     },
-    backPosition: {
-      type: Number,
-      default: 0
+    backPosition:{
+      type:Number,
+      default:0
     },
-    customStyle: {
-      type: Object,
-      default: function() {
+    customStyle:{
+      type:Object,
+      default:function() {
         return {
-          right: '50px',
-          bottom: '50px',
-          width: '40px',
-          height: '40px',
-          'border-radius': '4px',
-          'line-height': '45px',
-          background: '#e7eaf1'
+          right:'50px',
+          bottom:'50px',
+          width:'40px',
+          height:'40px',
+          'border-radius':'4px',
+          'line-height':'45px',
+          background:'#e7eaf1'
         }
       }
     },
-    transitionName: {
-      type: String,
-      default: 'fade'
+    transitionName:{
+      type:String,
+      default:'fade'
     }
   },
   data() {
     return {
-      visible: false,
-      interval: null
+      visible:false,
+      interval:null
     }
   },
   mounted() {
@@ -57,7 +57,7 @@ export default {
       clearInterval(this.interval)
     }
   },
-  methods: {
+  methods:{
     handleScroll() {
       this.visible = window.pageYOffset > this.visibilityHeight
     },

@@ -20,25 +20,23 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="120px" label="订单编号" prop="order.orderSn"></el-table-column>
-      <el-table-column align="center" width="85px" label="下单时间" prop="order.addTime" sortable></el-table-column>
-      <el-table-column align="center" width="80px" label="订单状态" prop="order.orderStatus"></el-table-column>
-      <el-table-column align="center" width="80px" label="用户昵称" prop="order.consignee"></el-table-column>
-      <el-table-column align="center" min-width="80px" label="用户地址" prop="order.address"></el-table-column>
-      <el-table-column align="center" min-width="80px" label="订单备注" prop="order.remark"></el-table-column>
-      <el-table-column align="center" width="100px" label="用户电话" prop="order.mobile"></el-table-column>
-      <el-table-column align="center" width="80px" label="订单费用" prop="order.orderPrice"></el-table-column>
-      <el-table-column align="center" min-width="80px" label="支付方式" prop="order.paymentWay">
+      <el-table-column align="center" width="100px" label="下单时间" prop="order.addTime" sortable></el-table-column>
+      <el-table-column align="center" min-width="100px" label="用户昵称" prop="order.consignee"></el-table-column>
+      <el-table-column align="center" min-width="100px" label="用户地址" prop="order.address"></el-table-column>
+      <el-table-column align="center" min-width="100px" label="用户电话" prop="order.mobile"></el-table-column>
+      <el-table-column align="center" v-if="isShowDeleteColumn" min-width="100px" label="是否删除" prop="order.isDelete">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.order.paymentWay ? 'success' : 'error' ">{{scope.row.order.paymentWay==1 ? '在线支付' : '货到付款'}}</el-tag>
+          <el-tag :type="scope.row.order.isDelete ? 'success' : 'error' "> { { scope.row.order.isDelete ? '未删除': '已删除' } }
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="370" class-name="small-padding fixed-width" prop="type">
+      <el-table-column align="center" min-width="100px" label="订单费用" prop="order.orderPrice"></el-table-column>
+      <el-table-column align="center" min-width="100px" label="实际费用" prop="order.actualPrice"></el-table-column>
+      <el-table-column align="center" label="操作" width="280" class-name="small-padding fixed-width" prop="type">
         <template slot-scope="scope">
           <el-button :type="scope.row.sendBtnStatus.type" :disabled="scope.row.sendBtnStatus.disabled" size="small" @click="handleSend(scope.row.order)">发货</el-button>
           <el-button :type="scope.row.cancelBtnStatus.type" :disabled="scope.row.cancelBtnStatus.disabled" size="small" @click="handleCancelOrder(scope.row.order)">取消订单</el-button>
           <el-button :type="scope.row.confirmBtnStatus.type" :disabled="scope.row.confirmBtnStatus.disabled" size="small" @click="handleConfirmOrder(scope.row.order)">确认完成</el-button>
-          <el-button :type="scope.row.refundBtnStatus.type" :disabled="scope.row.refundBtnStatus.disabled" size="small" @click="handleRefundOrder(scope.row.order)">申请退货</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -73,18 +71,6 @@
         <el-button type="primary" @click="recvData">确定</el-button>
       </div>
     </el-dialog>
-    <!-- 确认退款对话框 -->
-    <el-dialog title="确定退款" :visible.sync="refundDialogFormVisible">
-      确定退款后，金钱将直接退回给用户</br>
-      确定退款后不可再对该订单做任何操作,继续操作?</br>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="refundDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="refundData">确定</el-button>
-      </div>
-    </el-dialog>
-    <audio id="bgMusic">
-      <source src="../../media/eleme.mp3" type="audio/mp3">
-    </audio>
   </div>
 </template>
 <style>
@@ -105,69 +91,62 @@
 </style>
 <script>
 import store from '@/store'
-import { listOrder, getBtnStateByCode, updateOrderCode, STATUS, refundOrder} from '@/api/order'
+import { listOrder, getBtnStateByCode, updateOrderCode, STATUS } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
-  name: 'Order',
-  directives: {
+  name:'Order',
+  directives:{
     waves
   },
   data() {
     return {
-      isShowDeleteColumn: false, // 是否显示订单表格删除状态的列
-      list: undefined,
-      player: undefined, // 后台音频播放器
-      total: undefined,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        id: undefined,
-        name: undefined,
-        sort: '+id'
+      isShowDeleteColumn:false, // 是否显示订单表格删除状态的列
+      list:undefined,
+      player:undefined, // 后台音频播放器
+      total:undefined,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        id:undefined,
+        name:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        shipChannel: undefined,
-        shipSn: undefined,
-        shipStartTime: undefined,
-        shipEndTime: undefined,
-        orderStatus: undefined
+      dataForm:{
+        id:undefined,
+        shipChannel:undefined,
+        shipSn:undefined,
+        shipStartTime:undefined,
+        shipEndTime:undefined,
+        orderStatus:undefined
       },
-      sendDialogFormVisible: false,
-      recvDialogFormVisible: false,
-      cancelSendDialogFormVisible: false,
-      refundDialogFormVisible: false,
-      downloadLoading: false
+      sendDialogFormVisible:false,
+      recvDialogFormVisible:false,
+      cancelSendDialogFormVisible:false,
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
   },
-  sockets: {
-    connect: function() {
+  sockets:{
+    connect:function() {
       console.log('socket connected')
     },
-    submitOrderEvent: function(jsonData) {
-      let socData = JSON.parse(jsonData)
+    submitOrderEvent:function(jsonData) {
+      const socData = JSON.parse(jsonData)
       if (socData.storeUserName == store.getters.name) {
         let newOrder = socData.orderData
         newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.order.orderStatus))
         this.list.unshift(newOrder)
-        this.player.play()
-    }
+      }
     },
-    cancelOrderEvent: function(jsonData) {
+    cancelOrderEvent:function(jsonData) {
       console.log('----->订单取消' + jsonData)
     }
   },
-  mounted: function() {
-    const _this = this
-    this.$nextTick(function() {
-      _this.player = document.getElementById('bgMusic')
-    })
-  },
-  methods: {
+  mounted:function() {},
+  methods:{
     getList() {
       this.listLoading = true
       listOrder(this.listQuery).then(response => {
@@ -209,43 +188,43 @@ export default {
     },
     sendData() {
       /**
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          updateOrder(this.dataForm).then(response => {
-            const updatedOrder = response.data.data
-            for (const v of this.list) {
-              if (v.id === updatedOrder.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, updatedOrder)
-                break
+            this.$refs['dataForm'].validate((valid) => {
+              if (valid) {
+                updateOrder(this.dataForm).then(response => {
+                  const updatedOrder = response.data.data
+                  for (const v of this.list) {
+                    if (v.id === updatedOrder.id) {
+                      const index = this.list.indexOf(v)
+                      this.list.splice(index, 1, updatedOrder)
+                      break
+                    }
+                  }
+                  this.sendDialogFormVisible = false
+                  this.$notify({
+                    title: '成功',
+                    message: '更新成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                })
               }
-            }
-            this.sendDialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
             })
-          })
-        }
-      })
-      **/
+            **/
       // 更改当前的订单的状态为发货状态
-      if(this.dataForm.orderStatus === 201){
-        this.dataForm.orderStatus = STATUS.SHIP//微信支付
-      }else{
-        this.dataForm.orderStatus = STATUS.AFTER_SHIP//货到付款
+      if (this.dataForm.orderStatus === 201) {
+        this.dataForm.orderStatus = STATUS.SHIP // 微信支付
+      } else {
+        this.dataForm.orderStatus = STATUS.AFTER_SHIP // 货到付款
       }
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
         this.updateOrderItemStatus(updatedOrder)
         this.sendDialogFormVisible = false
         this.$notify({
-          title: '成功',
-          message: '发货成功,请尽快送货',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'发货成功,请尽快送货',
+          type:'success',
+          duration:2000
         })
       })
     },
@@ -270,86 +249,64 @@ export default {
       //   this.$refs['dataForm'].clearValidate()
       // })
     },
-    //wz
-    handleRefundOrder(row) {
-      this.resetForm(row)
-      this.refundDialogFormVisible = true
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
-    },
     recvData() {
       // 更改当前的订单的状态为完成状态
-      if(this.dataForm.orderStatus === 201){
-        this.dataForm.orderStatus = STATUS.RECEIVE_COMPLETE//微信支付
-      }else{
-        this.dataForm.orderStatus = STATUS.AFTER_CONFIRM//货到付款
+      if (this.dataForm.orderStatus === 201) {
+        this.dataForm.orderStatus = STATUS.RECEIVE_COMPLETE // 微信支付
+      } else {
+        this.dataForm.orderStatus = STATUS.AFTER_CONFIRM // 货到付款
       }
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
         this.updateOrderItemStatus(updatedOrder)
         this.recvDialogFormVisible = false
         this.$notify({
-          title: '成功',
-          message: '订单已完成',
-          type: 'success',
-          duration: 2000
-        })
-      })
-    },
-    refundData() {
-      // 更改当前的订单的状态为完成状态
-      refundOrder(this.dataForm).then(response => {
-        const updatedOrder = response.data.data
-        this.updateOrderItemStatus(updatedOrder)
-        this.refundDialogFormVisible = false
-        this.$notify({
-          title: '成功',
-          message: '退款成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'订单已完成',
+          type:'success',
+          duration:2000
         })
       })
     },
     cancelData() {
       // 更改当前的订单的状态为取消状态
-      if(this.dataForm.orderStatus === 201){
-         this.dataForm.orderStatus = STATUS.CANCEL//微信支付
-      }else{
-        this.dataForm.orderStatus = STATUS.AFTER_CANCEL//货到付款
+      if (this.dataForm.orderStatus === 201) {
+        this.dataForm.orderStatus = STATUS.CANCEL // 微信支付
+      } else {
+        this.dataForm.orderStatus = STATUS.AFTER_CANCEL // 货到付款
       }
-     
+
       updateOrderCode(this.dataForm).then(response => {
         const updatedOrder = response.data.data
         this.updateOrderItemStatus(updatedOrder)
         this.cancelSendDialogFormVisible = false
         this.$notify({
-          title: '成功',
-          message: '取消成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'取消成功',
+          type:'success',
+          duration:2000
         })
       })
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
-        const filterVal = ['id', 'orderSn', 'userId', 'orderStatis', 'isDelete', 'consignee', 'mobile', 'address']
-        excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
-        this.downloadLoading = false
-      })
+            import('@/vendor/Export2Excel').then(excel => {
+              const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
+              const filterVal = ['id', 'orderSn', 'userId', 'orderStatis', 'isDelete', 'consignee', 'mobile', 'address']
+              excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
+              this.downloadLoading = false
+            })
     },
     updateOrderItemStatus(updatedOrder) {
       for (const v of this.list) {
         if (v.order.id === updatedOrder.id) {
           const index = this.list.indexOf(v)
           const newObj = {
-            goods: v.goods,
-            order: updatedOrder,
-            sendBtnStatus: updatedOrder.sendBtnStatus,
-            cancelBtnStatus: updatedOrder.cancelBtnStatus,
-            confirmBtnStatus: updatedOrder.confirmBtnStatus
+            goods:v.goods,
+            order:updatedOrder,
+            sendBtnStatus:updatedOrder.sendBtnStatus,
+            cancelBtnStatus:updatedOrder.cancelBtnStatus,
+            confirmBtnStatus:updatedOrder.confirmBtnStatus
           }
           this.list.splice(index, 1, newObj)
           break
@@ -358,5 +315,4 @@ export default {
     }
   }
 }
-
 </script>

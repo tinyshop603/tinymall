@@ -19,21 +19,21 @@
 import ScrollPane from '@/components/ScrollPane'
 
 export default {
-  components: { ScrollPane },
+  components:{ ScrollPane },
   data() {
     return {
-      visible: false,
-      top: 0,
-      left: 0,
-      selectedTag: {}
+      visible:false,
+      top:0,
+      left:0,
+      selectedTag:{}
     }
   },
-  computed: {
+  computed:{
     visitedViews() {
       return this.$store.state.tagsView.visitedViews
     }
   },
-  watch: {
+  watch:{
     $route() {
       this.addViewTags()
       this.moveToCurrentTag()
@@ -49,7 +49,7 @@ export default {
   mounted() {
     this.addViewTags()
   },
-  methods: {
+  methods:{
     generateRoute() {
       if (this.$route.name) {
         return this.$route

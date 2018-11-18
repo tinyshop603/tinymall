@@ -6,25 +6,24 @@ export function loginByUsername(username, password) {
     password
   }
   return request({
-    url: '/login/login',
-    method: 'post',
+    url:'/login/login',
+    method:'post',
     data
   })
 }
 
 export function logout() {
   return request({
-    url: '/login/logout',
-    method: 'post'
+    url:'/login/logout',
+    method:'post'
   })
 }
 
 export function getUserInfo(token) {
   return request({
-    url: '/admin/info',
-    method: 'get',
-    params: { token }
+    url:'/admin/info',
+    method:'get',
+    params:{ token }
   })
 }
-
 

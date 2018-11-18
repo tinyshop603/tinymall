@@ -120,49 +120,49 @@ import BackToTop from '@/components/BackToTop'
 import Editor from '@tinymce/tinymce-vue'
 
 export default {
-  name: 'Topic',
-  components: { BackToTop, Editor },
-  directives: {
+  name:'Topic',
+  components:{ BackToTop, Editor },
+  directives:{
     waves
   },
   data() {
     return {
-      list: undefined,
-      total: undefined,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        title: undefined,
-        subtitle: undefined,
-        sort: '+id'
+      list:undefined,
+      total:undefined,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        title:undefined,
+        subtitle:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        titile: undefined,
-        subtitle: undefined,
-        content: '',
-        priceInfo: undefined,
-        readCount: undefined,
-        isShow: false
+      dataForm:{
+        id:undefined,
+        titile:undefined,
+        subtitle:undefined,
+        content:'',
+        priceInfo:undefined,
+        readCount:undefined,
+        isShow:false
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        title: [{ required: true, message: '专题标题不能为空', trigger: 'blur' }],
-        subtitle: [{ required: true, message: '专题子标题不能为空', trigger: 'blur' }],
-        content: [{ required: true, message: '专题内容不能为空', trigger: 'blur' }]
+      rules:{
+        title:[{ required:true, message:'专题标题不能为空', trigger:'blur' }],
+        subtitle:[{ required:true, message:'专题子标题不能为空', trigger:'blur' }],
+        content:[{ required:true, message:'专题内容不能为空', trigger:'blur' }]
       },
-      downloadLoading: false,
-      editorInit: {
-        language: 'zh_CN',
-        plugins: ['advlist anchor autolink autoresize autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime legacyoutput link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
-        toolbar: ['bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript ', 'hr bullist numlist link image charmap preview anchor pagebreak fullscreen media table emoticons forecolor backcolor'],
-        images_upload_handler: function(blobInfo, success, failure) {
+      downloadLoading:false,
+      editorInit:{
+        language:'zh_CN',
+        plugins:['advlist anchor autolink autoresize autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime legacyoutput link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar:['bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript ', 'hr bullist numlist link image charmap preview anchor pagebreak fullscreen media table emoticons forecolor backcolor'],
+        images_upload_handler:function(blobInfo, success, failure) {
           const formData = new FormData()
           formData.append('file', blobInfo.blob())
           createStorage(formData).then(res => {
@@ -177,7 +177,7 @@ export default {
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listTopic(this.listQuery).then(response => {
@@ -204,13 +204,13 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        titile: undefined,
-        subtitle: undefined,
-        content: '',
-        priceInfo: undefined,
-        readCount: undefined,
-        isShow: false
+        id:undefined,
+        titile:undefined,
+        subtitle:undefined,
+        content:'',
+        priceInfo:undefined,
+        readCount:undefined,
+        isShow:false
       }
     },
     handleCreate() {
@@ -237,10 +237,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -267,10 +267,10 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -279,10 +279,10 @@ export default {
     handleDelete(row) {
       deleteTopic(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

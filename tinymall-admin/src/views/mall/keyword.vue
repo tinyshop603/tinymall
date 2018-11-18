@@ -120,47 +120,47 @@ import { listKeyword, createKeyword, updateKeyword, deleteKeyword } from '@/api/
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'Keyword',
-  directives: {
+  name:'Keyword',
+  directives:{
     waves
   },
   data() {
     return {
-      list: undefined,
-      total: undefined,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        keyword: undefined,
-        url: undefined,
-        sort: '+id'
+      list:undefined,
+      total:undefined,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        keyword:undefined,
+        url:undefined,
+        sort:'+id'
       },
-      dataForm: {
-        id: undefined,
-        keyword: undefined,
-        url: undefined,
-        isNew: undefined,
-        isDefault: undefined,
-        isShow: undefined
+      dataForm:{
+        id:undefined,
+        keyword:undefined,
+        url:undefined,
+        isNew:undefined,
+        isDefault:undefined,
+        isShow:undefined
       },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
+      dialogFormVisible:false,
+      dialogStatus:'',
+      textMap:{
+        update:'编辑',
+        create:'创建'
       },
-      rules: {
-        keyword: [{ required: true, message: '关键词不能为空', trigger: 'blur' }],
-        url: [{ required: true, message: '跳转链接称不能为空', trigger: 'blur' }]
+      rules:{
+        keyword:[{ required:true, message:'关键词不能为空', trigger:'blur' }],
+        url:[{ required:true, message:'跳转链接称不能为空', trigger:'blur' }]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listKeyword(this.listQuery).then(response => {
@@ -187,12 +187,12 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        keyword: undefined,
-        url: undefined,
-        isNew: undefined,
-        isDefault: undefined,
-        isShow: undefined
+        id:undefined,
+        keyword:undefined,
+        url:undefined,
+        isNew:undefined,
+        isDefault:undefined,
+        isShow:undefined
       }
     },
     handleCreate() {
@@ -210,10 +210,10 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -240,10 +240,10 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -252,10 +252,10 @@ export default {
     handleDelete(row) {
       deleteKeyword(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

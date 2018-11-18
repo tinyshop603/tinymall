@@ -118,42 +118,42 @@ import { createStorage } from '@/api/storage'
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'Product',
-  directives: {
+  name:'Product',
+  directives:{
     waves
   },
   data() {
     return {
-      list: undefined,
-      total: undefined,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        goodsId: undefined,
-        sort: '+id'
+      list:undefined,
+      total:undefined,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        goodsId:undefined,
+        sort:'+id'
       },
-      createDialogFormVisible: false,
-      editDialogFormVisible: false,
-      dataForm: {
-        id: undefined,
-        goodsId: undefined,
-        goodsSpecificationIds: undefined,
-        goodsNumber: 0,
-        retailPrice: 0,
-        url: undefined
+      createDialogFormVisible:false,
+      editDialogFormVisible:false,
+      dataForm:{
+        id:undefined,
+        goodsId:undefined,
+        goodsSpecificationIds:undefined,
+        goodsNumber:0,
+        retailPrice:0,
+        url:undefined
       },
-      rules: {
-        goodsId: [{ required: true, message: '商品ID不能为空', trigger: 'blur' }],
-        goodsSpecificationIds: [{ required: true, message: '商品规格ID列表不能为空', trigger: 'blur' }]
+      rules:{
+        goodsId:[{ required:true, message:'商品ID不能为空', trigger:'blur' }],
+        goodsSpecificationIds:[{ required:true, message:'商品规格ID列表不能为空', trigger:'blur' }]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listProduct(this.listQuery).then(response => {
@@ -180,12 +180,12 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        goodsId: undefined,
-        goodsSpecificationIds: undefined,
-        goodsNumber: 0,
-        retailPrice: 0,
-        url: undefined
+        id:undefined,
+        goodsId:undefined,
+        goodsSpecificationIds:undefined,
+        goodsNumber:0,
+        retailPrice:0,
+        url:undefined
       }
     },
     uploadUrl(item) {
@@ -211,10 +211,10 @@ export default {
             this.getList()
             this.createDialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'创建成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -240,10 +240,10 @@ export default {
             }
             this.editDialogFormVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -252,10 +252,10 @@ export default {
     handleDelete(row) {
       deleteProduct(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

@@ -10,13 +10,13 @@
 const padding = 15 // tag's padding
 
 export default {
-  name: 'scrollPane',
+  name:'scrollPane',
   data() {
     return {
-      left: 0
+      left:0
     }
   },
-  methods: {
+  methods:{
     handleScroll(e) {
       const eventDelta = e.wheelDelta || -e.deltaY * 3
       const $container = this.$refs.scrollContainer

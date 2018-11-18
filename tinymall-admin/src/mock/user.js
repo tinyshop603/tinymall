@@ -7,18 +7,18 @@ const count = 100
 
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
-    'id': '@increment',
-    'username': '@cname',
-    'mobile': '@string("number", 11)',
-    'age|10-30': 0,
-    'birthday': '@date("yyyy-MM-dd")',
-    'gender': '@integer(0, 2)',
-    'status|1': ['可用', '禁用', '删除']
+    'id':'@increment',
+    'username':'@cname',
+    'mobile':'@string("number", 11)',
+    'age|10-30':0,
+    'birthday':'@date("yyyy-MM-dd")',
+    'gender':'@integer(0, 2)',
+    'status|1':['可用', '禁用', '删除']
   }))
 }
 
 export default {
-  getList: config => {
+  getList:config => {
     const { username, mobile, sort, page = 1, limit = 20 } = param2Obj(config.url)
 
     let mockList = List.filter(item => {
@@ -34,20 +34,20 @@ export default {
     const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
 
     return resAPI.ok({
-      total: mockList.length,
-      items: pageList
+      total:mockList.length,
+      items:pageList
     })
   },
-  createUser: () => {
+  createUser:() => {
     return resAPI.ok()
   },
-  readUser: () => {
+  readUser:() => {
     return resAPI.ok()
   },
-  updateUser: () => {
+  updateUser:() => {
     return resAPI.ok()
   },
-  deleteUser: () => {
+  deleteUser:() => {
     return resAPI.ok()
   }
 }

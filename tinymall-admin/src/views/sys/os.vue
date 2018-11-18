@@ -75,38 +75,38 @@ import { listStorage, createStorage, updateStorage, deleteStorage } from '@/api/
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'Storage',
-  directives: {
+  name:'Storage',
+  directives:{
     waves
   },
   data() {
     return {
-      list: null,
-      total: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        key: undefined,
-        name: undefined,
-        sort: '+id'
+      list:null,
+      total:null,
+      listLoading:true,
+      listQuery:{
+        page:1,
+        limit:20,
+        key:undefined,
+        name:undefined,
+        sort:'+id'
       },
-      createDialogVisible: false,
-      dataForm: {
-        id: undefined,
-        name: ''
+      createDialogVisible:false,
+      dataForm:{
+        id:undefined,
+        name:''
       },
-      updateDialogVisible: false,
-      rules: {
-        name: [{ required: true, message: '对象名称不能为空', trigger: 'blur' }]
+      updateDialogVisible:false,
+      rules:{
+        name:[{ required:true, message:'对象名称不能为空', trigger:'blur' }]
       },
-      downloadLoading: false
+      downloadLoading:false
     }
   },
   created() {
     this.getList()
   },
-  methods: {
+  methods:{
     getList() {
       this.listLoading = true
       listStorage(this.listQuery).then(response => {
@@ -133,8 +133,8 @@ export default {
     },
     resetForm() {
       this.dataForm = {
-        id: undefined,
-        name: ''
+        id:undefined,
+        name:''
       }
     },
     handleCreate() {
@@ -147,10 +147,10 @@ export default {
         this.list.unshift(response.data.data)
         this.createDialogVisible = false
         this.$notify({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'创建成功',
+          type:'success',
+          duration:2000
         })
       }).catch(() => {
         this.$message.error('上传失败，请重新上传')
@@ -176,10 +176,10 @@ export default {
             }
             this.updateDialogVisible = false
             this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+              title:'成功',
+              message:'更新成功',
+              type:'success',
+              duration:2000
             })
           })
         }
@@ -188,10 +188,10 @@ export default {
     handleDelete(row) {
       deleteStorage(row).then(response => {
         this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+          title:'成功',
+          message:'删除成功',
+          type:'success',
+          duration:2000
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)

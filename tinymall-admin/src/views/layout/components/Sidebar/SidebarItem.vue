@@ -32,16 +32,15 @@
 </template>
 
 <script>
-
 export default {
-  name: 'SidebarItem',
-  props: {
-    routes: {
-      type: Array
+  name:'SidebarItem',
+  props:{
+    routes:{
+      type:Array
     },
-    isNest: {
-      type: Boolean,
-      default: false
+    isNest:{
+      type:Boolean,
+      default:false
     }
   }
 }

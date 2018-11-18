@@ -18,32 +18,32 @@
 import screenfull from 'screenfull'
 
 export default {
-  name: 'screenfull',
-  props: {
-    width: {
-      type: Number,
-      default: 22
+  name:'screenfull',
+  props:{
+    width:{
+      type:Number,
+      default:22
     },
-    height: {
-      type: Number,
-      default: 22
+    height:{
+      type:Number,
+      default:22
     },
-    fill: {
-      type: String,
-      default: '#48576a'
+    fill:{
+      type:String,
+      default:'#48576a'
     }
   },
   data() {
     return {
-      isFullscreen: false
+      isFullscreen:false
     }
   },
-  methods: {
+  methods:{
     click() {
       if (!screenfull.enabled) {
         this.$message({
-          message: 'you browser can not work',
-          type: 'warning'
+          message:'you browser can not work',
+          type:'warning'
         })
         return false
       }

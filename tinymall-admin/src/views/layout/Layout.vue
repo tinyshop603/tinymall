@@ -13,14 +13,14 @@
 import { Navbar, Sidebar, AppMain, TagsView } from './components'
 
 export default {
-  name: 'layout',
-  components: {
+  name:'layout',
+  components:{
     Navbar,
     Sidebar,
     AppMain,
     TagsView
   },
-  computed: {
+  computed:{
     sidebar() {
       return this.$store.state.app.sidebar
     }
