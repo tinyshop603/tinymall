@@ -194,13 +194,16 @@ public class AdminOrderController {
 //    if (!handleOption.isRefund()) {
 //      return ResponseUtil.fail(403, "订单不能取消");
 //    }
-      Map refundTest =  refundTest(order);
     // 开启事务管理
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
     def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
     TransactionStatus status = txManager.getTransaction(def);
     try {
       // 设置订单取消状态
+      Map wxRefundOrder =  wxRefundOrder(order);
+      if(wxRefundOrder.get("status").equals("fail")){
+          logger.info("退款失败+"+wxRefundOrder.get("msg").toString());
+      }
       order.setOrderStatus(OrderUtil.STATUS_REFUND_CONFIRM);
       orderService.update(order);
 
@@ -230,10 +233,9 @@ public class AdminOrderController {
    * @return
    */
 
-  public @ResponseBody Map<String, Object> refundTest(LitemallOrder order) {
+  public @ResponseBody Map<String, Object> wxRefundOrder(LitemallOrder order) {
       Map<String,Object> result = new HashMap<String,Object>();
       String appId="wx6453a69f8a24f675";
-//      wx.app-secret=c51b6a185879719654ebe665cc60fadc
       String mchId="1509399431";
       String key="JHujOtLrJB0C8mQ3KslEPWsur6UR4Aic";
       String currTime = PayUtil.getCurrTime();
@@ -259,7 +261,7 @@ public class AdminOrderController {
       packageParams.put("out_trade_no", outTradeNo);//商户侧传给微信的订单号32位
       packageParams.put("refund_fee", fee.toString());
       packageParams.put("total_fee", fee.toString());
-      packageParams.put("transaction_id", "4200000227201811183047933544");//微信生成的订单号，在支付通知中有返回
+      packageParams.put("transaction_id", order.getTransactionId());//微信生成的订单号，在支付通知中有返回
       String sign = PayUtil.createSign(packageParams,key);
 
       String refundUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
@@ -272,7 +274,7 @@ public class AdminOrderController {
               "<out_trade_no>"+outTradeNo+"</out_trade_no>"+
               "<refund_fee>"+fee+"</refund_fee>"+
               "<total_fee>"+fee+"</total_fee>"+
-              "<transaction_id>"+"4200000227201811183047933544"+"</transaction_id>"+
+              "<transaction_id>"+order.getTransactionId()+"</transaction_id>"+
               "<sign>"+sign+"</sign>"+
               "</xml>";
       String resultStr = PayUtil.post(refundUrl, xmlParam);
@@ -286,13 +288,16 @@ public class AdminOrderController {
                   result.put("status", "success");
               }else{
                   result.put("status", "fail");
+                  result.put("msg", "该处应该填写报错信息");
               }
           }else{
               result.put("status", "fail");
+              result.put("msg", "该处应该填写报错信息");
           }
       } catch (Exception e) {
           e.printStackTrace();
           result.put("status", "fail");
+          result.put("msg", "申请退款错误");
       }
       return result;
   }
