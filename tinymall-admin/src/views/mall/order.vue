@@ -20,23 +20,25 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="100px" label="下单时间" prop="order.addTime" sortable></el-table-column>
-      <el-table-column align="center" min-width="100px" label="用户昵称" prop="order.consignee"></el-table-column>
-      <el-table-column align="center" min-width="100px" label="用户地址" prop="order.address"></el-table-column>
-      <el-table-column align="center" min-width="100px" label="用户电话" prop="order.mobile"></el-table-column>
-      <el-table-column align="center" v-if="isShowDeleteColumn" min-width="100px" label="是否删除" prop="order.isDelete">
+      <el-table-column align="center" width="120px" label="订单编号" prop="order.orderSn"></el-table-column>
+      <el-table-column align="center" width="85px" label="下单时间" prop="order.addTime" sortable></el-table-column>
+      <el-table-column align="center" width="80px" label="订单状态" prop="order.orderStatus"></el-table-column>
+      <el-table-column align="center" width="80px" label="用户昵称" prop="order.consignee"></el-table-column>
+      <el-table-column align="center" min-width="80px" label="用户地址" prop="order.address"></el-table-column>
+      <el-table-column align="center" min-width="80px" label="订单备注" prop="order.remark"></el-table-column>
+      <el-table-column align="center" width="100px" label="用户电话" prop="order.mobile"></el-table-column>
+      <el-table-column align="center" width="80px" label="订单费用" prop="order.orderPrice"></el-table-column>
+      <el-table-column align="center" min-width="80px" label="支付方式" prop="order.paymentWay">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.order.isDelete ? 'success' : 'error' "> { { scope.row.order.isDelete ? '未删除': '已删除' } }
-          </el-tag>
+          <el-tag :type="scope.row.order.paymentWay ? 'success' : 'error' ">{{scope.row.order.paymentWay==1 ? '在线支付' : '货到付款'}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" min-width="100px" label="订单费用" prop="order.orderPrice"></el-table-column>
-      <el-table-column align="center" min-width="100px" label="实际费用" prop="order.actualPrice"></el-table-column>
-      <el-table-column align="center" label="操作" width="280" class-name="small-padding fixed-width" prop="type">
+      <el-table-column align="center" label="操作" width="370" class-name="small-padding fixed-width" prop="type">
         <template slot-scope="scope">
           <el-button :type="scope.row.sendBtnStatus.type" :disabled="scope.row.sendBtnStatus.disabled" size="small" @click="handleSend(scope.row.order)">发货</el-button>
           <el-button :type="scope.row.cancelBtnStatus.type" :disabled="scope.row.cancelBtnStatus.disabled" size="small" @click="handleCancelOrder(scope.row.order)">取消订单</el-button>
           <el-button :type="scope.row.confirmBtnStatus.type" :disabled="scope.row.confirmBtnStatus.disabled" size="small" @click="handleConfirmOrder(scope.row.order)">确认完成</el-button>
+          <el-button :type="scope.row.refundBtnStatus.type" :disabled="scope.row.refundBtnStatus.disabled" size="small" @click="handleRefundOrder(scope.row.order)">申请退货</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -71,6 +73,18 @@
         <el-button type="primary" @click="recvData">确定</el-button>
       </div>
     </el-dialog>
+    <!-- 确认退款对话框 -->
+    <el-dialog title="确定退款" :visible.sync="refundDialogFormVisible">
+      确定退款后，金钱将直接退回给用户</br>
+      确定退款后不可再对该订单做任何操作,继续操作?</br>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="refundDialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="refundData">确定</el-button>
+      </div>
+    </el-dialog>
+    <audio id="bgMusic">
+      <source src="../../media/eleme.mp3" type="audio/mp3">
+    </audio>
   </div>
 </template>
 <style>
@@ -91,7 +105,7 @@
 </style>
 <script>
 import store from '@/store'
-import { listOrder, getBtnStateByCode, updateOrderCode, STATUS } from '@/api/order'
+import { listOrder, getBtnStateByCode, updateOrderCode, STATUS, refundOrder } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
   name:'Order',
@@ -123,6 +137,7 @@ export default {
       sendDialogFormVisible:false,
       recvDialogFormVisible:false,
       cancelSendDialogFormVisible:false,
+      refundDialogFormVisible:false,
       downloadLoading:false
     }
   },
@@ -249,6 +264,14 @@ export default {
       //   this.$refs['dataForm'].clearValidate()
       // })
     },
+    // wz
+    handleRefundOrder(row) {
+      this.resetForm(row)
+      this.refundDialogFormVisible = true
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate()
+      // })
+    },
     recvData() {
       // 更改当前的订单的状态为完成状态
       if (this.dataForm.orderStatus === 201) {
@@ -263,6 +286,20 @@ export default {
         this.$notify({
           title:'成功',
           message:'订单已完成',
+          type:'success',
+          duration:2000
+        })
+      })
+    },
+    refundData() {
+      // 更改当前的订单的状态为完成状态
+      refundOrder(this.dataForm).then(response => {
+        const updatedOrder = response.data.data
+        this.updateOrderItemStatus(updatedOrder)
+        this.refundDialogFormVisible = false
+        this.$notify({
+          title:'成功',
+          message:'退款成功',
           type:'success',
           duration:2000
         })
