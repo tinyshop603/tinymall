@@ -261,7 +261,7 @@ public class AdminOrderController {
       packageParams.put("out_trade_no", outTradeNo);//商户侧传给微信的订单号32位
       packageParams.put("refund_fee", fee.toString());
       packageParams.put("total_fee", fee.toString());
-      packageParams.put("transaction_id", order.getTransactionId());//微信生成的订单号，在支付通知中有返回
+      packageParams.put("transaction_id",order.getPayId());//微信生成的订单号，在支付通知中有返回
       String sign = PayUtil.createSign(packageParams,key);
 
       String refundUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
@@ -274,7 +274,7 @@ public class AdminOrderController {
               "<out_trade_no>"+outTradeNo+"</out_trade_no>"+
               "<refund_fee>"+fee+"</refund_fee>"+
               "<total_fee>"+fee+"</total_fee>"+
-              "<transaction_id>"+order.getTransactionId()+"</transaction_id>"+
+              "<transaction_id>"+order.getPayId()+"</transaction_id>"+
               "<sign>"+sign+"</sign>"+
               "</xml>";
       String resultStr = PayUtil.post(refundUrl, xmlParam);
@@ -288,11 +288,11 @@ public class AdminOrderController {
                   result.put("status", "success");
               }else{
                   result.put("status", "fail");
-                  result.put("msg", "该处应该填写报错信息");
+                  result.put("msg", map.get("return_msg").toString());
               }
           }else{
               result.put("status", "fail");
-              result.put("msg", "该处应该填写报错信息");
+              result.put("msg", map.get("return_msg").toString());
           }
       } catch (Exception e) {
           e.printStackTrace();
