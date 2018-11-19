@@ -2,8 +2,6 @@ package com.attitude.tinymall.admin.web;
 
 import com.attitude.tinymall.db.domain.LitemallOrderWithGoods;
 
-import java.math.BigDecimal;
-import java.util.Comparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.admin.annotation.LoginAdmin;
@@ -14,10 +12,9 @@ import com.attitude.tinymall.db.domain.LitemallProduct;
 import com.attitude.tinymall.db.service.LitemallOrderGoodsService;
 import com.attitude.tinymall.db.service.LitemallOrderService;
 import com.attitude.tinymall.db.service.LitemallProductService;
-import com.attitude.tinymall.db.util.OrderHandleOption;
 import com.attitude.tinymall.db.util.OrderUtil;
 import com.attitude.tinymall.core.util.ResponseUtil;
-import com.attitude.tinymall.core.util.PayUtil;
+import com.attitude.tinymall.core.util.WxPayEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -49,6 +46,8 @@ public class AdminOrderController {
   private LitemallOrderService orderService;
   @Autowired
   private LitemallProductService productService;
+  @Autowired
+  private WxPayEngine wxPayEngine;
 
   @GetMapping("/list")
   public Object list(@LoginAdmin Integer adminId,
@@ -238,11 +237,11 @@ public class AdminOrderController {
       String appId="wx6453a69f8a24f675";
       String mchId="1509399431";
       String key="JHujOtLrJB0C8mQ3KslEPWsur6UR4Aic";
-      String currTime = PayUtil.getCurrTime();
+      String currTime = wxPayEngine.getCurrTime();
       String strTime = currTime.substring(8, currTime.length());
-      String strRandom = PayUtil.buildRandom(4) + "";
+      String strRandom = wxPayEngine.buildRandom(4) + "";
       String nonceStr = strTime + strRandom;
-      String outRefundNo = "wx@re@"+PayUtil.getTimeStamp();
+      String outRefundNo = "wx@re@"+ wxPayEngine.getTimeStamp();
       String outTradeNo = "";
 
       DecimalFormat df = new DecimalFormat("######0");
@@ -261,8 +260,8 @@ public class AdminOrderController {
       packageParams.put("out_trade_no", outTradeNo);//商户侧传给微信的订单号32位
       packageParams.put("refund_fee", fee.toString());
       packageParams.put("total_fee", fee.toString());
-      packageParams.put("transaction_id",order.getPayId());//微信生成的订单号，在支付通知中有返回
-      String sign = PayUtil.createSign(packageParams,key);
+      packageParams.put("transaction_id", order.getTransactionId());//微信生成的订单号，在支付通知中有返回
+      String sign = wxPayEngine.createSign(packageParams,key);
 
       String refundUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
       String xmlParam="<xml>"+
@@ -274,13 +273,13 @@ public class AdminOrderController {
               "<out_trade_no>"+outTradeNo+"</out_trade_no>"+
               "<refund_fee>"+fee+"</refund_fee>"+
               "<total_fee>"+fee+"</total_fee>"+
-              "<transaction_id>"+order.getPayId()+"</transaction_id>"+
+              "<transaction_id>"+order.getTransactionId()+"</transaction_id>"+
               "<sign>"+sign+"</sign>"+
               "</xml>";
-      String resultStr = PayUtil.post(refundUrl, xmlParam);
+      String resultStr = wxPayEngine.post(refundUrl, xmlParam);
       //解析结果
       try {
-          Map map =  PayUtil.doXMLParse(resultStr);
+          Map map =  wxPayEngine.doXMLParse(resultStr);
           String returnCode = map.get("return_code").toString();
           if(returnCode.equals("SUCCESS")){
               String resultCode = map.get("result_code").toString();
@@ -288,11 +287,11 @@ public class AdminOrderController {
                   result.put("status", "success");
               }else{
                   result.put("status", "fail");
-                  result.put("msg", map.get("return_msg").toString());
+                  result.put("msg", "该处应该填写报错信息");
               }
           }else{
               result.put("status", "fail");
-              result.put("msg", map.get("return_msg").toString());
+              result.put("msg", "该处应该填写报错信息");
           }
       } catch (Exception e) {
           e.printStackTrace();

@@ -188,9 +188,9 @@ public class LitemallCategoryService {
   }
 
   public void add(LitemallCategory category) {
-    if (category.getParentId() > LitemallAdmin.USER_LIMIT) {
+ /*   if (category.getParentId() > LitemallAdmin.USER_LIMIT) {
       throw new RuntimeException("非法的parentId");
-    }
+    }*/
     categoryMapper.insertSelective(category);
   }
 
