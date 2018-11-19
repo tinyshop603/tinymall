@@ -287,11 +287,11 @@ public class AdminOrderController {
                   result.put("status", "success");
               }else{
                   result.put("status", "fail");
-                  result.put("msg", "该处应该填写报错信息");
+                  result.put("msg", map.get("return_msg").toString());
               }
           }else{
               result.put("status", "fail");
-              result.put("msg", "该处应该填写报错信息");
+              result.put("msg", map.get("return_msg").toString());
           }
       } catch (Exception e) {
           e.printStackTrace();
