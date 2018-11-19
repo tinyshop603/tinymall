@@ -41,21 +41,26 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import com.attitude.tinymall.core.wx.HttpClientConnectionManager;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 //import com.attitude.tinymall.core.util.MD5Utils;
 
 @SuppressWarnings("deprecation")
+@Component
 public class PayUtil {
     private static Object Server;
     @SuppressWarnings("deprecation")
     public static DefaultHttpClient httpclient;
     private static SortedMap parameters;
+    @Value("${wx.refund-cert}")
+    public static  String KEY_PATH;
 
     static {
         httpclient = new DefaultHttpClient();
         httpclient = (DefaultHttpClient) HttpClientConnectionManager.getSSLInstance(httpclient);
         parameters = new TreeMap();
     }
-    public static final String KEY_PATH = "D:\\wx\\cert\\apiclient_cert.p12";
+
 
     /**
      * 把对象转换成字符串
