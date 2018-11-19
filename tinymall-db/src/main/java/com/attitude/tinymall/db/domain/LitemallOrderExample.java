@@ -1877,53 +1877,123 @@ public class LitemallOrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayEqualTo(Boolean value) {
+        public Criteria andPaymentWayEqualTo(Integer value) {
             addCriterion("payment_way =", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayNotEqualTo(Boolean value) {
+        public Criteria andPaymentWayNotEqualTo(Integer value) {
             addCriterion("payment_way <>", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayGreaterThan(Boolean value) {
+        public Criteria andPaymentWayGreaterThan(Integer value) {
             addCriterion("payment_way >", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayGreaterThanOrEqualTo(Boolean value) {
+        public Criteria andPaymentWayGreaterThanOrEqualTo(Integer value) {
             addCriterion("payment_way >=", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayLessThan(Boolean value) {
+        public Criteria andPaymentWayLessThan(Integer value) {
             addCriterion("payment_way <", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayLessThanOrEqualTo(Boolean value) {
+        public Criteria andPaymentWayLessThanOrEqualTo(Integer value) {
             addCriterion("payment_way <=", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayIn(List<Boolean> values) {
+        public Criteria andPaymentWayIn(List<Integer> values) {
             addCriterion("payment_way in", values, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayNotIn(List<Boolean> values) {
+        public Criteria andPaymentWayNotIn(List<Integer> values) {
             addCriterion("payment_way not in", values, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayBetween(Boolean value1, Boolean value2) {
+        public Criteria andPaymentWayBetween(Integer value1, Integer value2) {
             addCriterion("payment_way between", value1, value2, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayNotBetween(Boolean value1, Boolean value2) {
+        public Criteria andPaymentWayNotBetween(Integer value1, Integer value2) {
             addCriterion("payment_way not between", value1, value2, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdIsNull() {
+            addCriterion("transaction_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdIsNotNull() {
+            addCriterion("transaction_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdEqualTo(String value) {
+            addCriterion("transaction_id =", value, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdNotEqualTo(String value) {
+            addCriterion("transaction_id <>", value, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdGreaterThan(String value) {
+            addCriterion("transaction_id >", value, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdGreaterThanOrEqualTo(String value) {
+            addCriterion("transaction_id >=", value, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdLessThan(String value) {
+            addCriterion("transaction_id <", value, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdLessThanOrEqualTo(String value) {
+            addCriterion("transaction_id <=", value, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdLike(String value) {
+            addCriterion("transaction_id like", value, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdNotLike(String value) {
+            addCriterion("transaction_id not like", value, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdIn(List<String> values) {
+            addCriterion("transaction_id in", values, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdNotIn(List<String> values) {
+            addCriterion("transaction_id not in", values, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdBetween(String value1, String value2) {
+            addCriterion("transaction_id between", value1, value2, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransactionIdNotBetween(String value1, String value2) {
+            addCriterion("transaction_id not between", value1, value2, "transactionId");
             return (Criteria) this;
         }
     }

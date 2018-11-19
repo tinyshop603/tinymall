@@ -26,7 +26,9 @@ Page({
           for (let i = 0; i < res.data.data.length; i++) {
             for (let j = 0; j < res.data.data[i].goodsList.length; j++){
               let oldPicUrl = res.data.data[i].goodsList[j].picUrl;
-              res.data.data[i].goodsList[j].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+              if(oldPicUrl.indexOf("fuss10") != -1){
+                res.data.data[i].goodsList[j].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+              }            
             }           
           }
         }
@@ -38,11 +40,176 @@ Page({
   },
   switchTab: function (event) {
     let showType = event.currentTarget.dataset.index;
-    this.setData({
-      showType: showType
-    });
+    if (typeof (showType) != "undefined"){
+      this.setData({
+        showType: showType
+      });
+    }
+    
     this.getOrderList();
   },
+  // “取消订单”点击效果
+  cancelOrder: function (event) {
+    let that = this;
+    let orderId = event.target.dataset.orderId;
+
+    wx.showModal({
+      title: '',
+      content: '确定要取消此订单？',
+      success: function (res) {
+        if (res.confirm) {
+          util.request(api.OrderCancel, {
+            orderId: orderId
+          }, 'POST').then(function (res) {
+            if (res.errno === 0) {
+              wx.showToast({
+                title: '取消订单成功',
+                duration: 2000, //毫秒，默认：1500
+                mask: false,
+                success: function () {
+                  that.getOrderList();
+                }
+              });
+              // util.redirect('/pages/ucenter/order/order');
+            }
+            else {
+              util.showErrorToast(res.errmsg);
+            }
+          });
+        }
+      }
+    });
+  },
+  // “去付款”按钮点击效果
+  payOrder: function (event) {
+    let that = this;
+    let orderId = event.target.dataset.orderId;
+    util.request(api.OrderPrepay, {
+      orderId: orderId
+    }, 'POST').then(function (res) {
+      if (res.errno === 0) {
+        const payParam = res.data;
+        console.log("支付过程开始")
+        wx.requestPayment({
+          'timeStamp': payParam.timeStamp,
+          'nonceStr': payParam.nonceStr,
+          'package': payParam.packageValue,
+          'signType': payParam.signType,
+          'paySign': payParam.paySign,
+          'success': function (res) {
+            console.log("支付过程成功")
+            this.setData({
+              showType: 2
+            });
+            that.getOrderList();
+            // util.redirect('/pages/ucenter/order/order');
+          },
+          'fail': function (res) {
+            console.log("支付过程失败")
+            util.showErrorToast('支付失败');
+          },
+          'complete': function (res) {
+            console.log("支付过程结束")
+          }
+        });
+      }
+    });
+
+  },
+  // “确认收货”点击效果
+  confirmOrder: function (event) {
+    let that = this;
+    let orderId = event.target.dataset.orderId;
+    wx.showModal({
+      title: '',
+      content: '确认收货？',
+      success: function (res) {
+        if (res.confirm) {
+          util.request(api.OrderConfirm, {
+            orderId: orderId
+          }, 'POST').then(function (res) {
+            if (res.errno === 0) {
+              wx.showToast({
+                title: '确认收货成功！',
+                duration: 2000, //毫秒，默认：1500
+                mask: false,
+                success: function () {
+                  that.getOrderList();
+                }
+              });
+              // util.redirect('/pages/ucenter/order/order');
+            }
+            else {
+              util.showErrorToast(res.errmsg);
+            }
+          });
+        }
+      }
+    });
+  },
+  // “删除”点击效果
+  deleteOrder: function (event) {
+    let that = this;
+    let orderId = event.target.dataset.orderId;
+    wx.showModal({
+      title: '',
+      content: '确定要删除此订单？',
+      success: function (res) {
+        if (res.confirm) {
+          util.request(api.OrderDelete, {
+            orderId: orderId
+          }, 'POST').then(function (res) {
+            if (res.errno === 0) {
+              wx.showToast({
+                title: '删除成功',
+                duration: 2000, //毫秒，默认：1500
+                mask: false,
+                success: function () {
+                  that.getOrderList();
+                }
+              });
+              
+            }
+            else {
+              util.showErrorToast(res.errmsg);
+            }
+          });
+        }
+      }
+    });
+  }, 
+  // “取消订单并退款”点击效果
+  refundOrder: function (event) {
+    let that = this;
+    // let orderInfo = that.data.orderInfo;
+    let orderId = event.target.dataset.orderId;
+    wx.showModal({
+      title: '',
+      content: '确定要申请退款？',
+      success: function (res) {
+        if (res.confirm) {
+          util.request(api.OrderRefund, {
+            orderId: orderId
+          }, 'POST').then(function (res) {
+            if (res.errno === 0) {
+              wx.showToast({
+                title: '申请退款成功',
+                duration: 2000, //毫秒，默认：1500
+                mask: false,
+                success: function () {
+                  that.getOrderList();
+                }
+              });
+              // util.redirect('/pages/ucenter/order/order');
+            }
+            else {
+              util.showErrorToast(res.errmsg);
+            }
+          });
+        }
+      }
+    });
+  },  
   onReady:function(){
     // 页面渲染完成
   },

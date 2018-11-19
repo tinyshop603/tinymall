@@ -33,7 +33,9 @@ Page({
         if (res.data.orderGoods.length > 0) {
           for (let i = 0; i < res.data.orderGoods.length; i++) {
             let oldPicUrl = res.data.orderGoods[i].picUrl;
-            res.data.orderGoods[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+            if(oldPicUrl.indexOf("fuss10") != -1){
+              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+            }          
           }
         }
         that.setData({

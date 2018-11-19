@@ -68,6 +68,18 @@
     border-radius: 6rpx;
 }
 
+.nologin-btn{
+    margin-top: 300rpx;
+    margin: 60rpx 0 40rpx 0;
+    height: 96rpx;
+    line-height: 96rpx;
+    color: #fff;
+    font-size: 30rpx;
+    width: 100%;
+    background: #b4282d;
+    border-radius: 6rpx;
+}
+
 .form-item-text{
     height: 35rpx;
     width: 100%;

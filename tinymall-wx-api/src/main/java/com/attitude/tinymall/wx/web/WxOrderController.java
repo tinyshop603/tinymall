@@ -583,6 +583,7 @@ public class WxOrderController {
 
       String orderSn = result.getOutTradeNo();
       String payId = result.getTransactionId();
+      String transactionId = result.getTransactionId();
       // 分转化成元
       String totalFee = BaseWxPayResult.feeToYuan(result.getTotalFee());
 
@@ -605,6 +606,7 @@ public class WxOrderController {
       order.setPayId(payId);
       order.setPayTime(LocalDateTime.now());
       order.setOrderStatus(OrderUtil.STATUS_PAY);
+      order.setTransactionId(transactionId);
 
       orderService.updateById(order);
       return WxPayNotifyResponse.success("处理成功!");

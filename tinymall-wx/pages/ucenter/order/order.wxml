@@ -44,8 +44,16 @@
             </view>
             <view class="b">
                 <view class="l">实付：￥{{item.actualPrice}}</view>
-                <view class="tips">{{item.orderStatusText}}</view>
+                <view class="r">
+                    <view class="btn active" data-order-id="{{item.id}}" catchtap="cancelOrder" wx:if="{{item.handleOption.cancel}}">取消订单</view>
+                    <view class="btn active" data-order-id="{{item.id}}" catchtap="payOrder" wx:if="{{item.handleOption.pay}}">去付款</view>
+                    <view class="btn active" data-order-id="{{item.id}}" catchtap="confirmOrder" wx:if="{{item.handleOption.confirm}}">确认收货</view>
+                    <view class="btn active" data-order-id="{{item.id}}" catchtap="deleteOrder" wx:if="{{item.handleOption.delete}}">删除订单</view>
+                    <view class="btn active" data-order-id="{{item.id}}" catchtap="refundOrder" wx:if="{{item.handleOption.refund}}">申请退款</view>
+                </view>
+              
             </view>
+            <view class="tips">{{item.orderStatusText}}</view>
       </navigator>
     </view>
 </view>

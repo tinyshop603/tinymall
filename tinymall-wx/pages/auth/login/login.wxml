@@ -28,6 +28,7 @@
     </view>  -->
 
     <button type="primary" open-type="getUserInfo" class="login-btn" bindgetuserinfo="wxLogin">微信登录</button>
+    <button type="default" class="nologin-btn" bindtap="goFirstPage">随便逛逛</button>
 
     </view>
 </view>

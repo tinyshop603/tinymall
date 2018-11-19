@@ -245,10 +245,9 @@ public class LitemallGoodsService {
     goodsMapper.logicalDeleteByPrimaryKey(id);
   }
 
-  public void add(LitemallGoods goods) {
+  public int add(LitemallGoods goods) {
     goods.setListPicUrl(goods.getPrimaryPicUrl());
-
-    goodsMapper.insertSelective(goods);
+    return goodsMapper.insertSelective(goods);
   }
 
   public int count() {
