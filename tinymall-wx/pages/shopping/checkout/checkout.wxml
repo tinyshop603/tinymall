@@ -52,7 +52,7 @@
                 <text class="txt">￥{{freightPrice}}元</text>
             </view>
         </view>
-        <picker class="picker" bindchange='bindPickerChange' value='{{pickerIndex}}' range='{{array}}'>
+        <picker class="picker" bindchange='pickerIndex' value='{{pickerIndex}}' range='{{array}}'>
           <view class="order-picker">
             <view class='l'>
               <text class="name">支付方式</text>
