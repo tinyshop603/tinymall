@@ -1,14 +1,10 @@
 package com.attitude.tinymall.db.service;
 
 import com.attitude.tinymall.db.dao.LitemallAdminMapper;
-import com.attitude.tinymall.db.dao.LitemallGoodsMapper;
-import com.attitude.tinymall.db.domain.LitemallAdmin;
-import com.attitude.tinymall.db.domain.LitemallOrderWithGoods;
+import com.attitude.tinymall.db.domain.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.dao.LitemallOrderMapper;
-import com.attitude.tinymall.db.domain.LitemallOrder;
-import com.attitude.tinymall.db.domain.LitemallOrderExample;
 import com.attitude.tinymall.db.util.OrderUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -118,7 +114,7 @@ public class LitemallOrderService {
   }
 
 
-  public List<LitemallOrderWithGoods> listAdminOrdersByAdminId(Integer adminId, Integer userId,
+  public List<LitemallOrder> listAdminOrdersByAdminId(Integer adminId, Integer userId,
                                                                String orderSn, Integer page, Integer size, String sort, String order) {
     LitemallOrderExample example = new LitemallOrderExample();
     example.orderBy("add_time DESC");
@@ -142,7 +138,7 @@ public class LitemallOrderService {
     criteria.andOrderStatusNotIn(unshowOrderStatus);
 
     Page<Object> objects = PageHelper.startPage(page, size);
-    return orderMapper.selectOdersWithGoods(adminId);
+    return orderMapper.selectByExample(example);
   }
 
   public int countAdminOrdersByAdminId(Integer adminId, Integer userId, String orderSn) {

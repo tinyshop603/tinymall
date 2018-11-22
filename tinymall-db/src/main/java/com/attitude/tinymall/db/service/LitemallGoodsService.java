@@ -246,7 +246,7 @@ public class LitemallGoodsService {
   }
 
   public int add(LitemallGoods goods) {
-    goods.setListPicUrl(goods.getPrimaryPicUrl());
+
     return goodsMapper.insertSelective(goods);
   }
 
