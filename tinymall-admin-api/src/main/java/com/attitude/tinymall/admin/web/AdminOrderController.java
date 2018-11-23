@@ -24,11 +24,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.SortedMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.text.DecimalFormat;
 
 @RestController
@@ -58,14 +54,30 @@ public class AdminOrderController {
     if (adminId == null) {
       return ResponseUtil.fail401();
     }
-    List<LitemallOrderWithGoods> orderList = orderService
-        .listAdminOrdersByAdminId(adminId,userId, orderSn, page, limit, sort, order);
+    List<LitemallOrder> orderList = orderService.listAdminOrdersByAdminId(adminId,userId, orderSn, page, limit, sort, order);
+    List<LitemallOrderGoods> orderGoodsList = orderGoodsService.listOrderWithGoodsByOrder(orderList);
+
+    List<LitemallOrderWithGoods> orderWithGoodsList = new ArrayList<LitemallOrderWithGoods>();
+    for(LitemallOrder curOrder :orderList){
+      LitemallOrderWithGoods itemallOrderWithGoods = new LitemallOrderWithGoods();
+      List<LitemallOrderGoods> curOrderGoodsList = new ArrayList<LitemallOrderGoods>();
+
+
+      for(LitemallOrderGoods curOrderGoods:orderGoodsList){
+        if(curOrderGoods.getOrderId().equals(curOrder.getId())){
+          curOrderGoodsList.add(curOrderGoods);
+        }
+      }
+      itemallOrderWithGoods.setOrder(curOrder);
+      itemallOrderWithGoods.setGoods(curOrderGoodsList);
+      orderWithGoodsList.add(itemallOrderWithGoods);
+    }
     int total = orderService.countAdminOrdersByAdminId(adminId,userId, orderSn);
 
 
     Map<String, Object> data = new HashMap<>();
     data.put("total", total);
-    data.put("items", orderList);
+    data.put("items", orderWithGoodsList);
 
     return ResponseUtil.ok(data);
   }
@@ -209,14 +221,14 @@ public class AdminOrderController {
       //调取接口
 
       // 商品货品数量增加
-      List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
-      for (LitemallOrderGoods orderGoods : orderGoodsList) {
-        Integer productId = orderGoods.getProductId();
-        LitemallProduct product = productService.findById(productId);
-        Integer number = product.getGoodsNumber() + orderGoods.getNumber();
-        product.setGoodsNumber(number);
-        productService.updateById(product);
-      }
+//      List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
+//      for (LitemallOrderGoods orderGoods : orderGoodsList) {
+//        Integer productId = orderGoods.getProductId();
+//        LitemallProduct product = productService.findById(productId);
+//        Integer number = product.getGoodsNumber() + orderGoods.getNumber();
+//        product.setGoodsNumber(number);
+//        productService.updateById(product);
+//      }
     } catch (Exception ex) {
       txManager.rollback(status);
       logger.error("系统内部错误", ex);
