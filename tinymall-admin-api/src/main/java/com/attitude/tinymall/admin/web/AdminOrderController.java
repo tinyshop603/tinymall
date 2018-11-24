@@ -1,14 +1,12 @@
 package com.attitude.tinymall.admin.web;
 
-import com.attitude.tinymall.db.domain.LitemallOrderWithGoods;
+import com.attitude.tinymall.db.domain.*;
 
+import com.attitude.tinymall.db.service.LitemallAdminService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.admin.annotation.LoginAdmin;
 import com.attitude.tinymall.core.util.JacksonUtil;
-import com.attitude.tinymall.db.domain.LitemallOrder;
-import com.attitude.tinymall.db.domain.LitemallOrderGoods;
-import com.attitude.tinymall.db.domain.LitemallProduct;
 import com.attitude.tinymall.db.service.LitemallOrderGoodsService;
 import com.attitude.tinymall.db.service.LitemallOrderService;
 import com.attitude.tinymall.db.service.LitemallProductService;
@@ -33,6 +31,8 @@ public class AdminOrderController {
 
   private final Log logger = LogFactory.getLog(AdminOrderController.class);
 
+  private final String REFUND_URL = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+
   @Autowired
   private PlatformTransactionManager txManager;
 
@@ -44,6 +44,9 @@ public class AdminOrderController {
   private LitemallProductService productService;
   @Autowired
   private WxPayEngine wxPayEngine;
+  @Autowired
+  private LitemallAdminService adminService;
+
 
   @GetMapping("/list")
   public Object list(@LoginAdmin Integer adminId,
@@ -197,6 +200,10 @@ public class AdminOrderController {
     if (order == null) {
       return ResponseUtil.badArgument();
     }
+    LitemallAdmin admin =  adminService.findAllById(adminId);
+    if (admin == null) {
+      return ResponseUtil.badArgument();
+    }
     if (!order.getAdminId().equals(adminId)) {
       return ResponseUtil.badArgumentValue();
     }
@@ -205,20 +212,72 @@ public class AdminOrderController {
 //    if (!handleOption.isRefund()) {
 //      return ResponseUtil.fail(403, "订单不能取消");
 //    }
+    String currTime = wxPayEngine.getCurrTime();
+    String strTime = currTime.substring(8, currTime.length());
+    String strRandom = wxPayEngine.buildRandom(4) + "";
+    String nonceStr = strTime + strRandom;
+    String outRefundNo = "wx@re@"+ wxPayEngine.getTimeStamp();
+    String outTradeNo = "";
+    DecimalFormat df = new DecimalFormat("######0");
+    //      BigDecimal radix = new BigDecimal(100);
+//      BigDecimal realFee = order.getActualPrice().multiply(radix);
+//      Integer fee = realFee.intValue();
+    //测试用例
+    Integer fee = 1;
+    SortedMap<String, String> packageParams = new TreeMap<String, String>();
+    packageParams.put("appid", admin.getOwnerId());
+    packageParams.put("mch_id", admin.getMchId().toString());//微信支付分配的商户号
+    packageParams.put("nonce_str", nonceStr);//随机字符串，不长于32位
+    packageParams.put("op_user_id", admin.getId().toString());//操作员帐号, 默认为商户号
+    //out_refund_no只能含有数字、字母和字符_-|*@
+    packageParams.put("out_refund_no", outRefundNo);//商户系统内部的退款单号，商户系统内部唯一，同一退款单号多次请求只退一笔
+    packageParams.put("out_trade_no", order.getOrderSn());//商户侧传给微信的订单号32位
+    packageParams.put("refund_fee", fee.toString());
+    packageParams.put("total_fee", fee.toString());
+    packageParams.put("transaction_id", order.getPayId());//微信生成的订单号，在支付通知中有返回
+    String sign = wxPayEngine.createSign(packageParams,admin.getMchKey());
+
+    String xmlParam="<xml>"+
+            "<appid>"+admin.getOwnerId()+"</appid>"+
+            "<mch_id>"+admin.getMchId().toString()+"</mch_id>"+
+            "<nonce_str>"+nonceStr+"</nonce_str>"+
+            "<op_user_id>"+admin.getId().toString()+"</op_user_id>"+
+            "<out_refund_no>"+outRefundNo+"</out_refund_no>"+
+            "<out_trade_no>"+order.getOrderSn()+"</out_trade_no>"+
+            "<refund_fee>"+fee+"</refund_fee>"+
+            "<total_fee>"+fee+"</total_fee>"+
+            "<transaction_id>"+order.getPayId()+"</transaction_id>"+
+            "<sign>"+sign+"</sign>"+
+            "</xml>";
+    String resultStr = wxPayEngine.post(REFUND_URL, xmlParam,admin.getMchId().toString());
+    Map<String,Object> result = new HashMap<String,Object>();
+    //解析结果
+    try {
+      Map map =  wxPayEngine.doXMLParse(resultStr);
+      String returnCode = map.get("return_code").toString();
+      if(returnCode.equals("SUCCESS")){
+        String resultCode = map.get("result_code").toString();
+        if(resultCode.equals("SUCCESS")){
+          logger.info("退款成功");
+        }else{
+          logger.info("退款失败："+map.get("return_msg").toString());
+          return ResponseUtil.fail(403, "订单退款失败");
+        }
+      }else{
+        logger.info("退款失败："+map.get("return_msg").toString());
+        return ResponseUtil.fail(403, "订单退款失败");
+    }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return ResponseUtil.fail(403, "订单退款失败");
+    }
     // 开启事务管理
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
     def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
     TransactionStatus status = txManager.getTransaction(def);
     try {
-      // 设置订单取消状态
-      Map wxRefundOrder =  wxRefundOrder(order);
-      if(wxRefundOrder.get("status").equals("fail")){
-          logger.info("退款失败+"+wxRefundOrder.get("msg").toString());
-      }
       order.setOrderStatus(OrderUtil.STATUS_REFUND_CONFIRM);
       orderService.update(order);
-
-      //调取接口
 
       // 商品货品数量增加
 //      List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
@@ -238,81 +297,6 @@ public class AdminOrderController {
 
     return ResponseUtil.ok(order);
   }
-
-  /**
-   * 申请退款
-   * @return
-   */
-
-  public @ResponseBody Map<String, Object> wxRefundOrder(LitemallOrder order) {
-      Map<String,Object> result = new HashMap<String,Object>();
-      String appId="wx6453a69f8a24f675";
-      String mchId="1509399431";
-      String key="JHujOtLrJB0C8mQ3KslEPWsur6UR4Aic";
-      String currTime = wxPayEngine.getCurrTime();
-      String strTime = currTime.substring(8, currTime.length());
-      String strRandom = wxPayEngine.buildRandom(4) + "";
-      String nonceStr = strTime + strRandom;
-      String outRefundNo = "wx@re@"+ wxPayEngine.getTimeStamp();
-      String outTradeNo = "";
-
-      DecimalFormat df = new DecimalFormat("######0");
-//      BigDecimal radix = new BigDecimal(100);
-//      BigDecimal realFee = order.getActualPrice().multiply(radix);
-//      Integer fee = realFee.intValue();
-      //测试用例
-      Integer fee = 1;
-      SortedMap<String, String> packageParams = new TreeMap<String, String>();
-      packageParams.put("appid", appId);
-      packageParams.put("mch_id", mchId);//微信支付分配的商户号
-      packageParams.put("nonce_str", nonceStr);//随机字符串，不长于32位
-      packageParams.put("op_user_id", mchId);//操作员帐号, 默认为商户号
-      //out_refund_no只能含有数字、字母和字符_-|*@
-      packageParams.put("out_refund_no", outRefundNo);//商户系统内部的退款单号，商户系统内部唯一，同一退款单号多次请求只退一笔
-      packageParams.put("out_trade_no", outTradeNo);//商户侧传给微信的订单号32位
-      packageParams.put("refund_fee", fee.toString());
-      packageParams.put("total_fee", fee.toString());
-      packageParams.put("transaction_id", order.getPayId());//微信生成的订单号，在支付通知中有返回
-      String sign = wxPayEngine.createSign(packageParams,key);
-
-      String refundUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
-      String xmlParam="<xml>"+
-              "<appid>"+appId+"</appid>"+
-              "<mch_id>"+mchId+"</mch_id>"+
-              "<nonce_str>"+nonceStr+"</nonce_str>"+
-              "<op_user_id>"+mchId+"</op_user_id>"+
-              "<out_refund_no>"+outRefundNo+"</out_refund_no>"+
-              "<out_trade_no>"+outTradeNo+"</out_trade_no>"+
-              "<refund_fee>"+fee+"</refund_fee>"+
-              "<total_fee>"+fee+"</total_fee>"+
-              "<transaction_id>"+order.getPayId()+"</transaction_id>"+
-              "<sign>"+sign+"</sign>"+
-              "</xml>";
-      String resultStr = wxPayEngine.post(refundUrl, xmlParam);
-      //解析结果
-      try {
-          Map map =  wxPayEngine.doXMLParse(resultStr);
-          String returnCode = map.get("return_code").toString();
-          if(returnCode.equals("SUCCESS")){
-              String resultCode = map.get("result_code").toString();
-              if(resultCode.equals("SUCCESS")){
-                  result.put("status", "success");
-              }else{
-                  result.put("status", "fail");
-                  result.put("msg", map.get("return_msg").toString());
-              }
-          }else{
-              result.put("status", "fail");
-              result.put("msg", map.get("return_msg").toString());
-          }
-      } catch (Exception e) {
-          e.printStackTrace();
-          result.put("status", "fail");
-          result.put("msg", "申请退款错误");
-      }
-      return result;
-  }
-
   /**
    * 发货 1. 检测当前订单是否能够发货 2. 设置订单发货状态
    *
