@@ -32,7 +32,9 @@ public class LitemallAdminService {
   }
 
   public LitemallAdmin findAdminByOwnerId(String ownerId) {
-    return adminMapper.findAdminByOwnerId(ownerId);
+    LitemallAdminExample example = new LitemallAdminExample();
+    example.or().andOwnerIdEqualTo(ownerId).andDeletedEqualTo(false);
+    return adminMapper.selectOneByExample(example);
   }
 
   private final Column[] result = new Column[]{Column.id, Column.username, Column.avatar};
@@ -78,5 +80,8 @@ public class LitemallAdminService {
 
   public LitemallAdmin findById(Integer id) {
     return adminMapper.selectByPrimaryKeySelective(id, result);
+  }
+  public LitemallAdmin findAllById(Integer id) {
+    return adminMapper.selectByPrimaryKey(id);
   }
 }
