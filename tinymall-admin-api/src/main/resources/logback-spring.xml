@@ -60,7 +60,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="production">
+    <springProfile name="prod">
         <root level="INFO">
             <appender-ref ref="ERROR"/>
             <appender-ref ref="ROLLING_FILE"/>
