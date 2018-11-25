@@ -44,7 +44,6 @@ import org.jdom.input.SAXBuilder;
 import com.attitude.tinymall.core.wx.HttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-//import com.attitude.tinymall.core.util.MD5Utils;
 
 @SuppressWarnings("deprecation")
 @Component
@@ -458,21 +457,21 @@ public class WxPayEngine {
     return sb.toString();
   }
 
-  public String post(String url, String xmlParam) {
+  public String post(String url, String xmlParam, String mchid) {
     StringBuilder sb = new StringBuilder();
     try {
       KeyStore keyStore = KeyStore.getInstance("PKCS12");
       FileInputStream instream = new FileInputStream(new File(keyPath));
-      log.info("keypath: "+keyPath);
+//      log.info("keypath: "+keyPath);
       try {
-        keyStore.load(instream, "1509399431".toCharArray());
+        keyStore.load(instream, mchid.toCharArray());
       } finally {
         instream.close();
       }
 
       // 证书
       SSLContext sslcontext = SSLContexts.custom()
-          .loadKeyMaterial(keyStore, "1509399431".toCharArray())
+          .loadKeyMaterial(keyStore, mchid.toCharArray())
           .build();
       // 只允许TLSv1协议
       SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(

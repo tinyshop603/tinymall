@@ -1,10 +1,11 @@
 package com.attitude.tinymall.wx.web;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.attitude.tinymall.core.common.SocketEvent;
 import com.attitude.tinymall.core.domain.MessageInfo;
 import com.attitude.tinymall.core.util.ResponseUtil;
+import com.attitude.tinymall.core.util.WxPayEngine;
+import com.attitude.tinymall.core.wx.WxPayMpOrderResult;
 import com.attitude.tinymall.db.domain.LitemallAddress;
 import com.attitude.tinymall.db.domain.LitemallCart;
 import com.attitude.tinymall.db.domain.LitemallOrder;
@@ -18,25 +19,20 @@ import com.attitude.tinymall.db.service.LitemallOrderService;
 import com.attitude.tinymall.db.service.LitemallProductService;
 import com.attitude.tinymall.db.service.LitemallRegionService;
 import com.attitude.tinymall.db.service.LitemallUserService;
+import com.attitude.tinymall.db.service.LitemallAdminService;
 import com.attitude.tinymall.db.util.OrderHandleOption;
 import com.attitude.tinymall.db.util.OrderUtil;
 import com.attitude.tinymall.wx.annotation.LoginUser;
-import com.corundumstudio.socketio.SocketIOServer;
+import com.attitude.tinymall.wx.util.IpUtil;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
-import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
-import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
 import com.github.binarywang.wxpay.service.WxPayService;
 import io.socket.client.Socket;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang3.StringUtils;
 import com.attitude.tinymall.db.domain.*;
-import com.attitude.tinymall.db.service.*;
 import com.attitude.tinymall.core.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -51,10 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  * 订单设计
@@ -80,9 +73,10 @@ public class WxOrderController {
 
   private final Log logger = LogFactory.getLog(WxOrderController.class);
 
+  private final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+
   @Autowired
   private PlatformTransactionManager txManager;
-
   @Autowired
   private LitemallUserService userService;
   @Autowired
@@ -99,9 +93,10 @@ public class WxOrderController {
   private LitemallProductService productService;
   @Autowired
   private LitemallAdminService adminService;
-
   @Autowired
   private WxPayService wxPayService;
+  @Autowired
+  private WxPayEngine wxPayEngine;
   /**
    * 消息传递信息
    */
@@ -152,7 +147,7 @@ public class WxOrderController {
       return ResponseUtil.fail401();
     }
     if (showType == null) {
-      showType = 0;
+      showType = 1;
     }
 
     List<Short> orderStatus = OrderUtil.orderStatus(showType);
@@ -271,6 +266,9 @@ public class WxOrderController {
       return ResponseUtil.unlogin();
     }
     if (body == null) {
+      return ResponseUtil.badArgument();
+    }
+    if (appId == null) {
       return ResponseUtil.badArgument();
     }
     Integer cartId = JacksonUtil.parseInteger(body, "cartId");
@@ -411,6 +409,176 @@ public class WxOrderController {
     client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
     return ResponseUtil.ok(data);
   }
+  /**
+   * 付款订单的预支付会话标识
+   *
+   * 1. 检测当前订单是否能够付款 2. 微信支付平台返回支付订单ID 3. 设置订单付款状态
+   *
+   * @param userId 用户ID
+   * @param body 订单信息，{ orderId：xxx }
+   * @return 订单操作结果 成功则 { errno: 0, errmsg: '模拟付款支付成功' } 失败则 { errno: XXX, errmsg: XXX }
+   */
+  @PostMapping("prepay")
+  public Object prepay(@LoginUser Integer userId, @RequestBody String body, HttpServletRequest request, @PathVariable("storeId") String appId) {
+    if (userId == null) {
+      return ResponseUtil.unlogin();
+    }
+    if (appId == null) {
+      return ResponseUtil.badArgument();
+    }
+    Integer orderId = JacksonUtil.parseInteger(body, "orderId");
+    if (orderId == null) {
+      return ResponseUtil.badArgument();
+    }
+
+    LitemallOrder order = orderService.findById(orderId);
+    if (order == null) {
+      return ResponseUtil.badArgumentValue();
+    }
+    if (!order.getUserId().equals(userId)) {
+      return ResponseUtil.badArgumentValue();
+    }
+    // 检测是否能够取消
+    OrderHandleOption handleOption = OrderUtil.build(order);
+    if (!handleOption.isPay()) {
+      return ResponseUtil.fail(403, "订单不能支付");
+    }
+
+    LitemallUser user = userService.findById(userId);
+    String openId = user.getWeixinOpenid();
+
+    if (openId == null) {
+      return ResponseUtil.fail(403, "订单不能支付");
+    }
+
+    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+    String currTime = wxPayEngine.getCurrTime();
+    //8位日期
+    String strTime = currTime.substring(8, currTime.length());
+    //四位随机数
+    String strRandom = wxPayEngine.buildRandom(4) + "";
+    //10位序列号,可以自行调整。
+    String nonceStr = strTime + strRandom;
+    //附加数据，以一定格式保存userId和activityId。原样返回。
+    String attach = userId+"#wx#"+order.getId();
+    String spBillCreateIp = IpUtil.client(request);
+    // TODO 更有意义的显示名称
+    String describe = "789便利店-订单支付";
+    String detail = "订单测试支付";
+    // 这里仅支付1分
+    // TODO 单位转换元转分 测试时使用分
+    BigDecimal radix = new BigDecimal(100);
+    BigDecimal realFee = order.getActualPrice().multiply(radix);
+//    String money = String.valueOf(realFee.intValue());
+    //测试用例，1分钱
+    String money = "1";
+    SortedMap<String, String> packageParams = new TreeMap<String, String>();
+    packageParams.put("appid", admin.getOwnerId());
+    packageParams.put("attach", attach);//附加数据
+    packageParams.put("body",describe );//商品描述
+    packageParams.put("detail", detail);
+    packageParams.put("mch_id", admin.getMchId().toString());//商户号
+    packageParams.put("nonce_str", nonceStr);//随机数
+    packageParams.put("notify_url", admin.getNotifyUrl());
+    packageParams.put("openid", openId);
+    packageParams.put("out_trade_no", order.getOrderSn());//商户订单号
+    packageParams.put("spbill_create_ip", spBillCreateIp);//订单生成的机器 IP
+    packageParams.put("total_fee", money);//总金额
+    packageParams.put("trade_type", "JSAPI");
+
+    String sign = wxPayEngine.createSign(packageParams,admin.getMchKey());
+    String xml="<xml>"+
+            "<appid>"+appId+"</appid>"+
+            "<attach>"+attach+"</attach>"+
+            "<body><![CDATA["+describe+"]]></body>"+
+            "<detail><![CDATA["+detail+"]]></detail>"+
+            "<mch_id>"+admin.getMchId().toString()+"</mch_id>"+
+            "<nonce_str>"+nonceStr+"</nonce_str>"+
+            "<sign>"+sign+"</sign>"+
+            "<notify_url>"+admin.getNotifyUrl()+"</notify_url>"+
+            "<openid>"+openId+"</openid>"+
+            "<out_trade_no>"+order.getOrderSn()+"</out_trade_no>"+
+            "<spbill_create_ip>"+spBillCreateIp+"</spbill_create_ip>"+
+            "<total_fee>"+money+"</total_fee>"+
+            "<trade_type>JSAPI</trade_type>"+
+            "</xml>";
+    String prepay_id="";
+    try {
+      prepay_id = wxPayEngine.getPayNo(PAY_URL, xml);
+      if(prepay_id.equals("")){
+        //错误提示
+        System.out.println("统一支付接口获取预支付订单出错");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return ResponseUtil.fail(403, "订单不能支付");
+    }
+    SortedMap<String, String> finalpackage = new TreeMap<String, String>();
+    String timestamp = wxPayEngine.getTimeStamp();
+    String packages = "prepay_id="+prepay_id;
+    finalpackage.put("appId", appId);
+    finalpackage.put("nonceStr", nonceStr);
+    finalpackage.put("package", packages);
+    finalpackage.put("signType", "MD5");
+    finalpackage.put("timeStamp", timestamp);
+    String finalsign = wxPayEngine.createSign(finalpackage,admin.getMchKey());
+
+    WxPayMpOrderResult result = new WxPayMpOrderResult();
+    result.setNonceStr(nonceStr);
+    result.setPackage_(packages);
+    result.setPaySign(finalsign);
+    result.setSignType("MD5");
+    result.setTimeStamp(timestamp);
+    orderService.updateById(order);
+    return ResponseUtil.ok(result);
+  }
+  /**
+   * 付款成功回调接口 1. 检测当前订单是否是付款状态 2. 设置订单付款成功状态相关信息 3. 响应微信支付平台
+   *
+   * @return 订单操作结果 成功则 WxPayNotifyResponse.success的XML内容 失败则 WxPayNotifyResponse.fail的XML内容
+   *
+   * 注意，这里pay-notify是示例地址，开发者应该设立一个隐蔽的回调地址
+   */
+  @PostMapping("pay-notify")
+  public Object payNotify(HttpServletRequest request, HttpServletResponse response) {
+    try {
+      String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
+      WxPayOrderNotifyResult result = wxPayService.parseOrderNotifyResult(xmlResult);
+
+      String orderSn = result.getOutTradeNo();
+      String payId = result.getTransactionId();
+      String transactionId = result.getTransactionId();
+      // 分转化成元
+      String totalFee = BaseWxPayResult.feeToYuan(result.getTotalFee());
+
+      LitemallOrder order = orderService.findBySn(orderSn);
+      if (order == null) {
+        throw new Exception("订单不存在 sn=" + orderSn);
+      }
+
+      // 检查这个订单是否已经处理过
+      if (OrderUtil.isPayStatus(order) && order.getPayId() != null) {
+        return WxPayNotifyResponse.success("处理成功!");
+      }
+
+      // 检查支付订单金额
+      // TODO 这里1分钱需要改成实际订单金额
+      if (!totalFee.equals("0.01")) {
+        throw new Exception("支付金额不符合 totalFee=" + totalFee);
+      }
+
+      order.setPayId(payId);
+      order.setPayTime(LocalDateTime.now());
+      order.setOrderStatus(OrderUtil.STATUS_PAY);
+      order.setTransactionId(transactionId);
+
+      orderService.updateById(order);
+      return WxPayNotifyResponse.success("处理成功!");
+    } catch (Exception e) {
+      logger.error("微信回调结果异常,异常原因 " + e.getMessage());
+      return WxPayNotifyResponse.fail(e.getMessage());
+    }
+  }
 
   /**
    * 取消订单 1. 检测当前订单是否能够取消 2. 设置订单取消状态 3. 商品货品数量增加
@@ -480,142 +648,6 @@ public class WxOrderController {
     client.emit(SocketEvent.CANCEL_ORDER, messageInfo);
     return ResponseUtil.ok();
   }
-
-  /**
-   * 付款订单的预支付会话标识
-   *
-   * 1. 检测当前订单是否能够付款 2. 微信支付平台返回支付订单ID 3. 设置订单付款状态
-   *
-   * @param userId 用户ID
-   * @param body 订单信息，{ orderId：xxx }
-   * @return 订单操作结果 成功则 { errno: 0, errmsg: '模拟付款支付成功' } 失败则 { errno: XXX, errmsg: XXX }
-   */
-  @PostMapping("prepay")
-  public Object prepay(@LoginUser Integer userId, @RequestBody String body, HttpServletRequest request) {
-    if (userId == null) {
-      return ResponseUtil.unlogin();
-    }
-    Integer orderId = JacksonUtil.parseInteger(body, "orderId");
-    if (orderId == null) {
-      return ResponseUtil.badArgument();
-    }
-
-    LitemallOrder order = orderService.findById(orderId);
-    if (order == null) {
-      return ResponseUtil.badArgumentValue();
-    }
-    if (!order.getUserId().equals(userId)) {
-      return ResponseUtil.badArgumentValue();
-    }
-
-    // 检测是否能够取消
-    OrderHandleOption handleOption = OrderUtil.build(order);
-    if (!handleOption.isPay()) {
-      return ResponseUtil.fail(403, "订单不能支付");
-    }
-
-    LitemallUser user = userService.findById(userId);
-    String openid = user.getWeixinOpenid();
-
-    if (openid == null) {
-      return ResponseUtil.fail(403, "订单不能支付");
-    }
-    WxPayMpOrderResult result = null;
-    try {
-      // TODO 还没有考虑好使用哪种方式获取用户IP
-      String userIp = user.getLastLoginIp();
-      String getIp = getIp2(request);
-      WxPayUnifiedOrderRequest orderRequest = new WxPayUnifiedOrderRequest();
-      orderRequest.setOutTradeNo(order.getOrderSn());
-      orderRequest.setOpenid(openid);
-      // TODO 更有意义的显示名称
-      orderRequest.setBody("tinymall小商场-订单测试支付");
-      // 这里仅支付1分
-      // TODO 单位转换元转分 测试时使用分
-        BigDecimal radix = new BigDecimal(100);
-        BigDecimal realFee = order.getActualPrice().multiply(radix);
-//        orderRequest.setTotalFee(realFee.intValue());
-      orderRequest.setTotalFee(1);//测试用例 每次一分
-      // 用户终端IP地址
-      orderRequest.setSpbillCreateIp(getIp);
-
-      result = wxPayService.createOrder(orderRequest);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return ResponseUtil.fail(403, "订单不能支付");
-    }
-
-    orderService.updateById(order);
-    return ResponseUtil.ok(result);
-  }
-
-  // 通过用户请求获取用户IP WZ
-  public static String getIp2(HttpServletRequest request) {
-    String ip = request.getHeader("X-Forwarded-For");
-    if(StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)){
-      //多次反向代理后会有多个ip值，第一个ip才是真实ip
-      int index = ip.indexOf(",");
-      if(index != -1){
-        return ip.substring(0,index);
-      }else{
-        return ip;
-      }
-    }
-    ip = request.getHeader("X-Real-IP");
-    if(StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)){
-      return ip;
-    }
-    return request.getRemoteAddr();
-  }
-
-  /**
-   * 付款成功回调接口 1. 检测当前订单是否是付款状态 2. 设置订单付款成功状态相关信息 3. 响应微信支付平台
-   *
-   * @return 订单操作结果 成功则 WxPayNotifyResponse.success的XML内容 失败则 WxPayNotifyResponse.fail的XML内容
-   *
-   * 注意，这里pay-notify是示例地址，开发者应该设立一个隐蔽的回调地址
-   */
-  @PostMapping("pay-notify")
-  public Object payNotify(HttpServletRequest request, HttpServletResponse response) {
-    try {
-      String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
-      WxPayOrderNotifyResult result = wxPayService.parseOrderNotifyResult(xmlResult);
-
-      String orderSn = result.getOutTradeNo();
-      String payId = result.getTransactionId();
-      String transactionId = result.getTransactionId();
-      // 分转化成元
-      String totalFee = BaseWxPayResult.feeToYuan(result.getTotalFee());
-
-      LitemallOrder order = orderService.findBySn(orderSn);
-      if (order == null) {
-        throw new Exception("订单不存在 sn=" + orderSn);
-      }
-
-      // 检查这个订单是否已经处理过
-      if (OrderUtil.isPayStatus(order) && order.getPayId() != null) {
-        return WxPayNotifyResponse.success("处理成功!");
-      }
-
-      // 检查支付订单金额
-      // TODO 这里1分钱需要改成实际订单金额
-      if (!totalFee.equals("0.01")) {
-        throw new Exception("支付金额不符合 totalFee=" + totalFee);
-      }
-
-      order.setPayId(payId);
-      order.setPayTime(LocalDateTime.now());
-      order.setOrderStatus(OrderUtil.STATUS_PAY);
-      order.setTransactionId(transactionId);
-
-      orderService.updateById(order);
-      return WxPayNotifyResponse.success("处理成功!");
-    } catch (Exception e) {
-      logger.error("微信回调结果异常,异常原因 " + e.getMessage());
-      return WxPayNotifyResponse.fail(e.getMessage());
-    }
-  }
-
 
   /**
    * 订单申请退款 1. 检测当前订单是否能够退款 2. 设置订单申请退款状态

@@ -3,6 +3,7 @@ package com.attitude.tinymall.db.service;
 import com.attitude.tinymall.db.dao.LitemallAdMapper;
 import com.attitude.tinymall.db.dao.LitemallAdminMapper;
 import com.attitude.tinymall.db.domain.LitemallAdmin;
+import com.attitude.tinymall.db.service.LitemallAdminService;
 import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.dao.LitemallAddressMapper;
 import com.attitude.tinymall.db.domain.LitemallAddress;
@@ -23,6 +24,9 @@ public class LitemallAddressService {
   @Resource
   private LitemallAdminMapper adminMapper;
 
+  @Resource
+  private LitemallAdminService adminService;
+
 
   public List<LitemallAddress> queryByUid(Integer uid) {
     LitemallAddressExample example = new LitemallAddressExample();
@@ -35,7 +39,7 @@ public class LitemallAddressService {
   }
 
   public int add(LitemallAddress address, String appId) {
-    LitemallAdmin litemallAdmin = adminMapper.findAdminByOwnerId(appId);
+    LitemallAdmin litemallAdmin = adminService.findAdminByOwnerId(appId);
     if (null != litemallAdmin) {
       // 关联外键
       address.setAdminId(litemallAdmin.getId());
