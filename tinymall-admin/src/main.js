@@ -19,8 +19,7 @@ import './permission' // permission control
 Vue.use(Element, {
   size:'medium' // set element-ui default size
 })
-const socketUrl = `${process.env.SOCKET_URL}/?clientId=admin-api`  
-debugger            
+const socketUrl = `${process.env.SOCKET_URL}/?clientId=admin-api`             
 /**
 const sck = io('http://192.168.0.114:8777?clientId=admin-api', {
   reconnectionAttempts: Number.MAX_SAFE_INTEGER,
