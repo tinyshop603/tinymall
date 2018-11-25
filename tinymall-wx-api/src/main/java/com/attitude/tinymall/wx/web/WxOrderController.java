@@ -644,7 +644,7 @@ public class WxOrderController {
     //想办法提醒管理端进行刷新
     messageInfo.setMsgType("order-cancel");
     Map<String,Object> socketData = new HashMap<>(2);
-    socketData.put("cancelOrder",JacksonUtil.stringifyObject(order));
+    socketData.put("orderData",JacksonUtil.stringifyObject(order));
     socketData.put("adminId",admin.getId());
     messageInfo.setDomainData(socketData);
     client.emit(SocketEvent.CANCEL_ORDER, JacksonUtil.stringifyObject(messageInfo));

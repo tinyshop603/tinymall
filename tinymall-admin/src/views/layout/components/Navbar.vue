@@ -69,7 +69,7 @@ export default {
     submitOrderEvent:function(jsonData) {
       const socData = JSON.parse(jsonData)
       console.log(socData)
-      if (socData.storeUserName == store.getters.name) {
+      if (socData.adminId == store.getters.adminId) {
         const newOrder = socData.orderData
         this.player.play()
         const credentialData = {
@@ -101,7 +101,11 @@ export default {
       }
     },
     cancelOrderEvent:function(jsonData) {
-      console.log('----->订单取消' + jsonData)
+      if (socData.adminId == store.getters.adminId) {
+        const cancelOrder = socData.orderData
+        // this.player.play()
+        console.log('----->订单取消' + jsonData)
+      }
     }
   },
   methods:{
