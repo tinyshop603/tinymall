@@ -64,7 +64,7 @@
 
       <el-table-column align="center" min-width="100px" label="当前价格" prop="retailPrice">
       </el-table-column>
-      <el-table-column align="center" min-width="100px" label="父类目ID" prop="categoryId">
+      <el-table-column align="center" min-width="100px" label="父类目名称" prop="categoryName">
       </el-table-column>
 
       <el-table-column v-if="false" align="center" min-width="100px" label="是否新品" prop="isNew">
@@ -114,8 +114,8 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
-        <el-form-item label="商品编号" prop="goodsSn">
-          <el-input v-model="dataForm.goodsSn" placeholder="商品条形码"></el-input>
+        <el-form-item label="商品编号" prop="goodsSn" >
+          <el-input v-model="dataForm.goodsSn" placeholder="0" value = "0" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="商品名称" prop="name">
           <el-input v-model="dataForm.name"></el-input>
@@ -178,11 +178,12 @@
         <el-form-item v-if="false" label="关键字">
           <el-input v-model="dataForm.keyword"></el-input>
         </el-form-item>
-
-        <el-form-item label="类目ID">
-          <el-input v-model="dataForm.categoryId"></el-input>
-        </el-form-item>
-
+        <el-form-item label="父类目" prop="categoryName" >
+                  <el-select v-model="dataForm.categoryId" placeholder="请选择">
+                    <el-option v-for="(key, val) in categoryMap" :key="key" :label="key" :value="val">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
         <el-form-item v-if="false" label="品牌商ID">
           <el-input v-model="dataForm.brandId"></el-input>
         </el-form-item>
@@ -293,7 +294,8 @@ export default {
         keywords:undefined,
         gallery:undefined,
         categoryId:undefined,
-        brandId:undefined
+        brandId:undefined,
+        categoryName:undefined
       },
       dialogFormVisible:false,
       deleteGoodItem:false,
@@ -343,6 +345,7 @@ export default {
       listGoods(this.listQuery).then(response => {
         this.list = response.data.data.items
         this.total = response.data.data.total
+        this.categoryMap = response.data.data.categoryMap
         this.listLoading = false
       }).catch(() => {
         this.list = []
@@ -379,7 +382,8 @@ export default {
         keywords:undefined,
         gallery:undefined,
         categoryId:undefined,
-        brandId:undefined
+        brandId:undefined,
+        categoryName:undefined
       }
     },
     filterLevel(value, row) {
