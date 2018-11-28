@@ -207,6 +207,7 @@ public class OrderUtil {
             //商家取消订单
             status.add((short)102);
             status.add((short)002);//货到付款取消订单
+            status.add((short)203);//退款完成
         }
         else {
             return null;
