@@ -659,7 +659,7 @@ public class WxOrderController {
    * @return 订单操作结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
    */
   @PostMapping("refund")
-  public Object refund(@LoginUser Integer userId, @RequestBody String body) {
+  public Object refund(@LoginUser Integer userId,@PathVariable("storeId") String appId,@RequestBody String body) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -667,7 +667,7 @@ public class WxOrderController {
     if (orderId == null) {
       return ResponseUtil.badArgument();
     }
-
+    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
     LitemallOrder order = orderService.findById(orderId);
     if (order == null) {
       return ResponseUtil.badArgument();
@@ -684,6 +684,13 @@ public class WxOrderController {
     // 设置订单申请退款状态
     order.setOrderStatus(OrderUtil.STATUS_REFUND);
     orderService.update(order);
+    //想办法提醒管理端进行刷新
+    messageInfo.setMsgType("order-cancel");
+    Map<String,Object> socketData = new HashMap<>(2);
+    socketData.put("orderData",JacksonUtil.stringifyObject(order));
+    socketData.put("adminId",admin.getId());
+    messageInfo.setDomainData(socketData);
+    client.emit(SocketEvent.REFUND_ORDER, JacksonUtil.stringifyObject(messageInfo));
 
     return ResponseUtil.ok();
   }

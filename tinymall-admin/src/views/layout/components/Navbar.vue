@@ -26,8 +26,11 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <audio id="bgMusic">
+      <audio id="bgMusicCome">
         <source src="../../../media/eleme.mp3" type="audio/mp3">
+      </audio>
+      <audio id="bgMusicCancel">
+        <source src="../../../media/song.ogg" type="audio/ogg">
       </audio>
     </div>
   </el-menu>
@@ -59,7 +62,8 @@ export default {
   mounted:function() {
     const _this = this
     this.$nextTick(function() {
-      _this.player = document.getElementById('bgMusic')
+      _this.comePlayer = document.getElementById('bgMusicCome')
+      _this.cancelPlayer = document.getElementById('bgMusicCancel')
     })
   },
   sockets:{
@@ -71,7 +75,7 @@ export default {
       console.log(socData)
       if (socData.adminId == store.getters.adminId) {
         const newOrder = socData.orderData
-        this.player.play()
+        this.comePlayer.play()
         const credentialData = {
           'shopName':'789便利店',
           'shopQRurl':'https://www.bjguangchi.top/static/789shop-b.png',
@@ -97,13 +101,13 @@ export default {
         }
         setTimeout(() =>
           printCredential(getLodop(), store.getters.printerIndex, credentialData),
-        this.player.duration * 1000 + 500)
+        this.comePlayer.duration * 1000 + 500)
       }
     },
     cancelOrderEvent:function(jsonData) {
       if (socData.adminId == store.getters.adminId) {
         const cancelOrder = socData.orderData
-        // this.player.play()
+        this.cancelPlayer.play()
         console.log('----->订单取消' + jsonData)
       }
     }

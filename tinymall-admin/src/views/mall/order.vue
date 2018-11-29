@@ -180,7 +180,20 @@ export default {
       }
     },
     cancelOrderEvent:function(jsonData) {
-      console.log('----->订单取消' + jsonData)
+      const socData = JSON.parse(jsonData)
+      if (socData.adminId == store.getters.adminId) {
+        let cancelOrder = socData.orderData
+        cancelOrder = Object.assign(cancelOrder, getBtnStateByCode(cancelOrder.orderStatus))
+        this.updateOrderItemStatus(cancelOrder)
+      }
+    },
+    refundOrderEvent:function(jsonData) {
+      const socData = JSON.parse(jsonData)
+      if (socData.adminId == store.getters.adminId) {
+        let refundOrder = socData.orderData
+        refundOrder = Object.assign(refundOrder, getBtnStateByCode(refundOrder.orderStatus))
+        this.updateOrderItemStatus(refundOrder)
+      }
     }
   },
   mounted:function() {},
@@ -367,7 +380,7 @@ export default {
             sendBtnStatus:updatedOrder.sendBtnStatus,
             cancelBtnStatus:updatedOrder.cancelBtnStatus,
             confirmBtnStatus:updatedOrder.confirmBtnStatus,
-            refundBtnStatus:updatedOrder.confirmBtnStatus
+            refundBtnStatus:updatedOrder.refundBtnStatus
           }
           this.list.splice(index, 1, newObj)
           break
