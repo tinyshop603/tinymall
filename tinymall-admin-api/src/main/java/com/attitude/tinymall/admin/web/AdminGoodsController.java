@@ -1,9 +1,12 @@
 package com.attitude.tinymall.admin.web;
 
+
 import com.attitude.tinymall.db.domain.LitemallGoodsSpecification;
 import com.attitude.tinymall.db.domain.LitemallProduct;
 import com.attitude.tinymall.db.service.LitemallGoodsSpecificationService;
 import com.attitude.tinymall.db.service.LitemallProductService;
+import com.attitude.tinymall.db.domain.LitemallCategory;
+import com.attitude.tinymall.db.service.LitemallCategoryService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.admin.annotation.LoginAdmin;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +31,8 @@ public class AdminGoodsController {
 
     @Autowired
     private LitemallGoodsService goodsService;
+    @Autowired
+    private LitemallCategoryService categoryService;
 
     @Autowired
     private LitemallProductService productService;
@@ -45,11 +51,26 @@ public class AdminGoodsController {
         }
         // 将该用户下的所有的category全部抓取出来,查询所有的商品是该用户的
         List<LitemallGoods> goodsList = goodsService.listGoodsByAdminId(adminId,goodsSn, name,categoryId, page, limit, sort, order);
+        List<LitemallCategory> categoryList = categoryService.getAdminMallCategoryByAdminId(adminId,0, 0, sort, order);
+        String categoryName = null;
+        Integer categoryId2 = 0;
+        Map map = new HashMap();
+        for(int i =0;i<categoryList.size();i++){
+            categoryName = categoryList.get(i).getName();
+            categoryId2 = categoryList.get(i).getId();
+            if(!map.containsKey(categoryId)){
+                map.put(categoryId2,categoryName);
+            }
+        }
+         for(int j = 0;j<goodsList.size();j++){
+            goodsList.get(j).setcategoryName(((String) map.get(goodsList.get(j).getCategoryId())));
+        }
         int total = goodsService.countGoodsByAdminId(adminId,goodsSn, name, categoryId);
+
         Map<String, Object> data = new HashMap<>();
         data.put("total", total);
         data.put("items", goodsList);
-
+        data.put("categoryMap", map);
         return ResponseUtil.ok(data);
     }
 
@@ -61,6 +82,7 @@ public class AdminGoodsController {
         goods.setKeywords(goods.getName());
         goods.setCounterPrice(goods.getRetailPrice());
         goods.setListPicUrl(goods.getPrimaryPicUrl());
+      //  goods.setCategoryId(Integer.parseInt(goods.getcategoryName()));
         goodsService.add(goods);
         if (goods.getId() == null) {
             return ResponseUtil.badArgument();
@@ -126,6 +148,7 @@ public class AdminGoodsController {
         if(adminId == null){
             return ResponseUtil.unlogin();
         }
+      //  goods.setCategoryId(Integer.parseInt(goods.getcategoryName()));
         goodsService.updateById(goods);
         return ResponseUtil.ok(goods);
     }

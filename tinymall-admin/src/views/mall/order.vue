@@ -173,7 +173,7 @@ export default {
     },
     submitOrderEvent:function(jsonData) {
       const socData = JSON.parse(jsonData)
-      if (socData.storeUserName == store.getters.name) {
+      if (socData.adminId == store.getters.adminId) {
         let newOrder = socData.orderData
         newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.order.orderStatus))
         this.list.unshift(newOrder)
