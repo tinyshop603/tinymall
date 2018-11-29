@@ -22,7 +22,16 @@
       </el-table-column>
       <el-table-column align="center" width="120px" label="订单编号" prop="order.orderSn"></el-table-column>
       <el-table-column align="center" width="85px" label="下单时间" prop="order.addTime" sortable></el-table-column>
-      <el-table-column align="center" width="80px" label="订单状态" prop="order.orderStatus"></el-table-column>
+      <el-table-column align="center" min-width="80px" label="订单状态" prop="order.orderStatus">
+        <template slot-scope="scope" >
+          <template v-for="tag in tags">
+            <el-tag v-if="tag.status==scope.row.order.orderStatus"
+            :type="tag.type">
+           {{tag.name}}
+          </el-tag>
+          </template>
+        </template>
+      </el-table-column>
       <el-table-column align="center" width="80px" label="用户昵称" prop="order.consignee"></el-table-column>
       <el-table-column align="center" min-width="80px" label="用户地址" prop="order.address"></el-table-column>
       <el-table-column align="center" min-width="80px" label="订单备注" prop="order.remark"></el-table-column>
@@ -138,7 +147,21 @@ export default {
       recvDialogFormVisible:false,
       cancelSendDialogFormVisible:false,
       refundDialogFormVisible:false,
-      downloadLoading:false
+      downloadLoading:false,
+      tags:[
+        { name:'未知', type:'', status:'' },
+        { name:'待发货', type:'warning', status:201 },
+        { name:'待发货', type:'warning', status:1 },
+        { name:'已发货', type:'success', status:301 },
+        { name:'已发货', type:'success', status:3 },
+        { name:'已完成', type:'info', status:401 },
+        { name:'已完成', type:'info', status:402 },
+        { name:'已完成', type:'info', status:4 },
+        { name:'已完成', type:'info', status:5 },
+        { name:'申请退款', type:'danger', status:202 },
+        { name:'退款完成', type:'info', status:203 },
+        { name:'已取消', type:'info', status:2 }
+      ]
     }
   },
   created() {

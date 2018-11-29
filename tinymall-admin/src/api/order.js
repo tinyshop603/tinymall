@@ -125,7 +125,7 @@ export function getBtnStateByCode(orderStaCode) {
   // 由于目前暂时为能够使用这么对状态码,故,将其进行简化
   if (orderStaCode === 201 || orderStaCode === 1) {
     code = 601
-  } else if (orderStaCode === 102 || orderStaCode === 103 || orderStaCode === 2) {
+  } else if (orderStaCode === 102 || orderStaCode === 103 || orderStaCode === 2 || orderStaCode === 203) {
     code = 602
   } else if (orderStaCode === 104 || orderStaCode === 301 || orderStaCode === 3) {
     code = 603
