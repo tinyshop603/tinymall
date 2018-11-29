@@ -685,7 +685,7 @@ public class WxOrderController {
     order.setOrderStatus(OrderUtil.STATUS_REFUND);
     orderService.update(order);
     //想办法提醒管理端进行刷新
-    messageInfo.setMsgType("order-cancel");
+    messageInfo.setMsgType("order-refund");
     Map<String,Object> socketData = new HashMap<>(2);
     socketData.put("orderData",JacksonUtil.stringifyObject(order));
     socketData.put("adminId",admin.getId());
