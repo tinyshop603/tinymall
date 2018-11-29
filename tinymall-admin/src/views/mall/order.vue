@@ -366,7 +366,8 @@ export default {
             order:updatedOrder,
             sendBtnStatus:updatedOrder.sendBtnStatus,
             cancelBtnStatus:updatedOrder.cancelBtnStatus,
-            confirmBtnStatus:updatedOrder.confirmBtnStatus
+            confirmBtnStatus:updatedOrder.confirmBtnStatus,
+            refundBtnStatus:updatedOrder.confirmBtnStatus
           }
           this.list.splice(index, 1, newObj)
           break
