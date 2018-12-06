@@ -92,7 +92,7 @@
       </div>
     </el-dialog>
     <audio id="bgMusic">
-      <source src="../../media/eleme.mp3" type="audio/mp3">
+      <source src="../../media/come.mp3" type="audio/mp3">
     </audio>
   </div>
 </template>

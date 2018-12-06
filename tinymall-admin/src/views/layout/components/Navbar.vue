@@ -27,10 +27,13 @@
         </el-dropdown-menu>
       </el-dropdown>
       <audio id="bgMusicCome">
-        <source src="../../../media/eleme.mp3" type="audio/mp3">
+        <source src="../../../media/come.mp3" type="audio/mp3">
+      </audio>
+      <audio id="bgMusicRefund">
+        <source src="../../../media/refund.mp3" type="audio/mp3">
       </audio>
       <audio id="bgMusicCancel">
-        <source src="../../../media/song.ogg" type="audio/ogg">
+        <source src="../../../media/cancel.mp3" type="audio/mp3">
       </audio>
     </div>
   </el-menu>
@@ -63,6 +66,7 @@ export default {
     const _this = this
     this.$nextTick(function() {
       _this.comePlayer = document.getElementById('bgMusicCome')
+      _this.refundPlayer = document.getElementById('bgMusicRefund')
       _this.cancelPlayer = document.getElementById('bgMusicCancel')
     })
   },
@@ -105,10 +109,17 @@ export default {
       }
     },
     cancelOrderEvent:function(jsonData) {
+      const socData = JSON.parse(jsonData)
       if (socData.adminId == store.getters.adminId) {
-        const cancelOrder = socData.orderData
         this.cancelPlayer.play()
         console.log('----->订单取消' + jsonData)
+      }
+    },
+    refundOrderEvent:function(jsonData) {
+      const socData = JSON.parse(jsonData)
+      if (socData.adminId == store.getters.adminId) {
+        this.refundPlayer.play()
+        console.log('----->订单退款' + jsonData)
       }
     }
   },
