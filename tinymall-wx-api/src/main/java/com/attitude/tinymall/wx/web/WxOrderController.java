@@ -389,7 +389,7 @@ public class WxOrderController {
 //      }
     } catch (Exception ex) {
       txManager.rollback(status);
-      log.error("系统内部错误", ex);
+//      log.error("系统内部错误", ex);
       return ResponseUtil.fail(403, "下单失败");
     }
     txManager.commit(status);
@@ -397,16 +397,16 @@ public class WxOrderController {
     Map<String, Object> data = new HashMap<>();
     data.put("orderId", orderId);
     //想办法提醒管理端进行刷新
-    messageInfo.setMsgType("order-submit");
-    LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
-    orderWithGoods.setOrder(order);
-    // 查找此订单的商品信息
-    orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-    Map<String,Object> dataSoc = new HashMap<>(2);
-    dataSoc.put("adminId",admin.getId());
-    dataSoc.put("orderData",orderWithGoods);
-    messageInfo.setDomainData(dataSoc);
-    client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
+//    messageInfo.setMsgType("order-submit");
+//    LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
+//    orderWithGoods.setOrder(order);
+//    // 查找此订单的商品信息
+//    orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
+//    Map<String,Object> dataSoc = new HashMap<>(2);
+//    dataSoc.put("adminId",admin.getId());
+//    dataSoc.put("orderData",orderWithGoods);
+//    messageInfo.setDomainData(dataSoc);
+//    client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
     return ResponseUtil.ok(data);
   }
   /**
@@ -507,7 +507,7 @@ public class WxOrderController {
       prepay_id = wxPayEngine.getPayNo(PAY_URL, xml);
       if(prepay_id.equals("")){
         //错误提示
-        log.error("统一支付接口获取预支付订单出错");
+//        log.error("统一支付接口获取预支付订单出错");
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -540,7 +540,7 @@ public class WxOrderController {
    * 注意，这里pay-notify是示例地址，开发者应该设立一个隐蔽的回调地址
    */
   @PostMapping("pay-notify")
-  public Object payNotify(HttpServletRequest request, HttpServletResponse response) {
+  public Object payNotify(HttpServletRequest request, HttpServletResponse response,@PathVariable("storeId") String appId) {
     try {
       String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
       WxPayOrderNotifyResult result = wxPayService.parseOrderNotifyResult(xmlResult);
@@ -573,9 +573,24 @@ public class WxOrderController {
       order.setTransactionId(transactionId);
 
       orderService.updateById(order);
+
+
+      //想办法提醒管理端进行刷新
+      LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+      messageInfo.setMsgType("order-submit");
+      LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
+      orderWithGoods.setOrder(order);
+      // 查找此订单的商品信息
+      orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
+      Map<String,Object> dataSoc = new HashMap<>(2);
+      dataSoc.put("adminId",admin.getId());
+      dataSoc.put("orderData",orderWithGoods);
+      messageInfo.setDomainData(dataSoc);
+      client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
+
       return WxPayNotifyResponse.success("处理成功!");
     } catch (Exception e) {
-      log.error("微信回调结果异常,异常原因 " + e.getMessage());
+//      log.error("微信回调结果异常,异常原因 " + e.getMessage());
       return WxPayNotifyResponse.fail(e.getMessage());
     }
   }
@@ -637,7 +652,7 @@ public class WxOrderController {
       }
     } catch (Exception ex) {
       txManager.rollback(status);
-      log.error("系统内部错误", ex);
+//      log.error("系统内部错误", ex);
       return ResponseUtil.fail(403, "订单取消失败");
     }
     txManager.commit(status);
