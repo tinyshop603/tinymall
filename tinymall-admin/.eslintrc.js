@@ -48,7 +48,7 @@ module.exports = {
     'curly': [2, 'multi-line'],
     'dot-location': [2, 'property'],
     'eol-last': 2,
-    'eqeqeq': [2, 'allow-null'],
+    'eqeqeq': [0, 'allow-null'],
     'generator-star-spacing': [2, {
       'before': true,
       'after': true
@@ -170,7 +170,7 @@ module.exports = {
     'semi': [2, 'never'],
     'semi-spacing': [2, {
       'before': false,
-      'after': true
+      'after': false
     }],
     'space-before-blocks': [2, 'always'],
     'space-before-function-paren': [2, 'never'],

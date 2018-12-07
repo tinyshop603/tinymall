@@ -35,4 +35,12 @@ public class WxConfigTest {
 
     }
 
+    @Test
+    public void testStr(){
+      String a = "aaaa1" ;
+       String[] b =  a.split("a");
+        System.out.println(a.split("a").length);
+
+    }
+
 }
