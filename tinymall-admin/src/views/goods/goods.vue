@@ -115,7 +115,8 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
         <el-form-item label="商品编号" prop="goodsSn" >
-          <el-input v-model="dataForm.goodsSn" placeholder="0" value = "0" :disabled="true"></el-input>
+          <el-input v-model="dataForm.goodsSn" placeholder="0"  :disabled="true"></el-input>
+            </el-select>
         </el-form-item>
         <el-form-item label="商品名称" prop="name">
           <el-input v-model="dataForm.name"></el-input>
@@ -368,7 +369,7 @@ export default {
     resetForm() {
       this.dataForm = {
         id:undefined,
-        goodsSn:undefined,
+        goodsSn:'0',
         name:undefined,
         counterPrice:undefined,
         retailPrice:undefined,

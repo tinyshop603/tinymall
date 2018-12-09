@@ -4,6 +4,7 @@ import com.attitude.tinymall.core.util.ResponseUtil;
 import com.attitude.tinymall.db.service.LitemallStorageService;
 import com.attitude.tinymall.core.util.CharUtil;
 import com.attitude.tinymall.db.domain.LitemallStorage;
+import com.attitude.tinymall.os.service.AliyunOssService;
 import com.attitude.tinymall.os.service.StorageService;
 import com.attitude.tinymall.os.config.ObjectStorageConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class OsStorageController {
 
     @Autowired
     private ObjectStorageConfig osConfig;
+    @Autowired
+    private AliyunOssService aliyunOssService;
 
     private String generateUrl(String key){
         return  osConfig.getAddress() + "/os/storage/fetch/" + key;
@@ -78,7 +81,8 @@ public class OsStorageController {
             return ResponseUtil.badArgumentValue();
         }
         String key = generateKey(originalFilename);
-        storageService.store(inputStream, key);
+     //   storageService.store(inputStream, key);
+        aliyunOssService.uploadFile(originalFilename,inputStream);
 
         String url = generateUrl(key);
         LitemallStorage storageInfo = new LitemallStorage();
@@ -88,7 +92,8 @@ public class OsStorageController {
         storageInfo.setAddTime(LocalDateTime.now());
         storageInfo.setModified(LocalDateTime.now());
         storageInfo.setKey(key);
-        storageInfo.setUrl(url);
+        storageInfo.setKey(originalFilename);
+        storageInfo.setUrl(aliyunOssService.getFileUrl(originalFilename));
         tinymallStorageService.add(storageInfo);
         return ResponseUtil.ok(storageInfo);
     }
