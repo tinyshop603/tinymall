@@ -132,7 +132,8 @@ public class OrderUtil {
             handleOption.setRefund(true);
         }
         else if (status == 202) {
-            // 如果订单申请退款中，没有相关操作
+            // 如果订单申请退款中，商家可以退款
+            handleOption.setSeller_refund(true);
         }
         else if (status == 203) {
             // 如果订单已经退款，则可删除
