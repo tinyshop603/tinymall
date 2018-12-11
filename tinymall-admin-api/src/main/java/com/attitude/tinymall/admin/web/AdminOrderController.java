@@ -3,6 +3,7 @@ package com.attitude.tinymall.admin.web;
 import com.attitude.tinymall.db.domain.*;
 
 import com.attitude.tinymall.db.service.LitemallAdminService;
+import com.attitude.tinymall.db.util.OrderHandleOption;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.admin.annotation.LoginAdmin;
@@ -21,6 +22,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.text.DecimalFormat;
@@ -207,11 +209,10 @@ public class AdminOrderController {
     if (!order.getAdminId().equals(adminId)) {
       return ResponseUtil.badArgumentValue();
     }
-  //wz-当订单已经进入202状态，则不用检查
-//    OrderHandleOption handleOption = OrderUtil.build(order);
-//    if (!handleOption.isRefund()) {
-//      return ResponseUtil.fail(403, "订单不能取消");
-//    }
+    OrderHandleOption handleOption = OrderUtil.build(order);
+    if (!handleOption.isSeller_refund()) {
+      return ResponseUtil.fail(403, "订单不能退款成功");
+    }
     String currTime = wxPayEngine.getCurrTime();
     String strTime = currTime.substring(8, currTime.length());
     String strRandom = wxPayEngine.buildRandom(4) + "";
@@ -219,11 +220,11 @@ public class AdminOrderController {
     String outRefundNo = "wx@re@"+ wxPayEngine.getTimeStamp();
     String outTradeNo = "";
     DecimalFormat df = new DecimalFormat("######0");
-    //      BigDecimal radix = new BigDecimal(100);
-//      BigDecimal realFee = order.getActualPrice().multiply(radix);
-//      Integer fee = realFee.intValue();
+    BigDecimal radix = new BigDecimal(100);
+    BigDecimal realFee = order.getActualPrice().multiply(radix);
+    Integer fee = realFee.intValue();
     //测试用例
-    Integer fee = 1;
+//    Integer fee = 1;
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("mch_id", admin.getMchId().toString());//微信支付分配的商户号
