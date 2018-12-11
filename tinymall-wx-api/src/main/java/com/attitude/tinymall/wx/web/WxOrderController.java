@@ -396,17 +396,21 @@ public class WxOrderController {
 
     Map<String, Object> data = new HashMap<>();
     data.put("orderId", orderId);
-    //想办法提醒管理端进行刷新
-//    messageInfo.setMsgType("order-submit");
-//    LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
-//    orderWithGoods.setOrder(order);
-//    // 查找此订单的商品信息
-//    orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-//    Map<String,Object> dataSoc = new HashMap<>(2);
-//    dataSoc.put("adminId",admin.getId());
-//    dataSoc.put("orderData",orderWithGoods);
-//    messageInfo.setDomainData(dataSoc);
-//    client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
+    if(modeId != 1){//货到付款在此处触发
+      //想办法提醒管理端进行刷新
+      messageInfo.setMsgType("order-submit");
+      LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
+      orderWithGoods.setOrder(order);
+      // 查找此订单的商品信息
+      orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
+      Map<String,Object> dataSoc = new HashMap<>(2);
+      dataSoc.put("adminId",admin.getId());
+      dataSoc.put("orderData",orderWithGoods);
+      messageInfo.setDomainData(dataSoc);
+      client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
+
+    }
+
     return ResponseUtil.ok(data);
   }
   /**
@@ -464,14 +468,14 @@ public class WxOrderController {
     String spBillCreateIp = IpUtil.client(request);
     // TODO 更有意义的显示名称
     String describe = "789便利店-订单支付";
-    String detail = "订单测试支付";
+    String detail = "订单支付";
     // 这里仅支付1分
     // TODO 单位转换元转分 测试时使用分
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-//    String money = String.valueOf(realFee.intValue());
+    String money = String.valueOf(realFee.intValue());
     //测试用例，1分钱
-    String money = "1";
+//    String money = "1";
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("attach", attach);//附加数据
@@ -563,7 +567,7 @@ public class WxOrderController {
 
       // 检查支付订单金额
       // TODO 这里1分钱需要改成实际订单金额
-      if (!totalFee.equals("0.01")) {
+      if (!totalFee.equals(order.getActualPrice())) {
         throw new Exception("支付金额不符合 totalFee=" + totalFee);
       }
 
@@ -693,7 +697,7 @@ public class WxOrderController {
 
     OrderHandleOption handleOption = OrderUtil.build(order);
     if (!handleOption.isRefund()) {
-      return ResponseUtil.fail(403, "订单不能取消");
+      return ResponseUtil.fail(403, "订单不能申请退款");
     }
 
     // 设置订单申请退款状态
