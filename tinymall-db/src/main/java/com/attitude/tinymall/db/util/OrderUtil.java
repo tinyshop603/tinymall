@@ -217,6 +217,36 @@ public class OrderUtil {
         return status;
     }
 
+    public static List<Short> adminOrderStatus(Integer showType){
+        List<Short> status = new ArrayList<Short>(2);
+        if (showType.equals(0)) {
+            // 新订单
+            status.add((short)201);
+            status.add((short)1);
+        }
+        else if (showType.equals(1)) {
+            // 申请退款订单
+            status.add((short)202);
+        }
+        else if (showType.equals(2)) {
+            // 已完成订单
+            status.add((short)401);
+            status.add((short)402);
+            status.add((short)4);
+            status.add((short)5);
+            status.add((short)203);//退款完成
+        }
+        else if (showType.equals(3)) {
+            // 未完成订单
+            status.add((short)2);//已取消
+        }
+        else {
+            return null;
+        }
+
+        return status;
+    }
+
 
     public static boolean isCreateStatus(LitemallOrder tinymallOrder) {
         return OrderUtil.STATUS_CREATE == tinymallOrder.getOrderStatus().shortValue();

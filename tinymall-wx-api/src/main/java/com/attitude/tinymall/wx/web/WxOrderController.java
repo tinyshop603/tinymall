@@ -340,8 +340,9 @@ public class WxOrderController {
       order.setPaymentWay(modeId);
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
-      String detailedAddress = detailedAddress(checkedAddress);
-      order.setAddress(detailedAddress);
+      //提交时不显示省市区，只显示详细地址
+//      String detailedAddress = detailedAddress(checkedAddress);
+      order.setAddress(checkedAddress.getAddress());
       order.setGoodsPrice(checkedGoodsPrice);
       order.setFreightPrice(freightPrice);
       order.setCouponPrice(couponPrice);
@@ -473,9 +474,9 @@ public class WxOrderController {
     // TODO 单位转换元转分 测试时使用分
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-    String money = String.valueOf(realFee.intValue());
+//    String money = String.valueOf(realFee.intValue());
     //测试用例，1分钱
-//    String money = "1";
+    String money = "1";
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("attach", attach);//附加数据
@@ -567,7 +568,8 @@ public class WxOrderController {
 
       // 检查支付订单金额
       // TODO 这里1分钱需要改成实际订单金额
-      if (!totalFee.equals(order.getActualPrice())) {
+      if (!totalFee.equals("0.01")) {
+//      if (!totalFee.equals(order.getActualPrice())) {
         throw new Exception("支付金额不符合 totalFee=" + totalFee);
       }
 

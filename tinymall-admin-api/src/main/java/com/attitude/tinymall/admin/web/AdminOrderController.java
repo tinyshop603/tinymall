@@ -2,15 +2,12 @@ package com.attitude.tinymall.admin.web;
 
 import com.attitude.tinymall.db.domain.*;
 
-import com.attitude.tinymall.db.service.LitemallAdminService;
+import com.attitude.tinymall.db.service.*;
 import com.attitude.tinymall.db.util.OrderHandleOption;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.admin.annotation.LoginAdmin;
 import com.attitude.tinymall.core.util.JacksonUtil;
-import com.attitude.tinymall.db.service.LitemallOrderGoodsService;
-import com.attitude.tinymall.db.service.LitemallOrderService;
-import com.attitude.tinymall.db.service.LitemallProductService;
 import com.attitude.tinymall.db.util.OrderUtil;
 import com.attitude.tinymall.core.util.ResponseUtil;
 import com.attitude.tinymall.core.util.WxPayEngine;
@@ -50,6 +47,7 @@ public class AdminOrderController {
   private LitemallAdminService adminService;
 
 
+
   @GetMapping("/list")
   public Object list(@LoginAdmin Integer adminId,
       Integer userId, String orderSn,
@@ -85,6 +83,46 @@ public class AdminOrderController {
     data.put("items", orderWithGoodsList);
 
     return ResponseUtil.ok(data);
+  }
+
+  @GetMapping("/wxlist")
+  public Object wxlist(@LoginAdmin Integer adminId, Integer showType,
+                     @RequestParam(value = "page", defaultValue = "1") Integer page,
+                     @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+                     String sort, String order) {
+    if (adminId == null) {
+      return ResponseUtil.fail401();
+    }
+    if (showType == null) {
+      showType = 0;
+    }
+    List<Short> orderStatus = OrderUtil.adminOrderStatus(showType);
+    List<LitemallOrder> orderList = orderService.listAdminOrdersByStatus(adminId,orderStatus,page, limit, sort, order);
+    //对数据进行处理
+    for(LitemallOrder curOrder : orderList){
+      //地址长度检查
+      if(curOrder.getAddress().length()>18){
+        curOrder.setAddress(curOrder.getAddress().substring(0,18));
+      }
+      //姓名长度检查
+      if(curOrder.getConsignee().length()>8){
+        curOrder.setConsignee(curOrder.getConsignee().substring(0,8));
+      }
+    }
+
+    return ResponseUtil.ok(orderList);
+  }
+
+  @GetMapping("/wxdetail")
+  public Object wxdetail(@LoginAdmin Integer adminId, Integer orderId) {
+    if (adminId == null) {
+      return ResponseUtil.fail401();
+    }
+    if (orderId == null) {
+      return ResponseUtil.fail401();
+    }
+    List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
+    return ResponseUtil.ok(orderGoodsList);
   }
 
   /*
@@ -222,9 +260,9 @@ public class AdminOrderController {
     DecimalFormat df = new DecimalFormat("######0");
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-    Integer fee = realFee.intValue();
-    //测试用例
-//    Integer fee = 1;
+//    Integer fee = realFee.intValue();
+    //TODO 测试用例,上线改成实际数值
+    Integer fee = 1;
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("mch_id", admin.getMchId().toString());//微信支付分配的商户号

@@ -145,6 +145,19 @@ public class LitemallOrderService {
     return orderMapper.selectByExample(example);
   }
 
+  public List<LitemallOrder> listAdminOrdersByStatus(Integer adminId, List<Short> orderStatus, Integer page, Integer size, String sort, String order) {
+    LitemallOrderExample example = new LitemallOrderExample();
+    example.orderBy("add_time DESC");
+    LitemallOrderExample.Criteria criteria = example.createCriteria();
+    if (adminId != 0) {
+      criteria.andAdminIdEqualTo(adminId);
+    }
+    criteria.andDeletedEqualTo(false);
+    criteria.andOrderStatusIn(orderStatus);
+    Page<Object> objects = PageHelper.startPage(page, size);
+    return orderMapper.selectByExample(example);
+  }
+
   public int countAdminOrdersByAdminId(Integer adminId, Integer userId, String orderSn) {
     LitemallOrderExample example = new LitemallOrderExample();
     LitemallOrderExample.Criteria criteria = example.createCriteria();
