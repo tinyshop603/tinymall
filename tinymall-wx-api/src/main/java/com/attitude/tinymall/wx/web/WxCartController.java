@@ -168,7 +168,7 @@ public class WxCartController {
             cart.setGoodsSn(goods.getGoodsSn());
             cart.setGoodsName((goods.getName()));
             cart.setPicUrl(goods.getPrimaryPicUrl());
-            cart.setRetailPrice(product.getRetailPrice());
+            cart.setRetailPrice(goods.getRetailPrice());
             cart.setGoodsSpecificationIds(product.getGoodsSpecificationIds());
             cart.setGoodsSpecificationValues(goodsSpecificationValue);
             cart.setUserId(userId);

@@ -194,6 +194,14 @@ export default {
         refundOrder = Object.assign(refundOrder, getBtnStateByCode(refundOrder.orderStatus))
         this.updateOrderItemStatus(refundOrder)
       }
+    },
+    confirmOrderEvent:function(jsonData) {
+      const socData = JSON.parse(jsonData)
+      if (socData.adminId == store.getters.adminId) {
+        let confirmOrder = socData.orderData
+        confirmOrder = Object.assign(confirmOrder, getBtnStateByCode(confirmOrder.orderStatus))
+        this.updateOrderItemStatus(confirmOrder)
+      }
     }
   },
   mounted:function() {},

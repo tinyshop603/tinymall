@@ -636,6 +636,11 @@ public class WxOrderController {
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
     def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
     TransactionStatus status = txManager.getTransaction(def);
+    //判断是否为未支付状态取消，如果是，后台不进行实时更新。
+    boolean isNotPayCancel = false;
+    if(order.getOrderStatus()==101){
+      isNotPayCancel = true;
+    }
     try {
       // 设置订单已取消状态
       if(order.getOrderStatus()==001){//货到付款 用户取消分支wz
@@ -662,13 +667,16 @@ public class WxOrderController {
       return ResponseUtil.fail(403, "订单取消失败");
     }
     txManager.commit(status);
-    //想办法提醒管理端进行刷新
-    messageInfo.setMsgType("order-cancel");
-    Map<String,Object> socketData = new HashMap<>(2);
-    socketData.put("orderData",JacksonUtil.stringifyObject(order));
-    socketData.put("adminId",admin.getId());
-    messageInfo.setDomainData(socketData);
-    client.emit(SocketEvent.CANCEL_ORDER, JacksonUtil.stringifyObject(messageInfo));
+    //想办法提醒管理端进行刷新,在线支付未支付订单取消
+    if(!isNotPayCancel){
+      messageInfo.setMsgType("order-cancel");
+      Map<String,Object> socketData = new HashMap<>(2);
+      socketData.put("orderData",JacksonUtil.stringifyObject(order));
+      socketData.put("adminId",admin.getId());
+      messageInfo.setDomainData(socketData);
+      client.emit(SocketEvent.CANCEL_ORDER, JacksonUtil.stringifyObject(messageInfo));
+    }
+
     return ResponseUtil.ok();
   }
 
@@ -724,7 +732,7 @@ public class WxOrderController {
    * @return 订单操作结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
    */
   @PostMapping("confirm")
-  public Object confirm(@LoginUser Integer userId, @RequestBody String body) {
+  public Object confirm(@LoginUser Integer userId,@PathVariable("storeId") String appId, @RequestBody String body) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -733,6 +741,7 @@ public class WxOrderController {
       return ResponseUtil.badArgument();
     }
 
+    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
     LitemallOrder order = orderService.findById(orderId);
     if (order == null) {
       return ResponseUtil.badArgument();
@@ -753,6 +762,13 @@ public class WxOrderController {
 
     order.setConfirmTime(LocalDateTime.now());
     orderService.update(order);
+    //想办法提醒管理端进行刷新
+    messageInfo.setMsgType("order-confirm");
+    Map<String,Object> socketData = new HashMap<>(2);
+    socketData.put("orderData",JacksonUtil.stringifyObject(order));
+    socketData.put("adminId",admin.getId());
+    messageInfo.setDomainData(socketData);
+    client.emit(SocketEvent.CONFIRM_ORDER, JacksonUtil.stringifyObject(messageInfo));
     return ResponseUtil.ok();
   }
 
