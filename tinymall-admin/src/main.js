@@ -19,25 +19,6 @@ import './permission' // permission control
 Vue.use(Element, {
   size:'medium' // set element-ui default size
 })
-const socketUrl = `${process.env.SOCKET_URL}/?clientId=admin-api`             
-/**
-const sck = io('http://192.168.0.114:8777?clientId=admin-api', {
-  reconnectionAttempts: Number.MAX_SAFE_INTEGER,
-  reconnectionDelay: 500,
-  reconnectionDelayMax: 1000,
-  timeout: 1000,
-  autoConnect: true
-})
-**/
-const sck = io(socketUrl, {
-  reconnectionAttempts:Number.MAX_SAFE_INTEGER,
-  reconnectionDelay:7000,
-  reconnectionDelayMax:7000,
-  timeout:7000,
-  autoConnect:true
-})
-
-Vue.use(VueSocketio, sck)
 Vue.config.productionTip = false
 new Vue({
   el:'#app',

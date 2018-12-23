@@ -4,6 +4,7 @@ import app from './modules/app'
 import permission from './modules/permission'
 import tagsView from './modules/tagsView'
 import user from './modules/user'
+import order from './modules/order'
 import printer from './modules/printer'
 import getters from './getters'
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
     permission,
     tagsView,
     user,
-    printer
+    printer,
+    order
   },
   getters
 })

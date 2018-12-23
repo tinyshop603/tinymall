@@ -40,8 +40,8 @@
         </filter>
     </appender>
 
-    <springProfile name="local">
-        <root level="INFO">
+    <springProfile name="dep">
+        <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
