@@ -44,7 +44,7 @@ public class AliyunOssServiceImpl implements AliyunOssService {
 
       if (isExist) {
         Calendar nowTime = Calendar.getInstance();
-        nowTime.add(Calendar.MINUTE, 5);
+        nowTime.add(Calendar.DATE, 1);
         return oss.generatePresignedUrl(bucket, fileName, nowTime.getTime(), HttpMethod.GET)
             .toString();
 
