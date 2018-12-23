@@ -1,7 +1,9 @@
 package com.attitude.tinymall.os.service;
 
+import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.PutObjectResult;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,17 +39,19 @@ public class AliyunOssServiceImpl implements AliyunOssService {
   @Override
   public String getFileUrl(String fileName) {
     try {
-      log.info("generate signed url from oss, file: [${fileName}]");
+      log.info("generate signed url from oss, file: {}", fileName);
       boolean isExist = oss.doesObjectExist(bucket, fileName);
 
       if (isExist) {
         Calendar nowTime = Calendar.getInstance();
         nowTime.add(Calendar.MINUTE, 5);
-        return oss.generatePresignedUrl(bucket, fileName, nowTime.getTime()).toString();
+        return oss.generatePresignedUrl(bucket, fileName, nowTime.getTime(), HttpMethod.GET)
+            .toString();
 
       }
     } catch (Exception e) {
-      log.error("generate signed url from oss error, file: [${fileName}]", e);
+      log.error("generate signed url from oss error, file: {}, detail: {}", fileName,
+          e.getMessage());
     }
     return null;
   }
@@ -55,11 +59,11 @@ public class AliyunOssServiceImpl implements AliyunOssService {
   @Override
   public boolean uploadFile(String fileName, InputStream inputStream) {
     try {
-      log.info("upload file to oss, file: [${fileName}], length: [${inputStream.available()}]");
-      return oss.putObject(bucket, fileName, inputStream) == null;
+      log.info("upload file to oss, file: {}, length: ", fileName, inputStream.available());
+      return oss.putObject(bucket, fileName, inputStream) != null;
     } catch (Exception e) {
       log.error(
-          "upload file to oss error, file: [${fileName}], length: [${inputStream.available()}]", e);
+          "upload file to oss error, file: {}, detail: {}", fileName, e.getMessage());
     }
     return false;
   }
@@ -67,10 +71,10 @@ public class AliyunOssServiceImpl implements AliyunOssService {
   @Override
   public InputStream downloadFileByName(String fileName) {
     try {
-      log.info("download file from oss, file: [${fileName}]");
+      log.info("download file from oss, file: {}", fileName);
       return oss.getObject(bucket, fileName).getObjectContent();
     } catch (Exception e) {
-      log.error("download file from oss error, file: [${fileName}]", e);
+      log.error("download file from oss error, file: {}, detail: {}", fileName, e.getMessage());
     }
     return null;
   }
