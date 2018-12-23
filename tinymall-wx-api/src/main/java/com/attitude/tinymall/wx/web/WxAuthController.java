@@ -119,17 +119,14 @@ public class WxAuthController {
      */
     @RequestMapping("login_by_weixin")
     public Object loginByWeixin(@RequestBody WxLoginInfo wxLoginInfo, HttpServletRequest request) {
-
         String code = wxLoginInfo.getCode();
         UserInfo userInfo = wxLoginInfo.getUserInfo();
-        /**
         if(code == null || userInfo == null){
             return ResponseUtil.badArgument();
         }
 
         String sessionKey = null;
         String openId = null;
-
         try {
             WxMaJscode2SessionResult result = this.wxService.getUserService().getSessionInfo(code);
             sessionKey = result.getSessionKey();
@@ -156,14 +153,15 @@ public class WxAuthController {
             user.setLastLoginTime(LocalDateTime.now());
             user.setLastLoginIp(IpUtil.client(request));
             userService.add(user);
-        }else{
+        }
+        else{
             user.setLastLoginTime(LocalDateTime.now());
             user.setLastLoginIp(IpUtil.client(request));
             userService.update(user);
         }
-         **/
+
         // token
-        UserToken userToken = UserTokenManager.generateToken(58);
+        UserToken userToken = UserTokenManager.generateToken(user.getId());
 
         Map<Object, Object> result = new HashMap<Object, Object>();
         result.put("token", userToken.getToken());
