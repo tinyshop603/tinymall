@@ -3,6 +3,7 @@ package com.attitude.tinymall.os.service;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -36,6 +37,7 @@ public class AliyunOssServiceImpl implements AliyunOssService {
     this.oss = new OSSClient(endpoint, accessKeyId, accessKeySecret);
   }
 
+
   @Override
   public String getFileUrl(String fileName) {
     try {
@@ -45,7 +47,10 @@ public class AliyunOssServiceImpl implements AliyunOssService {
       if (isExist) {
         Calendar nowTime = Calendar.getInstance();
         nowTime.add(Calendar.DATE, 1);
-        return oss.generatePresignedUrl(bucket, fileName, nowTime.getTime(), HttpMethod.GET)
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, fileName);
+//        request.setProcess("image/resize,m_fixed,w_100,h_100");
+        request.setExpiration(nowTime.getTime());
+        return oss.generatePresignedUrl(request)
             .toString();
 
       }
