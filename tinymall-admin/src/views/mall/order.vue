@@ -23,12 +23,11 @@
       <el-table-column align="center" width="120px" label="订单编号" prop="order.orderSn"></el-table-column>
       <el-table-column align="center" width="85px" label="下单时间" prop="order.addTime" sortable></el-table-column>
       <el-table-column align="center" min-width="80px" label="订单状态" prop="order.orderStatus">
-        <template slot-scope="scope" >
+        <template slot-scope="scope">
           <template v-for="tag in tags">
-            <el-tag v-if="tag.status==scope.row.order.orderStatus"
-            :type="tag.type">
-           {{tag.name}}
-          </el-tag>
+            <el-tag v-if="tag.status==scope.row.order.orderStatus" :type="tag.type">
+              {{tag.name}}
+            </el-tag>
           </template>
         </template>
       </el-table-column>
@@ -167,38 +166,45 @@ export default {
   created() {
     this.getList()
   },
-  sockets:{
-    connect:function() {
-      console.log('socket connected')
+  computed:{
+    submitOrderEvent() {
+      return this.$store.state.order.submitOrder
     },
-    submitOrderEvent:function(jsonData) {
-      const socData = JSON.parse(jsonData)
-      if (socData.adminId == store.getters.adminId) {
-        let newOrder = socData.orderData
+    cancelOrderEvent() {
+      return this.$store.state.order.cancelOrder
+    },
+    refundOrderEvent() {
+      return this.$store.state.order.refundOrder
+    },
+    confirmOrderEvent() {
+      return this.$store.state.order.confirmOrder
+    }
+  },
+  watch:{
+    submitOrderEvent:function(ov, nv) {
+      let newOrder = this.$store.state.order.submitOrder
+      if (newOrder) {
         newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.order.orderStatus))
         this.list.unshift(newOrder)
       }
     },
-    cancelOrderEvent:function(jsonData) {
-      const socData = JSON.parse(jsonData)
-      if (socData.adminId == store.getters.adminId) {
-        let cancelOrder = socData.orderData
+    cancelOrderEvent:function(ov, nv) {
+      let cancelOrder = this.$store.state.order.cancelOrder
+      if (cancelOrder) {
         cancelOrder = Object.assign(cancelOrder, getBtnStateByCode(cancelOrder.orderStatus))
         this.updateOrderItemStatus(cancelOrder)
       }
     },
-    refundOrderEvent:function(jsonData) {
-      const socData = JSON.parse(jsonData)
-      if (socData.adminId == store.getters.adminId) {
-        let refundOrder = socData.orderData
+    refundOrderEvent:function(ov, nv) {
+      let refundOrder = this.$store.state.order.refundOrder
+      if (refundOrder) {
         refundOrder = Object.assign(refundOrder, getBtnStateByCode(refundOrder.orderStatus))
         this.updateOrderItemStatus(refundOrder)
       }
     },
-    confirmOrderEvent:function(jsonData) {
-      const socData = JSON.parse(jsonData)
-      if (socData.adminId == store.getters.adminId) {
-        let confirmOrder = socData.orderData
+    confirmOrderEvent:function(ov, nv) {
+      let confirmOrder = this.$store.state.order.confirmOrder
+      if (confirmOrder) {
         confirmOrder = Object.assign(confirmOrder, getBtnStateByCode(confirmOrder.orderStatus))
         this.updateOrderItemStatus(confirmOrder)
       }
@@ -371,12 +377,12 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-            import('@/vendor/Export2Excel').then(excel => {
-              const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
-              const filterVal = ['id', 'orderSn', 'userId', 'orderStatis', 'isDelete', 'consignee', 'mobile', 'address']
-              excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
-              this.downloadLoading = false
-            })
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['订单ID', '订单编号', '用户ID', '订单状态', '是否删除', '收货人', '收货联系电话', '收货地址']
+        const filterVal = ['id', 'orderSn', 'userId', 'orderStatis', 'isDelete', 'consignee', 'mobile', 'address']
+        excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
+        this.downloadLoading = false
+      })
     },
     updateOrderItemStatus(updatedOrder) {
       for (const v of this.list) {
@@ -397,4 +403,5 @@ export default {
     }
   }
 }
+
 </script>

@@ -1,26 +1,13 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-
-    <breadcrumb class="breadcrumb-container"></breadcrumb>
-
     <div class="right-menu">
-
-      <el-tooltip effect="dark" content="全屏" placement="bottom">
-        <screenfull class="screenfull right-menu-item"></screenfull>
-      </el-tooltip>
-
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
           <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>
-            <router-link to="/">
-              主页
-            </router-link>
-          </el-dropdown-item>
           <el-dropdown-item divided>
             <span @click="logout" style="display:block;">退出登录</span>
           </el-dropdown-item>
@@ -41,9 +28,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import store from '@/store'
-import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
 import {
   getLodop,
   printCredential
@@ -51,9 +36,7 @@ import {
 
 export default {
   components:{
-    Breadcrumb,
-    Hamburger,
-    Screenfull
+    Hamburger
   },
   computed:{
     ...mapGetters([
@@ -79,6 +62,7 @@ export default {
       console.log(socData)
       if (socData.adminId == store.getters.adminId) {
         const newOrder = socData.orderData
+        store.commit('SET_SUBMIT_ORDER', newOrder)
         this.comePlayer.play()
         const credentialData = {
           'shopName':'789便利店',
@@ -111,17 +95,24 @@ export default {
     cancelOrderEvent:function(jsonData) {
       const socData = JSON.parse(jsonData)
       if (socData.adminId == store.getters.adminId) {
+        store.commit('SET_CANCEL_ORDER', socData.orderData)
         this.cancelPlayer.play()
-        console.log('----->订单取消' + jsonData)
       }
     },
     refundOrderEvent:function(jsonData) {
       const socData = JSON.parse(jsonData)
       if (socData.adminId == store.getters.adminId) {
+        store.commit('SET_REFUND_ORDER', socData.orderData)
         this.refundPlayer.play()
-        console.log('----->订单退款' + jsonData)
+      }
+    },
+    confirmOrderEvent:function(jsonData) {
+      const socData = JSON.parse(jsonData)
+      if (socData.adminId == store.getters.adminId) {
+        store.commit('SET_COMFIRM_ORDER', socData.orderData)
       }
     }
+
   },
   methods:{
     toggleSideBar() {
@@ -134,53 +125,64 @@ export default {
     }
   }
 }
-</script>
 
+</script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
   height: 50px;
   line-height: 50px;
   border-radius: 0px !important;
+
   .hamburger-container {
     line-height: 58px;
     height: 50px;
     float: left;
     padding: 0 10px;
   }
-  .breadcrumb-container{
+
+  .breadcrumb-container {
     float: left;
   }
+
   .errLog-container {
     display: inline-block;
     vertical-align: top;
   }
+
   .right-menu {
     float: right;
     height: 100%;
-    &:focus{
-     outline: none;
+
+    &:focus {
+      outline: none;
     }
+
     .right-menu-item {
       display: inline-block;
       margin: 0 8px;
     }
+
     .screenfull {
       height: 20px;
     }
+
     .avatar-container {
       height: 50px;
       margin-right: 30px;
+
       .avatar-wrapper {
         cursor: pointer;
         margin-top: 5px;
         position: relative;
+
         .user-avatar {
           width: 40px;
           height: 40px;
           border-radius: 10px;
         }
+
         .el-icon-caret-bottom {
-          display:none;
+          display: none;
           position: absolute;
           right: -20px;
           top: 25px;
@@ -190,4 +192,5 @@ export default {
     }
   }
 }
+
 </style>

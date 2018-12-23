@@ -53,20 +53,13 @@ import java.util.*;
 /**
  * 订单设计
  *
- * 订单状态：
- * 101 订单生成，未支付；102，下单后未支付用户取消；103，下单后未支付超时系统自动取消
- * 201 支付完成，商家未发货；202，订单生产，已付款未发货，但是退款取消；
- * 301 商家发货，用户未确认；
- * 401 用户确认收货，订单结束； 402 用户没有确认收货，但是快递反馈已收获后，超过一定时间，系统自动确认收货，订单结束。
+ * 订单状态： 101 订单生成，未支付；102，下单后未支付用户取消；103，下单后未支付超时系统自动取消 201 支付完成，商家未发货；202，订单生产，已付款未发货，但是退款取消； 301
+ * 商家发货，用户未确认； 401 用户确认收货，订单结束； 402 用户没有确认收货，但是快递反馈已收获后，超过一定时间，系统自动确认收货，订单结束。
  *
- * 当101用户未付款时，此时用户可以进行的操作是取消订单，或者付款操作
- * 当201支付完成而商家未发货时，此时用户可以取消订单并申请退款
- * 当301商家已发货时，此时用户可以有确认收货的操作
- * 当401用户确认收货以后，此时用户可以进行的操作是删除订单，评价商品，或者再次购买
- * 当402系统自动确认收货以后，此时用户可以删除订单，评价商品，或者再次购买
+ * 当101用户未付款时，此时用户可以进行的操作是取消订单，或者付款操作 当201支付完成而商家未发货时，此时用户可以取消订单并申请退款 当301商家已发货时，此时用户可以有确认收货的操作
+ * 当401用户确认收货以后，此时用户可以进行的操作是删除订单，评价商品，或者再次购买 当402系统自动确认收货以后，此时用户可以删除订单，评价商品，或者再次购买
  *
  * 目前不支持订单退货和售后服务
- *
  */
 @RestController
 @RequestMapping("/wx/{storeId}/order")
@@ -111,8 +104,6 @@ public class WxOrderController {
     messageInfo = new MessageInfo<>();
     //发起端
     messageInfo.setSourceClientId("wx-api");
-    //目标端
-    messageInfo.setTargetClientId("admin-api");
   }
 
   public WxOrderController() {
@@ -154,11 +145,11 @@ public class WxOrderController {
     List<LitemallOrder> orderList = orderService.queryByOrderStatus(userId, orderStatus);
     //对上述的集合进行排序
     orderList
-      .sort(Comparator.comparing(
-              LitemallOrder::getAddTime)
-              .thenComparing(LitemallOrder::getDeleted)
-              .reversed()
-              .thenComparing(LitemallOrder::getId));
+        .sort(Comparator.comparing(
+            LitemallOrder::getAddTime)
+            .thenComparing(LitemallOrder::getDeleted)
+            .reversed()
+            .thenComparing(LitemallOrder::getId));
     int count = orderService.countByOrderStatus(userId, orderStatus);
 
     List<Map<String, Object>> orderVoList = new ArrayList<>(orderList.size());
@@ -261,7 +252,8 @@ public class WxOrderController {
    * XXX }
    */
   @PostMapping("submit")
-  public Object submit(@LoginUser Integer userId, @RequestBody String body,@PathVariable("storeId") String appId) {
+  public Object submit(@LoginUser Integer userId, @RequestBody String body,
+      @PathVariable("storeId") String appId) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -331,10 +323,10 @@ public class WxOrderController {
       order.setUserId(userId);
       order.setOrderSn(orderService.generateOrderSn(userId));
       order.setAddTime(LocalDateTime.now());
-      if(modeId == 1){
+      if (modeId == 1) {
         order.setOrderStatus(OrderUtil.STATUS_CREATE);//微信支付
 
-      }else{
+      } else {
         order.setOrderStatus(OrderUtil.STATUS_AFTER_PAY);//货到付款
       }
       order.setPaymentWay(modeId);
@@ -352,7 +344,7 @@ public class WxOrderController {
       order.setAdminId(admin.getId());
       order.setRemark(remarkText);
       // 添加订单表项
-      orderService.add(order,appId);
+      orderService.add(order, appId);
       orderId = order.getId();
 
       for (LitemallCart cartGoods : checkedGoodsList) {
@@ -397,16 +389,18 @@ public class WxOrderController {
 
     Map<String, Object> data = new HashMap<>();
     data.put("orderId", orderId);
-    if(modeId != 1){//货到付款在此处触发
+    if (modeId != 1) {//货到付款在此处触发
       //想办法提醒管理端进行刷新
       messageInfo.setMsgType("order-submit");
+      //目标端
+      messageInfo.setTargetClientId("admin-api-" + admin.getId());
       LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
       orderWithGoods.setOrder(order);
       // 查找此订单的商品信息
       orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-      Map<String,Object> dataSoc = new HashMap<>(2);
-      dataSoc.put("adminId",admin.getId());
-      dataSoc.put("orderData",orderWithGoods);
+      Map<String, Object> dataSoc = new HashMap<>(2);
+      dataSoc.put("adminId", admin.getId());
+      dataSoc.put("orderData", orderWithGoods);
       messageInfo.setDomainData(dataSoc);
       client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
 
@@ -414,6 +408,7 @@ public class WxOrderController {
 
     return ResponseUtil.ok(data);
   }
+
   /**
    * 付款订单的预支付会话标识
    *
@@ -424,7 +419,8 @@ public class WxOrderController {
    * @return 订单操作结果 成功则 { errno: 0, errmsg: '模拟付款支付成功' } 失败则 { errno: XXX, errmsg: XXX }
    */
   @PostMapping("prepay")
-  public Object prepay(@LoginUser Integer userId, @RequestBody String body, HttpServletRequest request, @PathVariable("storeId") String appId) {
+  public Object prepay(@LoginUser Integer userId, @RequestBody String body,
+      HttpServletRequest request, @PathVariable("storeId") String appId) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -465,7 +461,7 @@ public class WxOrderController {
     //10位序列号,可以自行调整。
     String nonceStr = strTime + strRandom;
     //附加数据，以一定格式保存userId和activityId。原样返回。
-    String attach = userId+"#wx#"+order.getId();
+    String attach = userId + "#wx#" + order.getId();
     String spBillCreateIp = IpUtil.client(request);
     // TODO 更有意义的显示名称
     String describe = "789便利店-订单支付";
@@ -480,7 +476,7 @@ public class WxOrderController {
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("attach", attach);//附加数据
-    packageParams.put("body",describe );//商品描述
+    packageParams.put("body", describe);//商品描述
     packageParams.put("detail", detail);
     packageParams.put("mch_id", admin.getMchId().toString());//商户号
     packageParams.put("nonce_str", nonceStr);//随机数
@@ -491,26 +487,26 @@ public class WxOrderController {
     packageParams.put("total_fee", money);//总金额
     packageParams.put("trade_type", "JSAPI");
 
-    String sign = wxPayEngine.createSign(packageParams,admin.getMchKey());
-    String xml="<xml>"+
-            "<appid>"+appId+"</appid>"+
-            "<attach>"+attach+"</attach>"+
-            "<body><![CDATA["+describe+"]]></body>"+
-            "<detail><![CDATA["+detail+"]]></detail>"+
-            "<mch_id>"+admin.getMchId().toString()+"</mch_id>"+
-            "<nonce_str>"+nonceStr+"</nonce_str>"+
-            "<sign>"+sign+"</sign>"+
-            "<notify_url>"+admin.getNotifyUrl()+"</notify_url>"+
-            "<openid>"+openId+"</openid>"+
-            "<out_trade_no>"+order.getOrderSn()+"</out_trade_no>"+
-            "<spbill_create_ip>"+spBillCreateIp+"</spbill_create_ip>"+
-            "<total_fee>"+money+"</total_fee>"+
-            "<trade_type>JSAPI</trade_type>"+
-            "</xml>";
-    String prepay_id="";
+    String sign = wxPayEngine.createSign(packageParams, admin.getMchKey());
+    String xml = "<xml>" +
+        "<appid>" + appId + "</appid>" +
+        "<attach>" + attach + "</attach>" +
+        "<body><![CDATA[" + describe + "]]></body>" +
+        "<detail><![CDATA[" + detail + "]]></detail>" +
+        "<mch_id>" + admin.getMchId().toString() + "</mch_id>" +
+        "<nonce_str>" + nonceStr + "</nonce_str>" +
+        "<sign>" + sign + "</sign>" +
+        "<notify_url>" + admin.getNotifyUrl() + "</notify_url>" +
+        "<openid>" + openId + "</openid>" +
+        "<out_trade_no>" + order.getOrderSn() + "</out_trade_no>" +
+        "<spbill_create_ip>" + spBillCreateIp + "</spbill_create_ip>" +
+        "<total_fee>" + money + "</total_fee>" +
+        "<trade_type>JSAPI</trade_type>" +
+        "</xml>";
+    String prepay_id = "";
     try {
       prepay_id = wxPayEngine.getPayNo(PAY_URL, xml);
-      if(prepay_id.equals("")){
+      if (prepay_id.equals("")) {
         //错误提示
 //        log.error("统一支付接口获取预支付订单出错");
       }
@@ -520,13 +516,13 @@ public class WxOrderController {
     }
     SortedMap<String, String> finalpackage = new TreeMap<String, String>();
     String timestamp = wxPayEngine.getTimeStamp();
-    String packages = "prepay_id="+prepay_id;
+    String packages = "prepay_id=" + prepay_id;
     finalpackage.put("appId", appId);
     finalpackage.put("nonceStr", nonceStr);
     finalpackage.put("package", packages);
     finalpackage.put("signType", "MD5");
     finalpackage.put("timeStamp", timestamp);
-    String finalsign = wxPayEngine.createSign(finalpackage,admin.getMchKey());
+    String finalsign = wxPayEngine.createSign(finalpackage, admin.getMchKey());
 
     WxPayMpOrderResult result = new WxPayMpOrderResult();
     result.setNonceStr(nonceStr);
@@ -537,6 +533,7 @@ public class WxOrderController {
     orderService.updateById(order);
     return ResponseUtil.ok(result);
   }
+
   /**
    * 付款成功回调接口 1. 检测当前订单是否是付款状态 2. 设置订单付款成功状态相关信息 3. 响应微信支付平台
    *
@@ -545,7 +542,8 @@ public class WxOrderController {
    * 注意，这里pay-notify是示例地址，开发者应该设立一个隐蔽的回调地址
    */
   @PostMapping("pay-notify")
-  public Object payNotify(HttpServletRequest request, HttpServletResponse response,@PathVariable("storeId") String appId) {
+  public Object payNotify(HttpServletRequest request, HttpServletResponse response,
+      @PathVariable("storeId") String appId) {
     try {
       String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
       WxPayOrderNotifyResult result = wxPayService.parseOrderNotifyResult(xmlResult);
@@ -580,17 +578,18 @@ public class WxOrderController {
 
       orderService.updateById(order);
 
-
       //想办法提醒管理端进行刷新
       LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+      //目标端
+      messageInfo.setTargetClientId("admin-api-" + admin.getId());
       messageInfo.setMsgType("order-submit");
       LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
       orderWithGoods.setOrder(order);
       // 查找此订单的商品信息
       orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-      Map<String,Object> dataSoc = new HashMap<>(2);
-      dataSoc.put("adminId",admin.getId());
-      dataSoc.put("orderData",orderWithGoods);
+      Map<String, Object> dataSoc = new HashMap<>(2);
+      dataSoc.put("adminId", admin.getId());
+      dataSoc.put("orderData", orderWithGoods);
       messageInfo.setDomainData(dataSoc);
       client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
 
@@ -609,7 +608,8 @@ public class WxOrderController {
    * @return 订单操作结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
    */
   @PostMapping("cancel")
-  public Object cancel(@LoginUser Integer userId,@PathVariable("storeId") String appId, @RequestBody String body) {
+  public Object cancel(@LoginUser Integer userId, @PathVariable("storeId") String appId,
+      @RequestBody String body) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -638,14 +638,14 @@ public class WxOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     //判断是否为未支付状态取消，如果是，后台不进行实时更新。
     boolean isNotPayCancel = false;
-    if(order.getOrderStatus()==101){
+    if (order.getOrderStatus() == 101) {
       isNotPayCancel = true;
     }
     try {
       // 设置订单已取消状态
-      if(order.getOrderStatus()==001){//货到付款 用户取消分支wz
+      if (order.getOrderStatus() == 001) {//货到付款 用户取消分支wz
         order.setOrderStatus(OrderUtil.STATUS_AFTER_CANCEL);
-      }else{
+      } else {
         order.setOrderStatus(OrderUtil.STATUS_CANCEL);
       }
 
@@ -668,11 +668,13 @@ public class WxOrderController {
     }
     txManager.commit(status);
     //想办法提醒管理端进行刷新,在线支付未支付订单取消
-    if(!isNotPayCancel){
+    if (!isNotPayCancel) {
       messageInfo.setMsgType("order-cancel");
-      Map<String,Object> socketData = new HashMap<>(2);
-      socketData.put("orderData",JacksonUtil.stringifyObject(order));
-      socketData.put("adminId",admin.getId());
+      //目标端
+      messageInfo.setTargetClientId("admin-api-" + admin.getId());
+      Map<String, Object> socketData = new HashMap<>(2);
+      socketData.put("orderData", JacksonUtil.stringifyObject(order));
+      socketData.put("adminId", admin.getId());
       messageInfo.setDomainData(socketData);
       client.emit(SocketEvent.CANCEL_ORDER, JacksonUtil.stringifyObject(messageInfo));
     }
@@ -688,7 +690,8 @@ public class WxOrderController {
    * @return 订单操作结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
    */
   @PostMapping("refund")
-  public Object refund(@LoginUser Integer userId,@PathVariable("storeId") String appId,@RequestBody String body) {
+  public Object refund(@LoginUser Integer userId, @PathVariable("storeId") String appId,
+      @RequestBody String body) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -715,9 +718,11 @@ public class WxOrderController {
     orderService.update(order);
     //想办法提醒管理端进行刷新
     messageInfo.setMsgType("order-refund");
-    Map<String,Object> socketData = new HashMap<>(2);
-    socketData.put("orderData",JacksonUtil.stringifyObject(order));
-    socketData.put("adminId",admin.getId());
+    //目标端
+    messageInfo.setTargetClientId("admin-api-" + admin.getId());
+    Map<String, Object> socketData = new HashMap<>(2);
+    socketData.put("orderData", JacksonUtil.stringifyObject(order));
+    socketData.put("adminId", admin.getId());
     messageInfo.setDomainData(socketData);
     client.emit(SocketEvent.REFUND_ORDER, JacksonUtil.stringifyObject(messageInfo));
 
@@ -732,7 +737,8 @@ public class WxOrderController {
    * @return 订单操作结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
    */
   @PostMapping("confirm")
-  public Object confirm(@LoginUser Integer userId,@PathVariable("storeId") String appId, @RequestBody String body) {
+  public Object confirm(@LoginUser Integer userId, @PathVariable("storeId") String appId,
+      @RequestBody String body) {
     if (userId == null) {
       return ResponseUtil.unlogin();
     }
@@ -754,9 +760,9 @@ public class WxOrderController {
     if (!handleOption.isConfirm()) {
       return ResponseUtil.fail(403, "订单不能确认收货");
     }
-    if(order.getOrderStatus()==003){
+    if (order.getOrderStatus() == 003) {
       order.setOrderStatus(OrderUtil.STATUS_AFTER_CONFIRM);//货到付款分支，用户确定收货；wz
-    }else{
+    } else {
       order.setOrderStatus(OrderUtil.STATUS_CONFIRM);
     }
 
@@ -764,9 +770,11 @@ public class WxOrderController {
     orderService.update(order);
     //想办法提醒管理端进行刷新
     messageInfo.setMsgType("order-confirm");
-    Map<String,Object> socketData = new HashMap<>(2);
-    socketData.put("orderData",JacksonUtil.stringifyObject(order));
-    socketData.put("adminId",admin.getId());
+    //目标端
+    messageInfo.setTargetClientId("admin-api-" + admin.getId());
+    Map<String, Object> socketData = new HashMap<>(2);
+    socketData.put("orderData", JacksonUtil.stringifyObject(order));
+    socketData.put("adminId", admin.getId());
     messageInfo.setDomainData(socketData);
     client.emit(SocketEvent.CONFIRM_ORDER, JacksonUtil.stringifyObject(messageInfo));
     return ResponseUtil.ok();
@@ -839,4 +847,17 @@ public class WxOrderController {
     return ResponseUtil.ok(orderGoods);
   }
 
+  @GetMapping("socekt/{event}")
+  public Object soceketTest(@PathVariable String event, @RequestParam String adminId) {
+    MessageInfo<Map> messageInfo = new MessageInfo();
+    messageInfo.setMsgType("order-confirm");
+    //目标端
+    messageInfo.setTargetClientId("admin-api-" + adminId);
+    Map<String, Object> socketData = new HashMap<>(2);
+    socketData.put("orderData", orderService.findById(40));
+    socketData.put("adminId", adminId);
+    messageInfo.setDomainData(socketData);
+    client.emit(event, JacksonUtil.stringifyObject(messageInfo));
+    return ResponseUtil.ok();
+  }
 }
