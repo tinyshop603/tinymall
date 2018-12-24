@@ -112,7 +112,6 @@
 
 </style>
 <script>
-import store from '@/store'
 import { listOrder, getBtnStateByCode, updateOrderCode, STATUS, refundOrder } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {

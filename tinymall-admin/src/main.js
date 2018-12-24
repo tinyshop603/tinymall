@@ -10,8 +10,6 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import router from './router'
 import store from './store'
-import VueSocketio from 'vue-socket.io'
-import io from 'socket.io-client'
 import './icons' // icon
 import './permission' // permission control
 // import './mock' // simulation data

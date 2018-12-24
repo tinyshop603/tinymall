@@ -5,7 +5,7 @@ import resAPI from './res'
 const List = []
 const count = 100
 
-for (let i = 0; i < count; i++) {
+for (let i = 0;i < count;i++) {
   List.push(Mock.mock({
     'id':'@increment',
     'username':'@cname',

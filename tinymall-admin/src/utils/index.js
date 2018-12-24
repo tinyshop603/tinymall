@@ -80,7 +80,7 @@ export function getQueryObject(url) {
  */
 export function getByteLen(val) {
   let len = 0
-  for (let i = 0; i < val.length; i++) {
+  for (let i = 0;i < val.length;i++) {
     if (val[i].match(/[^\x00-\xff]/ig) != null) {
       len += 1
     } else { len += 0.5 }
@@ -90,7 +90,7 @@ export function getByteLen(val) {
 
 export function cleanArray(actual) {
   const newArray = []
-  for (let i = 0; i < actual.length; i++) {
+  for (let i = 0;i < actual.length;i++) {
     if (actual[i]) {
       newArray.push(actual[i])
     }

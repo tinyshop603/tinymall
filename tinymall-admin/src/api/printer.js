@@ -294,12 +294,12 @@ function getTestData() {
     'orderNO': '订单编号:20180270281272',
     'orderTime': '下单时间:2018/04/06 13:11:11',
     'buyGoods': [{
-        'name': '名称1',
+        'name': '名称1名称1名称1名称1名称1名称1名称1',
         'number': 1,
         'price': 10
       },
       {
-        'name': '名称2',
+        'name': '名称2名称2名称2名称2名称2名称2名称2',
         'number': 2,
         'price': 10
       }, {
