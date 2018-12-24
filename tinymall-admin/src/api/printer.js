@@ -43,7 +43,7 @@ if (needCLodop()) {
   // var src2 = 'https://localhost:8444/CLodopfuncs.js?priority=0'
 
   var src1 = `${process.env.LODOP_PLUGIN_SRC1_URL}/CLodopfuncs.js?priority=1`
-  var src2 = `${process.env.LODOP_PLUGIN_SRC2_URL}/CLodopfuncs.js?priority=0"`
+  var src2 = `${process.env.LODOP_PLUGIN_SRC2_URL}/CLodopfuncs.js?priority=0`
 
 
   var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement
