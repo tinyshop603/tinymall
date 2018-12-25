@@ -3,7 +3,7 @@
     <view class="success" wx:if="{{status}}">
       <view class="msg">下单成功</view>
       <view class="btns">
-        <navigator class="btn" url="/pages/ucenter/order/order" open-type="redirect">查看订单</navigator>
+        <navigator class="btn" url="/pages/ucenter/order/order?showType=2" open-type="redirect">查看订单</navigator>
         <navigator class="btn" url="/pages/catalog1/catalog" open-type="switchTab">继续逛</navigator>
       </view>
     </view>
@@ -14,7 +14,7 @@
         <view class="p">请重新下单</view>
       </view>
       <view class="btns">
-        <navigator class="btn" url="/pages/ucenter/order/order" open-type="redirect">查看订单</navigator>
+        <navigator class="btn" url="/pages/ucenter/order/order?showType=1" open-type="redirect">查看订单</navigator>
         <navigator class="btn" url="/pages/cart/cart" open-type="switchTab">返回购物车</navigator>
         <!-- <view class="btn" bindtap='payOrder'>重新付款</view> -->
       </view>

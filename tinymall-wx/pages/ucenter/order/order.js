@@ -14,6 +14,9 @@ Page({
     }
   },
   onLoad:function(options){
+    this.setData({
+      showType: options.showType
+    });
     // 页面初始化 options为页面跳转所带来的参数
   },
   getOrderList(){
@@ -67,6 +70,9 @@ Page({
                 duration: 2000, //毫秒，默认：1500
                 mask: false,
                 success: function () {
+                  that.setData({
+                    showType: 5
+                  });
                   that.getOrderList();
                 }
               });
@@ -98,7 +104,7 @@ Page({
           'paySign': payParam.paySign,
           'success': function (res) {
             console.log("支付过程成功")
-            this.setData({
+            that.setData({
               showType: 2
             });
             that.getOrderList();
@@ -134,6 +140,9 @@ Page({
                 duration: 2000, //毫秒，默认：1500
                 mask: false,
                 success: function () {
+                  that.setData({
+                    showType: 4
+                  });
                   that.getOrderList();
                 }
               });
