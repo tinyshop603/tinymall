@@ -144,12 +144,12 @@ public class WxOrderController {
     List<Short> orderStatus = OrderUtil.orderStatus(showType);
     List<LitemallOrder> orderList = orderService.queryByOrderStatus(userId, orderStatus);
     //对上述的集合进行排序
-    orderList
-        .sort(Comparator.comparing(
-            LitemallOrder::getAddTime)
-            .thenComparing(LitemallOrder::getDeleted)
-            .reversed()
-            .thenComparing(LitemallOrder::getId));
+//    orderList
+//        .sort(Comparator.comparing(
+//            LitemallOrder::getAddTime)
+//            .thenComparing(LitemallOrder::getDeleted)
+//            .reversed()
+//            .thenComparing(LitemallOrder::getId));
     int count = orderService.countByOrderStatus(userId, orderStatus);
 
     List<Map<String, Object>> orderVoList = new ArrayList<>(orderList.size());
@@ -673,7 +673,7 @@ public class WxOrderController {
       //目标端
       messageInfo.setTargetClientId("admin-api-" + admin.getId());
       Map<String, Object> socketData = new HashMap<>(2);
-      socketData.put("orderData", JacksonUtil.stringifyObject(order));
+      socketData.put("orderData", order);
       socketData.put("adminId", admin.getId());
       messageInfo.setDomainData(socketData);
       client.emit(SocketEvent.CANCEL_ORDER, JacksonUtil.stringifyObject(messageInfo));
@@ -721,7 +721,7 @@ public class WxOrderController {
     //目标端
     messageInfo.setTargetClientId("admin-api-" + admin.getId());
     Map<String, Object> socketData = new HashMap<>(2);
-    socketData.put("orderData", JacksonUtil.stringifyObject(order));
+    socketData.put("orderData", order);
     socketData.put("adminId", admin.getId());
     messageInfo.setDomainData(socketData);
     client.emit(SocketEvent.REFUND_ORDER, JacksonUtil.stringifyObject(messageInfo));
@@ -773,7 +773,7 @@ public class WxOrderController {
     //目标端
     messageInfo.setTargetClientId("admin-api-" + admin.getId());
     Map<String, Object> socketData = new HashMap<>(2);
-    socketData.put("orderData", JacksonUtil.stringifyObject(order));
+    socketData.put("orderData", order);
     socketData.put("adminId", admin.getId());
     messageInfo.setDomainData(socketData);
     client.emit(SocketEvent.CONFIRM_ORDER, JacksonUtil.stringifyObject(messageInfo));
