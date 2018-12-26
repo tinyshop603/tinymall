@@ -112,8 +112,7 @@
 
 </style>
 <script>
-import store from '@/store'
-import { listOrder, getBtnStateByCode, updateOrderCode, STATUS, refundOrder } from '@/api/order'
+import { listOrder, getBtnStateByCode, updateOrderCode, STATUS, refundOrder, formatDate, formatDate2 } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
   name:'Order',
@@ -183,6 +182,9 @@ export default {
   watch:{
     submitOrderEvent:function(ov, nv) {
       let newOrder = this.$store.state.order.submitOrder
+      // socket传数据对时间格式的处理-wz
+      const date = new Date(newOrder.order.addTime)
+      newOrder.order.addTime = formatDate(date, 'yyyy-MM-dd hh:mm:ss')
       if (newOrder) {
         newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.order.orderStatus))
         this.list.unshift(newOrder)
@@ -190,6 +192,8 @@ export default {
     },
     cancelOrderEvent:function(ov, nv) {
       let cancelOrder = this.$store.state.order.cancelOrder
+      // TODO 临时写法，需找到时间格式变化原因 socket传数据对时间格式的处理-wz
+      cancelOrder.addTime = formatDate2(cancelOrder.addTime)
       if (cancelOrder) {
         cancelOrder = Object.assign(cancelOrder, getBtnStateByCode(cancelOrder.orderStatus))
         this.updateOrderItemStatus(cancelOrder)
@@ -197,6 +201,8 @@ export default {
     },
     refundOrderEvent:function(ov, nv) {
       let refundOrder = this.$store.state.order.refundOrder
+      // TODO 临时写法，需找到时间格式变化原因 socket传数据对时间格式的处理-wz
+      refundOrder.addTime = formatDate2(refundOrder.addTime)
       if (refundOrder) {
         refundOrder = Object.assign(refundOrder, getBtnStateByCode(refundOrder.orderStatus))
         this.updateOrderItemStatus(refundOrder)
@@ -204,6 +210,8 @@ export default {
     },
     confirmOrderEvent:function(ov, nv) {
       let confirmOrder = this.$store.state.order.confirmOrder
+      // TODO 临时写法，需找到时间格式变化原因 socket传数据对时间格式的处理-wz
+      confirmOrder.addTime = formatDate2(confirmOrder.addTime)
       if (confirmOrder) {
         confirmOrder = Object.assign(confirmOrder, getBtnStateByCode(confirmOrder.orderStatus))
         this.updateOrderItemStatus(confirmOrder)

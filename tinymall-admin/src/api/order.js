@@ -146,7 +146,7 @@ export function getBtnStateByCode(orderStaCode) {
     case 605:// 退款操作
       return getBtnsWithStatus(false, false, false, true)
     default:
-      return getBtnsWithStatus(true, true, true,false)
+      return getBtnsWithStatus(true, true, true, false)
   }
 }
 /**
@@ -190,4 +190,37 @@ function _getRefundBtnByStates(valid) {
     'type':'danger',
     'disabled':false
   }
+}
+export function formatDate(date, fmt) {
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+  const o = {
+    'M+':date.getMonth() + 1,
+    'd+':date.getDate(),
+    'h+':date.getHours(),
+    'm+':date.getMinutes(),
+    's+':date.getSeconds()
+  }
+  for (const k in o) {
+    if (new RegExp(`(${k})`).test(fmt)) {
+      const str = o[k] + ''
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str))
+    }
+  }
+  return fmt
+}
+
+function padLeftZero(str) {
+  return ('00' + str).substr(str.length)
+}
+export function formatDate2(date) {
+  let fmt = 'year:month:day Thour:minute:second'
+  fmt = fmt.replace('year', date.year)
+  fmt = fmt.replace('month', date.monthValue)
+  fmt = fmt.replace('day', date.dayOfMonth)
+  fmt = fmt.replace('hour', date.hour)
+  fmt = fmt.replace('minute', date.minute)
+  fmt = fmt.replace('second', date.second)
+  return fmt
 }

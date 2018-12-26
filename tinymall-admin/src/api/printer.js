@@ -38,8 +38,13 @@ function needCLodop() {
 
 // ====页面引用CLodop云打印必须的JS文件,用双端口(8000和18000）避免其中某个被占用：====
 if (needCLodop()) {
-  var src1 = 'https://localhost:8443/CLodopfuncs.js?priority=1'
-  var src2 = 'https://localhost:8444/CLodopfuncs.js?priority=0'
+  // 线上的数据配置
+  // var src1 = 'https://localhost:8443/CLodopfuncs.js?priority=1'
+  // var src2 = 'https://localhost:8444/CLodopfuncs.js?priority=0'
+
+  var src1 = `${process.env.LODOP_PLUGIN_SRC1_URL}/CLodopfuncs.js?priority=1`
+  var src2 = `${process.env.LODOP_PLUGIN_SRC2_URL}/CLodopfuncs.js?priority=0`
+
 
   var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement
   var oscript = document.createElement('script')
@@ -184,7 +189,7 @@ function fillPrinterData(LODOP, printData) {
   // 下单时间
   const NEW_ORDER_HEIGTH = 10
   marginLeft = 0 // 重置左偏移量
-  LODOP.ADD_PRINT_TEXT(topY += 20, marginLeft += 20, MAX_PAGE_WITH, NEW_ORDER_HEIGTH, printData.orderTime)
+  LODOP.ADD_PRINT_TEXT(topY += 20, marginLeft += 10, MAX_PAGE_WITH, NEW_ORDER_HEIGTH, printData.orderTime)
   LODOP.SET_PRINT_STYLEA(0, 'FontSize', 9) // 0代表当前样式
 
   // 商品内容title文本
@@ -214,15 +219,42 @@ function fillPrinterData(LODOP, printData) {
   topY += 3
   for (let i = 0; i < printData.buyGoods.length; i++) {
     const good = printData.buyGoods[i]
-    const sectionWith = MAX_PAGE_WITH / 4
+    let sectionWith = MAX_PAGE_WITH / 4
     marginLeft = 0
     topY += 15
-    LODOP.ADD_PRINT_TEXT(topY, marginLeft += 20, sectionWith + 15, 10, good.name)
-    LODOP.SET_PRINT_STYLEA(0, 'FontSize', 10)
-    LODOP.ADD_PRINT_TEXT(topY, marginLeft += (sectionWith + 20), sectionWith, 10, `x${good.number}`)
-    LODOP.SET_PRINT_STYLEA(0, 'FontSize', 10)
-    LODOP.ADD_PRINT_TEXT(topY, marginLeft += (sectionWith - 20), sectionWith + 15, 10, good.number * good.price)
-    LODOP.SET_PRINT_STYLEA(0, 'FontSize', 10)
+    let goodName = good.name
+    let nameSize = goodName.length
+
+    if (nameSize > 6) {
+      let nameLines = Math.ceil(nameSize / 13)
+      let start = 0,
+        step = 13
+      for (var index = 0; index < nameLines; index++) {
+        let secGoodName = goodName.substring(start, start + step)
+        console.log(secGoodName)
+        start += (step + 1)
+        let sizeMargin = (secGoodName.length + 1) * 10
+        LODOP.ADD_PRINT_TEXT(topY, marginLeft += 0, sectionWith += sizeMargin, 10, secGoodName)
+        LODOP.SET_PRINT_STYLEA(0, 'FontSize', 10)
+        sectionWith -= sizeMargin
+        topY += 15
+      }
+      //换行
+      sectionWith = MAX_PAGE_WITH / 4
+      LODOP.ADD_PRINT_TEXT(topY, marginLeft += (sectionWith += 70), sectionWith, 10, `x${good.number}`)
+      LODOP.SET_PRINT_STYLEA(0, 'FontSize', 10)
+      LODOP.ADD_PRINT_TEXT(topY, marginLeft += (sectionWith -= 90), sectionWith + 15, 10, good.number * good.price)
+      LODOP.SET_PRINT_STYLEA(0, 'FontSize', 10)
+    } else {
+      LODOP.ADD_PRINT_TEXT(topY, marginLeft, sectionWith += 50, 10, goodName);
+      LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+      LODOP.ADD_PRINT_TEXT(topY, marginLeft += (sectionWith + 20), sectionWith, 10, `x${good.number}`)
+      LODOP.SET_PRINT_STYLEA(0, 'FontSize', 10)
+      LODOP.ADD_PRINT_TEXT(topY, marginLeft += (sectionWith - 70), sectionWith + 15, 10, good.number * good.price)
+      LODOP.SET_PRINT_STYLEA(0, 'FontSize', 10)
+    }
+
+
   }
 
   // 其他内容title文本
@@ -272,16 +304,19 @@ function fillPrinterData(LODOP, printData) {
   LODOP.SET_PRINT_STYLEA(0, 'Bold', 1)
 
   // / 添加二维码的图片
+
   marginLeft = 0
-  const IMAGE_SIZE = 180
+  // const IMAGE_SIZE = 180
+  const IMAGE_SIZE = 50
+  /**
   LODOP.ADD_PRINT_IMAGE(topY += 20, marginLeft + (MAX_PAGE_WITH / 3 - 50), IMAGE_SIZE, IMAGE_SIZE, "<img border='0' src='" + printData.shopQRurl + "' />")
   LODOP.SET_PRINT_STYLEA(0, 'Stretch', 2) // 按原图比例(不变形)缩放模式
-
+  **/
   // 添加关注我们
   marginLeft = 0
   LODOP.ADD_PRINT_TEXT(topY += (IMAGE_SIZE - 10), marginLeft += (MAX_PAGE_WITH / 3 - 15), MAX_PAGE_WITH, 10, '关注我们')
   LODOP.SET_PRINT_STYLEA(0, 'FontSize', 15)
-  // LODOP.ADD_PRINT_TEXT(topY += 20, marginLeft, MAX_PAGE_WITH, 10, "");
+  LODOP.ADD_PRINT_TEXT(topY += 20, marginLeft, MAX_PAGE_WITH, 10, "");
 
   LODOP.SET_PRINT_PAGESIZE(3, MAX_PAGE_WITH * 3, 0, '')
 }
@@ -294,13 +329,33 @@ function getTestData() {
     'orderNO': '订单编号:20180270281272',
     'orderTime': '下单时间:2018/04/06 13:11:11',
     'buyGoods': [{
-        'name': '名称1',
+        'name': '名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名称名名称名称名称名名称名称名称名',
         'number': 1,
         'price': 10
       },
       {
-        'name': '名称2',
+        'name': '名称二名称二名称二名称二名称二名称二名称二名称名称名称名称名称名称名称',
         'number': 2,
+        'price': 10
+      },
+      {
+        'name': '名称三名称三名称三名称三名称三',
+        'number': 3,
+        'price': 10
+      },
+      {
+        'name': '名称三名称三名称三名',
+        'number': 3,
+        'price': 10
+      },
+      {
+        'name': '名称三名称三名称三名',
+        'number': 3,
+        'price': 10
+      },
+      {
+        'name': '名称三名称三',
+        'number': 3,
         'price': 10
       }, {
         'name': '名称3',
