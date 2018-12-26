@@ -99,7 +99,7 @@ Page({
         wx.requestPayment({
           'timeStamp': payParam.timeStamp,
           'nonceStr': payParam.nonceStr,
-          'package': payParam.packageValue,
+          'package': payParam.package_,
           'signType': payParam.signType,
           'paySign': payParam.paySign,
           'success': function (res) {
