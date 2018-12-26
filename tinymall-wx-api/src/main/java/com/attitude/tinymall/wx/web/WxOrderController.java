@@ -463,16 +463,13 @@ public class WxOrderController {
     //附加数据，以一定格式保存userId和activityId。原样返回。
     String attach = userId + "#wx#" + order.getId();
     String spBillCreateIp = IpUtil.client(request);
-    // TODO 更有意义的显示名称
     String describe = "789便利店-订单支付";
     String detail = "订单支付";
-    // 这里仅支付1分
-    // TODO 单位转换元转分 测试时使用分
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-//    String money = String.valueOf(realFee.intValue());
-    //测试用例，1分钱
-    String money = "1";
+    String money = String.valueOf(realFee.intValue());
+    // TODO 测试用例，1分钱
+//    String money = "1";
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("attach", attach);//附加数据
@@ -566,8 +563,8 @@ public class WxOrderController {
 
       // 检查支付订单金额
       // TODO 这里1分钱需要改成实际订单金额
-      if (!totalFee.equals("0.01")) {
-//      if (!totalFee.equals(order.getActualPrice())) {
+//      if (!totalFee.equals("0.01")) {
+      if (!totalFee.equals(order.getActualPrice())) {
         throw new Exception("支付金额不符合 totalFee=" + totalFee);
       }
 
