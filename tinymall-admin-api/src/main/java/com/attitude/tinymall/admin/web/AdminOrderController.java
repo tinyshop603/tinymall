@@ -278,9 +278,9 @@ public class AdminOrderController {
     DecimalFormat df = new DecimalFormat("######0");
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-//    Integer fee = realFee.intValue();
+   Integer fee = realFee.intValue();
     //TODO 测试用例,上线改成实际数值
-    Integer fee = 1;
+//     Integer fee = 1;
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("mch_id", admin.getMchId().toString());//微信支付分配的商户号
