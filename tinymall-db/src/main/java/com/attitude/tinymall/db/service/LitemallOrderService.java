@@ -92,10 +92,12 @@ public class LitemallOrderService {
 
   public List<LitemallOrder> queryByOrderStatus(Integer userId, List<Short> orderStatus) {
     LitemallOrderExample example = new LitemallOrderExample();
-    //未完成 或者 已完成 按结束时间处理
-    if(orderStatus.get(0)==5 || orderStatus.get(0)==4 || orderStatus.get(0)==401 || orderStatus.get(0)==102 || orderStatus.get(0)==2 || orderStatus.get(0)==203){
+    //未完成 按结束时间排序
+    if(orderStatus.get(0)==102 || orderStatus.get(0)==2 || orderStatus.get(0)==203){
       example.orderBy(LitemallOrder.Column.endTime.desc());
-    }else{
+    }else if(orderStatus.get(0)==401 || orderStatus.get(0)==4 || orderStatus.get(0)==5){//已完成 按完成时间排序
+      example.orderBy(LitemallOrder.Column.endTime.desc());
+    }else {//其他，按添加时间排序
       example.orderBy(LitemallOrder.Column.addTime.desc());
     }
 
