@@ -200,9 +200,27 @@ public class AdminOrderController {
     if (tinymallOrder == null) {
       return ResponseUtil.badArgumentValue();
     }
+    Short preOrderStatus = tinymallOrder.getOrderStatus();
+    if(order.getOrderStatus() == 301 || order.getOrderStatus() == 3){//发货
+        //检测改为发货状态前是否为待发货（201，001）
+        if(preOrderStatus != 201 && preOrderStatus != 1){
+          return ResponseUtil.fail(403, "订单不能发货");
+        }
+    }else if(order.getOrderStatus() == 102 || order.getOrderStatus() == 2){//取消订单
+        //检测改为发货状态前是否为待发货（201,001）或已发货（301,3）
+        if(preOrderStatus != 201 && preOrderStatus != 1 && preOrderStatus != 301 && preOrderStatus != 3){
+          return ResponseUtil.fail(403, "订单不能取消");
+        }
+        tinymallOrder.setEndTime(LocalDateTime.now());
+    }else if(order.getOrderStatus() == 401 || order.getOrderStatus() == 4 ){//确认完成
+        //检测改为发货状态前是否为已发货（301，3）
+        if(preOrderStatus != 301 && preOrderStatus != 3){
+          return ResponseUtil.fail(403, "订单不能确认完成");
+        }
+        tinymallOrder.setConfirmTime(LocalDateTime.now());
+    }
     // 设置订单已取消状态
     tinymallOrder.setOrderStatus(order.getOrderStatus());
-    tinymallOrder.setEndTime(LocalDateTime.now());
     orderService.updateById(tinymallOrder);
     return ResponseUtil.ok(tinymallOrder);
   }
@@ -316,6 +334,7 @@ public class AdminOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     try {
       order.setOrderStatus(OrderUtil.STATUS_REFUND_CONFIRM);
+      order.setEndTime(LocalDateTime.now());
       orderService.update(order);
 
       // 商品货品数量增加
