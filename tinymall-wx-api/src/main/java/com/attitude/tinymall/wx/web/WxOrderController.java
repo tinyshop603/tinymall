@@ -542,12 +542,12 @@ public class WxOrderController {
   public Object payNotify(HttpServletRequest request, HttpServletResponse response,
       @PathVariable("storeId") String appId) {
     try {
+      System.out.println("===回调开始===");
       String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
       WxPayOrderNotifyResult result = wxPayService.parseOrderNotifyResult(xmlResult);
-
+      System.out.println("result："+result);
       String orderSn = result.getOutTradeNo();
       String payId = result.getTransactionId();
-      String transactionId = result.getTransactionId();
       // 分转化成元
       String totalFee = BaseWxPayResult.feeToYuan(result.getTotalFee());
 
@@ -571,7 +571,6 @@ public class WxOrderController {
       order.setPayId(payId);
       order.setPayTime(LocalDateTime.now());
       order.setOrderStatus(OrderUtil.STATUS_PAY);
-      order.setTransactionId(transactionId);
 
       orderService.updateById(order);
 
