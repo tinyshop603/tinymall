@@ -29,6 +29,7 @@ service.interceptors.request.use(config => {
 })
 
 // respone interceptor
+/**
 service.interceptors.response.use(
   response => {
     const res = response.data
@@ -60,5 +61,5 @@ service.interceptors.response.use(
     })
     return Promise.reject(error)
   })
-
+**/
 export default service
