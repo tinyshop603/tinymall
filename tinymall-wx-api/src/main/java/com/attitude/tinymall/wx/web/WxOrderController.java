@@ -564,7 +564,8 @@ public class WxOrderController {
       // 检查支付订单金额
       // TODO 这里1分钱需要改成实际订单金额
 //      if (!totalFee.equals("0.01")) {
-      if (!totalFee.equals(order.getActualPrice())) {
+      BigDecimal totalFreePrice = new BigDecimal(totalFee);
+      if (!totalFreePrice.equals(order.getActualPrice())) {
         throw new Exception("支付金额不符合 totalFee=" + totalFee);
       }
 

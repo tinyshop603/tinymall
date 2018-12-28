@@ -4,6 +4,7 @@ import com.attitude.tinymall.core.domain.MessageInfo;
 import com.attitude.tinymall.core.util.JacksonUtil;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;
+import java.math.BigDecimal;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,11 @@ public class WxConfigTest {
         System.out.println(a.split("a").length);
 
     }
+    @Test
+     public void testVoidBigDecial(){
+        BigDecimal b = new BigDecimal("1234.00004");
+        BigDecimal c = new BigDecimal("1234.00004");
+        System.out.println(b.equals(c));
+     }
 
 }
