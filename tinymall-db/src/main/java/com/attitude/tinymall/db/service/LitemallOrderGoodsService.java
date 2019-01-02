@@ -31,9 +31,12 @@ public class LitemallOrderGoodsService {
     }
 
     public List<LitemallOrderGoods> listOrderWithGoodsByOrder(List<LitemallOrder> orderList) {
+        if (orderList == null || orderList.size() == 0) {
+            return new ArrayList<>();
+        }
         List<Integer> orderIds = new ArrayList<Integer>();
         int num = 0;
-        for(LitemallOrder order : orderList){
+        for (LitemallOrder order : orderList) {
             orderIds.add(order.getId());
         }
         LitemallOrderGoodsExample example = new LitemallOrderGoodsExample();

@@ -4,6 +4,7 @@ import com.attitude.tinymall.db.domain.*;
 
 import com.attitude.tinymall.db.service.*;
 import com.attitude.tinymall.db.util.OrderHandleOption;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.admin.annotation.LoginAdmin;
@@ -26,6 +27,7 @@ import java.text.DecimalFormat;
 
 @RestController
 @RequestMapping("/admin/{userName}/order")
+@Slf4j
 public class AdminOrderController {
 
   private final Log logger = LogFactory.getLog(AdminOrderController.class);
