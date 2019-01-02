@@ -40,25 +40,8 @@ public class AliyunOssServiceImpl implements AliyunOssService {
 
   @Override
   public String getFileUrl(String fileName) {
-    try {
-      log.info("generate signed url from oss, file: {}", fileName);
-      boolean isExist = oss.doesObjectExist(bucket, fileName);
-
-      if (isExist) {
-        Calendar nowTime = Calendar.getInstance();
-        nowTime.add(Calendar.DATE, 1);
-        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, fileName);
-//        request.setProcess("image/resize,m_fixed,w_100,h_100");
-        request.setExpiration(nowTime.getTime());
-        return oss.generatePresignedUrl(request)
-            .toString();
-
-      }
-    } catch (Exception e) {
-      log.error("generate signed url from oss error, file: {}, detail: {}", fileName,
-          e.getMessage());
-    }
-    return null;
+    GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, fileName);
+    return getFileUrlByProcessRequest(fileName, request);
   }
 
   @Override
@@ -80,6 +63,40 @@ public class AliyunOssServiceImpl implements AliyunOssService {
       return oss.getObject(bucket, fileName).getObjectContent();
     } catch (Exception e) {
       log.error("download file from oss error, file: {}, detail: {}", fileName, e.getMessage());
+    }
+    return null;
+  }
+
+  @Override
+  public String getGeometricScalingFileUrl(String fileName, int scale) {
+    GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, fileName);
+    request.setProcess("image/resize,p_" + scale);
+    return getFileUrlByProcessRequest(fileName, request);
+  }
+
+  @Override
+  public String getForeSizeFileUrl(String fileName, int with, int height) {
+    GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, fileName);
+    request.setProcess("image/resize,m_fixed,w_" + with + ",h_" + height);
+    return getFileUrlByProcessRequest(fileName, request);
+  }
+
+  private String getFileUrlByProcessRequest(String fileName, GeneratePresignedUrlRequest request) {
+    try {
+      log.info("generate signed url from oss, file: {}", fileName);
+      boolean isExist = oss.doesObjectExist(bucket, fileName);
+
+      if (isExist) {
+        Calendar nowTime = Calendar.getInstance();
+        nowTime.add(Calendar.YEAR, Integer.MAX_VALUE);
+        request.setExpiration(nowTime.getTime());
+        return oss.generatePresignedUrl(request)
+            .toString();
+
+      }
+    } catch (Exception e) {
+      log.error("generate signed url from oss error, file: {}, detail: {}", fileName,
+          e.getMessage());
     }
     return null;
   }

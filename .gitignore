@@ -110,5 +110,5 @@ tinymall-admin/dist/
 #不上传配置文件
 **/application-*.properties
 # 屏蔽日志文件
-logs
+**/logs
 

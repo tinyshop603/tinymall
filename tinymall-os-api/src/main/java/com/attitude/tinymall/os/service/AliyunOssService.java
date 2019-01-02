@@ -32,4 +32,21 @@ public interface AliyunOssService {
    * @return 文件流
    */
   InputStream downloadFileByName(String fileName);
+
+  /**
+   * 获得等比缩放的图片
+   * @param fileName
+   * @param scale 1到100, 100为原图, 超过100显示原图, 50 为原图的一半
+   * @return
+   */
+  String getGeometricScalingFileUrl(String fileName, int scale);
+
+  /**
+   * 获取强制的宽和高的缩略图
+   * @param fileName
+   * @param with 固定宽度
+   * @param height 固定高度
+   * @return
+   */
+  String getForeSizeFileUrl(String fileName, int with, int height);
 }

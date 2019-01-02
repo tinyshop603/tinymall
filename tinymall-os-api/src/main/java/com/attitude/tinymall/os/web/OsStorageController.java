@@ -4,6 +4,7 @@ import com.attitude.tinymall.core.util.ResponseUtil;
 import com.attitude.tinymall.db.service.LitemallStorageService;
 import com.attitude.tinymall.core.util.CharUtil;
 import com.attitude.tinymall.db.domain.LitemallStorage;
+import com.attitude.tinymall.os.service.AliyunOssService;
 import com.attitude.tinymall.os.service.StorageService;
 import com.attitude.tinymall.os.config.ObjectStorageConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class OsStorageController {
     private StorageService storageService;
     @Autowired
     private LitemallStorageService tinymallStorageService;
+    @Autowired
+    private AliyunOssService aliyunOssService;
 
     @Autowired
     private ObjectStorageConfig osConfig;
@@ -65,6 +68,11 @@ public class OsStorageController {
         data.put("items", storageList);
 
         return ResponseUtil.ok(data);
+    }
+
+    @GetMapping("/aliyun/{name}")
+    public Object getAliyunImageUrlByName(@PathVariable String name){
+        return ResponseUtil.ok(aliyunOssService.getFileUrl(name));
     }
 
     @PostMapping("/create")

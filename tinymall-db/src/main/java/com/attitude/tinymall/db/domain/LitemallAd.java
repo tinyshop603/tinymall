@@ -1,5 +1,6 @@
 package com.attitude.tinymall.db.domain;
 
+import com.attitude.tinymall.core.annotion.AliyunImage;
 import java.time.LocalDateTime;
 
 public class LitemallAd  {
@@ -84,6 +85,7 @@ public class LitemallAd  {
      *
      * @mbg.generated
      */
+    @AliyunImage
     private String url;
 
     /**
