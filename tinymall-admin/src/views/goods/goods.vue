@@ -115,7 +115,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="dataForm" status-icon label-position="left" label-width="100px" style='width: 400px; margin-left:50px;'>
         <el-form-item label="商品编号" prop="goodsSn" >
-          <el-input v-model="dataForm.goodsSn" placeholder="0" value = "0" :disabled="true"></el-input>
+          <el-input v-model="dataForm.goodsSn" placeholder="商品的条形码编号" :disabled="true" ></el-input>
         </el-form-item>
         <el-form-item label="商品名称" prop="name">
           <el-input v-model="dataForm.name"></el-input>
@@ -188,7 +188,7 @@
           <el-input v-model="dataForm.brandId"></el-input>
         </el-form-item>
          <el-form-item label="商品图片" prop="primaryPicUrl">
-                  <el-input v-model="dataForm.primaryPicUrl"></el-input>
+                  <el-input :disabled="true" v-model="dataForm.primaryPicUrl"></el-input>
                   <el-upload
                   class="avatar-uploader"
                   action="#"
@@ -266,7 +266,9 @@ export default {
   directives:{ waves },
   data() {
     return {
-      imageUrl:'',
+      imageUrl:undefined,
+      fileImageName:undefined,
+      categoryMap:undefined,
       list:undefined,
       total:undefined,
       listLoading:true,
@@ -280,7 +282,7 @@ export default {
       },
       dataForm:{
         id:undefined,
-        goodsSn:undefined,
+        goodsSn:Date.now(),
         name:undefined,
         counterPrice:undefined,
         retailPrice:undefined,
@@ -333,10 +335,12 @@ export default {
     uploadUrl(item) {
       const formData = new FormData()
       formData.append('file', item.file)
+      formData.append('fileName', 'ce是名称')
       createStorage(formData).then(res => {
-        this.dataForm.primaryPicUrl = res.data.data.url
-        this.imageUrl = res.data.data.url
-      }).catch(() => {
+        this.imageUrl = URL.createObjectURL(item.file)
+        this.dataForm.primaryPicUrl = this.imageUrl
+        this.fileImageName = formData.get('fileName')
+      }).catch((e) => {
         this.$message.error('上传失败，请重新上传')
       })
     },
@@ -368,7 +372,7 @@ export default {
     resetForm() {
       this.dataForm = {
         id:undefined,
-        goodsSn:undefined,
+        goodsSn:Date.now(),
         name:undefined,
         counterPrice:undefined,
         retailPrice:undefined,
@@ -383,7 +387,9 @@ export default {
         gallery:undefined,
         categoryId:undefined,
         brandId:undefined,
-        categoryName:undefined
+        categoryName:undefined,
+        fileImageName:undefined,
+        imageUrl:undefined
       }
     },
     filterLevel(value, row) {
@@ -398,11 +404,13 @@ export default {
       })
     },
     createData() {
+      this.dataForm.primaryPicUrl = this.fileImageName
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           createGoods(this.dataForm).then(response => {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
+            this.dataForm.primaryPicUrl = this.imageUrl
             this.$notify({
               title:'成功',
               message:'创建成功',
@@ -422,6 +430,7 @@ export default {
       })
     },
     updateData() {
+      this.dataForm.primaryPicUrl = this.fileImageName
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           updateGoods(this.dataForm).then(() => {
@@ -433,6 +442,7 @@ export default {
               }
             }
             this.dialogFormVisible = false
+            this.dataForm.primaryPicUrl = this.imageUrl
             this.$notify({
               title:'成功',
               message:'更新成功',

@@ -30,8 +30,13 @@ export function listStorage(query) {
 }
 
 export function createStorage(data) {
+  let fileName = data.get('fileName')
+  if (!fileName) {
+    const file = data.get('file')
+    fileName = file.uid + '-' + file.name
+  }
   return service({
-    url:'/storage/create',
+    url:'/storage/aliyun/' + fileName,
     method:'post',
     data
   })

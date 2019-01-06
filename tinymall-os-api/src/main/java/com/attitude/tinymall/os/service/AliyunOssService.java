@@ -1,5 +1,6 @@
 package com.attitude.tinymall.os.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 /**
@@ -33,6 +34,8 @@ public interface AliyunOssService {
    */
   InputStream downloadFileByName(String fileName);
 
+  InputStream downloadGeometricScalingFileByName(String fileName,  int with, int height);
+
   /**
    * 获得等比缩放的图片
    * @param fileName
@@ -49,4 +52,6 @@ public interface AliyunOssService {
    * @return
    */
   String getForeSizeFileUrl(String fileName, int with, int height);
+
+  ByteArrayOutputStream getOutputByQueryString(String fileName,String queryString);
 }

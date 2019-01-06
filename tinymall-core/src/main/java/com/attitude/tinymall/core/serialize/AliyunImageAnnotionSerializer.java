@@ -36,38 +36,17 @@ public class AliyunImageAnnotionSerializer extends JsonSerializer<String> {
   @Value("${com.attitude.tinymall.os.inner.port}")
   String ossPort;
 
-
   @Override
   public void serialize(String s, JsonGenerator jsonGenerator,
       SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
-    if (StringUtils.isEmpty(s)) {
+    final String eleMeFlag = "elemecdn";
+    if (StringUtils.isEmpty(s) || s.contains(eleMeFlag)) {
       jsonGenerator.writeString(s);
       return;
     }
-    // 尝试获取阿里云的图片地址
-    try {
-      HttpClientResult httpClientResult = HttpClientUtil
-          .doGet("http://" + ossUrl + ":" + ossPort + "/os/storage/aliyun/" + s);
-      final int responseCodeOk = 200;
-      if (httpClientResult.getCode() == responseCodeOk && httpClientResult.getContent() != null) {
-        DataContent content = JSON.parseObject(httpClientResult.getContent(), DataContent.class);
-        if (content != null) {
-          jsonGenerator.writeString(content.data);
-          return;
-        }
-      }
-    } catch (Exception e) {
-      log.error(e.getMessage());
-    }
-    jsonGenerator.writeString(s);
-
-  }
-
-  @Data
-  static class DataContent {
-
-    String errno;
-    String data;
-    String errmsg;
+    // 尝试通过内网oss获取阿里云的图片地址
+    String defaultUrl = "http://" + ossUrl + ":" + ossPort + "/os/storage/aliyun/" + s;
+    String defaultQueryString = "?imageMogr2/thumbnail/300x300/format/webp/quality/85";
+    jsonGenerator.writeString(defaultUrl + defaultQueryString);
   }
 }

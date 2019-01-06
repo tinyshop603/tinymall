@@ -1,5 +1,6 @@
 package com.attitude.tinymall.os.web;
 
+import com.alibaba.druid.util.StringUtils;
 import com.attitude.tinymall.core.util.ResponseUtil;
 import com.attitude.tinymall.db.service.LitemallStorageService;
 import com.attitude.tinymall.core.util.CharUtil;
@@ -7,8 +8,17 @@ import com.attitude.tinymall.db.domain.LitemallStorage;
 import com.attitude.tinymall.os.service.AliyunOssService;
 import com.attitude.tinymall.os.service.StorageService;
 import com.attitude.tinymall.os.config.ObjectStorageConfig;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,140 +34,163 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/os/storage")
+@Slf4j
 public class OsStorageController {
 
-    @Autowired
-    private StorageService storageService;
-    @Autowired
-    private LitemallStorageService tinymallStorageService;
-    @Autowired
-    private AliyunOssService aliyunOssService;
+  @Autowired
+  private StorageService storageService;
+  @Autowired
+  private LitemallStorageService tinymallStorageService;
+  @Autowired
+  private AliyunOssService aliyunOssService;
 
-    @Autowired
-    private ObjectStorageConfig osConfig;
+  @Autowired
+  private ObjectStorageConfig osConfig;
 
-    private String generateUrl(String key){
-        return  osConfig.getAddress() + "/os/storage/fetch/" + key;
+  private String generateUrl(String key) {
+    return osConfig.getAddress() + "/os/storage/fetch/" + key;
+  }
+
+  private String generateKey(String originalFilename) {
+    int index = originalFilename.lastIndexOf('.');
+    String suffix = originalFilename.substring(index);
+
+    String key = null;
+    LitemallStorage storageInfo = null;
+
+    do {
+      key = CharUtil.getRandomString(20) + suffix;
+      storageInfo = tinymallStorageService.findByKey(key);
     }
+    while (storageInfo != null);
 
-    private String generateKey(String originalFilename){
-        int index = originalFilename.lastIndexOf('.');
-        String suffix = originalFilename.substring(index);
+    return key;
+  }
 
-        String key = null;
-        LitemallStorage storageInfo = null;
+  @GetMapping("/list")
+  public Object list(String key, String name,
+      @RequestParam(value = "page", defaultValue = "1") Integer page,
+      @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+      String sort, String order) {
+    List<LitemallStorage> storageList = tinymallStorageService
+        .querySelective(key, name, page, limit, sort, order);
+    int total = tinymallStorageService.countSelective(key, name, page, limit, sort, order);
+    Map<String, Object> data = new HashMap<>();
+    data.put("total", total);
+    data.put("items", storageList);
 
-        do{
-            key = CharUtil.getRandomString(20) + suffix;
-            storageInfo = tinymallStorageService.findByKey(key);
-        }
-        while(storageInfo != null);
+    return ResponseUtil.ok(data);
+  }
 
-        return key;
+  @GetMapping("/aliyun/{name}")
+  public Object getAliyunImageUrlByName(@PathVariable String name, HttpServletRequest request){
+    ByteArrayOutputStream outputStream = aliyunOssService.getOutputByQueryString(name, request.getQueryString());
+    if (outputStream == null) {
+      return ResponseUtil.fail404();
+    } else {
+      return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(outputStream.toByteArray());
     }
+  }
 
-    @GetMapping("/list")
-    public Object list(String key, String name,
-                       @RequestParam(value = "page", defaultValue = "1") Integer page,
-                       @RequestParam(value = "limit", defaultValue = "10") Integer limit,
-                       String sort, String order){
-        List<LitemallStorage> storageList = tinymallStorageService.querySelective(key, name, page, limit, sort, order);
-        int total = tinymallStorageService.countSelective(key, name, page, limit, sort, order);
-        Map<String, Object> data = new HashMap<>();
-        data.put("total", total);
-        data.put("items", storageList);
+  @GetMapping("/aliyun/{imageName}/url")
+  public Object getAliYunImageStream(@PathVariable String imageName) {
+    return ResponseUtil.ok(aliyunOssService.getFileUrl(imageName));
+  }
 
-        return ResponseUtil.ok(data);
+  @PostMapping("/aliyun/{name}")
+  public Object saveAliyunImage(MultipartFile file, @PathVariable String name) {
+    try {
+      aliyunOssService.uploadFile(name, file.getInputStream());
+    } catch (IOException e) {
+      log.error("cannot join this image to the aliyun oss, detail: " + e.getMessage());
+      return ResponseUtil.fail();
     }
+    return ResponseUtil.ok();
+  }
 
-    @GetMapping("/aliyun/{name}")
-    public Object getAliyunImageUrlByName(@PathVariable String name){
-        return ResponseUtil.ok(aliyunOssService.getFileUrl(name));
+  @PostMapping("/create")
+  public Object create(@RequestParam("file") MultipartFile file) {
+    String originalFilename = file.getOriginalFilename();
+    InputStream inputStream = null;
+    try {
+      inputStream = file.getInputStream();
+    } catch (IOException e) {
+      e.printStackTrace();
+      return ResponseUtil.badArgumentValue();
     }
+    String key = generateKey(originalFilename);
+    storageService.store(inputStream, key);
 
-    @PostMapping("/create")
-    public Object create(@RequestParam("file") MultipartFile file) {
-        String originalFilename = file.getOriginalFilename();
-        InputStream inputStream = null;
-        try {
-            inputStream = file.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseUtil.badArgumentValue();
-        }
-        String key = generateKey(originalFilename);
-        storageService.store(inputStream, key);
+    String url = generateUrl(key);
+    LitemallStorage storageInfo = new LitemallStorage();
+    storageInfo.setName(originalFilename);
+    storageInfo.setSize((int) file.getSize());
+    storageInfo.setType(file.getContentType());
+    storageInfo.setAddTime(LocalDateTime.now());
+    storageInfo.setModified(LocalDateTime.now());
+    storageInfo.setKey(key);
+    storageInfo.setUrl(url);
+    tinymallStorageService.add(storageInfo);
+    return ResponseUtil.ok(storageInfo);
+  }
 
-        String url = generateUrl(key);
-        LitemallStorage storageInfo = new LitemallStorage();
-        storageInfo.setName(originalFilename);
-        storageInfo.setSize((int)file.getSize());
-        storageInfo.setType(file.getContentType());
-        storageInfo.setAddTime(LocalDateTime.now());
-        storageInfo.setModified(LocalDateTime.now());
-        storageInfo.setKey(key);
-        storageInfo.setUrl(url);
-        tinymallStorageService.add(storageInfo);
-        return ResponseUtil.ok(storageInfo);
+  @PostMapping("/read")
+  public Object read(Integer id) {
+    if (id == null) {
+      return ResponseUtil.badArgument();
     }
-
-    @PostMapping("/read")
-    public Object read(Integer id) {
-        if(id == null){
-            return ResponseUtil.badArgument();
-        }
-        LitemallStorage storageInfo = tinymallStorageService.findById(id);
-        if(storageInfo == null){
-            return ResponseUtil.badArgumentValue();
-        }
-        return ResponseUtil.ok(storageInfo);
+    LitemallStorage storageInfo = tinymallStorageService.findById(id);
+    if (storageInfo == null) {
+      return ResponseUtil.badArgumentValue();
     }
+    return ResponseUtil.ok(storageInfo);
+  }
 
-    @PostMapping("/update")
-    public Object update(@RequestBody LitemallStorage tinymallStorage) {
+  @PostMapping("/update")
+  public Object update(@RequestBody LitemallStorage tinymallStorage) {
 
-        tinymallStorageService.update(tinymallStorage);
-        return ResponseUtil.ok(tinymallStorage);
+    tinymallStorageService.update(tinymallStorage);
+    return ResponseUtil.ok(tinymallStorage);
+  }
+
+  @PostMapping("/delete")
+  public Object delete(@RequestBody LitemallStorage tinymallStorage) {
+    tinymallStorageService.deleteByKey(tinymallStorage.getKey());
+    storageService.delete(tinymallStorage.getKey());
+    return ResponseUtil.ok();
+  }
+
+  @GetMapping("/fetch/{key:.+}")
+  public ResponseEntity<Resource> fetch(@PathVariable String key) {
+    LitemallStorage tinymallStorage = tinymallStorageService.findByKey(key);
+    if (key == null) {
+      ResponseEntity.notFound();
     }
+    String type = tinymallStorage.getType();
+    MediaType mediaType = MediaType.parseMediaType(type);
 
-    @PostMapping("/delete")
-    public Object delete(@RequestBody LitemallStorage tinymallStorage) {
-        tinymallStorageService.deleteByKey(tinymallStorage.getKey());
-        storageService.delete(tinymallStorage.getKey());
-        return ResponseUtil.ok();
+    Resource file = storageService.loadAsResource(key);
+    if (file == null) {
+      ResponseEntity.notFound();
     }
+    return ResponseEntity.ok().contentType(mediaType).body(file);
+  }
 
-    @GetMapping("/fetch/{key:.+}")
-    public ResponseEntity<Resource> fetch(@PathVariable String key) {
-        LitemallStorage tinymallStorage = tinymallStorageService.findByKey(key);
-        if(key == null){
-            ResponseEntity.notFound();
-        }
-        String type = tinymallStorage.getType();
-        MediaType mediaType = MediaType.parseMediaType(type);
-
-        Resource file = storageService.loadAsResource(key);
-        if(file == null) {
-            ResponseEntity.notFound();
-        }
-        return ResponseEntity.ok().contentType(mediaType).body(file);
+  @GetMapping("/download/{key:.+}")
+  public ResponseEntity<Resource> download(@PathVariable String key) {
+    LitemallStorage tinymallStorage = tinymallStorageService.findByKey(key);
+    if (key == null) {
+      ResponseEntity.notFound();
     }
+    String type = tinymallStorage.getType();
+    MediaType mediaType = MediaType.parseMediaType(type);
 
-    @GetMapping("/download/{key:.+}")
-    public ResponseEntity<Resource> download(@PathVariable String key) {
-        LitemallStorage tinymallStorage = tinymallStorageService.findByKey(key);
-        if(key == null){
-            ResponseEntity.notFound();
-        }
-        String type = tinymallStorage.getType();
-        MediaType mediaType = MediaType.parseMediaType(type);
-
-        Resource file = storageService.loadAsResource(key);
-        if(file == null) {
-            ResponseEntity.notFound();
-        }
-        return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    Resource file = storageService.loadAsResource(key);
+    if (file == null) {
+      ResponseEntity.notFound();
     }
+    return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+  }
 
 }

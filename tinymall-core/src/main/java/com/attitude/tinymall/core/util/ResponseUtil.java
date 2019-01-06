@@ -61,6 +61,10 @@ public class ResponseUtil {
         return fail(403, "参数值不对");
     }
 
+    public static Object fail404() {
+        return fail(404, "找不到对应资源");
+    }
+
     public static Object badArgumentValue(){
         return fail403();
     }

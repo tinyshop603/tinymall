@@ -45,7 +45,13 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
-
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ERROR"/>
+            <appender-ref ref="ROLLING_FILE"/>
+        </root>
+    </springProfile>
     <springProfile name="dep">
         <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
