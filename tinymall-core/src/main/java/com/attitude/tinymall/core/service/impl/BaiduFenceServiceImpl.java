@@ -131,6 +131,41 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
   }
 
   @Override
+  public boolean updateCreateCircleFence(int fenceId, String shopAddress, int deliveryRadius) {
+    GeoCodingAddress codingAddress = this.geocoding(shopAddress);
+    if (codingAddress != null && codingAddress.getLocation() != null) {
+      return this.updateCreateCircleFence(fenceId, codingAddress.getLocation(), deliveryRadius);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean updateCreateCircleFence(int fenceId, Location location, int deliveryRadius) {
+    final int maxRadius = 5000;
+    if (deliveryRadius > maxRadius) {
+      return false;
+    }
+    Map<String, String> params = new HashMap<>(8);
+    params.put("ak", baiduAk);
+    params.put("service_id", eagleEyeServiceId.toString());
+    params.put("fence_id", String.valueOf(fenceId));
+    params.put("longitude", String.valueOf(location.getLng()));
+    params.put("latitude", String.valueOf(location.getLat()));
+    params.put("radius", String.valueOf(deliveryRadius));
+    params.put("coord_type", mapCoordtype);
+    try {
+      HttpClientResult httpClientResult = HttpClientUtil
+          .doPost("http://yingyan.baidu.com/api/v3/fence/updatecirclefence ", params);
+      Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
+      return result.get("status").equals(0);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error(e.getMessage());
+    }
+    return false;
+  }
+
+  @Override
   public boolean addMonitorPersonToFence(String personUniqueName, int fenceId) {
     Map<String, String> params = new HashMap<>(4);
     params.put("ak", baiduAk);

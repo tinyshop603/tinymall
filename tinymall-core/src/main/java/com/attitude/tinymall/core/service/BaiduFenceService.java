@@ -40,6 +40,16 @@ public interface BaiduFenceService {
    */
   ShopFenceResult createCircleFence(String shopId, Location location, int deliveryRadius);
 
+  boolean updateCreateCircleFence(int fenceId, String shopAddress, int deliveryRadius);
+
+  /**
+   * 更新圆形的地理围栏
+   * @param location
+   * @param deliveryRadius 配送半径 单位：米，取值范围(0,5000]
+   * @return
+   */
+  boolean updateCreateCircleFence(int fenceId, Location location, int deliveryRadius);
+
   boolean addMonitorPersonToFence(String personUniqueName, int fenceId);
 
   boolean isValidLocationWithinFence(String personUniqueName, Location location, int fenceId) throws Exception;

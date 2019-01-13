@@ -1,10 +1,13 @@
 package com.attitude.tinymall.db.service;
 
+import com.attitude.tinymall.core.domain.baidu.fence.ShopFenceResult;
+import com.attitude.tinymall.core.service.BaiduFenceService;
 import com.attitude.tinymall.db.domain.LitemallAdminExample;
 import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.dao.LitemallAdminMapper;
 import com.attitude.tinymall.db.domain.LitemallAdmin;
 import com.attitude.tinymall.db.domain.LitemallAdmin.Column;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -16,8 +19,11 @@ import java.util.List;
 @Transactional
 public class LitemallAdminService {
 
-  @Resource
+  @Autowired
   private LitemallAdminMapper adminMapper;
+
+  @Autowired
+  private BaiduFenceService baiduFenceService;
 
   public LitemallAdmin findAdmin(String username) {
     LitemallAdminExample example = new LitemallAdminExample();
@@ -67,6 +73,10 @@ public class LitemallAdminService {
   }
 
   public void updateById(LitemallAdmin admin) {
+    if (!StringUtils.isEmpty(admin.getShopAddress()) && admin.getShopFenceId() != null) {
+      baiduFenceService
+          .updateCreateCircleFence(admin.getShopFenceId(), admin.getShopAddress(), 3000);
+    }
     adminMapper.updateByPrimaryKeySelective(admin);
   }
 
@@ -75,6 +85,13 @@ public class LitemallAdminService {
   }
 
   public void add(LitemallAdmin admin) {
+    if (!StringUtils.isEmpty(admin.getShopAddress())) {
+      ShopFenceResult circleFence = baiduFenceService
+          .createCircleFence(admin.getOwnerId(), admin.getShopAddress(), 3000);
+      if (circleFence != null && circleFence.getFenceId() > 0) {
+        admin.setShopFenceId(circleFence.getFenceId());
+      }
+    }
     adminMapper.insertSelective(admin);
   }
 

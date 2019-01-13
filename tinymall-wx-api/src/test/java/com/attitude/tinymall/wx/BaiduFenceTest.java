@@ -54,7 +54,7 @@ public class BaiduFenceTest {
   }
 
   @Test
-  public void testQueryStatusByLocation() {
+  public void testQueryStatusByLocation() throws Exception {
     assert !baiduFenceService.isValidLocationWithinFence(
         "qwas",
         new Location(116.3084202915042, 50.05703033345938), 5);
