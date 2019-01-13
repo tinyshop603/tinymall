@@ -50,8 +50,10 @@ public interface BaiduFenceService {
    */
   boolean updateCreateCircleFence(int fenceId, Location location, int deliveryRadius);
 
-  boolean addMonitorPersonToFence(String personUniqueName, int fenceId);
+  boolean addMonitorPersonToFence(String userId, int fenceId);
 
-  boolean isValidLocationWithinFence(String personUniqueName, Location location, int fenceId) throws Exception;
+  boolean isValidLocationWithinFence(String userId, String address , int fenceId) throws Exception;
+
+  boolean isValidLocationWithinFence(String userId, Location location, int fenceId) throws Exception;
 
 }

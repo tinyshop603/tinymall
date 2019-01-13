@@ -1,6 +1,8 @@
 package com.attitude.tinymall.wx.web;
 
+import com.attitude.tinymall.core.service.BaiduFenceService;
 import com.attitude.tinymall.core.util.ResponseUtil;
+import com.attitude.tinymall.db.service.LitemallAdminService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.core.util.RegexUtil;
@@ -25,6 +27,10 @@ public class WxAddressController {
     private LitemallAddressService addressService;
     @Autowired
     private LitemallRegionService regionService;
+    @Autowired
+    private BaiduFenceService baiduFenceService;
+    @Autowired
+    private LitemallAdminService adminService;
 
     /**
      * 用户收货地址列表
@@ -147,7 +153,20 @@ public class WxAddressController {
             return ResponseUtil.badArgument();
         }
 
-        if(address.getIsDefault()){
+        // 验证地址是否在合法的范围内
+      try {
+        boolean isValidAddress = baiduFenceService
+            .isValidLocationWithinFence(userId.toString(), address.getAddress(),
+                adminService.findAdminByOwnerId(appId).getShopFenceId());
+        if (!isValidAddress) {
+          return ResponseUtil.unReachAddress();
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseUtil.badArgument();
+      }
+
+      if(address.getIsDefault()){
             // 重置其他收获地址的默认选项
             addressService.resetDefault(userId);
         }

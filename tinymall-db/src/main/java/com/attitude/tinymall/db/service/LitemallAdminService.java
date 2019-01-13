@@ -3,10 +3,13 @@ package com.attitude.tinymall.db.service;
 import com.attitude.tinymall.core.domain.baidu.fence.ShopFenceResult;
 import com.attitude.tinymall.core.service.BaiduFenceService;
 import com.attitude.tinymall.db.domain.LitemallAdminExample;
+import com.attitude.tinymall.db.domain.LitemallCategory;
 import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.dao.LitemallAdminMapper;
 import com.attitude.tinymall.db.domain.LitemallAdmin;
 import com.attitude.tinymall.db.domain.LitemallAdmin.Column;
+import io.swagger.models.auth.In;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class LitemallAdminService {
 
   @Autowired
@@ -24,6 +28,9 @@ public class LitemallAdminService {
 
   @Autowired
   private BaiduFenceService baiduFenceService;
+
+  @Autowired
+  private LitemallCategoryService categoryService;
 
   public LitemallAdmin findAdmin(String username) {
     LitemallAdminExample example = new LitemallAdminExample();
@@ -74,8 +81,12 @@ public class LitemallAdminService {
 
   public void updateById(LitemallAdmin admin) {
     if (!StringUtils.isEmpty(admin.getShopAddress()) && admin.getShopFenceId() != null) {
-      baiduFenceService
+      boolean isSuccess = baiduFenceService
           .updateCreateCircleFence(admin.getShopFenceId(), admin.getShopAddress(), 3000);
+      if (isSuccess) {
+        log.info("根据位置信息更新地理围栏成功: fenceId: {}, address: {} ", admin.getShopFenceId(),
+            admin.getShopAddress());
+      }
     }
     adminMapper.updateByPrimaryKeySelective(admin);
   }
@@ -101,4 +112,10 @@ public class LitemallAdminService {
   public LitemallAdmin findAllById(Integer id) {
     return adminMapper.selectByPrimaryKey(id);
   }
+
+  public LitemallAdmin findByShopId(Integer shopId){
+    LitemallCategory category = categoryService.findById(shopId);
+    return findById(category.getParentId());
+  }
+
 }

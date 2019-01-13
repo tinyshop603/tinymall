@@ -5,7 +5,10 @@ import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.attitude.tinymall.core.util.JacksonUtil;
 import com.attitude.tinymall.core.util.ResponseUtil;
 import com.attitude.tinymall.core.util.bcrypt.BCryptPasswordEncoder;
+import com.attitude.tinymall.db.domain.LitemallCategory;
 import com.attitude.tinymall.db.domain.LitemallUser;
+import com.attitude.tinymall.db.service.LitemallAdminService;
+import com.attitude.tinymall.db.service.LitemallCategoryService;
 import com.attitude.tinymall.db.service.LitemallUserService;
 import com.attitude.tinymall.wx.dao.UserInfo;
 import com.attitude.tinymall.wx.dao.UserToken;
@@ -17,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.core.util.RegexUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +42,9 @@ public class WxAuthController {
 
     @Autowired
     private WxMaService wxService;
+
+    @Autowired
+    private LitemallAdminService adminService;
 
     /**
      * 账号登录
@@ -118,7 +125,7 @@ public class WxAuthController {
      *   失败则 { errno: XXX, errmsg: XXX }
      */
     @RequestMapping("login_by_weixin")
-    public Object loginByWeixin(@RequestBody WxLoginInfo wxLoginInfo, HttpServletRequest request) {
+    public Object loginByWeixin(@RequestBody WxLoginInfo wxLoginInfo,@PathVariable String appId,HttpServletRequest request) {
         String code = wxLoginInfo.getCode();
         UserInfo userInfo = wxLoginInfo.getUserInfo();
         if(code == null || userInfo == null){
@@ -152,6 +159,7 @@ public class WxAuthController {
             user.setStatus("可用");
             user.setLastLoginTime(LocalDateTime.now());
             user.setLastLoginIp(IpUtil.client(request));
+            user.setAdminId(adminService.findAdminByOwnerId(appId).getId());
             userService.add(user);
         }
         else{

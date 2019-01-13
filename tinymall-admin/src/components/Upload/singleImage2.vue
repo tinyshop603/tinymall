@@ -20,22 +20,22 @@
 import { getToken } from '@/api/qiniu'
 
 export default {
-  name: 'singleImageUpload2',
-  props: {
-    value: String
+  name:'singleImageUpload2',
+  props:{
+    value:String
   },
-  computed: {
+  computed:{
     imageUrl() {
       return this.value
     }
   },
   data() {
     return {
-      tempUrl: '',
-      dataObj: { token: '', key: '' }
+      tempUrl:'',
+      dataObj:{ token:'', key:'' }
     }
   },
-  methods: {
+  methods:{
     rmImage() {
       this.emitInput('')
     },

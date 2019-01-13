@@ -259,6 +259,7 @@ import { createStorage } from '@/api/storage'
 import waves from '@/directive/waves' // 水波纹指令
 import BackToTop from '@/components/BackToTop'
 import Editor from '@tinymce/tinymce-vue'
+import store from '@/store'
 
 export default {
   name:'Goods',
@@ -334,10 +335,10 @@ export default {
   methods:{
     uploadUrl(item) {
       const formData = new FormData()
-      // 根据规则编写文件名称的规则: 店铺id+商品名称+图片格式的后缀
-      // this.dataForm.name.repalceAll
-      // TODO: 编写文件名的规则
-      const fileName = ''
+      // 根据规则编写文件名称的规则: 店铺id+商品名称(hash唯一)+图片格式的后缀
+      const fileName = store.state.user.shopId + '-' +
+        this.dataForm.name.split('').reduce(function(a, b) { a = ((a << 5) - a) + b.charCodeAt(0);return a & a }, 0) +
+        '.' + item.file.type.split('/')[1]
       formData.append('file', item.file)
       formData.append('fileName', fileName)
       createStorage(formData).then(res => {

@@ -10,29 +10,29 @@
 
 <script>
 export default {
-  name: 'Sticky',
-  props: {
-    stickyTop: {
-      type: Number,
-      default: 0
+  name:'Sticky',
+  props:{
+    stickyTop:{
+      type:Number,
+      default:0
     },
-    zIndex: {
-      type: Number,
-      default: 1
+    zIndex:{
+      type:Number,
+      default:1
     },
-    className: {
-      type: String
+    className:{
+      type:String
     }
   },
   data() {
     return {
-      active: false,
-      position: '',
-      currentTop: '',
-      width: undefined,
-      height: undefined,
-      child: null,
-      stickyHeight: 0
+      active:false,
+      position:'',
+      currentTop:'',
+      width:undefined,
+      height:undefined,
+      child:null,
+      stickyHeight:0
     }
   },
   mounted() {
@@ -45,7 +45,7 @@ export default {
   destroyed() {
     window.removeEventListener('scroll', this.handleScroll)
   },
-  methods: {
+  methods:{
     sticky() {
       if (this.active) {
         return

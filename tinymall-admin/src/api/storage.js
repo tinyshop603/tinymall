@@ -34,8 +34,6 @@ export function createStorage(data) {
   const file = data.get('file')
   if (!fileName) {
     fileName = file.uid + '-' + file.name
-  } else {
-    fileName = file.uid + '-' + fileName
   }
   return service({
     url:'/storage/aliyun/' + fileName,

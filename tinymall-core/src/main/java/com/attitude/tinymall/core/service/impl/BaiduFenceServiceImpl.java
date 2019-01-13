@@ -166,12 +166,12 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
   }
 
   @Override
-  public boolean addMonitorPersonToFence(String personUniqueName, int fenceId) {
+  public boolean addMonitorPersonToFence(String userId, int fenceId) {
     Map<String, String> params = new HashMap<>(4);
     params.put("ak", baiduAk);
     params.put("service_id", eagleEyeServiceId.toString());
     params.put("fence_id", String.valueOf(fenceId));
-    params.put("monitored_person", personUniqueName);
+    params.put("monitored_person", userId);
     try {
       HttpClientResult httpClientResult = HttpClientUtil
           .doPost("http://yingyan.baidu.com/api/v3/fence/addmonitoredperson", params);
@@ -185,13 +185,20 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
   }
 
   @Override
-  public boolean isValidLocationWithinFence(String personUniqueName, Location location,
-      int fenceId) throws Exception{
+  public boolean isValidLocationWithinFence(String userId, String address, int fenceId)
+      throws Exception {
+    GeoCodingAddress geocoding = this.geocoding(address);
+    return this.isValidLocationWithinFence(userId, geocoding.getLocation(), fenceId);
+  }
+
+  @Override
+  public boolean isValidLocationWithinFence(String userId, Location location,
+      int fenceId) throws Exception {
     Map<String, String> params = new HashMap<>(8);
     params.put("ak", baiduAk);
     params.put("service_id", eagleEyeServiceId.toString());
     params.put("fence_ids", String.valueOf(fenceId));
-    params.put("monitored_person", personUniqueName);
+    params.put("monitored_person", userId);
     params.put("longitude", String.valueOf(location.getLng()));
     params.put("latitude", String.valueOf(location.getLat()));
     params.put("coord_type", mapCoordtype);

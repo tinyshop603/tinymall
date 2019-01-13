@@ -1,19 +1,28 @@
 package com.attitude.tinymall.db.service;
 
+import com.attitude.tinymall.core.service.BaiduFenceService;
 import com.attitude.tinymall.db.dao.LitemallUserMapper;
+import com.attitude.tinymall.db.domain.LitemallAdmin;
 import com.attitude.tinymall.db.domain.LitemallUser;
 import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.domain.LitemallUserExample;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
 @Service
+@Slf4j
 public class LitemallUserService {
 
-  @Resource
+  @Autowired
   private LitemallUserMapper userMapper;
+  @Autowired
+  private BaiduFenceService baiduFenceService;
+  @Autowired
+  private LitemallAdminService adminService;
 
   public LitemallUser findById(Integer userId) {
     return userMapper.selectByPrimaryKey(userId);
@@ -26,6 +35,18 @@ public class LitemallUserService {
   }
 
   public void add(LitemallUser user) {
+    if (user.getAdminId() != null) {
+      // 挂接, 并监控
+      boolean isHunged = baiduFenceService.hangUpPerson(user.getId().toString());
+      if (isHunged) {
+        LitemallAdmin litemallAdmin = adminService.findById(user.getAdminId());
+        // 由于商店地址是必填项, 则此时的fence的Id肯定是已经创建好了的
+        boolean isSuccessMotioned = baiduFenceService
+            .addMonitorPersonToFence(user.getId().toString(), litemallAdmin.getShopFenceId());
+        log.info("user: {} has been add to the fence: {}, {}?", user.getId(),
+            litemallAdmin.getShopFenceId(), isSuccessMotioned);
+      }
+    }
     userMapper.insertSelective(user);
   }
 
