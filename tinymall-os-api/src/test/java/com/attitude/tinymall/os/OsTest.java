@@ -39,7 +39,7 @@ public class OsTest {
 
   @Test
   public void testAliyunDownload() {
-    String url = aliyunOssService.getFileUrl("test-my-advtor");
+    String url = aliyunOssService.getFileUrl("post3.png");
     System.out.println(url);
     assert url.length() > 1;
   }

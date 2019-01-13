@@ -31,9 +31,11 @@ export function listStorage(query) {
 
 export function createStorage(data) {
   let fileName = data.get('fileName')
+  const file = data.get('file')
   if (!fileName) {
-    const file = data.get('file')
     fileName = file.uid + '-' + file.name
+  } else {
+    fileName = file.uid + '-' + fileName
   }
   return service({
     url:'/storage/aliyun/' + fileName,

@@ -334,8 +334,12 @@ export default {
   methods:{
     uploadUrl(item) {
       const formData = new FormData()
+      // 根据规则编写文件名称的规则: 店铺id+商品名称+图片格式的后缀
+      // this.dataForm.name.repalceAll
+      // TODO: 编写文件名的规则
+      const fileName = ''
       formData.append('file', item.file)
-      formData.append('fileName', 'ce是名称')
+      formData.append('fileName', fileName)
       createStorage(formData).then(res => {
         this.imageUrl = URL.createObjectURL(item.file)
         this.dataForm.primaryPicUrl = this.imageUrl
