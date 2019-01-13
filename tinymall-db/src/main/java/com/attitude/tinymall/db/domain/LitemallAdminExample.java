@@ -1145,6 +1145,206 @@ public class LitemallAdminExample {
             addCriterion("notify_url not between", value1, value2, "notifyUrl");
             return (Criteria) this;
         }
+
+        public Criteria andShopNameIsNull() {
+            addCriterion("shop_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameIsNotNull() {
+            addCriterion("shop_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameEqualTo(String value) {
+            addCriterion("shop_name =", value, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameNotEqualTo(String value) {
+            addCriterion("shop_name <>", value, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameGreaterThan(String value) {
+            addCriterion("shop_name >", value, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameGreaterThanOrEqualTo(String value) {
+            addCriterion("shop_name >=", value, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameLessThan(String value) {
+            addCriterion("shop_name <", value, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameLessThanOrEqualTo(String value) {
+            addCriterion("shop_name <=", value, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameLike(String value) {
+            addCriterion("shop_name like", value, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameNotLike(String value) {
+            addCriterion("shop_name not like", value, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameIn(List<String> values) {
+            addCriterion("shop_name in", values, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameNotIn(List<String> values) {
+            addCriterion("shop_name not in", values, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameBetween(String value1, String value2) {
+            addCriterion("shop_name between", value1, value2, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNameNotBetween(String value1, String value2) {
+            addCriterion("shop_name not between", value1, value2, "shopName");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressIsNull() {
+            addCriterion("shop_address is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressIsNotNull() {
+            addCriterion("shop_address is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressEqualTo(String value) {
+            addCriterion("shop_address =", value, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressNotEqualTo(String value) {
+            addCriterion("shop_address <>", value, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressGreaterThan(String value) {
+            addCriterion("shop_address >", value, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressGreaterThanOrEqualTo(String value) {
+            addCriterion("shop_address >=", value, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressLessThan(String value) {
+            addCriterion("shop_address <", value, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressLessThanOrEqualTo(String value) {
+            addCriterion("shop_address <=", value, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressLike(String value) {
+            addCriterion("shop_address like", value, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressNotLike(String value) {
+            addCriterion("shop_address not like", value, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressIn(List<String> values) {
+            addCriterion("shop_address in", values, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressNotIn(List<String> values) {
+            addCriterion("shop_address not in", values, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressBetween(String value1, String value2) {
+            addCriterion("shop_address between", value1, value2, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopAddressNotBetween(String value1, String value2) {
+            addCriterion("shop_address not between", value1, value2, "shopAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdIsNull() {
+            addCriterion("shop_fence_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdIsNotNull() {
+            addCriterion("shop_fence_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdEqualTo(Integer value) {
+            addCriterion("shop_fence_id =", value, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdNotEqualTo(Integer value) {
+            addCriterion("shop_fence_id <>", value, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdGreaterThan(Integer value) {
+            addCriterion("shop_fence_id >", value, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("shop_fence_id >=", value, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdLessThan(Integer value) {
+            addCriterion("shop_fence_id <", value, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdLessThanOrEqualTo(Integer value) {
+            addCriterion("shop_fence_id <=", value, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdIn(List<Integer> values) {
+            addCriterion("shop_fence_id in", values, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdNotIn(List<Integer> values) {
+            addCriterion("shop_fence_id not in", values, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdBetween(Integer value1, Integer value2) {
+            addCriterion("shop_fence_id between", value1, value2, "shopFenceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopFenceIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("shop_fence_id not between", value1, value2, "shopFenceId");
+            return (Criteria) this;
+        }
     }
 
     /**

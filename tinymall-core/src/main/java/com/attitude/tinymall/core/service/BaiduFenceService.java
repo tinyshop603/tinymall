@@ -4,6 +4,7 @@ import com.attitude.tinymall.core.domain.baidu.address.Location;
 import com.attitude.tinymall.core.domain.baidu.fence.ShopFenceResult;
 import com.attitude.tinymall.core.domain.baidu.geocode.GeoCodingAddress;
 import com.attitude.tinymall.core.domain.baidu.geocode.GeoDecodingAddress;
+import java.util.List;
 
 /**
  * @author zhaoguiyang on 2018/12/27.
@@ -40,5 +41,7 @@ public interface BaiduFenceService {
   ShopFenceResult createCircleFence(String shopId, Location location, int deliveryRadius);
 
   boolean addMonitorPersonToFence(String personUniqueName, int fenceId);
+
+  boolean isValidLocationWithinFence(String personUniqueName, Location location, int fenceId) throws Exception;
 
 }

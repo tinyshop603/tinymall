@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.attitude.tinymall.core.domain.baidu.BaiduResponse;
 import com.attitude.tinymall.core.domain.baidu.address.Location;
+import com.attitude.tinymall.core.domain.baidu.fence.QueryFenceLocationResult;
 import com.attitude.tinymall.core.domain.baidu.fence.ShopFenceResult;
 import com.attitude.tinymall.core.domain.baidu.geocode.GeoCodingAddress;
 import com.attitude.tinymall.core.domain.baidu.geocode.GeoDecodingAddress;
 import com.attitude.tinymall.core.service.BaiduFenceService;
 import com.attitude.tinymall.core.util.HttpClientUtil;
 import com.attitude.tinymall.core.util.HttpClientUtil.HttpClientResult;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +46,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
       HttpClientResult httpClientResult = HttpClientUtil
           .doGet("http://api.map.baidu.com/geocoder/v2/", params);
       BaiduResponse<GeoCodingAddress> result = JSON.parseObject(httpClientResult.getContent(),
-          new TypeReference<BaiduResponse<GeoCodingAddress>>() {});
+          new TypeReference<BaiduResponse<GeoCodingAddress>>() {
+          });
       return result.getResult();
     } catch (Exception e) {
       e.printStackTrace();
@@ -64,7 +67,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
       HttpClientResult httpClientResult = HttpClientUtil
           .doGet("http://api.map.baidu.com/geocoder/v2/", params);
       BaiduResponse<GeoDecodingAddress> result = JSON.parseObject(httpClientResult.getContent(),
-          new TypeReference<BaiduResponse<GeoDecodingAddress>>() {});
+          new TypeReference<BaiduResponse<GeoDecodingAddress>>() {
+          });
       return result.getResult();
     } catch (Exception e) {
       e.printStackTrace();
@@ -133,6 +137,35 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     params.put("service_id", eagleEyeServiceId.toString());
     params.put("fence_id", String.valueOf(fenceId));
     params.put("monitored_person", personUniqueName);
+    try {
+      HttpClientResult httpClientResult = HttpClientUtil
+          .doPost("http://yingyan.baidu.com/api/v3/fence/addmonitoredperson", params);
+      Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
+      return result.get("status").equals(0);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error(e.getMessage());
+    }
     return false;
+  }
+
+  @Override
+  public boolean isValidLocationWithinFence(String personUniqueName, Location location,
+      int fenceId) throws Exception{
+    Map<String, String> params = new HashMap<>(8);
+    params.put("ak", baiduAk);
+    params.put("service_id", eagleEyeServiceId.toString());
+    params.put("fence_ids", String.valueOf(fenceId));
+    params.put("monitored_person", personUniqueName);
+    params.put("longitude", String.valueOf(location.getLng()));
+    params.put("latitude", String.valueOf(location.getLat()));
+    params.put("coord_type", mapCoordtype);
+    HttpClientResult httpClientResult = HttpClientUtil
+        .doGet("http://yingyan.baidu.com/api/v3/fence/querystatusbylocation", params);
+    QueryFenceLocationResult result = JSON
+        .parseObject(httpClientResult.getContent(), QueryFenceLocationResult.class);
+    return result.getMonitoredStatuses().get(0).getMonitoredStatus()
+        .equals(QueryFenceLocationResult.LOCATION_IN);
+
   }
 }

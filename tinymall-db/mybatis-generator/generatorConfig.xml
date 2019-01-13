@@ -45,7 +45,7 @@
 
         <!--数据库连接信息-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://127.0.0.1:3306/tinymall?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;verifyServerCertificate=false&amp;useSSL=false"
+                        connectionURL="jdbc:mysql://39.106.9.50:3306/tinymal-bak?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;verifyServerCertificate=false&amp;useSSL=false"
                         userId="root"
                         password="root" />
 
@@ -54,123 +54,13 @@
         <sqlMapGenerator targetPackage="com.attitude.tinymall.db.dao" targetProject="src/main/resources" />
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.attitude.tinymall.db.dao" targetProject="src/main/java" />
         <!--表名-->
-        <table tableName="tinymall_ad">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="start_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="end_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_address">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_admin">
+        <table tableName="tinymall_admin" domainObjectName="LitemallAdmin">
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride javaType="java.time.LocalDateTime" column="last_login_time"/>
             <columnOverride javaType="java.time.LocalDateTime" column="update_time"/>
             <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
         </table>
-        <table tableName="tinymall_brand">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_cart">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride column="goods_specification_ids" javaType="java.lang.Integer[]" typeHandler="com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_category">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_collect">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_comment">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-            <columnOverride column="pic_urls" javaType="java.lang.String[]" typeHandler="com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler"/>
-        </table>
-        <table tableName="tinymall_coupon">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="send_start"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="send_end"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="use_start"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="use_end"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_footprint">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_goods">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-            <columnOverride column="gallery" javaType="java.lang.String[]" typeHandler="com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler"/>
-        </table>
-        <table tableName="tinymall_goods_attribute">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_goods_specification">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_issue">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_keyword">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_order">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="pay_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="ship_start_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="ship_end_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="confirm_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="end_time"/>
-        </table>
-        <table tableName="tinymall_order_goods">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride column="goods_specification_ids" javaType="java.lang.Integer[]" typeHandler="com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_product">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride column="goods_specification_ids" javaType="java.lang.Integer[]" typeHandler="com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_region">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-        </table>
-        <table tableName="tinymall_search_history">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_storage">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="modified"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_topic">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_user">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDate" column="birthday"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="last_login_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
-        <table tableName="tinymall_user_coupon">
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="used_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
-        </table>
+
 
 
     </context>

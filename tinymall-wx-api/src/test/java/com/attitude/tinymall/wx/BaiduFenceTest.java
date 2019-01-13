@@ -48,5 +48,17 @@ public class BaiduFenceTest {
     ).getFenceId() > 5;
   }
 
+  @Test
+  public void testAddPersonToMonitor() {
+    assert baiduFenceService.addMonitorPersonToFence("qwas", 5);
+  }
+
+  @Test
+  public void testQueryStatusByLocation() {
+    assert !baiduFenceService.isValidLocationWithinFence(
+        "qwas",
+        new Location(116.3084202915042, 50.05703033345938), 5);
+  }
+
 
 }
