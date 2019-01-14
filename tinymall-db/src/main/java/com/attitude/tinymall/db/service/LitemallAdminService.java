@@ -109,7 +109,7 @@ public class LitemallAdminService {
   public LitemallAdmin findById(Integer id) {
     return adminMapper.selectByPrimaryKeySelective(id, result);
   }
-  public LitemallAdmin findAllById(Integer id) {
+  public LitemallAdmin findAllColunmById(Integer id) {
     return adminMapper.selectByPrimaryKey(id);
   }
 

@@ -232,11 +232,6 @@ public class LitemallUserExample {
             return (Criteria) this;
         }
 
-        public Criteria andAdminIdEqualTo(Integer value){
-            addCriterion("admin_id =", value, "adminId");
-            return (Criteria) this;
-        }
-
         public Criteria andIdIsNotNull() {
             addCriterion("id is not null");
             return (Criteria) this;
@@ -1299,6 +1294,66 @@ public class LitemallUserExample {
 
         public Criteria andDeletedNotBetween(Boolean value1, Boolean value2) {
             addCriterion("deleted not between", value1, value2, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIsNull() {
+            addCriterion("admin_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIsNotNull() {
+            addCriterion("admin_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdEqualTo(Integer value) {
+            addCriterion("admin_id =", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotEqualTo(Integer value) {
+            addCriterion("admin_id <>", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdGreaterThan(Integer value) {
+            addCriterion("admin_id >", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("admin_id >=", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdLessThan(Integer value) {
+            addCriterion("admin_id <", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdLessThanOrEqualTo(Integer value) {
+            addCriterion("admin_id <=", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIn(List<Integer> values) {
+            addCriterion("admin_id in", values, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotIn(List<Integer> values) {
+            addCriterion("admin_id not in", values, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdBetween(Integer value1, Integer value2) {
+            addCriterion("admin_id between", value1, value2, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("admin_id not between", value1, value2, "adminId");
             return (Criteria) this;
         }
     }

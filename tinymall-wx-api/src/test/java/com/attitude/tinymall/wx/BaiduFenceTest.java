@@ -28,11 +28,6 @@ public class BaiduFenceTest {
   }
 
   @Test
-  public void testAddPerson() {
-    assert baiduFenceService.hangUpPerson("qwas");
-  }
-
-  @Test
   public void testCreateFence() {
     assert baiduFenceService.createCircleFence(
         "test_fence_1",

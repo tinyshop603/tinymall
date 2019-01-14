@@ -125,7 +125,7 @@ public class WxAuthController {
      *   失败则 { errno: XXX, errmsg: XXX }
      */
     @RequestMapping("login_by_weixin")
-    public Object loginByWeixin(@RequestBody WxLoginInfo wxLoginInfo,@PathVariable String appId,HttpServletRequest request) {
+    public Object loginByWeixin(@RequestBody WxLoginInfo wxLoginInfo,@PathVariable String storeId,HttpServletRequest request) {
         String code = wxLoginInfo.getCode();
         UserInfo userInfo = wxLoginInfo.getUserInfo();
         if(code == null || userInfo == null){
@@ -159,7 +159,7 @@ public class WxAuthController {
             user.setStatus("可用");
             user.setLastLoginTime(LocalDateTime.now());
             user.setLastLoginIp(IpUtil.client(request));
-            user.setAdminId(adminService.findAdminByOwnerId(appId).getId());
+            user.setAdminId(adminService.findAdminByOwnerId(storeId).getId());
             userService.add(user);
         }
         else{

@@ -54,10 +54,10 @@
         <sqlMapGenerator targetPackage="com.attitude.tinymall.db.dao" targetProject="src/main/resources" />
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.attitude.tinymall.db.dao" targetProject="src/main/java" />
         <!--表名-->
-        <table tableName="tinymall_admin" domainObjectName="LitemallAdmin">
+        <table tableName="tinymall_user" domainObjectName="LitemallUser">
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride javaType="java.time.LocalDateTime" column="last_login_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="update_time"/>
+            <columnOverride javaType="java.time.LocalDate" column="birthday"/>
             <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
         </table>
 

@@ -11,7 +11,6 @@ import com.attitude.tinymall.core.domain.baidu.geocode.GeoDecodingAddress;
 import com.attitude.tinymall.core.service.BaiduFenceService;
 import com.attitude.tinymall.core.util.HttpClientUtil;
 import com.attitude.tinymall.core.util.HttpClientUtil.HttpClientResult;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -75,24 +74,6 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
       log.error(e.getMessage());
     }
     return null;
-  }
-
-  @Override
-  public boolean hangUpPerson(String userId) {
-    Map<String, String> params = new HashMap<>(4);
-    params.put("entity_name", userId);
-    params.put("ak", baiduAk);
-    params.put("service_id", eagleEyeServiceId.toString());
-    try {
-      HttpClientResult httpClientResult = HttpClientUtil
-          .doPost("http://yingyan.baidu.com/api/v3/entity/add", params);
-      Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
-      return result.get("status").equals(0);
-    } catch (Exception e) {
-      e.printStackTrace();
-      log.error(e.getMessage());
-    }
-    return false;
   }
 
   @Override
@@ -167,19 +148,22 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
 
   @Override
   public boolean addMonitorPersonToFence(String userId, int fenceId) {
-    Map<String, String> params = new HashMap<>(4);
-    params.put("ak", baiduAk);
-    params.put("service_id", eagleEyeServiceId.toString());
-    params.put("fence_id", String.valueOf(fenceId));
-    params.put("monitored_person", userId);
-    try {
-      HttpClientResult httpClientResult = HttpClientUtil
-          .doPost("http://yingyan.baidu.com/api/v3/fence/addmonitoredperson", params);
-      Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
-      return result.get("status").equals(0);
-    } catch (Exception e) {
-      e.printStackTrace();
-      log.error(e.getMessage());
+    if (hangUpPerson(userId)) {
+      Map<String, String> params = new HashMap<>(4);
+      params.put("ak", baiduAk);
+      params.put("service_id", eagleEyeServiceId.toString());
+      params.put("fence_id", String.valueOf(fenceId));
+      params.put("monitored_person", userId);
+      try {
+        HttpClientResult httpClientResult = HttpClientUtil
+            .doPost("http://yingyan.baidu.com/api/v3/fence/addmonitoredperson", params);
+        Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
+        log.info("add the user: {}, to the fence: {}, result is: {}", userId, fenceId, result.toString());
+        return result.get("status").equals(0);
+      } catch (Exception e) {
+        e.printStackTrace();
+        log.error(e.getMessage());
+      }
     }
     return false;
   }
@@ -209,5 +193,26 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     return result.getMonitoredStatuses().get(0).getMonitoredStatus()
         .equals(QueryFenceLocationResult.LOCATION_IN);
 
+  }
+
+
+  /**
+   * 增加可监控的顾客, 判断该顾客是否在配送范围内, 目前需求, 仅需要创建一个顾客, 改变其地理位置即可, 但为了以后的需求考虑, 每个顾客挂接到监控网上, 方便后续调取
+   */
+  private boolean hangUpPerson(String userId) {
+    Map<String, String> params = new HashMap<>(4);
+    params.put("entity_name", userId);
+    params.put("ak", baiduAk);
+    params.put("service_id", eagleEyeServiceId.toString());
+    try {
+      HttpClientResult httpClientResult = HttpClientUtil
+          .doPost("http://yingyan.baidu.com/api/v3/entity/add", params);
+      Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
+      return result.get("status").equals(0) || result.get("status").equals(3005);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error(e.getMessage());
+    }
+    return false;
   }
 }

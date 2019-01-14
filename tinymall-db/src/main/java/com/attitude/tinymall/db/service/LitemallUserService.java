@@ -35,22 +35,26 @@ public class LitemallUserService {
   }
 
   public void add(LitemallUser user) {
-    if (user.getAdminId() != null) {
-      // 挂接, 并监控
-      boolean isHunged = baiduFenceService.hangUpPerson(user.getId().toString());
-      if (isHunged) {
-        LitemallAdmin litemallAdmin = adminService.findById(user.getAdminId());
-        // 由于商店地址是必填项, 则此时的fence的Id肯定是已经创建好了的
-        boolean isSuccessMotioned = baiduFenceService
-            .addMonitorPersonToFence(user.getId().toString(), litemallAdmin.getShopFenceId());
-        log.info("user: {} has been add to the fence: {}, {}?", user.getId(),
-            litemallAdmin.getShopFenceId(), isSuccessMotioned);
-      }
-    }
+    tryToMontionPerson(user);
     userMapper.insertSelective(user);
   }
 
+  private void tryToMontionPerson(LitemallUser user) {
+    if (user.getAdminId() != null) {
+      // 挂接, 并监控
+      LitemallAdmin litemallAdmin = adminService.findAllColunmById(user.getAdminId());
+      // 由于商店地址是必填项, 则此时的fence的Id肯定是已经创建好了的
+      boolean isSuccessMotioned = baiduFenceService
+          .addMonitorPersonToFence(user.getId().toString(), litemallAdmin.getShopFenceId());
+      log.info("user: {} has been add to the fence: {}, {}?", user.getId(),
+          litemallAdmin.getShopFenceId(), isSuccessMotioned);
+
+    }
+  }
+
   public void update(LitemallUser user) {
+    // 针对先前的历史数据, 进行挂接, 该接口是幂等的
+    tryToMontionPerson(user);
     userMapper.updateByPrimaryKeySelective(user);
   }
 

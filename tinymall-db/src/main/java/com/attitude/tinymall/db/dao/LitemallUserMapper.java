@@ -1,9 +1,9 @@
 package com.attitude.tinymall.db.dao;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 import com.attitude.tinymall.db.domain.LitemallUser;
 import com.attitude.tinymall.db.domain.LitemallUserExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface LitemallUserMapper {
     /**
@@ -156,6 +156,4 @@ public interface LitemallUserMapper {
      * @project https://github.com/itfsw/mybatis-generator-plugin
      */
     int logicalDeleteByPrimaryKey(Integer id);
-
-
 }

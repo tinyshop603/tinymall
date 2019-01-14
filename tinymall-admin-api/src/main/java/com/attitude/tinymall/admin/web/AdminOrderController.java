@@ -260,7 +260,7 @@ public class AdminOrderController {
     if (order == null) {
       return ResponseUtil.badArgument();
     }
-    LitemallAdmin admin =  adminService.findAllById(adminId);
+    LitemallAdmin admin =  adminService.findAllColunmById(adminId);
     if (admin == null) {
       return ResponseUtil.badArgument();
     }

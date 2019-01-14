@@ -24,11 +24,6 @@ public interface BaiduFenceService {
    */
   GeoDecodingAddress reverseGeocoding(double longitude, double latitude);
 
-  /**
-   * 增加可监控的顾客, 判断该顾客是否在配送范围内, 目前需求, 仅需要创建一个顾客, 改变其地理位置即可, 但为了以后的需求考虑, 每个顾客挂接到监控网上, 方便后续调取
-   */
-  boolean hangUpPerson(String userId);
-
   ShopFenceResult createCircleFence(String shopId, String shopAddress, int deliveryRadius);
 
   /**
