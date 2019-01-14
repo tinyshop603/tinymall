@@ -44,8 +44,9 @@ public class AliyunImageAnnotionSerializer extends JsonSerializer<String> {
       jsonGenerator.writeString(s);
       return;
     }
-    // 尝试通过内网oss获取阿里云的图片地址
-    String defaultUrl = "http://" + ossUrl + ":" + ossPort + "/os/storage/aliyun/" + s;
+    // 尝试通过内网oss获取阿里云的图片地址, 并兼容外网的地址格式
+    String portStringComponent = StringUtils.isEmpty(ossPort) ? "" : ":" + ossPort;
+    String defaultUrl = "//" + ossUrl + portStringComponent + "/os/storage/aliyun/" + s;
     String defaultQueryString = "?imageMogr2/thumbnail/300x300/format/webp/quality/85";
     jsonGenerator.writeString(defaultUrl + defaultQueryString);
   }
