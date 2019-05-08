@@ -2,10 +2,12 @@ package com.attitude.tinymall.wx;
 
 import com.attitude.tinymall.core.domain.baidu.address.Location;
 import com.attitude.tinymall.core.service.BaiduFenceService;
+import com.attitude.tinymall.wx.service.client.RemoteDeliveryClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -16,10 +18,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@EnableFeignClients(basePackages = "com.attitude.tinymall.wx.service")
 public class BaiduFenceTest {
 
   @Autowired
   private BaiduFenceService baiduFenceService;
+  @Autowired
+  private RemoteDeliveryClient remoteDeliveryClient;
 
   @Test
   public void testJson() {
@@ -53,6 +58,12 @@ public class BaiduFenceTest {
     assert !baiduFenceService.isValidLocationWithinFence(
         "qwas",
         new Location(116.3084202915042, 50.05703033345938), 5);
+  }
+
+  @Test
+  public void testBaiduRes(){
+    String res = remoteDeliveryClient.testBaidu();
+    System.out.println(res);
   }
 
 
