@@ -67,7 +67,7 @@ public class BaiduFenceTest {
   }
 
   @Test
-  public void testBaiduRes() {
+  public void testDadaAddOrder() {
     AddOrderParams orderParams = AddOrderParams
         .builder()
         .shopNo("11047059")
