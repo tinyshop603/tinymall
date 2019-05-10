@@ -3,7 +3,7 @@
 <configuration debug="false">
     <property name="LOG_PATH" value="logs"/>
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
-    <springProperty scope="context" name="project" source="spring.project.name" defaultValue=""/>
+    <springProperty scope="context" name="project" source="spring.project.name" defaultValue="wechat"/>
     <springProperty scope="context" name="module" source="spring.application.name" defaultValue="ERROR_MODULE"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -40,18 +40,22 @@
         </filter>
     </appender>
 
-    <springProfile name="local">
-        <root level="INFO">
-
+    <springProfile>
+        <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
+
     <springProfile name="dep">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="test">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ERROR"/>
-            <appender-ref ref="ROLLING_FILE"/>
         </root>
     </springProfile>
 
@@ -62,10 +66,15 @@
         </root>
     </springProfile>
 
-    <springProfile name="prod">
+    <springProfile name="production">
+        <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>172.21.194.178:51401</destination>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        </appender>
         <root level="INFO">
             <appender-ref ref="ERROR"/>
             <appender-ref ref="ROLLING_FILE"/>
+            <appender-ref ref="LOGSTASH"/>
         </root>
     </springProfile>
 </configuration>

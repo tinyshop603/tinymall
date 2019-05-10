@@ -210,7 +210,7 @@ public class WxPayEngine {
 
   public String getNonceStr() {
     Random random = new Random();
-    return MD5Utils.MD5Encode(String.valueOf(random.nextInt(10000)));
+    return MD5Utils.encode(String.valueOf(random.nextInt(10000)));
   }
 
   /**
@@ -408,7 +408,7 @@ public class WxPayEngine {
     }
     sb.append("key=" + key);
     System.out.println("md5:" + sb.toString());
-    String sign = MD5Utils.MD5Encode(sb.toString()).toUpperCase();
+    String sign = MD5Utils.encode(sb.toString()).toUpperCase();
     System.out.println("packge签名:" + sign);
     return sign;
 
@@ -431,7 +431,7 @@ public class WxPayEngine {
     }
 
     // 算出摘要
-    String sign = MD5Utils.MD5Encode(sb.toString()).toLowerCase();
+    String sign = MD5Utils.encode(sb.toString()).toLowerCase();
     String paySign = this.getParameter("sign").toLowerCase();
     return paySign.equals(sign);
   }

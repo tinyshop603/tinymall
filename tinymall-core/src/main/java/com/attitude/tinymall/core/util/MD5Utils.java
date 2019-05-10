@@ -3,7 +3,7 @@ import java.security.MessageDigest;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 public class MD5Utils {
-        public static String MD5Encode(String origin) {
+        public static String encode(String origin) {
             StringBuilder sb = new StringBuilder();
             try{
                 MessageDigest md = MessageDigest.getInstance("MD5");

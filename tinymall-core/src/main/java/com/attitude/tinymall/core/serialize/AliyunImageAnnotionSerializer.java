@@ -24,7 +24,6 @@ import org.springframework.util.StringUtils;
  * @project Wechat
  */
 @Component
-@Log4j
 public class AliyunImageAnnotionSerializer extends JsonSerializer<String> {
 
   /**

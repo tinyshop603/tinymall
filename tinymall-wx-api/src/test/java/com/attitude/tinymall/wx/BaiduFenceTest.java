@@ -1,13 +1,18 @@
 package com.attitude.tinymall.wx;
 
 import com.attitude.tinymall.core.domain.baidu.address.Location;
+import com.attitude.tinymall.core.domain.dada.AddOrderParams;
+import com.attitude.tinymall.core.domain.dada.AddOrderResult;
+import com.attitude.tinymall.core.domain.dada.ResponseEntity;
 import com.attitude.tinymall.core.service.BaiduFenceService;
-import com.attitude.tinymall.wx.service.client.RemoteDeliveryClient;
+import com.attitude.tinymall.core.service.client.RemoteDadaDeliveryClient;
+import java.math.BigDecimal;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -18,13 +23,14 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@EnableFeignClients(basePackages = "com.attitude.tinymall.wx.service")
+@EnableFeignClients(basePackages = "com.attitude.tinymall")
+@Slf4j
 public class BaiduFenceTest {
 
   @Autowired
   private BaiduFenceService baiduFenceService;
   @Autowired
-  private RemoteDeliveryClient remoteDeliveryClient;
+  private RemoteDadaDeliveryClient remoteDadaDeliveryClient;
 
   @Test
   public void testJson() {
@@ -61,9 +67,23 @@ public class BaiduFenceTest {
   }
 
   @Test
-  public void testBaiduRes(){
-    String res = remoteDeliveryClient.testBaidu();
-    System.out.println(res);
+  public void testBaiduRes() {
+    AddOrderParams orderParams = AddOrderParams
+        .builder()
+        .shopNo("11047059")
+        .cityCode("021")
+        .cargoPrice(new BigDecimal(100))
+        .isPrepay(0)
+        .receiverName("测试")
+        .receiverAddress("北京市回龙观")
+        .receiverLat(new BigDecimal("50.05703033345938"))
+        .receiverLng(new BigDecimal("116.3084202915042"))
+        .receiverPhone("13693002107")
+        .originId("A1234568")
+        .callback("http://www.abc.com")
+        .build();
+    ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
+    log.error(res.toString());
   }
 
 

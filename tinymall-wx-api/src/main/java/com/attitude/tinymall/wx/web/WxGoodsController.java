@@ -27,7 +27,7 @@ import com.attitude.tinymall.db.service.LitemallSearchHistoryService;
 import com.attitude.tinymall.db.service.LitemallUserService;
 import com.attitude.tinymall.db.util.SortUtil;
 import com.attitude.tinymall.wx.annotation.LoginUser;
-import com.mysql.jdbc.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.db.domain.*;
@@ -267,7 +267,7 @@ public class WxGoodsController {
         String sortWithOrder = SortUtil.goodsSort(sort, order);
 
         //添加到搜索历史
-        if (userId != null && !StringUtils.isNullOrEmpty(keyword)) {
+        if (userId != null && !StringUtils.isEmpty(keyword)) {
             LitemallSearchHistory searchHistoryVo = new LitemallSearchHistory();
             searchHistoryVo.setAddTime(LocalDateTime.now());
             searchHistoryVo.setKeyword(keyword);
