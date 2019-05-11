@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author  yangsong 20190511
  */
 @Data
-public class QueryDeliverFeeResult {
+public class QueryOrderDeliverFeeResult {
 
     public float distance;//配送距离(单位：米)
     public BigDecimal deliveryNo; //平台订单号

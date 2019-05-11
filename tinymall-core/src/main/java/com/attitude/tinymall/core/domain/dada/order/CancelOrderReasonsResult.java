@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class CancelReasonsResult {
+public class CancelOrderReasonsResult {
  private Integer id;//理由编号
  private String reason;//取消理由
 

@@ -48,5 +48,4 @@ public class AddOrderParams {
   private String info;//订单备注
 
 
-
 }

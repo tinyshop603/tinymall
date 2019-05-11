@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author yangsong 20190511
  */
 @Data
-public class QueryOrderResult {
+public class QueryOrderStatusResult {
     private String orderId;//第三方订单编号
 
     private Integer statusCode;//订单状态(待接单＝1 待取货＝2 配送中＝3 已完成＝4 已取消＝5 已过期＝7 指派单=8 妥投异常之物品返回中=9 妥投异常之物品返回完成=10 系统故障订单发布失败=1000 可参考文末的状态说明）

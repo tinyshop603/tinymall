@@ -11,9 +11,18 @@ import java.math.BigDecimal;
 @Data
 public class AddOrderResult {
 
-  private float distance;//配送距离(单位：米)
-  private BigDecimal fee;//实际运费(单位：元)，运费减去优惠券费用
-  private BigDecimal deliverFee;//运费(单位：元)
+  /**
+   * 配送距离(单位：米)
+   */
+  private float distance;
+  /**
+   * 实际运费(单位：元)，运费减去优惠券费用
+   */
+  private BigDecimal fee;
+  /**
+   * 运费(单位：元)
+   */
+  private BigDecimal deliverFee;
 
 }
 

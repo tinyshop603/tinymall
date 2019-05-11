@@ -4,7 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
-public class TransporterResult {
+public class TransporterOrderAppointResult {
    private Integer id;
 
    private String name;
