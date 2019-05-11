@@ -13,4 +13,5 @@ public class ResponseEntity<T> {
   public T result;
   public int code;
   public String msg;
+  public Integer errorCode;
 }
