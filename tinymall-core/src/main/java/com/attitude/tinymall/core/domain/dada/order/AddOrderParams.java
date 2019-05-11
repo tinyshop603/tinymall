@@ -1,4 +1,4 @@
-package com.attitude.tinymall.core.domain.dada;
+package com.attitude.tinymall.core.domain.dada.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import java.math.BigDecimal;

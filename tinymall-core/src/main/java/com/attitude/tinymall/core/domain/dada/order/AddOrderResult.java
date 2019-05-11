@@ -1,4 +1,4 @@
-package com.attitude.tinymall.core.domain.dada;
+package com.attitude.tinymall.core.domain.dada.order;
 
 import java.math.BigDecimal;
 

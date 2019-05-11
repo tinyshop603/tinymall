@@ -1,9 +1,11 @@
 package com.attitude.tinymall.wx;
 
 import com.attitude.tinymall.core.domain.baidu.address.Location;
-import com.attitude.tinymall.core.domain.dada.AddOrderParams;
-import com.attitude.tinymall.core.domain.dada.AddOrderResult;
+import com.attitude.tinymall.core.domain.dada.order.AddOrderParams;
+import com.attitude.tinymall.core.domain.dada.order.AddOrderResult;
 import com.attitude.tinymall.core.domain.dada.ResponseEntity;
+import com.attitude.tinymall.core.domain.dada.shop.AddShopParams;
+import com.attitude.tinymall.core.domain.dada.shop.AddShopResult;
 import com.attitude.tinymall.core.service.BaiduFenceService;
 import com.attitude.tinymall.core.service.client.RemoteDadaDeliveryClient;
 import java.math.BigDecimal;
@@ -85,6 +87,30 @@ public class BaiduFenceTest {
     ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
     log.error(res.toString());
   }
+  @Test
+ public void testAddShop(){
+    AddShopParams shopParams  =  AddShopParams
+        .builder()
+        .stationName("新门店1")
+        .originShopId("shop001")
+        .areaName("浦东新区")
+        .stationName("地址1")
+        .contactName("xxx")
+        .cityName("上海")
+        .business(1)
+        .lng(new Double("121.515014"))
+        .lat(new Double("31.229081"))
+        .phone("13012345678")
+        .build();
 
+    ResponseEntity<AddShopResult> shopResult = remoteDadaDeliveryClient.addShop(shopParams);
+
+    log.info(shopResult.toString());
+ }
+
+ @Test
+  public void a(){
+    log.info("1");
+ }
 
 }
