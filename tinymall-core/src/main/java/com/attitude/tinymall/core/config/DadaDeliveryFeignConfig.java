@@ -108,7 +108,12 @@ public class DadaDeliveryFeignConfig {
       postBody.put("v", "1.0");
       // 需要抽取到配置文件 , 测试环境默认为：73753
       postBody.put("source_id", sourceId);
-      postBody.put("body", new String(template.body(), Charset.forName("UTF-8")));
+      byte[] bodyByte = template.body();
+      if (bodyByte.length > 0) {
+        postBody.put("body", new String(template.body(), Charset.forName("UTF-8")));
+      } else {
+        postBody.put("body", "");
+      }
       postBody.put("signature", getSign(postBody, appSecret));
 
       template.body(JSON.toJSONString(postBody));
