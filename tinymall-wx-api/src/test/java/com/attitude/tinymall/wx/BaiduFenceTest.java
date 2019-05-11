@@ -31,8 +31,7 @@ public class BaiduFenceTest {
 
   @Autowired
   private BaiduFenceService baiduFenceService;
-  @Autowired
-  private RemoteDadaDeliveryClient remoteDadaDeliveryClient;
+
 
   @Test
   public void testJson() {
@@ -67,50 +66,5 @@ public class BaiduFenceTest {
         "qwas",
         new Location(116.3084202915042, 50.05703033345938), 5);
   }
-
-  @Test
-  public void testDadaAddOrder() {
-    AddOrderParams orderParams = AddOrderParams
-        .builder()
-        .shopNo("11047059")
-        .cityCode("021")
-        .cargoPrice(new BigDecimal(100))
-        .isPrepay(0)
-        .receiverName("测试")
-        .receiverAddress("北京市回龙观")
-        .receiverLat(new Double("50.05703033345938"))
-        .receiverLng(new Double("116.3084202915042"))
-        .receiverPhone("13693002107")
-        .originId("A1234568")
-        .callback("http://www.abc.com")
-        .build();
-    ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
-    log.error(res.toString());
-  }
-  @Test
- public void testAddShop(){
-    AddShopParams shopParams  =  AddShopParams
-        .builder()
-        .stationName("新门店1")
-        .originShopId("shop001")
-        .areaName("浦东新区")
-        .stationName("地址1")
-        .contactName("xxx")
-        .cityName("上海")
-        .business(1)
-        .lng(new Double("121.515014"))
-        .lat(new Double("31.229081"))
-        .phone("13012345678")
-        .build();
-
-    ResponseEntity<AddShopResult> shopResult = remoteDadaDeliveryClient.addShop(shopParams);
-
-    log.info(shopResult.toString());
- }
-
- @Test
-  public void a(){
-    log.info("1");
- }
 
 }
