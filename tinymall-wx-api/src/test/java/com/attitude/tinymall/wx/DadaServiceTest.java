@@ -7,6 +7,7 @@ import com.attitude.tinymall.core.domain.dada.shop.AddShopParams;
 import com.attitude.tinymall.core.domain.dada.shop.AddShopResult;
 import com.attitude.tinymall.core.service.client.RemoteDadaDeliveryClient;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,7 +67,7 @@ public class DadaServiceTest {
         .phone("13012345678")
         .build();
 
-    ResponseEntity<AddShopResult> shopResult = remoteDadaDeliveryClient.addShop(shopParams);
+    ResponseEntity<AddShopResult> shopResult = remoteDadaDeliveryClient.addShop(Arrays.asList(shopParams));
 
     log.info(shopResult.toString());
   }

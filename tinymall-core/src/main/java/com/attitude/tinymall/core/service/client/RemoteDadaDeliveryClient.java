@@ -4,6 +4,7 @@ import com.attitude.tinymall.core.config.DadaDeliveryFeignConfig;
 import com.attitude.tinymall.core.domain.dada.order.*;
 import com.attitude.tinymall.core.domain.dada.ResponseEntity;
 import com.attitude.tinymall.core.domain.dada.shop.*;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,7 +60,7 @@ public interface RemoteDadaDeliveryClient {
   ResponseEntity confirmOrderGoods(@RequestBody GoodsParam params);
 
   @PostMapping("/api/shop/add")
-  ResponseEntity<AddShopResult> addShop(@RequestBody AddShopParams shopParams);
+  ResponseEntity<AddShopResult> addShop(@RequestBody List<AddShopParams> shopParams);
 
   @GetMapping("/api/cityCode/list")
   ResponseEntity<ListCityResult> getCityCodeList();
