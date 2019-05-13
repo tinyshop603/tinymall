@@ -14,4 +14,8 @@ public class ResponseEntity<T> {
   public int code;
   public String msg;
   public Integer errorCode;
+
+  public boolean isSuccess() {
+    return "success".equalsIgnoreCase(this.status);
+  }
 }

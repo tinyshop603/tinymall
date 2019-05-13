@@ -31,8 +31,8 @@ public class AddShopParams {
   private String cityName;
 
   private int business;
-  private double lng;
+  private float lng;
+  private float lat;
   private String phone;
-  private double lat;
 
 }

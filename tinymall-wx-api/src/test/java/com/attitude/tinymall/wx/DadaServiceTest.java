@@ -56,15 +56,15 @@ public class DadaServiceTest {
     AddShopParams shopParams = AddShopParams
         .builder()
         .stationName("新门店1")
-        .originShopId("shop001")
+        .originShopId("shoxp001")
         .areaName("浦东新区")
-        .stationName("地址1")
         .contactName("xxx")
         .cityName("上海")
         .business(1)
-        .lng(new Double("121.515014"))
-        .lat(new Double("31.229081"))
+        .lng(new Float("121.515014"))
+        .lat(new Float("31.229081"))
         .phone("13012345678")
+        .stationAddress("详细地址")
         .build();
 
     ResponseEntity<AddShopResult> shopResult = remoteDadaDeliveryClient.addShop(Arrays.asList(shopParams));
