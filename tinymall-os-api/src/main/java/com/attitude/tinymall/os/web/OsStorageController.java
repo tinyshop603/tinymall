@@ -1,6 +1,5 @@
 package com.attitude.tinymall.os.web;
 
-import com.alibaba.druid.util.StringUtils;
 import com.attitude.tinymall.core.util.ResponseUtil;
 import com.attitude.tinymall.db.service.LitemallStorageService;
 import com.attitude.tinymall.core.util.CharUtil;

@@ -67,15 +67,10 @@
         </root>
     </springProfile>
 
-    <springProfile name="production">
-        <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-            <destination>172.21.194.178:51401</destination>
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-        </appender>
-        <root level="INFO">
+    <springProfile name="prod">
+        <root level="DEBUG">
             <appender-ref ref="ERROR"/>
             <appender-ref ref="ROLLING_FILE"/>
-            <appender-ref ref="LOGSTASH"/>
         </root>
     </springProfile>
 </configuration>
