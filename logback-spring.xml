@@ -48,6 +48,13 @@
         </root>
     </springProfile>
 
+    <springProfile name="prod">
+        <root level="DEBUG">
+            <appender-ref ref="ERROR"/>
+            <appender-ref ref="ROLLING_FILE"/>
+        </root>
+    </springProfile>
+
     <springProfile name="test">
         <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
             <destination>127.0.0.1:51401</destination>

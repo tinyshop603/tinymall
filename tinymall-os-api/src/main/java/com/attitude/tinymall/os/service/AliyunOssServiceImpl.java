@@ -1,6 +1,5 @@
 package com.attitude.tinymall.os.service;
 
-import com.alibaba.druid.util.StringUtils;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
@@ -14,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -121,7 +121,7 @@ public class AliyunOssServiceImpl implements AliyunOssService {
 
     if (size != null) {
       boolean isValidSize = size.contains("x") && size.split("x").length == 2 &&
-          (StringUtils.isNumber(size.split("x")[0]) && StringUtils.isNumber(size.split("x")[0]));
+          (StringUtils.isNumeric(size.split("x")[0]) && StringUtils.isNumeric(size.split("x")[0]));
       if (isValidSize) {
         with = Integer.valueOf(size.split("x")[0]);
         height = Integer.valueOf(size.split("x")[1]);
