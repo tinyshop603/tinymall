@@ -49,7 +49,6 @@ public class AdminOrderController {
   private LitemallAdminService adminService;
 
 
-
   @GetMapping("/list")
   public Object list(@LoginAdmin Integer adminId,
       Integer userId, String orderSn,
@@ -59,17 +58,18 @@ public class AdminOrderController {
     if (adminId == null) {
       return ResponseUtil.fail401();
     }
-    List<LitemallOrder> orderList = orderService.listAdminOrdersByAdminId(adminId,userId, orderSn, page, limit, sort, order);
-    List<LitemallOrderGoods> orderGoodsList = orderGoodsService.listOrderWithGoodsByOrder(orderList);
+    List<LitemallOrder> orderList = orderService
+        .listAdminOrdersByAdminId(adminId, userId, orderSn, page, limit, sort, order);
+    List<LitemallOrderGoods> orderGoodsList = orderGoodsService
+        .listOrderWithGoodsByOrder(orderList);
 
     List<LitemallOrderWithGoods> orderWithGoodsList = new ArrayList<LitemallOrderWithGoods>();
-    for(LitemallOrder curOrder :orderList){
+    for (LitemallOrder curOrder : orderList) {
       LitemallOrderWithGoods itemallOrderWithGoods = new LitemallOrderWithGoods();
       List<LitemallOrderGoods> curOrderGoodsList = new ArrayList<LitemallOrderGoods>();
 
-
-      for(LitemallOrderGoods curOrderGoods:orderGoodsList){
-        if(curOrderGoods.getOrderId().equals(curOrder.getId())){
+      for (LitemallOrderGoods curOrderGoods : orderGoodsList) {
+        if (curOrderGoods.getOrderId().equals(curOrder.getId())) {
           curOrderGoodsList.add(curOrderGoods);
         }
       }
@@ -77,8 +77,7 @@ public class AdminOrderController {
       itemallOrderWithGoods.setGoods(curOrderGoodsList);
       orderWithGoodsList.add(itemallOrderWithGoods);
     }
-    int total = orderService.countAdminOrdersByAdminId(adminId,userId, orderSn);
-
+    int total = orderService.countAdminOrdersByAdminId(adminId, userId, orderSn);
 
     Map<String, Object> data = new HashMap<>();
     data.put("total", total);
@@ -89,9 +88,9 @@ public class AdminOrderController {
 
   @GetMapping("/wxlist")
   public Object wxlist(@LoginAdmin Integer adminId, Integer showType,
-                     @RequestParam(value = "page", defaultValue = "1") Integer page,
-                     @RequestParam(value = "limit", defaultValue = "10") Integer limit,
-                     String sort, String order) {
+      @RequestParam(value = "page", defaultValue = "1") Integer page,
+      @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+      String sort, String order) {
     if (adminId == null) {
       return ResponseUtil.fail401();
     }
@@ -99,16 +98,17 @@ public class AdminOrderController {
       showType = 0;
     }
     List<Short> orderStatus = OrderUtil.adminOrderStatus(showType);
-    List<LitemallOrder> orderList = orderService.listAdminOrdersByStatus(adminId,orderStatus,page, limit, sort, order);
+    List<LitemallOrder> orderList = orderService
+        .listAdminOrdersByStatus(adminId, orderStatus, page, limit, sort, order);
     //对数据进行处理
-    for(LitemallOrder curOrder : orderList){
+    for (LitemallOrder curOrder : orderList) {
       //地址长度检查
-      if(curOrder.getAddress().length()>18){
-        curOrder.setAddress(curOrder.getAddress().substring(0,18));
+      if (curOrder.getAddress().length() > 18) {
+        curOrder.setAddress(curOrder.getAddress().substring(0, 18));
       }
       //姓名长度检查
-      if(curOrder.getConsignee().length()>8){
-        curOrder.setConsignee(curOrder.getConsignee().substring(0,8));
+      if (curOrder.getConsignee().length() > 8) {
+        curOrder.setConsignee(curOrder.getConsignee().substring(0, 8));
       }
     }
 
@@ -203,31 +203,30 @@ public class AdminOrderController {
       return ResponseUtil.badArgumentValue();
     }
     Short preOrderStatus = tinymallOrder.getOrderStatus();
-    if(order.getOrderStatus() == 301 || order.getOrderStatus() == 3){//发货
-        //检测改为发货状态前是否为待发货（201，001）
-        if(preOrderStatus != 201 && preOrderStatus != 1){
-          return ResponseUtil.fail(403, "订单不能发货");
-        }
-    }else if(order.getOrderStatus() == 102 || order.getOrderStatus() == 2){//取消订单
-        //检测改为发货状态前是否为待发货（201,001）或已发货（301,3）
-        if(preOrderStatus != 201 && preOrderStatus != 1 && preOrderStatus != 301 && preOrderStatus != 3){
-          return ResponseUtil.fail(403, "订单不能取消");
-        }
-        tinymallOrder.setEndTime(LocalDateTime.now());
-    }else if(order.getOrderStatus() == 401 || order.getOrderStatus() == 4 ){//确认完成
-        //检测改为发货状态前是否为已发货（301，3）
-        if(preOrderStatus != 301 && preOrderStatus != 3){
-          return ResponseUtil.fail(403, "订单不能确认完成");
-        }
-        tinymallOrder.setConfirmTime(LocalDateTime.now());
+    if (order.getOrderStatus() == 301 || order.getOrderStatus() == 3) {//发货
+      //检测改为发货状态前是否为待发货（201，001）
+      if (preOrderStatus != 201 && preOrderStatus != 1) {
+        return ResponseUtil.fail(403, "订单不能发货");
+      }
+    } else if (order.getOrderStatus() == 102 || order.getOrderStatus() == 2) {//取消订单
+      //检测改为发货状态前是否为待发货（201,001）或已发货（301,3）
+      if (preOrderStatus != 201 && preOrderStatus != 1 && preOrderStatus != 301
+          && preOrderStatus != 3) {
+        return ResponseUtil.fail(403, "订单不能取消");
+      }
+      tinymallOrder.setEndTime(LocalDateTime.now());
+    } else if (order.getOrderStatus() == 401 || order.getOrderStatus() == 4) {//确认完成
+      //检测改为发货状态前是否为已发货（301，3）
+      if (preOrderStatus != 301 && preOrderStatus != 3) {
+        return ResponseUtil.fail(403, "订单不能确认完成");
+      }
+      tinymallOrder.setConfirmTime(LocalDateTime.now());
     }
     // 设置订单已取消状态
     tinymallOrder.setOrderStatus(order.getOrderStatus());
     orderService.updateById(tinymallOrder);
     return ResponseUtil.ok(tinymallOrder);
   }
-
-
 
 
   @PostMapping("/delete")
@@ -260,7 +259,7 @@ public class AdminOrderController {
     if (order == null) {
       return ResponseUtil.badArgument();
     }
-    LitemallAdmin admin =  adminService.findAllColunmById(adminId);
+    LitemallAdmin admin = adminService.findAllColunmById(adminId);
     if (admin == null) {
       return ResponseUtil.badArgument();
     }
@@ -275,12 +274,12 @@ public class AdminOrderController {
     String strTime = currTime.substring(8, currTime.length());
     String strRandom = wxPayEngine.buildRandom(4) + "";
     String nonceStr = strTime + strRandom;
-    String outRefundNo = "wx@re@"+ wxPayEngine.getTimeStamp();
+    String outRefundNo = "wx@re@" + wxPayEngine.getTimeStamp();
     String outTradeNo = "";
     DecimalFormat df = new DecimalFormat("######0");
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-   Integer fee = realFee.intValue();
+    Integer fee = realFee.intValue();
     //TODO 测试用例,上线改成实际数值
 //     Integer fee = 1;
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
@@ -294,38 +293,38 @@ public class AdminOrderController {
     packageParams.put("refund_fee", fee.toString());
     packageParams.put("total_fee", fee.toString());
     packageParams.put("transaction_id", order.getPayId());//微信生成的订单号，在支付通知中有返回
-    String sign = wxPayEngine.createSign(packageParams,admin.getMchKey());
+    String sign = wxPayEngine.createSign(packageParams, admin.getMchKey());
 
-    String xmlParam="<xml>"+
-            "<appid>"+admin.getOwnerId()+"</appid>"+
-            "<mch_id>"+admin.getMchId().toString()+"</mch_id>"+
-            "<nonce_str>"+nonceStr+"</nonce_str>"+
-            "<op_user_id>"+admin.getId().toString()+"</op_user_id>"+
-            "<out_refund_no>"+outRefundNo+"</out_refund_no>"+
-            "<out_trade_no>"+order.getOrderSn()+"</out_trade_no>"+
-            "<refund_fee>"+fee+"</refund_fee>"+
-            "<total_fee>"+fee+"</total_fee>"+
-            "<transaction_id>"+order.getPayId()+"</transaction_id>"+
-            "<sign>"+sign+"</sign>"+
-            "</xml>";
-    String resultStr = wxPayEngine.post(REFUND_URL, xmlParam,admin.getMchId().toString());
-    Map<String,Object> result = new HashMap<String,Object>();
+    String xmlParam = "<xml>" +
+        "<appid>" + admin.getOwnerId() + "</appid>" +
+        "<mch_id>" + admin.getMchId().toString() + "</mch_id>" +
+        "<nonce_str>" + nonceStr + "</nonce_str>" +
+        "<op_user_id>" + admin.getId().toString() + "</op_user_id>" +
+        "<out_refund_no>" + outRefundNo + "</out_refund_no>" +
+        "<out_trade_no>" + order.getOrderSn() + "</out_trade_no>" +
+        "<refund_fee>" + fee + "</refund_fee>" +
+        "<total_fee>" + fee + "</total_fee>" +
+        "<transaction_id>" + order.getPayId() + "</transaction_id>" +
+        "<sign>" + sign + "</sign>" +
+        "</xml>";
+    String resultStr = wxPayEngine.post(REFUND_URL, xmlParam, admin.getMchId().toString());
+    Map<String, Object> result = new HashMap<String, Object>();
     //解析结果
     try {
-      Map map =  wxPayEngine.doXMLParse(resultStr);
+      Map map = wxPayEngine.doXMLParse(resultStr);
       String returnCode = map.get("return_code").toString();
-      if(returnCode.equals("SUCCESS")){
+      if (returnCode.equals("SUCCESS")) {
         String resultCode = map.get("result_code").toString();
-        if(resultCode.equals("SUCCESS")){
+        if (resultCode.equals("SUCCESS")) {
           logger.info("退款成功");
-        }else{
-          logger.info("退款失败："+map.get("return_msg").toString());
+        } else {
+          logger.info("退款失败：" + map.get("return_msg").toString());
           return ResponseUtil.fail(403, "订单退款失败");
         }
-      }else{
-        logger.info("退款失败："+map.get("return_msg").toString());
+      } else {
+        logger.info("退款失败：" + map.get("return_msg").toString());
         return ResponseUtil.fail(403, "订单退款失败");
-    }
+      }
     } catch (Exception e) {
       e.printStackTrace();
       return ResponseUtil.fail(403, "订单退款失败");
@@ -357,6 +356,7 @@ public class AdminOrderController {
 
     return ResponseUtil.ok(order);
   }
+
   /**
    * 发货 1. 检测当前订单是否能够发货 2. 设置订单发货状态
    *
@@ -398,86 +398,4 @@ public class AdminOrderController {
     return ResponseUtil.ok();
   }
 
-  /**
-   * 自动取消订单
-   *
-   * 定时检查订单未付款情况，如果超时半个小时则自动取消订单 定时时间是每次相隔半个小时。
-   *
-   * 注意，因为是相隔半小时检查，因此导致有订单是超时一个小时以后才设置取消状态。 TODO 这里可以进一步地配合用户订单查询时订单未付款检查，如果订单超时半小时则取消。
-   * 这里暂时取消自动检查订单的逻辑
-   */
-  @Scheduled(fixedDelay = 30*60*1000)
-  public void checkOrderUnpaid() {
-    logger.debug(LocalDateTime.now());
-
-    List<LitemallOrder> orderList = orderService.queryUnpaid();
-    for (LitemallOrder order : orderList) {
-      LocalDateTime add = order.getAddTime();
-      LocalDateTime now = LocalDateTime.now();
-      LocalDateTime expired = add.plusMinutes(30);
-      if (expired.isAfter(now)) {
-        continue;
-      }
-
-      // 开启事务管理
-      DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-      def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-      TransactionStatus status = txManager.getTransaction(def);
-      try {
-        // 设置订单已取消状态
-        order.setOrderStatus(OrderUtil.STATUS_AUTO_CANCEL);
-        order.setEndTime(LocalDateTime.now());
-        orderService.updateById(order);
-
-        // 商品货品数量增加
-        Integer orderId = order.getId();
-        List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
-        for (LitemallOrderGoods orderGoods : orderGoodsList) {
-          Integer productId = orderGoods.getProductId();
-          LitemallProduct product = productService.findById(productId);
-          Integer number = product.getGoodsNumber() + orderGoods.getNumber();
-          product.setGoodsNumber(number);
-          productService.updateById(product);
-        }
-      } catch (Exception ex) {
-        txManager.rollback(status);
-        logger.error("系统内部错误", ex);
-      }
-      txManager.commit(status);
-    }
-  }
-
-  /**
-   * 自动确认订单
-   *
-   * 定时检查订单未确认情况，如果超时七天则自动确认订单 定时时间是每天凌晨3点。
-   *
-   * 注意，因为是相隔一天检查，因此导致有订单是超时八天以后才设置自动确认。 这里可以进一步地配合用户订单查询时订单未确认检查，如果订单超时7天则自动确认。
-   * 但是，这里可能不是非常必要。相比订单未付款检查中存在商品资源有限所以应该 早点清理未付款情况，这里八天再确认是可以的。
-   *
-   * TODO 目前自动确认是基于管理后台管理员所设置的商品快递到达时间，见orderService.queryUnconfirm。 那么在实际业务上有可能存在商品寄出以后商品因为一些原因快递最终没有到达，
-   * 也就是商品快递失败而shipEndTime一直是空的情况，因此这里业务可能需要扩展，以防止订单一直 处于发货状态。
-   */
-  @Scheduled(cron = "0 0 3 * * ?")
-  public void checkOrderUnconfirm() {
-    logger.debug(LocalDateTime.now());
-
-    List<LitemallOrder> orderList = orderService.queryUnconfirm();
-    for (LitemallOrder order : orderList) {
-      LocalDateTime shipEnd = order.getShipEndTime();
-      LocalDateTime now = LocalDateTime.now();
-      LocalDateTime expired = shipEnd.plusDays(7);
-      if (expired.isAfter(now)) {
-        continue;
-      }
-      // 设置订单已取消状态
-      if(order.getOrderStatus()==301){
-        order.setOrderStatus(OrderUtil.STATUS_AUTO_CONFIRM);
-      }else {
-        order.setOrderStatus(OrderUtil.STATUS_AFTER_AUTO_CONFIRM);
-      }
-      order.setConfirmTime(now);
-      orderService.updateById(order);
-    }
-  }
 }
