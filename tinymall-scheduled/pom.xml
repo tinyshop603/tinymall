@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tinymall-all</artifactId>
-    <packaging>war</packaging>
+    <artifactId>tinymall-scheduled</artifactId>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>com.attitude</groupId>
@@ -13,12 +13,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.attitude</groupId>
             <artifactId>tinymall-core</artifactId>
         </dependency>
@@ -27,32 +21,27 @@
             <groupId>com.attitude</groupId>
             <artifactId>tinymall-db</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.attitude</groupId>
-            <artifactId>tinymall-os-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.attitude</groupId>
-            <artifactId>tinymall-wx-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.attitude</groupId>
-            <artifactId>tinymall-admin-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.attitude</groupId>
-            <artifactId>tinymall-scheduled</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
-
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>exec</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
@@ -63,20 +52,18 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.basedir}/target/classes/static</outputDirectory>
+                            <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>../tinymall-admin/dist</directory>
+                                    <directory>../</directory>
+                                    <includes>
+                                        <include>logback*.xml</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

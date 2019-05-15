@@ -25,6 +25,7 @@
         <module>tinymall-os-api</module>
         <module>tinymall-wx-api</module>
         <module>tinymall-admin-api</module>
+        <module>tinymall-scheduled</module>
         <module>tinymall-all</module>
     </modules>
 
@@ -65,6 +66,11 @@
             <dependency>
                 <groupId>com.attitude</groupId>
                 <artifactId>tinymall-admin-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.attitude</groupId>
+                <artifactId>tinymall-scheduled</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
