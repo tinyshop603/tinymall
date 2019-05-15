@@ -34,23 +34,7 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="payment_way" jdbcType="INTEGER" property="paymentWay" />
   </resultMap>
-  <resultMap type="com.attitude.tinymall.db.domain.LitemallOrderWithGoods" id="Order_With_Goods">
-    <!--复用上面声明的订单-->
-    <association property="order" javaType="com.attitude.tinymall.db.domain.LitemallOrder" resultMap="BaseResultMap">
-    </association>
-    <collection column="id" property="goods" ofType="com.attitude.tinymall.db.domain.LitemallOrderGoods"
-                select="selectGoodsByOrder" >
-    </collection>
-  </resultMap>
 
-
-  <select id="selectGoodsByOrder" resultMap="com.attitude.tinymall.db.dao.LitemallOrderGoodsMapper.BaseResultMap">
-    SELECT * FROM tinymall_order_goods t WHERE t.order_id = #{id}
-  </select>
-
-  <select id="selectOdersWithGoods" resultMap="Order_With_Goods">
-    SELECT * from tinymall_order ORDER BY add_time DESC
-  </select>
   <sql id="Example_Where_Clause">
     <!--
       WARNING - @mbg.generated

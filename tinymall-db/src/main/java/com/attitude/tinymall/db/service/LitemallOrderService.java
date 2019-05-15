@@ -1,7 +1,7 @@
 package com.attitude.tinymall.db.service;
 
 import com.attitude.tinymall.db.dao.LitemallAdminMapper;
-import com.attitude.tinymall.db.service.LitemallAdminService;
+import com.attitude.tinymall.db.dao.manual.LitemallOrderManualMapper;
 import com.attitude.tinymall.db.domain.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -27,6 +26,9 @@ public class LitemallOrderService {
   private LitemallAdminMapper adminMapper;
   @Resource
   private LitemallAdminService adminService;
+  @Resource
+  private LitemallOrderManualMapper orderManualMapper;
+
 
 
   public int add(LitemallOrder order, String appId) {
@@ -187,6 +189,7 @@ public class LitemallOrderService {
 
   public List<LitemallOrderWithGoods> querySelective(Integer userId, String orderSn, Integer page,
                                                      Integer size, String sort, String order) {
+    // TODO 为啥这个接口暂时没有用到
     LitemallOrderExample example = new LitemallOrderExample();
     example.orderBy("add_time DESC");
     LitemallOrderExample.Criteria criteria = example.createCriteria();
@@ -200,7 +203,7 @@ public class LitemallOrderService {
     criteria.andDeletedEqualTo(false);
 
     Page<Object> objects = PageHelper.startPage(page, size);
-    List<LitemallOrderWithGoods> odersWithGoods = orderMapper.selectOdersWithGoods(0);
+    List<LitemallOrderWithGoods> odersWithGoods = orderManualMapper.selectOdersWithGoodsByAdminId(1);
 
     return odersWithGoods;
   }
