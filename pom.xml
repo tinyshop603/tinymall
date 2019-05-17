@@ -26,7 +26,6 @@
         <module>tinymall-wx-api</module>
         <module>tinymall-admin-api</module>
         <module>tinymall-scheduled</module>
-        <module>tinymall-all</module>
     </modules>
 
     <dependencyManagement>

@@ -50,9 +50,9 @@
                         password="root" />
 
 
-        <javaModelGenerator targetPackage="com.attitude.tinymall.db.domain" targetProject="src/main/java" />
-        <sqlMapGenerator targetPackage="com.attitude.tinymall.db.dao" targetProject="src/main/resources" />
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.attitude.tinymall.db.dao" targetProject="src/main/java" />
+        <javaModelGenerator targetPackage="com.attitude.tinymall.domain" targetProject="src/main/java" />
+        <sqlMapGenerator targetPackage="com.attitude.tinymall.dao" targetProject="src/main/resources" />
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.attitude.tinymall.dao" targetProject="src/main/java" />
         <!--表名-->
         <table tableName="tinymall_order" domainObjectName="LitemallOrder">
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
@@ -63,10 +63,10 @@
             <columnOverride javaType="java.time.LocalDateTime" column="end_time"/>
             <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
 
-            <columnOverride javaType="com.attitude.tinymall.db.enums.OrderStatusEnum" column="order_status"/>
-            <columnOverride javaType="com.attitude.tinymall.db.enums.PayStatusEnum" column="pay_status"/>
-            <columnOverride javaType="com.attitude.tinymall.db.enums.PaymentWayEnum" column="payment_way"/>
-            <columnOverride javaType="com.attitude.tinymall.db.enums.TPDStatusEnum" column="tpd_status"/>
+            <columnOverride javaType="com.attitude.tinymall.enums.OrderStatusEnum" column="order_status"/>
+            <columnOverride javaType="com.attitude.tinymall.enums.PayStatusEnum" column="pay_status"/>
+            <columnOverride javaType="com.attitude.tinymall.enums.PaymentWayEnum" column="payment_way"/>
+            <columnOverride javaType="com.attitude.tinymall.enums.TPDStatusEnum" column="tpd_status"/>
 
         </table>
 
