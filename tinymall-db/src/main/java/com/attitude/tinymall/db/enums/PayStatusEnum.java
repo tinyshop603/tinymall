@@ -21,6 +21,8 @@ public enum PayStatusEnum {
    */
   UNPAID(""),
 
+  REFUNDED(""),
+
   /**
    * 未知异常状态
    */

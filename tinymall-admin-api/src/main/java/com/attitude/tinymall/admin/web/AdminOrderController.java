@@ -2,6 +2,8 @@ package com.attitude.tinymall.admin.web;
 
 import com.attitude.tinymall.db.domain.*;
 
+import com.attitude.tinymall.db.enums.OrderStatusEnum;
+import com.attitude.tinymall.db.enums.PayStatusEnum;
 import com.attitude.tinymall.db.service.*;
 import com.attitude.tinymall.db.util.OrderHandleOption;
 import lombok.extern.slf4j.Slf4j;
@@ -97,7 +99,7 @@ public class AdminOrderController {
     if (showType == null) {
       showType = 0;
     }
-    List<Short> orderStatus = OrderUtil.adminOrderStatus(showType);
+    List<OrderStatusEnum> orderStatus = Arrays.asList(OrderStatusEnum.values());
     List<LitemallOrder> orderList = orderService
         .listAdminOrdersByStatus(adminId, orderStatus, page, limit, sort, order);
     //对数据进行处理
@@ -167,14 +169,14 @@ public class AdminOrderController {
       return ResponseUtil.badArgumentValue();
     }
 
-    if (OrderUtil.isPayStatus(tinymallOrder) || OrderUtil.isShipStatus(tinymallOrder)) {
+    if (tinymallOrder.getPayStatus() == PayStatusEnum.PAID || tinymallOrder.getOrderStatus() == OrderStatusEnum.MERCHANT_SHIP) {
       LitemallOrder newOrder = new LitemallOrder();
       newOrder.setId(orderId);
       newOrder.setShipChannel(order.getShipChannel());
       newOrder.setShipSn(order.getOrderSn());
       newOrder.setShipStartTime(order.getShipStartTime());
       newOrder.setShipEndTime(order.getShipEndTime());
-      newOrder.setOrderStatus(OrderUtil.STATUS_SHIP);
+      newOrder.setOrderStatus(OrderStatusEnum.MERCHANT_SHIP);
       orderService.update(newOrder);
     } else {
       return ResponseUtil.badArgumentValue();
@@ -202,26 +204,7 @@ public class AdminOrderController {
     if (tinymallOrder == null) {
       return ResponseUtil.badArgumentValue();
     }
-    Short preOrderStatus = tinymallOrder.getOrderStatus();
-    if (order.getOrderStatus() == 301 || order.getOrderStatus() == 3) {//发货
-      //检测改为发货状态前是否为待发货（201，001）
-      if (preOrderStatus != 201 && preOrderStatus != 1) {
-        return ResponseUtil.fail(403, "订单不能发货");
-      }
-    } else if (order.getOrderStatus() == 102 || order.getOrderStatus() == 2) {//取消订单
-      //检测改为发货状态前是否为待发货（201,001）或已发货（301,3）
-      if (preOrderStatus != 201 && preOrderStatus != 1 && preOrderStatus != 301
-          && preOrderStatus != 3) {
-        return ResponseUtil.fail(403, "订单不能取消");
-      }
-      tinymallOrder.setEndTime(LocalDateTime.now());
-    } else if (order.getOrderStatus() == 401 || order.getOrderStatus() == 4) {//确认完成
-      //检测改为发货状态前是否为已发货（301，3）
-      if (preOrderStatus != 301 && preOrderStatus != 3) {
-        return ResponseUtil.fail(403, "订单不能确认完成");
-      }
-      tinymallOrder.setConfirmTime(LocalDateTime.now());
-    }
+
     // 设置订单已取消状态
     tinymallOrder.setOrderStatus(order.getOrderStatus());
     orderService.updateById(tinymallOrder);
@@ -266,8 +249,7 @@ public class AdminOrderController {
     if (!order.getAdminId().equals(adminId)) {
       return ResponseUtil.badArgumentValue();
     }
-    OrderHandleOption handleOption = OrderUtil.build(order);
-    if (!handleOption.isSeller_refund()) {
+    if (order.getOrderStatus() != OrderStatusEnum.MERCHANT_REFUNDING) {
       return ResponseUtil.fail(403, "订单不能退款成功");
     }
     String currTime = wxPayEngine.getCurrTime();
@@ -334,7 +316,9 @@ public class AdminOrderController {
     def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
     TransactionStatus status = txManager.getTransaction(def);
     try {
-      order.setOrderStatus(OrderUtil.STATUS_REFUND_CONFIRM);
+      // 退款完成
+      order.setOrderStatus(OrderStatusEnum.COMPLETE);
+      order.setPayStatus(PayStatusEnum.REFUNDED);
       order.setEndTime(LocalDateTime.now());
       orderService.update(order);
 
@@ -389,7 +373,7 @@ public class AdminOrderController {
       return ResponseUtil.fail(403, "订单不能确认收货");
     }
 
-    order.setOrderStatus(OrderUtil.STATUS_SHIP);
+    order.setOrderStatus(OrderStatusEnum.MERCHANT_SHIP);
     order.setShipSn(shipSn);
     order.setShipChannel(shipChannel);
     order.setShipStartTime(LocalDateTime.now());

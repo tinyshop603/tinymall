@@ -3,6 +3,8 @@ package com.attitude.tinymall.scheduled.task;
 import com.attitude.tinymall.db.domain.LitemallOrder;
 import com.attitude.tinymall.db.domain.LitemallOrderGoods;
 import com.attitude.tinymall.db.domain.LitemallProduct;
+import com.attitude.tinymall.db.enums.OrderStatusEnum;
+import com.attitude.tinymall.db.enums.PayStatusEnum;
 import com.attitude.tinymall.db.service.LitemallOrderGoodsService;
 import com.attitude.tinymall.db.service.LitemallOrderService;
 import com.attitude.tinymall.db.service.LitemallProductService;
@@ -63,7 +65,7 @@ public class AutoCompleteOrderTask {
       TransactionStatus status = txManager.getTransaction(def);
       try {
         // 设置订单已取消状态
-        order.setOrderStatus(OrderUtil.STATUS_AUTO_CANCEL);
+        order.setOrderStatus(OrderStatusEnum.SYSTEM_AUTO_CANCEL);
         order.setEndTime(LocalDateTime.now());
         orderService.updateById(order);
 
@@ -108,11 +110,9 @@ public class AutoCompleteOrderTask {
       if (expired.isAfter(now)) {
         continue;
       }
-      // 设置订单已取消状态
-      if (order.getOrderStatus() == 301) {
-        order.setOrderStatus(OrderUtil.STATUS_AUTO_CONFIRM);
-      } else {
-        order.setOrderStatus(OrderUtil.STATUS_AFTER_AUTO_CONFIRM);
+      // TODO 将用户未点击确认的, 自动设置成确认状态
+      if(order.getPayStatus() == PayStatusEnum.PAID && OrderStatusEnum.ONGOING == order.getOrderStatus()){
+        order.setOrderStatus(OrderStatusEnum.COMPLETE);
       }
       order.setConfirmTime(now);
       orderService.updateById(order);

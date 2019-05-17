@@ -1,5 +1,9 @@
 package com.attitude.tinymall.db.domain;
 
+import com.attitude.tinymall.db.enums.OrderStatusEnum;
+import com.attitude.tinymall.db.enums.PayStatusEnum;
+import com.attitude.tinymall.db.enums.PaymentWayEnum;
+import com.attitude.tinymall.db.enums.TPDStatusEnum;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -487,52 +491,62 @@ public class LitemallOrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusEqualTo(Short value) {
+        public Criteria andOrderStatusEqualTo(OrderStatusEnum value) {
             addCriterion("order_status =", value, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusNotEqualTo(Short value) {
+        public Criteria andOrderStatusNotEqualTo(OrderStatusEnum value) {
             addCriterion("order_status <>", value, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusGreaterThan(Short value) {
+        public Criteria andOrderStatusGreaterThan(OrderStatusEnum value) {
             addCriterion("order_status >", value, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusGreaterThanOrEqualTo(Short value) {
+        public Criteria andOrderStatusGreaterThanOrEqualTo(OrderStatusEnum value) {
             addCriterion("order_status >=", value, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusLessThan(Short value) {
+        public Criteria andOrderStatusLessThan(OrderStatusEnum value) {
             addCriterion("order_status <", value, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusLessThanOrEqualTo(Short value) {
+        public Criteria andOrderStatusLessThanOrEqualTo(OrderStatusEnum value) {
             addCriterion("order_status <=", value, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusIn(List<Short> values) {
+        public Criteria andOrderStatusLike(OrderStatusEnum value) {
+            addCriterion("order_status like", value, "orderStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderStatusNotLike(OrderStatusEnum value) {
+            addCriterion("order_status not like", value, "orderStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderStatusIn(List<OrderStatusEnum> values) {
             addCriterion("order_status in", values, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusNotIn(List<Short> values) {
+        public Criteria andOrderStatusNotIn(List<OrderStatusEnum> values) {
             addCriterion("order_status not in", values, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusBetween(Short value1, Short value2) {
+        public Criteria andOrderStatusBetween(OrderStatusEnum value1, OrderStatusEnum value2) {
             addCriterion("order_status between", value1, value2, "orderStatus");
             return (Criteria) this;
         }
 
-        public Criteria andOrderStatusNotBetween(Short value1, Short value2) {
+        public Criteria andOrderStatusNotBetween(OrderStatusEnum value1, OrderStatusEnum value2) {
             addCriterion("order_status not between", value1, value2, "orderStatus");
             return (Criteria) this;
         }
@@ -1187,52 +1201,62 @@ public class LitemallOrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusEqualTo(Short value) {
+        public Criteria andPayStatusEqualTo(PayStatusEnum value) {
             addCriterion("pay_status =", value, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusNotEqualTo(Short value) {
+        public Criteria andPayStatusNotEqualTo(PayStatusEnum value) {
             addCriterion("pay_status <>", value, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusGreaterThan(Short value) {
+        public Criteria andPayStatusGreaterThan(PayStatusEnum value) {
             addCriterion("pay_status >", value, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusGreaterThanOrEqualTo(Short value) {
+        public Criteria andPayStatusGreaterThanOrEqualTo(PayStatusEnum value) {
             addCriterion("pay_status >=", value, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusLessThan(Short value) {
+        public Criteria andPayStatusLessThan(PayStatusEnum value) {
             addCriterion("pay_status <", value, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusLessThanOrEqualTo(Short value) {
+        public Criteria andPayStatusLessThanOrEqualTo(PayStatusEnum value) {
             addCriterion("pay_status <=", value, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusIn(List<Short> values) {
+        public Criteria andPayStatusLike(PayStatusEnum value) {
+            addCriterion("pay_status like", value, "payStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayStatusNotLike(PayStatusEnum value) {
+            addCriterion("pay_status not like", value, "payStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andPayStatusIn(List<PayStatusEnum> values) {
             addCriterion("pay_status in", values, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusNotIn(List<Short> values) {
+        public Criteria andPayStatusNotIn(List<PayStatusEnum> values) {
             addCriterion("pay_status not in", values, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusBetween(Short value1, Short value2) {
+        public Criteria andPayStatusBetween(PayStatusEnum value1, PayStatusEnum value2) {
             addCriterion("pay_status between", value1, value2, "payStatus");
             return (Criteria) this;
         }
 
-        public Criteria andPayStatusNotBetween(Short value1, Short value2) {
+        public Criteria andPayStatusNotBetween(PayStatusEnum value1, PayStatusEnum value2) {
             addCriterion("pay_status not between", value1, value2, "payStatus");
             return (Criteria) this;
         }
@@ -1877,52 +1901,62 @@ public class LitemallOrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayEqualTo(Integer value) {
+        public Criteria andPaymentWayEqualTo(PaymentWayEnum value) {
             addCriterion("payment_way =", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayNotEqualTo(Integer value) {
+        public Criteria andPaymentWayNotEqualTo(PaymentWayEnum value) {
             addCriterion("payment_way <>", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayGreaterThan(Integer value) {
+        public Criteria andPaymentWayGreaterThan(PaymentWayEnum value) {
             addCriterion("payment_way >", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayGreaterThanOrEqualTo(Integer value) {
+        public Criteria andPaymentWayGreaterThanOrEqualTo(PaymentWayEnum value) {
             addCriterion("payment_way >=", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayLessThan(Integer value) {
+        public Criteria andPaymentWayLessThan(PaymentWayEnum value) {
             addCriterion("payment_way <", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayLessThanOrEqualTo(Integer value) {
+        public Criteria andPaymentWayLessThanOrEqualTo(PaymentWayEnum value) {
             addCriterion("payment_way <=", value, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayIn(List<Integer> values) {
+        public Criteria andPaymentWayLike(PaymentWayEnum value) {
+            addCriterion("payment_way like", value, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayNotLike(PaymentWayEnum value) {
+            addCriterion("payment_way not like", value, "paymentWay");
+            return (Criteria) this;
+        }
+
+        public Criteria andPaymentWayIn(List<PaymentWayEnum> values) {
             addCriterion("payment_way in", values, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayNotIn(List<Integer> values) {
+        public Criteria andPaymentWayNotIn(List<PaymentWayEnum> values) {
             addCriterion("payment_way not in", values, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayBetween(Integer value1, Integer value2) {
+        public Criteria andPaymentWayBetween(PaymentWayEnum value1, PaymentWayEnum value2) {
             addCriterion("payment_way between", value1, value2, "paymentWay");
             return (Criteria) this;
         }
 
-        public Criteria andPaymentWayNotBetween(Integer value1, Integer value2) {
+        public Criteria andPaymentWayNotBetween(PaymentWayEnum value1, PaymentWayEnum value2) {
             addCriterion("payment_way not between", value1, value2, "paymentWay");
             return (Criteria) this;
         }
@@ -1994,6 +2028,76 @@ public class LitemallOrderExample {
 
         public Criteria andTransactionIdNotBetween(String value1, String value2) {
             addCriterion("transaction_id not between", value1, value2, "transactionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusIsNull() {
+            addCriterion("tpd_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusIsNotNull() {
+            addCriterion("tpd_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusEqualTo(TPDStatusEnum value) {
+            addCriterion("tpd_status =", value, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusNotEqualTo(TPDStatusEnum value) {
+            addCriterion("tpd_status <>", value, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusGreaterThan(TPDStatusEnum value) {
+            addCriterion("tpd_status >", value, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusGreaterThanOrEqualTo(TPDStatusEnum value) {
+            addCriterion("tpd_status >=", value, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusLessThan(TPDStatusEnum value) {
+            addCriterion("tpd_status <", value, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusLessThanOrEqualTo(TPDStatusEnum value) {
+            addCriterion("tpd_status <=", value, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusLike(TPDStatusEnum value) {
+            addCriterion("tpd_status like", value, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusNotLike(TPDStatusEnum value) {
+            addCriterion("tpd_status not like", value, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusIn(List<TPDStatusEnum> values) {
+            addCriterion("tpd_status in", values, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusNotIn(List<TPDStatusEnum> values) {
+            addCriterion("tpd_status not in", values, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusBetween(TPDStatusEnum value1, TPDStatusEnum value2) {
+            addCriterion("tpd_status between", value1, value2, "tpdStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdStatusNotBetween(TPDStatusEnum value1, TPDStatusEnum value2) {
+            addCriterion("tpd_status not between", value1, value2, "tpdStatus");
             return (Criteria) this;
         }
     }

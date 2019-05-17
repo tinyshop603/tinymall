@@ -45,7 +45,7 @@
 
         <!--数据库连接信息-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://39.106.9.50:3306/tinymal-bak?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;verifyServerCertificate=false&amp;useSSL=false"
+                        connectionURL="jdbc:mysql://39.106.9.50:3306/tinymall-prod-oss?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;verifyServerCertificate=false&amp;useSSL=false"
                         userId="root"
                         password="root" />
 
@@ -54,11 +54,20 @@
         <sqlMapGenerator targetPackage="com.attitude.tinymall.db.dao" targetProject="src/main/resources" />
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.attitude.tinymall.db.dao" targetProject="src/main/java" />
         <!--表名-->
-        <table tableName="tinymall_user" domainObjectName="LitemallUser">
+        <table tableName="tinymall_order" domainObjectName="LitemallOrder">
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="last_login_time"/>
-            <columnOverride javaType="java.time.LocalDate" column="birthday"/>
+            <columnOverride javaType="java.time.LocalDateTime" column="pay_time"/>
+            <columnOverride javaType="java.time.LocalDateTime" column="ship_start_time"/>
+            <columnOverride javaType="java.time.LocalDateTime" column="ship_end_time"/>
+            <columnOverride javaType="java.time.LocalDateTime" column="confirm_time"/>
+            <columnOverride javaType="java.time.LocalDateTime" column="end_time"/>
             <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
+
+            <columnOverride javaType="com.attitude.tinymall.db.enums.OrderStatusEnum" column="order_status"/>
+            <columnOverride javaType="com.attitude.tinymall.db.enums.PayStatusEnum" column="pay_status"/>
+            <columnOverride javaType="com.attitude.tinymall.db.enums.PaymentWayEnum" column="payment_way"/>
+            <columnOverride javaType="com.attitude.tinymall.db.enums.TPDStatusEnum" column="tpd_status"/>
+
         </table>
 
 

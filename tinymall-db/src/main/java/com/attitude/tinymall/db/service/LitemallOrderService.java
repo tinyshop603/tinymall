@@ -3,6 +3,7 @@ package com.attitude.tinymall.db.service;
 import com.attitude.tinymall.db.dao.LitemallAdminMapper;
 import com.attitude.tinymall.db.dao.manual.LitemallOrderManualMapper;
 import com.attitude.tinymall.db.domain.*;
+import com.attitude.tinymall.db.enums.OrderStatusEnum;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.attitude.tinymall.db.dao.LitemallOrderMapper;
@@ -92,14 +93,15 @@ public class LitemallOrderService {
     return orderSn;
   }
 
-  public List<LitemallOrder> queryByOrderStatus(Integer userId, List<Short> orderStatus) {
+  public List<LitemallOrder> queryByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus) {
     LitemallOrderExample example = new LitemallOrderExample();
+    OrderStatusEnum currentOrderStatus = orderStatus.get(0);
     //未完成 按结束时间排序
-    if(orderStatus.get(0)==102 || orderStatus.get(0)==2 || orderStatus.get(0)==203){
+    if (currentOrderStatus == OrderStatusEnum.ONGOING) {
       example.orderBy(LitemallOrder.Column.endTime.desc());
-    }else if(orderStatus.get(0)==401 || orderStatus.get(0)==4 || orderStatus.get(0)==5){//已完成 按完成时间排序
+    } else if (currentOrderStatus == OrderStatusEnum.COMPLETE) {//已完成 按完成时间排序
       example.orderBy(LitemallOrder.Column.confirmTime.desc());
-    }else {//其他，按添加时间排序
+    } else {//其他，按添加时间排序
       example.orderBy(LitemallOrder.Column.addTime.desc());
     }
 
@@ -112,7 +114,7 @@ public class LitemallOrderService {
     return orderMapper.selectByExample(example);
   }
 
-  public int countByOrderStatus(Integer userId, List<Short> orderStatus) {
+  public int countByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus) {
     LitemallOrderExample example = new LitemallOrderExample();
     LitemallOrderExample.Criteria criteria = example.or();
     criteria.andUserIdEqualTo(userId);
@@ -144,18 +146,20 @@ public class LitemallOrderService {
       criteria.andOrderSnEqualTo(orderSn);
     }
     criteria.andDeletedEqualTo(false);
-    List<Short> unshowOrderStatus = new ArrayList<Short>();
-    unshowOrderStatus.add((short)101);//订单生成，未支付；
-    unshowOrderStatus.add((short)102);//下单后未支付用户取消；
-    unshowOrderStatus.add((short)103);//下单后未支付超时系统自动取消
-//    unshowOrderStatus.add((short)2);//货到付款用户取消订单
+    List<OrderStatusEnum> unshowOrderStatus = new ArrayList<OrderStatusEnum>();
+    //订单生成，未支付；
+    unshowOrderStatus.add(OrderStatusEnum.PENDING_PAYMENT);
+    //下单后未支付用户取消；
+    unshowOrderStatus.add(OrderStatusEnum.CUSTOMER_CANCEL);
+    //下单后未支付超时系统自动取消
+    unshowOrderStatus.add(OrderStatusEnum.SYSTEM_AUTO_CANCEL);
     criteria.andOrderStatusNotIn(unshowOrderStatus);
 
     Page<Object> objects = PageHelper.startPage(page, size);
     return orderMapper.selectByExample(example);
   }
 
-  public List<LitemallOrder> listAdminOrdersByStatus(Integer adminId, List<Short> orderStatus, Integer page, Integer size, String sort, String order) {
+  public List<LitemallOrder> listAdminOrdersByStatus(Integer adminId, List<OrderStatusEnum> orderStatus, Integer page, Integer size, String sort, String order) {
     LitemallOrderExample example = new LitemallOrderExample();
     example.orderBy("add_time DESC");
     LitemallOrderExample.Criteria criteria = example.createCriteria();
@@ -252,15 +256,14 @@ public class LitemallOrderService {
 
   public List<LitemallOrder> queryUnpaid() {
     LitemallOrderExample example = new LitemallOrderExample();
-    example.or().andOrderStatusEqualTo(OrderUtil.STATUS_CREATE).andDeletedEqualTo(false);
+    example.or().andOrderStatusEqualTo(OrderStatusEnum.PENDING_PAYMENT).andDeletedEqualTo(false);
     return orderMapper.selectByExample(example);
   }
 
   public List<LitemallOrder> queryUnconfirm() {
     LitemallOrderExample example = new LitemallOrderExample();
-    List<Short> unconfirmIds = new ArrayList<Short>();
-    unconfirmIds.add(OrderUtil.STATUS_SHIP);
-    unconfirmIds.add(OrderUtil.STATUS_AFTER_SHIP);
+    List<OrderStatusEnum> unconfirmIds = new ArrayList<OrderStatusEnum>();
+    unconfirmIds.add(OrderStatusEnum.MERCHANT_SHIP);
     example.or().andOrderStatusIn(unconfirmIds).andShipEndTimeIsNotNull()
             .andDeletedEqualTo(false);
     return orderMapper.selectByExample(example);
