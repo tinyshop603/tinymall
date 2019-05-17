@@ -4,7 +4,7 @@ package com.attitude.tinymall.db.enums;
  * @author zhaoguiyang on 2019/5/16.
  * @project Wechat
  */
-public enum  PaymentModelEnum {
+public enum PaymentWayEnum {
 
   /**
    * 线上微信支付

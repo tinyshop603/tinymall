@@ -26,6 +26,8 @@ public class MybatisConfig {
     org.apache.ibatis.session.Configuration myBatisConfiguration = new org.apache.ibatis.session.Configuration();
     myBatisConfiguration.setLogImpl(Slf4jImpl.class);
     myBatisConfiguration.setMapUnderscoreToCamelCase(true);
+    // 默认值本身即是EnumTypeHandler, 这里显示声明为了明确
+    myBatisConfiguration.setDefaultEnumTypeHandler(EnumTypeHandler.class);
     SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
     sessionFactory.setConfiguration(myBatisConfiguration);
     sessionFactory.setTypeAliasesPackage("com.attitude.tinymall.db.mybatis");
