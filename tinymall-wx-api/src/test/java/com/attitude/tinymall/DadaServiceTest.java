@@ -44,8 +44,8 @@ public class DadaServiceTest {
         .receiverLat(new Double("50.05703033345938"))
         .receiverLng(new Double("116.3084202915042"))
         .receiverPhone("13693002107")
-        .originId("A1234568")
-        .callback("http://www.abc.com")
+        .originId("A1234569")
+        .callback("http://127.0.0.1:8084/dada-order/callback/status")
         .build();
     ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
     log.error(res.toString());
