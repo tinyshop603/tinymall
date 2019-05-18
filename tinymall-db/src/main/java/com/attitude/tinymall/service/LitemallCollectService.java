@@ -1,90 +1,30 @@
 package com.attitude.tinymall.service;
 
-import com.attitude.tinymall.dao.LitemallCollectMapper;
 import com.attitude.tinymall.domain.LitemallCollect;
-import com.attitude.tinymall.domain.LitemallCollectExample;
-import com.github.pagehelper.PageHelper;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.Resource;
 import java.util.List;
 
-@Service
-public class LitemallCollectService {
-    @Resource
-    private LitemallCollectMapper collectMapper;
+public interface LitemallCollectService {
 
-    public int count(int uid, Integer gid) {
-        LitemallCollectExample example = new LitemallCollectExample();
-        example.or().andUserIdEqualTo(uid).andValueIdEqualTo(gid).andDeletedEqualTo(false);
-        return (int)collectMapper.countByExample(example);
-    }
+  int count(int uid, Integer gid);
 
-    public List<LitemallCollect> queryByType(Integer userId, Integer typeId, Integer page, Integer size) {
-        LitemallCollectExample example = new LitemallCollectExample();
-        example.or().andUserIdEqualTo(userId).andTypeIdEqualTo(typeId).andDeletedEqualTo(false);
-        example.setOrderByClause(LitemallCollect.Column.addTime.desc());
-        PageHelper.startPage(page, size);
-        return collectMapper.selectByExample(example);
-    }
+  List<LitemallCollect> queryByType(Integer userId, Integer typeId, Integer page,
+      Integer size);
 
-    public int countByType(Integer userId, Integer typeId) {
-        LitemallCollectExample example = new LitemallCollectExample();
-        example.or().andUserIdEqualTo(userId).andTypeIdEqualTo(typeId).andDeletedEqualTo(false);
-        return (int)collectMapper.countByExample(example);
-    }
+  int countByType(Integer userId, Integer typeId);
 
-    public LitemallCollect queryByTypeAndValue(Integer userId, Integer typeId, Integer valueId) {
-        LitemallCollectExample example = new LitemallCollectExample();
-        example.or().andUserIdEqualTo(userId).andValueIdEqualTo(valueId).andTypeIdEqualTo(typeId).andDeletedEqualTo(false);
-        return collectMapper.selectOneByExample(example);
-    }
+  LitemallCollect queryByTypeAndValue(Integer userId, Integer typeId, Integer valueId);
 
-    public void deleteById(Integer id) {
-        collectMapper.logicalDeleteByPrimaryKey(id);
-    }
+  void deleteById(Integer id);
 
-    public int add(LitemallCollect collect) {
-        return collectMapper.insertSelective(collect);
-    }
+  int add(LitemallCollect collect);
 
-    public List<LitemallCollect> querySelective(String userId, String valueId, Integer page, Integer size, String sort, String order) {
-        LitemallCollectExample example = new LitemallCollectExample();
-        LitemallCollectExample.Criteria criteria = example.createCriteria();
+  List<LitemallCollect> querySelective(String userId, String valueId, Integer page,
+      Integer size, String sort, String order);
 
-        if(!StringUtils.isEmpty(userId)){
-            criteria.andUserIdEqualTo(Integer.valueOf(userId));
-        }
-        if(!StringUtils.isEmpty(valueId)){
-            criteria.andValueIdEqualTo(Integer.valueOf(valueId));
-        }
-        criteria.andDeletedEqualTo(false);
+  int countSelective(String userId, String valueId, Integer page, Integer size, String sort,
+      String order);
 
-        PageHelper.startPage(page, size);
-        return collectMapper.selectByExample(example);
-    }
+  void updateById(LitemallCollect collect);
 
-    public int countSelective(String userId, String valueId, Integer page, Integer size, String sort, String order) {
-        LitemallCollectExample example = new LitemallCollectExample();
-        LitemallCollectExample.Criteria criteria = example.createCriteria();
-
-        if(!StringUtils.isEmpty(userId)){
-            criteria.andUserIdEqualTo(Integer.valueOf(userId));
-        }
-        if(!StringUtils.isEmpty(valueId)){
-            criteria.andValueIdEqualTo(Integer.valueOf(valueId));
-        }
-        criteria.andDeletedEqualTo(false);
-
-        return (int)collectMapper.countByExample(example);
-    }
-
-    public void updateById(LitemallCollect collect) {
-        collectMapper.updateByPrimaryKeySelective(collect);
-    }
-
-    public LitemallCollect findById(Integer id) {
-        return collectMapper.selectByPrimaryKey(id);
-    }
+  LitemallCollect findById(Integer id);
 }
