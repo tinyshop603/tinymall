@@ -18,24 +18,24 @@ Page({
     addressId: 0,
     couponId: 0,
     remark:"",
-    pickerIndex: 1,
-    array: ['货到付款', '在线支付'],
-    objectArray:[
-      {
-        id:0,
-        name:'货到付款'
-      },
-      {
-        id: 1,
-        name: '在线支付'
-      }
-    ]
+    // pickerIndex: 1,
+    // array: ['货到付款', '在线支付'],
+    // objectArray:[
+    //   {
+    //     id:0,
+    //     name:'货到付款'
+    //   },
+    //   {
+    //     id: 1,
+    //     name: '在线支付'
+    //   }
+    // ]
   },
-  pickerIndex: function (e) {
-    this.setData({
-      pickerIndex: e.detail.value
-    })
-  },
+  // pickerIndex: function (e) {
+  //   this.setData({
+  //     pickerIndex: e.detail.value
+  //   })
+  // },
   //右上角转发分享功能
   onShareAppMessage: function () {
     return {
@@ -154,7 +154,7 @@ Page({
      }else if(h=8 && m>30){
        ifOpen = true;
      }
-     if(!true){
+    if (!ifOpen){
        wx.showModal({
          title: '当前时间尚未营业',
          content:'营业时间:8:30~24:00',
@@ -163,12 +163,14 @@ Page({
        return false;
      }
 
+    that.submitPrepay();
+
     //判断支付方式
-    if (that.data.pickerIndex == 1){
-      that.submitPrepay();
-    } else if (that.data.pickerIndex == 0){
-      that.submitAfterpay();
-    }
+    // if (that.data.pickerIndex == 1){
+    //   that.submitPrepay();
+    // } else if (that.data.pickerIndex == 0){
+    //   that.submitAfterpay();
+    // }
 
 
     
@@ -222,24 +224,24 @@ Page({
   },
 
   //货到付款
-  submitAfterpay:function(){
-    var that = this;
-    util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex, remarkText: this.data.remark}, 'POST').then(res => {
-      if (res.errno === 0) {
-        const orderId = res.data.orderId;
-        wx.redirectTo({
-          url: '/pages/payResult/payResult?status=1&orderId=' + orderId
-        });
+  // submitAfterpay:function(){
+  //   var that = this;
+  //   util.request(api.OrderSubmit, { cartId: this.data.cartId, addressId: this.data.addressId, couponId: this.data.couponId, modeId: this.data.pickerIndex, remarkText: this.data.remark}, 'POST').then(res => {
+  //     if (res.errno === 0) {
+  //       const orderId = res.data.orderId;
+  //       wx.redirectTo({
+  //         url: '/pages/payResult/payResult?status=1&orderId=' + orderId
+  //       });
 
 
-      } else {
-        wx.redirectTo({
-          url: '/pages/payResult/payResult?status=0&orderId=' + orderId
-        });
-      }
-      that.hideLoading();
-    });
-  },
+  //     } else {
+  //       wx.redirectTo({
+  //         url: '/pages/payResult/payResult?status=0&orderId=' + orderId
+  //       });
+  //     }
+  //     that.hideLoading();
+  //   });
+  // },
 
   showLoading: function(message) {
     if(wx.showLoading) {

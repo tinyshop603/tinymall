@@ -6,6 +6,7 @@ import com.attitude.tinymall.common.SocketEvent;
 import com.attitude.tinymall.domain.LitemallAdmin;
 import com.attitude.tinymall.domain.LitemallOrderWithGoods;
 import com.attitude.tinymall.domain.MessageInfo;
+import com.attitude.tinymall.service.*;
 import com.attitude.tinymall.util.ResponseUtil;
 import com.attitude.tinymall.util.WxPayEngine;
 import com.attitude.tinymall.domain.LitemallAddress;
@@ -17,14 +18,6 @@ import com.attitude.tinymall.domain.LitemallUser;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.PayStatusEnum;
 import com.attitude.tinymall.enums.PaymentWayEnum;
-import com.attitude.tinymall.service.LitemallAddressService;
-import com.attitude.tinymall.service.LitemallCartService;
-import com.attitude.tinymall.service.LitemallOrderGoodsService;
-import com.attitude.tinymall.service.LitemallOrderService;
-import com.attitude.tinymall.service.LitemallProductService;
-import com.attitude.tinymall.service.LitemallRegionService;
-import com.attitude.tinymall.service.LitemallUserService;
-import com.attitude.tinymall.service.LitemallAdminService;
 import com.attitude.tinymall.annotation.LoginUser;
 import com.attitude.tinymall.util.IpUtil;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
@@ -49,6 +42,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import com.attitude.tinymall.enums.OrderStatusEnum.*;
+
+import static com.attitude.tinymall.enums.OrderStatusEnum.COMPLETE;
 
 /**
  * 订单设计
@@ -90,6 +86,8 @@ public class WxOrderController {
   private WxPayService wxPayService;
   @Autowired
   private WxPayEngine wxPayEngine;
+  @Autowired
+  private BaiduFenceService baiduFenceService;
   /**
    * 消息传递信息
    */
@@ -138,7 +136,7 @@ public class WxOrderController {
       return ResponseUtil.fail401();
     }
     if (showType == null) {
-      showType = 1;
+      showType = 0;
     }
 
     List<OrderStatusEnum> orderStatus = Arrays.asList(OrderStatusEnum.values());
@@ -265,7 +263,7 @@ public class WxOrderController {
     Integer cartId = JacksonUtil.parseInteger(body, "cartId");
     Integer addressId = JacksonUtil.parseInteger(body, "addressId");
     Integer couponId = JacksonUtil.parseInteger(body, "couponId");
-    Integer modeId = JacksonUtil.parseInteger(body, "modeId");
+//    Integer modeId = JacksonUtil.parseInteger(body, "modeId");
     String remarkText = JacksonUtil.parseString(body, "remarkText");
     if (cartId == null || addressId == null || couponId == null) {
       return ResponseUtil.badArgument();
@@ -273,6 +271,19 @@ public class WxOrderController {
 
     // 收货地址
     LitemallAddress checkedAddress = addressService.findById(addressId);
+
+    // 验证地址是否在合法的范围内
+//      try {
+//        boolean isValidAddress = baiduFenceService
+//            .isValidLocationWithinFence(userId.toString(), checkedAddress.getAddress(),
+//                adminService.findAdminByOwnerId(appId).getShopFenceId());
+//        if (!isValidAddress) {
+//          return ResponseUtil.unReachAddress();
+//        }
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//        return ResponseUtil.badArgument();
+//      }
 
     // 获取可用的优惠券信息
     // 使用优惠券减免的金额
@@ -323,9 +334,9 @@ public class WxOrderController {
       order.setOrderSn(orderService.generateOrderSn(userId));
       order.setAddTime(LocalDateTime.now());
       PaymentWayEnum paymentWay = PaymentWayEnum.CASH_ON_DELIVERY;
-      if (modeId == 1) {
-        paymentWay = PaymentWayEnum.ONLINE_WECHAT_PAY;
-      }
+//      if (modeId == 1) {
+//        paymentWay = PaymentWayEnum.ONLINE_WECHAT_PAY;
+//      }
       order.setOrderStatus(OrderStatusEnum.ONGOING);
       order.setPaymentWay(paymentWay);
       order.setConsignee(checkedAddress.getName());
@@ -387,22 +398,22 @@ public class WxOrderController {
 
     Map<String, Object> data = new HashMap<>();
     data.put("orderId", orderId);
-    if (modeId != 1) {//货到付款在此处触发
-      //想办法提醒管理端进行刷新
-      messageInfo.setMsgType("order-submit");
-      //目标端
-      messageInfo.setTargetClientId("admin-api-" + admin.getId());
-      LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
-      orderWithGoods.setOrder(order);
-      // 查找此订单的商品信息
-      orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-      Map<String, Object> dataSoc = new HashMap<>(2);
-      dataSoc.put("adminId", admin.getId());
-      dataSoc.put("orderData", orderWithGoods);
-      messageInfo.setDomainData(dataSoc);
-      client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
-
-    }
+//    if (modeId != 1) {//货到付款在此处触发
+//      //想办法提醒管理端进行刷新
+//      messageInfo.setMsgType("order-submit");
+//      //目标端
+//      messageInfo.setTargetClientId("admin-api-" + admin.getId());
+//      LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
+//      orderWithGoods.setOrder(order);
+//      // 查找此订单的商品信息
+//      orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
+//      Map<String, Object> dataSoc = new HashMap<>(2);
+//      dataSoc.put("adminId", admin.getId());
+//      dataSoc.put("orderData", orderWithGoods);
+//      messageInfo.setDomainData(dataSoc);
+//      client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
+//
+//    }
 
     return ResponseUtil.ok(data);
   }
@@ -437,7 +448,11 @@ public class WxOrderController {
     if (!order.getUserId().equals(userId)) {
       return ResponseUtil.badArgumentValue();
     }
-    // 检测是否能够支付
+    // TODO 检测是否能够取消
+//    OrderHandleOption handleOption = OrderUtil.build(order);
+//    if (!handleOption.isPay()) {
+//      return ResponseUtil.fail(403, "订单不能支付");
+//    }
 
     LitemallUser user = userService.findById(userId);
     String openId = user.getWeixinOpenid();
@@ -616,7 +631,11 @@ public class WxOrderController {
       return ResponseUtil.badArgumentValue();
     }
 
-    //TODO 检测是否能够取消
+    // TODO 检测是否能够取消
+//    OrderHandleOption handleOption = OrderUtil.build(order);
+//    if (!handleOption.isCancel()) {
+//      return ResponseUtil.fail(403, "订单不能取消");
+//    }
 
     // 开启事务管理
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
@@ -691,7 +710,11 @@ public class WxOrderController {
       return ResponseUtil.badArgumentValue();
     }
 
-    //TODO 检查是否能够申请退款
+    // TODO
+//    OrderHandleOption handleOption = OrderUtil.build(order);
+//    if (!handleOption.isRefund()) {
+//      return ResponseUtil.fail(403, "订单不能申请退款");
+//    }
 
     // 设置订单申请退款状态
     order.setOrderStatus(OrderStatusEnum.MERCHANT_REFUNDING);
@@ -735,8 +758,13 @@ public class WxOrderController {
     if (!order.getUserId().equals(userId)) {
       return ResponseUtil.badArgumentValue();
     }
+  // TODO
+//    OrderHandleOption handleOption = OrderUtil.build(order);
+//    if (!handleOption.isConfirm()) {
+//      return ResponseUtil.fail(403, "订单不能确认收货");
+//    }
+    order.setOrderStatus(COMPLETE);
 
-    order.setOrderStatus(OrderStatusEnum.COMPLETE);
     order.setConfirmTime(LocalDateTime.now());
     orderService.update(order);
     //想办法提醒管理端进行刷新
@@ -775,8 +803,11 @@ public class WxOrderController {
     if (!order.getUserId().equals(userId)) {
       return ResponseUtil.badArgumentValue();
     }
-
-    //TODO 检查订单是否能够删除
+    // TODO
+//    OrderHandleOption handleOption = OrderUtil.build(order);
+//    if (!handleOption.isDelete()) {
+//      return ResponseUtil.fail(403, "订单不能删除");
+//    }
 
     // 订单order_status没有字段用于标识删除
     // 而是存在专门的delete字段表示是否删除

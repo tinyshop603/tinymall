@@ -6,6 +6,7 @@ page{
 
 
 .orders-switch{
+    display: flex;
     width: 100%;
     background: #fff;
     height: 84rpx;
@@ -13,7 +14,7 @@ page{
 }
 
 .orders-switch .item{
-    display: inline-block;
+    flex:1;
     height: 82rpx;
     width: 20%;
     padding: 0 15rpx;
