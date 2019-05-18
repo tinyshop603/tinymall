@@ -1,24 +1,18 @@
 package com.attitude.tinymall.web;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.attitude.tinymall.annotation.LoginAdmin;
-import com.attitude.tinymall.domain.LitemallAdmin;
-import com.attitude.tinymall.domain.LitemallOrder;
-import com.attitude.tinymall.domain.LitemallOrderGoods;
-import com.attitude.tinymall.domain.LitemallOrderWithGoods;
+import com.attitude.tinymall.domain.*;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.PayStatusEnum;
-import com.attitude.tinymall.service.LitemallAdminService;
-import com.attitude.tinymall.service.LitemallOrderGoodsService;
-import com.attitude.tinymall.service.LitemallOrderService;
-import com.attitude.tinymall.service.LitemallProductService;
+import com.attitude.tinymall.service.*;
+import com.attitude.tinymall.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.attitude.tinymall.util.JacksonUtil;
-import com.attitude.tinymall.util.OrderUtil;
-import com.attitude.tinymall.util.ResponseUtil;
-import com.attitude.tinymall.util.WxPayEngine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -30,6 +24,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.text.DecimalFormat;
+import com.attitude.tinymall.enums.OrderStatusEnum.*;
+
+import static com.attitude.tinymall.enums.OrderStatusEnum.ONGOING;
+import static com.attitude.tinymall.enums.OrderStatusEnum.SYSTEM_AUTO_CANCEL;
+import static com.attitude.tinymall.enums.OrderStatusEnum.SYSTEM_AUTO_COMPLETE;
 
 @RestController
 @RequestMapping("/admin/{userName}/order")
@@ -61,6 +60,8 @@ public class AdminOrderController {
   private LitemallAdminService adminService;
   @Autowired
   private LitemallUserService userService;
+//  @Autowired
+//  private LitemallUser
 
 
   @GetMapping("/list")
@@ -216,31 +217,31 @@ public class AdminOrderController {
     if (tinymallOrder == null) {
       return ResponseUtil.badArgumentValue();
     }
-    Short preOrderStatus = tinymallOrder.getOrderStatus();
-    if(order.getOrderStatus() == 301 || order.getOrderStatus() == 3){//发货
-        //检测改为发货状态前是否为待发货（201，001）
-        if(preOrderStatus != 201 && preOrderStatus != 1){
-          return ResponseUtil.fail(403, "订单不能发货");
-        }
-        // [服务通知] 通知用户商家接单
-        sendTmplMsg(adminId, orderId, SendMsgTmplStatus.MERCHANT_ACCEPT_MSG);
-
-    }else if(order.getOrderStatus() == 102 || order.getOrderStatus() == 2){//取消订单
-        //检测改为发货状态前是否为待发货（201,001）或已发货（301,3）
-        if(preOrderStatus != 201 && preOrderStatus != 1 && preOrderStatus != 301 && preOrderStatus != 3){
-          return ResponseUtil.fail(403, "订单不能取消");
-        }
-        tinymallOrder.setEndTime(LocalDateTime.now());
-        // [服务通知] 通知用户取消订单，同时退款给用户
-        sendTmplMsg(adminId, orderId, SendMsgTmplStatus.CANCEL_ORDER_MSG);
-        return refundConf(adminId, orderId);
-    }else if(order.getOrderStatus() == 401 || order.getOrderStatus() == 4 ){//确认完成
-        //检测改为发货状态前是否为已发货（301，3）
-        if(preOrderStatus != 301 && preOrderStatus != 3){
-          return ResponseUtil.fail(403, "订单不能确认完成");
-        }
-        tinymallOrder.setConfirmTime(LocalDateTime.now());
-    }
+//    Short preOrderStatus = tinymallOrder.getOrderStatus();
+//    if(order.getOrderStatus() == 301 || order.getOrderStatus() == 3){//发货
+//        //检测改为发货状态前是否为待发货（201，001）
+//        if(preOrderStatus != 201 && preOrderStatus != 1){
+//          return ResponseUtil.fail(403, "订单不能发货");
+//        }
+//        // [服务通知] 通知用户商家接单
+//        sendTmplMsg(adminId, orderId, SendMsgTmplStatus.MERCHANT_ACCEPT_MSG);
+//
+//    }else if(order.getOrderStatus() == 102 || order.getOrderStatus() == 2){//取消订单
+//        //检测改为发货状态前是否为待发货（201,001）或已发货（301,3）
+//        if(preOrderStatus != 201 && preOrderStatus != 1 && preOrderStatus != 301 && preOrderStatus != 3){
+//          return ResponseUtil.fail(403, "订单不能取消");
+//        }
+//        tinymallOrder.setEndTime(LocalDateTime.now());
+//        // [服务通知] 通知用户取消订单，同时退款给用户
+//        sendTmplMsg(adminId, orderId, SendMsgTmplStatus.CANCEL_ORDER_MSG);
+//        return refundConf(adminId, orderId);
+//    }else if(order.getOrderStatus() == 401 || order.getOrderStatus() == 4 ){//确认完成
+//        //检测改为发货状态前是否为已发货（301，3）
+//        if(preOrderStatus != 301 && preOrderStatus != 3){
+//          return ResponseUtil.fail(403, "订单不能确认完成");
+//        }
+//        tinymallOrder.setConfirmTime(LocalDateTime.now());
+//    }
     // 设置订单已取消状态
     tinymallOrder.setOrderStatus(order.getOrderStatus());
     orderService.updateById(tinymallOrder);
@@ -273,8 +274,8 @@ public class AdminOrderController {
     if (orderId == null) {
       return ResponseUtil.badArgument();
     }
-    return refundConf(adminId, orderId);
-  }
+//    return refundConf(adminId, orderId);
+//  }
 
     LitemallOrder order = orderService.findById(orderId);
     if (order == null) {
@@ -447,7 +448,7 @@ public class AdminOrderController {
       TransactionStatus status = txManager.getTransaction(def);
       try {
         // 设置订单已取消状态
-        order.setOrderStatus(OrderUtil.STATUS_AUTO_CANCEL);
+        order.setOrderStatus(SYSTEM_AUTO_CANCEL);
         order.setEndTime(LocalDateTime.now());
         orderService.updateById(order);
 
@@ -493,10 +494,8 @@ public class AdminOrderController {
         continue;
       }
       // 设置订单已取消状态
-      if(order.getOrderStatus()==301){
-        order.setOrderStatus(OrderUtil.STATUS_AUTO_CONFIRM);
-      }else {
-        order.setOrderStatus(OrderUtil.STATUS_AFTER_AUTO_CONFIRM);
+      if(order.getOrderStatus()==ONGOING){
+        order.setOrderStatus(SYSTEM_AUTO_COMPLETE);
       }
       order.setConfirmTime(now);
       orderService.updateById(order);

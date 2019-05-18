@@ -26,6 +26,10 @@ public enum OrderStatusEnum{
    */
   COMPLETE(""),
 
+  /**
+   * 因超时系统自动完成, 订单终态
+   */
+  SYSTEM_AUTO_COMPLETE(""),
 
   /**
    * 商家确认收单
