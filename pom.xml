@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.3.RELEASE</version>
+        <version>2.0.6.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -25,7 +25,7 @@
         <module>tinymall-os-api</module>
         <module>tinymall-wx-api</module>
         <module>tinymall-admin-api</module>
-        <module>tinymall-all</module>
+        <module>tinymall-scheduled</module>
     </modules>
 
     <dependencyManagement>
@@ -33,7 +33,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot</artifactId>
-                <version>2.1.3.RELEASE</version>
+                <version>2.0.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -67,6 +67,11 @@
                 <artifactId>tinymall-admin-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.attitude</groupId>
+                <artifactId>tinymall-scheduled</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -77,7 +82,7 @@
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>1.3.0</version>
+                <version>1.3.2</version>
             </dependency>
 
             <!-- Spring Boot pagehelper 依赖 -->
@@ -94,6 +99,7 @@
                 <version>2.2.3</version>
             </dependency>
 
+            <!-- Mybatis Java8 TypeHandler-->
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis-typehandlers-jsr310</artifactId>

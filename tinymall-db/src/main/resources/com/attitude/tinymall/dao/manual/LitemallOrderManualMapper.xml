@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.attitude.tinymall.dao.manual.LitemallOrderManualMapper">
+  <resultMap type="com.attitude.tinymall.domain.LitemallOrderWithGoods" id="Order_With_Goods">
+    <!--复用上面声明的订单-->
+    <association property="order" javaType="com.attitude.tinymall.domain.LitemallOrder" resultMap="com.attitude.tinymall.dao.LitemallOrderMapper.BaseResultMap">
+    </association>
+    <collection column="id" property="goods" ofType="com.attitude.tinymall.domain.LitemallOrderGoods"
+                select="selectGoodsByOrder" >
+    </collection>
+  </resultMap>
+
+  <select id="selectGoodsByOrder" resultMap="com.attitude.tinymall.dao.LitemallOrderGoodsMapper.BaseResultMap">
+    SELECT * FROM tinymall_order_goods t WHERE t.order_id = #{id}
+  </select>
+
+  <select id="selectOdersWithGoodsByAdminId" resultMap="Order_With_Goods">
+    select * from tinymall_order_goods g left join tinymall_order o on g.`order_id`  = o.id where o.admin_id = #{adminId} ORDER BY g.add_time DESC;
+  </select>
+
+</mapper>
