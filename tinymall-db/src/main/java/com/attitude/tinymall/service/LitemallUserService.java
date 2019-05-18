@@ -11,165 +11,43 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import java.util.List;
 
-@Service
-@Slf4j
-public class LitemallUserService {
 
-  @Autowired
-  private LitemallUserMapper userMapper;
-  @Autowired
-  private BaiduFenceService baiduFenceService;
-  @Autowired
-  private LitemallAdminService adminService;
-
-  public LitemallUser findById(Integer userId) {
-    return userMapper.selectByPrimaryKey(userId);
-  }
-
-  public LitemallUser queryByOid(String openId) {
-    LitemallUserExample example = new LitemallUserExample();
-    example.or().andWeixinOpenidEqualTo(openId).andDeletedEqualTo(false);
-    return userMapper.selectOneByExample(example);
-  }
-
-  public void add(LitemallUser user) {
-    tryToMontionPerson(user);
-    userMapper.insertSelective(user);
-  }
-
-  private void tryToMontionPerson(LitemallUser user) {
-    if (user.getAdminId() != null) {
-      // 挂接, 并监控
-      LitemallAdmin litemallAdmin = adminService.findAllColunmById(user.getAdminId());
-      // 由于商店地址是必填项, 则此时的fence的Id肯定是已经创建好了的
-      boolean isSuccessMotioned = baiduFenceService
-          .addMonitorPersonToFence(user.getId().toString(), litemallAdmin.getShopFenceId());
-      log.info("user: {} has been add to the fence: {}, {}?", user.getId(),
-          litemallAdmin.getShopFenceId(), isSuccessMotioned);
-
-    }
-  }
-
-  public void update(LitemallUser user) {
-    // 针对先前的历史数据, 进行挂接, 该接口是幂等的
-    tryToMontionPerson(user);
-    userMapper.updateByPrimaryKeySelective(user);
-  }
+public interface LitemallUserService {
 
 
-  public List<LitemallUser> listUsersByAdminId(Integer adminId, String username, String mobile,
-      Integer page, Integer size, String sort, String order) {
-    LitemallUserExample example = new LitemallUserExample();
-    LitemallUserExample.Criteria criteria = example.createCriteria();
-    if (adminId != 0) {
-      criteria.andAdminIdEqualTo(adminId);
-    }
+   LitemallUser findById(Integer userId);
 
-    if (!StringUtils.isEmpty(username)) {
-      criteria.andUsernameLike("%" + username + "%");
-    }
-    if (!StringUtils.isEmpty(mobile)) {
-      criteria.andMobileEqualTo(mobile);
-    }
-    criteria.andDeletedEqualTo(false);
+   LitemallUser queryByOid(String openId) ;
 
-    PageHelper.startPage(page, size);
-    return userMapper.selectByExample(example);
-  }
+   void add(LitemallUser user) ;
 
-  public int countUsersByAdminId(Integer adminId, String username, String mobile) {
-    LitemallUserExample example = new LitemallUserExample();
-    LitemallUserExample.Criteria criteria = example.createCriteria();
-    if (adminId != 0) {
-      criteria.andAdminIdEqualTo(adminId);
-    }
-    if (!StringUtils.isEmpty(username)) {
-      criteria.andUsernameLike("%" + username + "%");
-    }
-    if (!StringUtils.isEmpty(mobile)) {
-      criteria.andMobileEqualTo(mobile);
-    }
-    criteria.andDeletedEqualTo(false);
+   void tryToMontionPerson(LitemallUser user);
 
-    return (int) userMapper.countByExample(example);
-  }
+   void update(LitemallUser user) ;
 
 
-  public List<LitemallUser> querySelective(String username, String mobile, Integer page,
-      Integer size, String sort, String order) {
-    LitemallUserExample example = new LitemallUserExample();
-    LitemallUserExample.Criteria criteria = example.createCriteria();
+   List<LitemallUser> listUsersByAdminId(Integer adminId, String username, String mobile,
+      Integer page, Integer size, String sort, String order) ;
 
-    if (!StringUtils.isEmpty(username)) {
-      criteria.andUsernameLike("%" + username + "%");
-    }
-    if (!StringUtils.isEmpty(mobile)) {
-      criteria.andMobileEqualTo(mobile);
-    }
-    criteria.andDeletedEqualTo(false);
-
-    PageHelper.startPage(page, size);
-    return userMapper.selectByExample(example);
-  }
-
-  public int countSeletive(String username, String mobile, Integer page, Integer size, String sort,
-      String order) {
-    LitemallUserExample example = new LitemallUserExample();
-    LitemallUserExample.Criteria criteria = example.createCriteria();
-
-    if (!StringUtils.isEmpty(username)) {
-      criteria.andUsernameLike("%" + username + "%");
-    }
-    if (!StringUtils.isEmpty(mobile)) {
-      criteria.andMobileEqualTo(mobile);
-    }
-    criteria.andDeletedEqualTo(false);
-
-    return (int) userMapper.countByExample(example);
-  }
-
-  public int count() {
-    LitemallUserExample example = new LitemallUserExample();
-    example.or().andDeletedEqualTo(false);
-
-    return (int) userMapper.countByExample(example);
-  }
-
-  public int countByAdminId(Integer adminId) {
-    LitemallUserExample example = new LitemallUserExample();
-    LitemallUserExample.Criteria criteria = example.createCriteria();
-    if (adminId != 0) {
-      criteria.andAdminIdEqualTo(adminId);
-    }
-    criteria.andDeletedEqualTo(false);
-
-    return (int) userMapper.countByExample(example);
-  }
-
-  public List<LitemallUser> queryByUsername(String username) {
-    LitemallUserExample example = new LitemallUserExample();
-    example.or().andUsernameEqualTo(username).andDeletedEqualTo(false);
-    return userMapper.selectByExample(example);
-  }
-
-  public List<LitemallUser> queryByMobile(String mobile) {
-    LitemallUserExample example = new LitemallUserExample();
-    example.or().andMobileEqualTo(mobile).andDeletedEqualTo(false);
-    return userMapper.selectByExample(example);
-  }
-
-  public List<LitemallUser> queryByAdminId(Integer adminId) {
-    LitemallUserExample example = new LitemallUserExample();
-    LitemallUserExample.Criteria criteria = example.createCriteria();
-    if (adminId != 0) {
-      criteria.andAdminIdEqualTo(adminId);
-    }
-    criteria.andDeletedEqualTo(false);
-    return userMapper.selectByExample(example);
-  }
+   int countUsersByAdminId(Integer adminId, String username, String mobile) ;
 
 
-  public void deleteById(Integer id) {
-    userMapper.logicalDeleteByPrimaryKey(id);
-  }
+   List<LitemallUser> querySelective(String username, String mobile, Integer page,
+      Integer size, String sort, String order) ;
+
+   int countSeletive(String username, String mobile, Integer page, Integer size, String sort,
+      String order) ;
+
+   int count() ;
+
+   int countByAdminId(Integer adminId) ;
+
+   List<LitemallUser> queryByUsername(String username) ;
+
+   List<LitemallUser> queryByMobile(String mobile) ;
+
+   List<LitemallUser> queryByAdminId(Integer adminId) ;
+
+
+   void deleteById(Integer id) ;
 }

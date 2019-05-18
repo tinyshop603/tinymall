@@ -2,6 +2,5 @@ package com.attitude.tinymall.service;
 
 import org.springframework.stereotype.Service;
 
-@Service
-public class LitemallCouponService {
+public interface LitemallCouponService {
 }

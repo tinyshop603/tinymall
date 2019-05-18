@@ -10,71 +10,25 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service
 @Deprecated
-public class LitemallFootprintService {
-    @Resource
-    private LitemallFootprintMapper footprintMapper;
+public interface LitemallFootprintService {
 
-    public List<LitemallFootprint> queryByAddTime(Integer userId, Integer page, Integer size) {
-        LitemallFootprintExample example = new LitemallFootprintExample();
-        example.or().andUserIdEqualTo(userId).andDeletedEqualTo(false);
-        example.setOrderByClause(LitemallFootprint.Column.addTime.desc());
-        PageHelper.startPage(page, size);
-        return footprintMapper.selectByExample(example);
-    }
+   List<LitemallFootprint> queryByAddTime(Integer userId, Integer page, Integer size);
 
-    public int countByAddTime(Integer userId,Integer page, Integer size) {
-        LitemallFootprintExample example = new LitemallFootprintExample();
-        example.or().andUserIdEqualTo(userId).andDeletedEqualTo(false);
-        return (int)footprintMapper.countByExample(example);
-    }
+   int countByAddTime(Integer userId, Integer page, Integer size);
 
-    public LitemallFootprint findById(Integer id) {
-        return footprintMapper.selectByPrimaryKey(id);
-    }
+   LitemallFootprint findById(Integer id);
 
-    public void deleteById(Integer id){
-        footprintMapper.logicalDeleteByPrimaryKey(id);
-    }
+   void deleteById(Integer id);
 
-    public void add(LitemallFootprint footprint) {
-        footprintMapper.insertSelective(footprint);
-    }
+   void add(LitemallFootprint footprint);
 
-    public List<LitemallFootprint> querySelective(String userId, String goodsId, Integer page, Integer size, String sort, String order) {
-        LitemallFootprintExample example = new LitemallFootprintExample();
-        LitemallFootprintExample.Criteria criteria = example.createCriteria();
+   List<LitemallFootprint> querySelective(String userId, String goodsId, Integer page,
+      Integer size, String sort, String order);
 
-        if(!StringUtils.isEmpty(userId)){
-            criteria.andUserIdEqualTo(Integer.valueOf(userId));
-        }
-        if(!StringUtils.isEmpty(goodsId)){
-            criteria.andGoodsIdEqualTo(Integer.valueOf(goodsId));
-        }
-        criteria.andDeletedEqualTo(false);
+   int countSelective(String userId, String goodsId, Integer page, Integer size, String sort,
+      String order);
 
-        PageHelper.startPage(page, size);
-        return footprintMapper.selectByExample(example);
-    }
-
-    public int countSelective(String userId, String goodsId, Integer page, Integer size, String sort, String order) {
-        LitemallFootprintExample example = new LitemallFootprintExample();
-        LitemallFootprintExample.Criteria criteria = example.createCriteria();
-
-        if(!StringUtils.isEmpty(userId)){
-            criteria.andUserIdEqualTo(Integer.valueOf(userId));
-        }
-        if(!StringUtils.isEmpty(goodsId)){
-            criteria.andGoodsIdEqualTo(Integer.valueOf(goodsId));
-        }
-        criteria.andDeletedEqualTo(false);
-
-        return (int)footprintMapper.countByExample(example);
-    }
-
-    public void updateById(LitemallFootprint collect) {
-        footprintMapper.updateByPrimaryKeySelective(collect);
-    }
+   void updateById(LitemallFootprint collect);
 
 }

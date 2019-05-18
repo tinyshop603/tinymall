@@ -13,288 +13,55 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class LitemallGoodsService {
+public interface LitemallGoodsService {
 
-  @Resource
-  private LitemallGoodsMapper goodsMapper;
-  @Resource
-  private LitemallCategoryService categoryService;
+   List<LitemallGoods> queryByHot(int offset, int limit) ;
 
-  public List<LitemallGoods> queryByHot(int offset, int limit) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andIsHotEqualTo(true).andDeletedEqualTo(false);
-    PageHelper.startPage(offset, limit);
-    return goodsMapper.selectByExample(example);
-  }
+   List<LitemallGoods> queryByNew(int offset, int limit) ;
 
-  public List<LitemallGoods> queryByNew(int offset, int limit) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andIsNewEqualTo(true).andDeletedEqualTo(false);
-    PageHelper.startPage(offset, limit);
-    return goodsMapper.selectByExample(example);
-  }
+   List<LitemallGoods> queryByCategory(List<Integer> catList, int offset, int limit);
 
-  public List<LitemallGoods> queryByCategory(List<Integer> catList, int offset, int limit) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andCategoryIdIn(catList).andDeletedEqualTo(false);
-    PageHelper.startPage(offset, limit);
-    return goodsMapper.selectByExample(example);
-  }
+   int countByCategory(List<Integer> catList, int offset, int limit) ;
 
-  public int countByCategory(List<Integer> catList, int offset, int limit) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andCategoryIdIn(catList).andDeletedEqualTo(false);
-    return (int) goodsMapper.countByExample(example);
-  }
+   List<LitemallGoods> queryByCategory(Integer catId, int offset, int limit);
 
-  public List<LitemallGoods> queryByCategory(Integer catId, int offset, int limit) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andCategoryIdEqualTo(catId).andDeletedEqualTo(false);
-    PageHelper.startPage(offset, limit);
-    return goodsMapper.selectByExample(example);
-  }
-
-  public int countByCategory(Integer catId, Integer page, Integer size) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andCategoryIdEqualTo(catId).andDeletedEqualTo(false);
-    return (int) goodsMapper.countByExample(example);
-  }
+   int countByCategory(Integer catId, Integer page, Integer size) ;
 
   //wz-增加categoryIds字段以适应一次获取多区域商品
-  public List<LitemallGoods> querySelective(Integer catId, Integer brandId, String keyword,
+   List<LitemallGoods> querySelective(Integer catId, Integer brandId, String keyword,
       Integer isHot, Integer isNew, Integer offset, Integer limit, String sort,
-      List<Integer> categoryIds) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    LitemallGoodsExample.Criteria criteria = example.createCriteria();
+      List<Integer> categoryIds) ;
 
-    if (categoryIds != null) {
-      criteria.andCategoryIdIn(categoryIds);
-    }
-    if (catId != null && catId != 0) {
-      criteria.andCategoryIdEqualTo(catId);
-    }
-    if (brandId != null) {
-      criteria.andBrandIdEqualTo(brandId);
-    }
-    if (isNew != null) {
-      criteria.andIsNewEqualTo(isNew.intValue() == 1);
-    }
-    if (isHot != null) {
-      criteria.andIsHotEqualTo(isHot.intValue() == 1);
-    }
-    if (keyword != null) {
-      criteria.andKeywordsLike("%" + keyword + "%");
-    }
-    criteria.andDeletedEqualTo(false);
+   int countSelective(Integer catId, Integer brandId, String keyword, Integer isHot,
+      Integer isNew, Integer offset, Integer limit, String sort) ;
 
-    if (sort != null) {
-      example.setOrderByClause(sort);
-    }
-    if (limit != null && offset != null) {
-      PageHelper.startPage(offset, limit);
-    }
+   LitemallGoods findById(Integer id) ;
 
-    Column[] columns = new Column[]{Column.id, Column.name, Column.listPicUrl, Column.retailPrice,
-        Column.isOnSale,Column.counterPrice};
-    return goodsMapper.selectByExampleSelective(example, columns);
-  }
+    int countSelective(String goodsSn, String name, String categoryId);
 
-  public int countSelective(Integer catId, Integer brandId, String keyword, Integer isHot,
-      Integer isNew, Integer offset, Integer limit, String sort) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    LitemallGoodsExample.Criteria criteria = example.createCriteria();
+   List<LitemallGoods> queryByIds(List<Integer> relatedGoodsIds);
 
-    if (catId != null) {
-      criteria.andCategoryIdEqualTo(catId);
-    }
-    if (brandId != null) {
-      criteria.andBrandIdEqualTo(brandId);
-    }
-    if (isNew != null) {
-      criteria.andIsNewEqualTo(isNew.intValue() == 1);
-    }
-    if (isHot != null) {
-      criteria.andIsHotEqualTo(isHot.intValue() == 1);
-    }
-    if (keyword != null) {
-      criteria.andKeywordsLike("%" + keyword + "%");
-    }
-    criteria.andDeletedEqualTo(false);
+   Integer queryOnSale(List<Integer> categoryId) ;
 
-    return (int) goodsMapper.countByExample(example);
-  }
+   List<LitemallGoods> listGoodsByAdminId(Integer adminId, String goodsSn, String name,
+      String categoryId, Integer page, Integer size, String sort, String order) ;
 
-  public LitemallGoods findById(Integer id) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andIdEqualTo(id).andDeletedEqualTo(false);
-    return goodsMapper.selectOneByExampleWithBLOBs(example);
-  }
+   int countGoodsByAdminId(Integer adminId, String goodsSn, String name, String categoryId) ;
 
+   List<LitemallGoods> querySelective(String goodsSn, String name, String categoryId,
+      Integer page, Integer size, String sort, String order) ;
 
-  public List<LitemallGoods> queryByIds(List<Integer> relatedGoodsIds) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andIdIn(relatedGoodsIds).andDeletedEqualTo(false);
-    return goodsMapper.selectByExample(example);
-  }
+   void updateById(LitemallGoods goods);
 
-  public Integer queryOnSale(List<Integer> categoryId) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andIsOnSaleEqualTo(true).andCategoryIdIn(categoryId).andDeletedEqualTo(false);
-    return (int) goodsMapper.countByExample(example);
-  }
+   void deleteById(Integer id);
 
-  public List<LitemallGoods> listGoodsByAdminId(Integer adminId, String goodsSn, String name,
-      String categoryId, Integer page, Integer size, String sort, String order) {
+   int add(LitemallGoods goods) ;
 
-    // TODO 抽出适当的方法进行构造查询条件
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    LitemallGoodsExample.Criteria criteria = example.createCriteria();
+   int count() ;
 
-    List<Integer> categoryIds = categoryService
-        .getAdminMallCategoryIdsByAdminId(adminId);
+   int countByAdminId(Integer adminId) ;
 
-    if (categoryIds != null) {
-      criteria.andCategoryIdIn(categoryIds);
-    }
+   List<Integer> getCatIds(Integer brandId, String keyword, Integer isHot, Integer isNew) ;
 
-    if (!StringUtils.isEmpty(goodsSn)) {
-      criteria.andGoodsSnEqualTo(goodsSn);
-    }
-    if (!StringUtils.isEmpty(name)) {
-      criteria.andNameLike("%" + name + "%");
-    }
-    if (!StringUtils.isEmpty(categoryId)) {
-      criteria.andCategoryIdEqualTo(Integer.valueOf(categoryId));
-    }
-    criteria.andDeletedEqualTo(false);
-
-    PageHelper.startPage(page, size);
-    return goodsMapper.selectByExample(example);
-  }
-
-  public int countGoodsByAdminId(Integer adminId, String goodsSn, String name, String categoryId) {
-
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    LitemallGoodsExample.Criteria criteria = example.createCriteria();
-    List<Integer> categoryIds = categoryService
-        .getAdminMallCategoryIdsByAdminId(adminId);
-
-    if (categoryIds != null) {
-      criteria.andCategoryIdIn(categoryIds);
-    }
-
-    if (!StringUtils.isEmpty(goodsSn)) {
-      criteria.andGoodsSnEqualTo(goodsSn);
-    }
-    if (!StringUtils.isEmpty(name)) {
-      criteria.andNameLike("%" + name + "%");
-    }
-    if (!StringUtils.isEmpty(categoryId)) {
-      criteria.andCategoryIdEqualTo(Integer.valueOf(categoryId));
-    }
-    criteria.andDeletedEqualTo(false);
-
-    return (int) goodsMapper.countByExample(example);
-  }
-
-  public List<LitemallGoods> querySelective(String goodsSn, String name, String categoryId,
-      Integer page, Integer size, String sort, String order) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    LitemallGoodsExample.Criteria criteria = example.createCriteria();
-
-    if (!StringUtils.isEmpty(goodsSn)) {
-      criteria.andGoodsSnEqualTo(goodsSn);
-    }
-    if (!StringUtils.isEmpty(name)) {
-      criteria.andNameLike("%" + name + "%");
-    }
-    if (!StringUtils.isEmpty(categoryId)) {
-      criteria.andCategoryIdEqualTo(Integer.valueOf(categoryId));
-    }
-    criteria.andDeletedEqualTo(false);
-
-    PageHelper.startPage(page, size);
-    return goodsMapper.selectByExample(example);
-  }
-
-  public int countSelective(String goodsSn, String name, String categoryId) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    LitemallGoodsExample.Criteria criteria = example.createCriteria();
-
-    if (!StringUtils.isEmpty(goodsSn)) {
-      criteria.andGoodsSnEqualTo(goodsSn);
-    }
-    if (!StringUtils.isEmpty(name)) {
-      criteria.andNameLike("%" + name + "%");
-    }
-    if (!StringUtils.isEmpty(categoryId)) {
-      criteria.andCategoryIdEqualTo(Integer.valueOf(categoryId));
-    }
-    criteria.andDeletedEqualTo(false);
-
-    return (int) goodsMapper.countByExample(example);
-  }
-
-  public void updateById(LitemallGoods goods) {
-    goods.setListPicUrl(goods.getPrimaryPicUrl());
-    goodsMapper.updateByPrimaryKeySelective(goods);
-  }
-
-  public void deleteById(Integer id) {
-    goodsMapper.logicalDeleteByPrimaryKey(id);
-  }
-
-  public int add(LitemallGoods goods) {
-
-    return goodsMapper.insertSelective(goods);
-  }
-
-  public int count() {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    example.or().andDeletedEqualTo(false);
-    return (int) goodsMapper.countByExample(example);
-  }
-
-  public int countByAdminId(Integer adminId) {
-    return this.getAdminGoodsIds(adminId).size();
-  }
-
-  public List<Integer> getCatIds(Integer brandId, String keyword, Integer isHot, Integer isNew) {
-    LitemallGoodsExample example = new LitemallGoodsExample();
-    LitemallGoodsExample.Criteria criteria = example.createCriteria();
-
-    if (brandId != null) {
-      criteria.andBrandIdEqualTo(brandId);
-    }
-    if (isNew != null) {
-      criteria.andIsNewEqualTo(isNew.intValue() == 1);
-    }
-    if (isHot != null) {
-      criteria.andIsHotEqualTo(isHot.intValue() == 1);
-    }
-    if (keyword != null) {
-      criteria.andKeywordsLike("%" + keyword + "%");
-    }
-    criteria.andDeletedEqualTo(false);
-
-    List<LitemallGoods> goodsList = goodsMapper
-        .selectByExampleSelective(example, Column.categoryId);
-    List<Integer> cats = new ArrayList<Integer>();
-    for (LitemallGoods goods : goodsList) {
-      cats.add(goods.getCategoryId());
-    }
-    return cats;
-  }
-
-  public List<Integer> getAdminGoodsIds(Integer adminId) {
-    // 获取该店铺的所有的商品,此处不必考虑量的问题,原因是一步向前端扔,二数据量不会过大,,若产生效率问题:考虑表加上冗余外键
-    List<LitemallGoods> litemallGoodsOfAdmin = this
-        .listGoodsByAdminId(adminId, null, null, null, 0, Integer.MAX_VALUE, null, null);
-    return litemallGoodsOfAdmin
-        .stream()
-        .mapToInt(LitemallGoods::getId)
-        .boxed()
-        .collect(Collectors.toList());
-  }
+   List<Integer> getAdminGoodsIds(Integer adminId) ;
 }

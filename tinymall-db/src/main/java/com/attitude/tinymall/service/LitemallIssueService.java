@@ -10,55 +10,19 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service
-public class LitemallIssueService {
-    @Resource
-    private LitemallIssueMapper issueMapper;
+public interface LitemallIssueService {
 
-    public List<LitemallIssue> query() {
-        LitemallIssueExample example = new LitemallIssueExample();
-        example.or().andDeletedEqualTo(false);
-        return issueMapper.selectByExample(example);
-    }
+     List<LitemallIssue> query() ;
 
-    public void deleteById(Integer id) {
-        issueMapper.logicalDeleteByPrimaryKey(id);
-    }
+     void deleteById(Integer id);
+    
+     void add(LitemallIssue issue);
 
-    public void add(LitemallIssue issue) {
-        issueMapper.insertSelective(issue);
-    }
+     List<LitemallIssue> querySelective(String question, Integer page, Integer size, String sort, String order) ;
 
-    public List<LitemallIssue> querySelective(String question, Integer page, Integer size, String sort, String order) {
-        LitemallIssueExample example = new LitemallIssueExample();
-        LitemallIssueExample.Criteria criteria = example.createCriteria();
+     int countSelective(String question, Integer page, Integer size, String sort, String order) ;
 
-        if(!StringUtils.isEmpty(question)){
-            criteria.andQuestionLike("%" + question + "%" );
-        }
-        criteria.andDeletedEqualTo(false);
+     void updateById(LitemallIssue issue);
 
-        PageHelper.startPage(page, size);
-        return issueMapper.selectByExample(example);
-    }
-
-    public int countSelective(String question, Integer page, Integer size, String sort, String order) {
-        LitemallIssueExample example = new LitemallIssueExample();
-        LitemallIssueExample.Criteria criteria = example.createCriteria();
-
-        if(!StringUtils.isEmpty(question)){
-            criteria.andQuestionLike("%" + question + "%" );
-        }
-        criteria.andDeletedEqualTo(false);
-
-        return (int)issueMapper.countByExample(example);
-    }
-
-    public void updateById(LitemallIssue issue) {
-        issueMapper.updateByPrimaryKeySelective(issue);
-    }
-
-    public LitemallIssue findById(Integer id) {
-        return issueMapper.selectByPrimaryKey(id);
-    }
+     LitemallIssue findById(Integer id);
 }

@@ -9,78 +9,27 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service
-public class LitemallProductService {
+public interface LitemallProductService {
 
-  @Resource
-  private LitemallProductMapper productMapper;
-  @Resource
-  private LitemallGoodsService goodsService;
 
-  public List<LitemallProduct> queryByGid(Integer gid) {
-    LitemallProductExample example = new LitemallProductExample();
-    example.or().andGoodsIdEqualTo(gid).andDeletedEqualTo(false);
-    return productMapper.selectByExample(example);
-  }
+   List<LitemallProduct> queryByGid(Integer gid) ;
 
-  public LitemallProduct findById(Integer id) {
-    return productMapper.selectByPrimaryKey(id);
-  }
+   LitemallProduct findById(Integer id);
 
-  public List<LitemallProduct> querySelective(Integer goodsId, Integer page, Integer size,
-      String sort, String order) {
-    LitemallProductExample example = new LitemallProductExample();
-    LitemallProductExample.Criteria criteria = example.createCriteria();
+   List<LitemallProduct> querySelective(Integer goodsId, Integer page, Integer size,
+      String sort, String order) ;
 
-    if (goodsId != null) {
-      criteria.andGoodsIdEqualTo(goodsId);
-    }
-    criteria.andDeletedEqualTo(false);
+   int countSelective(Integer goodsId, Integer page, Integer size, String sort,
+      String order) ;
 
-    PageHelper.startPage(page, size);
-    return productMapper.selectByExample(example);
-  }
+   void updateById(LitemallProduct product);
 
-  public int countSelective(Integer goodsId, Integer page, Integer size, String sort,
-      String order) {
-    LitemallProductExample example = new LitemallProductExample();
-    LitemallProductExample.Criteria criteria = example.createCriteria();
+   void deleteById(Integer id);
 
-    if (goodsId != null) {
-      criteria.andGoodsIdEqualTo(goodsId);
-    }
-    criteria.andDeletedEqualTo(false);
+   void add(LitemallProduct product);
 
-    return (int) productMapper.countByExample(example);
-  }
+   int count() ;
 
-  public void updateById(LitemallProduct product) {
-    productMapper.updateByPrimaryKeySelective(product);
-  }
-
-  public void deleteById(Integer id) {
-    productMapper.logicalDeleteByPrimaryKey(id);
-  }
-
-  public void add(LitemallProduct product) {
-    productMapper.insertSelective(product);
-  }
-
-  public int count() {
-    LitemallProductExample example = new LitemallProductExample();
-    example.or().andDeletedEqualTo(false);
-
-    return (int) productMapper.countByExample(example);
-  }
-
-  public int countByAdminId(Integer adminId) {
-    LitemallProductExample example = new LitemallProductExample();
-    LitemallProductExample.Criteria criteria = example.createCriteria();
-    if (adminId != 0) {
-      criteria.andGoodsIdIn(goodsService.getAdminGoodsIds(adminId));
-    }
-    criteria.andDeletedEqualTo(false);
-    return (int) productMapper.countByExample(example);
-  }
+   int countByAdminId(Integer adminId) ;
 
 }

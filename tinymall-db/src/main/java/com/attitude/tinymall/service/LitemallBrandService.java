@@ -10,76 +10,26 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service
-public class LitemallBrandService {
-    @Resource
-    private LitemallBrandMapper brandMapper;
+public interface LitemallBrandService {
 
-    public List<LitemallBrand> queryWithNew(int offset, int limit) {
-        LitemallBrandExample example = new LitemallBrandExample();
-        example.or().andIsNewEqualTo(true).andDeletedEqualTo(false);
-        PageHelper.startPage(offset, limit);
-        return brandMapper.selectByExample(example);
-    }
+  List<LitemallBrand> queryWithNew(int offset, int limit);
 
-    public List<LitemallBrand> query(int offset, int limit) {
-        LitemallBrandExample example = new LitemallBrandExample();
-        example.or().andDeletedEqualTo(false);
-        PageHelper.startPage(offset, limit);
-        return brandMapper.selectByExample(example);
-    }
+  List<LitemallBrand> query(int offset, int limit);
 
-    public int queryTotalCount() {
-        LitemallBrandExample example = new LitemallBrandExample();
-        example.or().andDeletedEqualTo(false);
-        return (int)brandMapper.countByExample(example);
-    }
+  int queryTotalCount();
 
-    public LitemallBrand findById(Integer id) {
-        return brandMapper.selectByPrimaryKey(id);
-    }
+  LitemallBrand findById(Integer id);
 
-    public List<LitemallBrand> querySelective(String id, String name, Integer page, Integer size, String sort, String order) {
-        LitemallBrandExample example = new LitemallBrandExample();
-        LitemallBrandExample.Criteria criteria = example.createCriteria();
+  List<LitemallBrand> querySelective(String id, String name, Integer page, Integer size,
+      String sort, String order);
 
-        if(!StringUtils.isEmpty(id)){
-            criteria.andIdEqualTo(Integer.valueOf(id));
-        }
-        if(!StringUtils.isEmpty(name)){
-            criteria.andNameLike("%" + name + "%");
-        }
-        criteria.andDeletedEqualTo(false);
+  int countSelective(String id, String name, Integer page, Integer size, String sort,
+      String order);
 
-        PageHelper.startPage(page, size);
-        return brandMapper.selectByExample(example);
-    }
+  void updateById(LitemallBrand brand);
 
-    public int countSelective(String id, String name, Integer page, Integer size, String sort, String order) {
-        LitemallBrandExample example = new LitemallBrandExample();
-        LitemallBrandExample.Criteria criteria = example.createCriteria();
+  void deleteById(Integer id);
 
-        if(!StringUtils.isEmpty(id)){
-            criteria.andIdEqualTo(Integer.valueOf(id));
-        }
-        if(!StringUtils.isEmpty(name)){
-            criteria.andNameLike("%" + name + "%");
-        }
-        criteria.andDeletedEqualTo(false);
-
-        return (int)brandMapper.countByExample(example);
-    }
-
-    public void updateById(LitemallBrand brand) {
-        brandMapper.updateByPrimaryKeySelective(brand);
-    }
-
-    public void deleteById(Integer id) {
-        brandMapper.logicalDeleteByPrimaryKey(id);
-    }
-
-    public void add(LitemallBrand brand) {
-        brandMapper.insertSelective(brand);
-    }
+  void add(LitemallBrand brand);
 
 }

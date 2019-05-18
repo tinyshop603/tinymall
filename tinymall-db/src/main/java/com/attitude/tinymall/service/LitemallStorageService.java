@@ -10,70 +10,22 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-@Service
-public class LitemallStorageService {
-    @Autowired
-    private LitemallStorageMapper storageMapper;
+public interface LitemallStorageService {
 
-    public void deleteByKey(String key) {
-        LitemallStorageExample example = new LitemallStorageExample();
-        example.or().andKeyEqualTo(key);
-        storageMapper.logicalDeleteByExample(example);
-    }
+     void deleteByKey(String key) ;
 
-    public void add(LitemallStorage storageInfo) {
-        storageMapper.insertSelective(storageInfo);
-    }
+     void add(LitemallStorage storageInfo);
 
-    public LitemallStorage findByName(String filename) {
-        LitemallStorageExample example = new LitemallStorageExample();
-        example.or().andNameEqualTo(filename).andDeletedEqualTo(false);
-        return storageMapper.selectOneByExample(example);
-    }
+     LitemallStorage findByName(String filename) ;
 
-    public LitemallStorage findByKey(String key) {
-        LitemallStorageExample example = new LitemallStorageExample();
-        example.or().andKeyEqualTo(key).andDeletedEqualTo(false);
-        return storageMapper.selectOneByExample(example);
-    }
+     LitemallStorage findByKey(String key) ;
 
-    public void update(LitemallStorage storageInfo) {
-        storageMapper.updateByPrimaryKeySelective(storageInfo);
-    }
+     void update(LitemallStorage storageInfo);
 
 
-    public LitemallStorage findById(Integer id) {
-        return storageMapper.selectByPrimaryKey(id);
-    }
+     LitemallStorage findById(Integer id);
 
-    public List<LitemallStorage> querySelective(String key, String name, Integer page, Integer limit, String sort, String order) {
-        LitemallStorageExample example = new LitemallStorageExample();
-        LitemallStorageExample.Criteria criteria = example.createCriteria();
+     List<LitemallStorage> querySelective(String key, String name, Integer page, Integer limit, String sort, String order) ;
 
-        if(!StringUtils.isEmpty(key)){
-            criteria.andKeyEqualTo(key);
-        }
-        if(!StringUtils.isEmpty(name)){
-            criteria.andNameLike("%" + name + "%");
-        }
-        criteria.andDeletedEqualTo(false);
-
-        PageHelper.startPage(page, limit);
-        return storageMapper.selectByExample(example);
-    }
-
-    public int countSelective(String key, String name, Integer page, Integer size, String sort, String order) {
-        LitemallStorageExample example = new LitemallStorageExample();
-        LitemallStorageExample.Criteria criteria = example.createCriteria();
-
-        if(!StringUtils.isEmpty(key)){
-            criteria.andKeyEqualTo(key);
-        }
-        if(!StringUtils.isEmpty(name)){
-            criteria.andNameLike("%" + name + "%");
-        }
-        criteria.andDeletedEqualTo(false);
-
-        return (int)storageMapper.countByExample(example);
-    }
+     int countSelective(String key, String name, Integer page, Integer size, String sort, String order) ;
 }

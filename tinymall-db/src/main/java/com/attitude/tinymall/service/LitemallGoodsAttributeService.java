@@ -9,68 +9,21 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service
-public class LitemallGoodsAttributeService {
+public interface LitemallGoodsAttributeService {
 
-  @Resource
-  private LitemallGoodsAttributeMapper goodsAttributeMapper;
-  @Resource
-  private LitemallGoodsService goodsService;
 
-  public List<LitemallGoodsAttribute> queryByGid(Integer goodsId) {
-    LitemallGoodsAttributeExample example = new LitemallGoodsAttributeExample();
-    example.or().andGoodsIdEqualTo(goodsId).andDeletedEqualTo(false);
-    return goodsAttributeMapper.selectByExample(example);
-  }
+   List<LitemallGoodsAttribute> queryByGid(Integer goodsId) ;
 
-  public List<LitemallGoodsAttribute> querySelective(Integer goodsId, Integer adminId, Integer page,
-      Integer size, String sort, String order) {
-    LitemallGoodsAttributeExample example = new LitemallGoodsAttributeExample();
-    LitemallGoodsAttributeExample.Criteria criteria = example.createCriteria();
+   List<LitemallGoodsAttribute> querySelective(Integer goodsId, Integer adminId, Integer page,
+      Integer size, String sort, String order) ;
 
-    if (goodsId != null) {
-      criteria.andGoodsIdEqualTo(goodsId);
-    }
-    List<Integer> litemallGoodsIdsOfAdmin = goodsService.getAdminGoodsIds(adminId);
-    if (litemallGoodsIdsOfAdmin.size() > 0) {
-      criteria.andGoodsIdIn(litemallGoodsIdsOfAdmin);
-    }
-    criteria.andDeletedEqualTo(false);
+   int countSelective(Integer goodsId, Integer adminId, Integer page, Integer size,
+      String sort, String order) ;
 
-    PageHelper.startPage(page, size);
-    return goodsAttributeMapper.selectByExample(example);
-  }
+   void updateById(LitemallGoodsAttribute goodsAttribute) ;
 
-  public int countSelective(Integer goodsId, Integer adminId, Integer page, Integer size,
-      String sort, String order) {
-    LitemallGoodsAttributeExample example = new LitemallGoodsAttributeExample();
-    LitemallGoodsAttributeExample.Criteria criteria = example.createCriteria();
+   void deleteById(Integer id);
+   void add(LitemallGoodsAttribute goodsAttribute);
 
-    if (goodsId != null) {
-      criteria.andGoodsIdEqualTo(goodsId);
-    }
-    List<Integer> litemallGoodsIdsOfAdmin = goodsService.getAdminGoodsIds(adminId);
-    if (litemallGoodsIdsOfAdmin.size() > 0) {
-      criteria.andGoodsIdIn(litemallGoodsIdsOfAdmin);
-    }
-    criteria.andDeletedEqualTo(false);
-
-    return (int) goodsAttributeMapper.countByExample(example);
-  }
-
-  public void updateById(LitemallGoodsAttribute goodsAttribute) {
-    goodsAttributeMapper.updateByPrimaryKeySelective(goodsAttribute);
-  }
-
-  public void deleteById(Integer id) {
-    goodsAttributeMapper.logicalDeleteByPrimaryKey(id);
-  }
-
-  public void add(LitemallGoodsAttribute goodsAttribute) {
-    goodsAttributeMapper.insertSelective(goodsAttribute);
-  }
-
-  public LitemallGoodsAttribute findById(Integer id) {
-    return goodsAttributeMapper.selectByPrimaryKey(id);
-  }
+   LitemallGoodsAttribute findById(Integer id);
 }
