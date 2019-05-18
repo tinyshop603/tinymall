@@ -3,34 +3,37 @@ package com.attitude.tinymall.service.impl;
 import com.attitude.tinymall.dao.LitemallGoodsSpecificationMapper;
 import com.attitude.tinymall.domain.LitemallGoodsSpecification;
 import com.attitude.tinymall.domain.LitemallGoodsSpecificationExample;
+import com.attitude.tinymall.service.LitemallGoodsSpecificationService;
 import com.github.pagehelper.PageHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LitemallGoodsSpecificationServiceImpl {
+public class LitemallGoodsSpecificationServiceImpl implements LitemallGoodsSpecificationService {
 
-  @Resource
+  @Autowired
   private LitemallGoodsSpecificationMapper goodsSpecificationMapper;
-  @Resource
+  @Autowired
   private LitemallGoodsServiceImpl goodsService;
 
-
+ @Override
   public List<LitemallGoodsSpecification> queryByGid(Integer id) {
     LitemallGoodsSpecificationExample example = new LitemallGoodsSpecificationExample();
     example.or().andGoodsIdEqualTo(id).andDeletedEqualTo(false);
     return goodsSpecificationMapper.selectByExample(example);
   }
-
+  @Override
   public LitemallGoodsSpecification findById(Integer id) {
     return goodsSpecificationMapper.selectByPrimaryKey(id);
   }
 
-
+  @Override
   public List<LitemallGoodsSpecification> querySelective(Integer goodsId, Integer adminId,
       Integer page, Integer size, String sort, String order) {
 
@@ -50,7 +53,7 @@ public class LitemallGoodsSpecificationServiceImpl {
     PageHelper.startPage(page, size);
     return goodsSpecificationMapper.selectByExample(example);
   }
-
+  @Override
   public int countSelective(Integer goodsId, Integer adminId, Integer page, Integer size,
       String sort,
       String order) {
@@ -69,19 +72,19 @@ public class LitemallGoodsSpecificationServiceImpl {
 
     return (int) goodsSpecificationMapper.countByExample(example);
   }
-
+  @Override
   public void updateById(LitemallGoodsSpecification goodsSpecification) {
     goodsSpecificationMapper.updateByPrimaryKeySelective(goodsSpecification);
   }
-
+  @Override
   public void deleteById(Integer id) {
     goodsSpecificationMapper.logicalDeleteByPrimaryKey(id);
   }
-
+  @Override
   public void add(LitemallGoodsSpecification goodsSpecification) {
     goodsSpecificationMapper.insertSelective(goodsSpecification);
   }
-
+  @Override
   public Integer[] queryIdsByGid(Integer goodsId) {
     List<LitemallGoodsSpecification> goodsSpecificationList = queryByGid(goodsId);
     Integer[] ids = new Integer[goodsSpecificationList.size()];
@@ -116,6 +119,7 @@ public class LitemallGoodsSpecificationServiceImpl {
   /**
    * [ { name: '', valueList: [ {}, {}] }, { name: '', valueList: [ {}, {}] } ]
    */
+  @Override
   public Object getSpecificationVoList(Integer id) {
     List<LitemallGoodsSpecification> goodsSpecificationList = queryByGid(id);
 

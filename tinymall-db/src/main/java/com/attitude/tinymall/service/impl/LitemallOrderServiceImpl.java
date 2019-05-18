@@ -8,6 +8,7 @@ import com.attitude.tinymall.domain.LitemallOrder;
 import com.attitude.tinymall.domain.LitemallOrderExample;
 import com.attitude.tinymall.domain.LitemallOrderWithGoods;
 import com.attitude.tinymall.enums.OrderStatusEnum;
+import com.attitude.tinymall.service.LitemallOrderService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import java.time.LocalDate;
@@ -16,23 +17,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-public class LitemallOrderServiceImpl {
+public class LitemallOrderServiceImpl implements LitemallOrderService {
 
-  @Resource
+  @Autowired
   private LitemallOrderMapper orderMapper;
-  @Resource
+  @Autowired
   private LitemallAdminMapper adminMapper;
-  @Resource
+  @Autowired
   private LitemallAdminServiceImpl adminService;
-  @Resource
+  @Autowired
   private LitemallOrderManualMapper orderManualMapper;
 
 
-
+  @Override
   public int add(LitemallOrder order, String appId) {
     LitemallAdmin litemallAdmin = adminService.findAdminByOwnerId(appId);
     if (null != litemallAdmin) {
@@ -41,7 +44,7 @@ public class LitemallOrderServiceImpl {
     }
     return orderMapper.insertSelective(order);
   }
-
+  @Override
   public List<LitemallOrder> query(Integer userId, String appId) {
     LitemallOrderExample example = new LitemallOrderExample();
     LitemallAdmin litemallAdmin = adminService.findAdminByOwnerId(appId);
@@ -49,18 +52,18 @@ public class LitemallOrderServiceImpl {
             .andAdminIdEqualTo(litemallAdmin.getId());
     return orderMapper.selectByExample(example);
   }
-
+  @Override
   public int count(Integer userId) {
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andUserIdEqualTo(userId).andDeletedEqualTo(false);
     return (int) orderMapper.countByExample(example);
   }
-
+  @Override
   public LitemallOrder findById(Integer orderId) {
     return orderMapper.selectByPrimaryKey(orderId);
   }
-
-  private String getRandomNum(Integer num) {
+  @Override
+  public String getRandomNum(Integer num) {
     String base = "0123456789";
     Random random = new Random();
     StringBuffer sb = new StringBuffer();
@@ -70,13 +73,13 @@ public class LitemallOrderServiceImpl {
     }
     return sb.toString();
   }
-
+  @Override
   public LitemallOrder queryByOrderSn(Integer userId, String orderSn) {
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andUserIdEqualTo(userId).andOrderSnEqualTo(orderSn).andDeletedEqualTo(false);
     return orderMapper.selectOneByExample(example);
   }
-
+  @Override
   public int countByOrderSn(Integer userId, String orderSn) {
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andUserIdEqualTo(userId).andOrderSnEqualTo(orderSn).andDeletedEqualTo(false);
@@ -84,6 +87,7 @@ public class LitemallOrderServiceImpl {
   }
 
   // TODO 这里应该产生一个唯一的订单，但是实际上这里仍然存在两个订单相同的可能性
+  @Override
   public String generateOrderSn(Integer userId) {
     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
     String now = df.format(LocalDate.now());
@@ -93,7 +97,7 @@ public class LitemallOrderServiceImpl {
     }
     return orderSn;
   }
-
+  @Override
   public List<LitemallOrder> queryByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus) {
     LitemallOrderExample example = new LitemallOrderExample();
     OrderStatusEnum currentOrderStatus = orderStatus.get(0);
@@ -114,7 +118,7 @@ public class LitemallOrderServiceImpl {
     criteria.andDeletedEqualTo(false);
     return orderMapper.selectByExample(example);
   }
-
+  @Override
   public int countByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus) {
     LitemallOrderExample example = new LitemallOrderExample();
     LitemallOrderExample.Criteria criteria = example.or();
@@ -125,12 +129,12 @@ public class LitemallOrderServiceImpl {
     criteria.andDeletedEqualTo(false);
     return (int) orderMapper.countByExample(example);
   }
-
+  @Override
   public int update(LitemallOrder order) {
     return orderMapper.updateByPrimaryKeySelective(order);
   }
 
-
+  @Override
   public List<LitemallOrder> listAdminOrdersByAdminId(Integer adminId, Integer userId,
                                                                String orderSn, Integer page, Integer size, String sort, String order) {
     LitemallOrderExample example = new LitemallOrderExample();
@@ -159,7 +163,7 @@ public class LitemallOrderServiceImpl {
     Page<Object> objects = PageHelper.startPage(page, size);
     return orderMapper.selectByExample(example);
   }
-
+  @Override
   public List<LitemallOrder> listAdminOrdersByStatus(Integer adminId, List<OrderStatusEnum> orderStatus, Integer page, Integer size, String sort, String order) {
     LitemallOrderExample example = new LitemallOrderExample();
     example.orderBy("add_time DESC");
@@ -172,7 +176,7 @@ public class LitemallOrderServiceImpl {
     Page<Object> objects = PageHelper.startPage(page, size);
     return orderMapper.selectByExample(example);
   }
-
+  @Override
   public int countAdminOrdersByAdminId(Integer adminId, Integer userId, String orderSn) {
     LitemallOrderExample example = new LitemallOrderExample();
     LitemallOrderExample.Criteria criteria = example.createCriteria();
@@ -191,7 +195,7 @@ public class LitemallOrderServiceImpl {
     return (int) orderMapper.countByExample(example);
   }
 
-
+  @Override
   public List<LitemallOrderWithGoods> querySelective(Integer userId, String orderSn, Integer page,
                                                      Integer size, String sort, String order) {
     // TODO 为啥这个接口暂时没有用到
@@ -212,7 +216,7 @@ public class LitemallOrderServiceImpl {
 
     return odersWithGoods;
   }
-
+  @Override
   public int countSelective(Integer userId, String orderSn, Integer page, Integer size, String sort,
                             String order) {
     LitemallOrderExample example = new LitemallOrderExample();
@@ -228,22 +232,22 @@ public class LitemallOrderServiceImpl {
 
     return (int) orderMapper.countByExample(example);
   }
-
+  @Override
   public void updateById(LitemallOrder order) {
     orderMapper.updateByPrimaryKeySelective(order);
   }
-
+  @Override
   public void deleteById(Integer id) {
     orderMapper.logicalDeleteByPrimaryKey(id);
   }
-
+  @Override
   public int count() {
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andDeletedEqualTo(false);
     return (int) orderMapper.countByExample(example);
   }
 
-
+  @Override
   public int countByAdminId(Integer adminId) {
     LitemallOrderExample example = new LitemallOrderExample();
     LitemallOrderExample.Criteria criteria = example.createCriteria();
@@ -254,13 +258,13 @@ public class LitemallOrderServiceImpl {
     return (int) orderMapper.countByExample(example);
   }
 
-
+  @Override
   public List<LitemallOrder> queryUnpaid() {
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andOrderStatusEqualTo(OrderStatusEnum.PENDING_PAYMENT).andDeletedEqualTo(false);
     return orderMapper.selectByExample(example);
   }
-
+  @Override
   public List<LitemallOrder> queryUnconfirm() {
     LitemallOrderExample example = new LitemallOrderExample();
     List<OrderStatusEnum> unconfirmIds = new ArrayList<OrderStatusEnum>();
@@ -269,7 +273,7 @@ public class LitemallOrderServiceImpl {
             .andDeletedEqualTo(false);
     return orderMapper.selectByExample(example);
   }
-
+  @Override
   public LitemallOrder findBySn(String orderSn) {
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andOrderSnEqualTo(orderSn).andDeletedEqualTo(false);

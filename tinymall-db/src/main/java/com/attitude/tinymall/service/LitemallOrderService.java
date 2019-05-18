@@ -58,6 +58,8 @@ public interface LitemallOrderService {
 
    List<LitemallOrderWithGoods> querySelective(Integer userId, String orderSn, Integer page,
                                                      Integer size, String sort, String order) ;
+    int countSelective(Integer userId, String orderSn, Integer page, Integer size, String sort,
+                       String order);
 
    void updateById(LitemallOrder order);
 

@@ -37,6 +37,7 @@ public interface LitemallGoodsService {
 
    LitemallGoods findById(Integer id) ;
 
+    int countSelective(String goodsSn, String name, String categoryId);
 
    List<LitemallGoods> queryByIds(List<Integer> relatedGoodsIds);
 
