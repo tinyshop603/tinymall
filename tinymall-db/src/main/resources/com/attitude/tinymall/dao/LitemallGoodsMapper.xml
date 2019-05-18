@@ -67,15 +67,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                    #{listItem,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -119,15 +119,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                    #{listItem,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -315,7 +315,7 @@
       goods_unit, retail_price, add_time,
       deleted, goods_desc)
     values (#{goodsSn,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER},
-      #{brandId,jdbcType=INTEGER}, #{gallery,jdbcType=CHAR,typeHandler=JsonStringArrayTypeHandler},
+      #{brandId,jdbcType=INTEGER}, #{gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       #{keywords,jdbcType=VARCHAR}, #{goodsBrief,jdbcType=VARCHAR}, #{isOnSale,jdbcType=BIT},
       #{sortOrder,jdbcType=SMALLINT}, #{counterPrice,jdbcType=DECIMAL}, #{isNew,jdbcType=BIT},
       #{primaryPicUrl,jdbcType=VARCHAR}, #{listPicUrl,jdbcType=VARCHAR}, #{isHot,jdbcType=BIT},
@@ -404,7 +404,7 @@
         #{brandId,jdbcType=INTEGER},
       </if>
       <if test="gallery != null">
-        #{gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler},
+        #{gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       </if>
       <if test="keywords != null">
         #{keywords,jdbcType=VARCHAR},
@@ -483,7 +483,7 @@
         brand_id = #{record.brandId,jdbcType=INTEGER},
       </if>
       <if test="record.gallery != null">
-        gallery = #{record.gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler},
+        gallery = #{record.gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       </if>
       <if test="record.keywords != null">
         keywords = #{record.keywords,jdbcType=VARCHAR},
@@ -543,7 +543,7 @@
       `name` = #{record.name,jdbcType=VARCHAR},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       brand_id = #{record.brandId,jdbcType=INTEGER},
-      gallery = #{record.gallery,jdbcType=CHAR,typeHandler=JsonStringArrayTypeHandler},
+      gallery = #{record.gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       keywords = #{record.keywords,jdbcType=VARCHAR},
       goods_brief = #{record.goodsBrief,jdbcType=VARCHAR},
       is_on_sale = #{record.isOnSale,jdbcType=BIT},
@@ -573,7 +573,7 @@
       `name` = #{record.name,jdbcType=VARCHAR},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       brand_id = #{record.brandId,jdbcType=INTEGER},
-      gallery = #{record.gallery,jdbcType=CHAR,typeHandler=JsonStringArrayTypeHandler},
+      gallery = #{record.gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       keywords = #{record.keywords,jdbcType=VARCHAR},
       goods_brief = #{record.goodsBrief,jdbcType=VARCHAR},
       is_on_sale = #{record.isOnSale,jdbcType=BIT},
@@ -611,7 +611,7 @@
         brand_id = #{brandId,jdbcType=INTEGER},
       </if>
       <if test="gallery != null">
-        gallery = #{gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler},
+        gallery = #{gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       </if>
       <if test="keywords != null">
         keywords = #{keywords,jdbcType=VARCHAR},
@@ -668,7 +668,7 @@
       `name` = #{name,jdbcType=VARCHAR},
       category_id = #{categoryId,jdbcType=INTEGER},
       brand_id = #{brandId,jdbcType=INTEGER},
-      gallery = #{gallery,jdbcType=CHAR,typeHandler=JsonStringArrayTypeHandler},
+      gallery = #{gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       keywords = #{keywords,jdbcType=VARCHAR},
       goods_brief = #{goodsBrief,jdbcType=VARCHAR},
       is_on_sale = #{isOnSale,jdbcType=BIT},
@@ -695,7 +695,7 @@
       `name` = #{name,jdbcType=VARCHAR},
       category_id = #{categoryId,jdbcType=INTEGER},
       brand_id = #{brandId,jdbcType=INTEGER},
-      gallery = #{gallery,jdbcType=CHAR,typeHandler=JsonStringArrayTypeHandler},
+      gallery = #{gallery,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       keywords = #{keywords,jdbcType=VARCHAR},
       goods_brief = #{goodsBrief,jdbcType=VARCHAR},
       is_on_sale = #{isOnSale,jdbcType=BIT},

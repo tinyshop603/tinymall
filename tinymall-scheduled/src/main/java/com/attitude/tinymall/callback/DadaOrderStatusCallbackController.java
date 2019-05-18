@@ -20,6 +20,7 @@ public class DadaOrderStatusCallbackController {
 
   @PostMapping("callback/status")
   public Object callBackOrderStatus(@RequestBody DadaCallbackParams callbackParams){
+    // TODO singure feature的校验, 以及订单状态的变更
     log.info(callbackParams.toString());
     return ResponseUtil.ok();
   }

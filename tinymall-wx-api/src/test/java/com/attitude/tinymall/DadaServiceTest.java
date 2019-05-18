@@ -45,8 +45,8 @@ public class DadaServiceTest {
             .receiverLat(new Float("50.05703033345938"))
             .receiverLng(new Float("116.3084202915042"))
             .receiverPhone("13693002107")
-            .originId("A1234568")
-            .callback("http://www.abc.com")
+            .originId("AA001")
+            .callback("http://39.107.81.107:8084/dada-order/callback/status")
             .info("test")
             .build();
     ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
@@ -85,8 +85,8 @@ public class DadaServiceTest {
             .receiverLat(new Float("50.05703033345938"))
             .receiverLng(new Float("116.3084202915042"))
             .receiverPhone("13693002107")
-            .originId("A1234568")
-            .callback("http://www.abc.com")
+            .originId("AA23")
+            .callback("http://39.107.81.107:8084/dada-order/callback/status")
             .build();
     ResponseEntity<QueryOrderDeliverFeeResult> res = remoteDadaDeliveryClient.queryOrderDeliverFee(orderParams);
     log.error(res.toString());
