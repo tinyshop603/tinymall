@@ -10,45 +10,13 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service
-public class LitemallRegionService {
-    @Resource
-    private LitemallRegionMapper regionMapper;
+public interface LitemallRegionService {
 
-    public List<LitemallRegion> queryByPid(Integer parentId) {
-        LitemallRegionExample example = new LitemallRegionExample();
-        example.or().andPidEqualTo(parentId);
-        return regionMapper.selectByExample(example);
-    }
+     List<LitemallRegion> queryByPid(Integer parentId) ;
 
-    public LitemallRegion findById(Integer id) {
-        return regionMapper.selectByPrimaryKey(id);
-    }
+     LitemallRegion findById(Integer id);
 
-    public List<LitemallRegion> querySelective(String name, Integer code, Integer page, Integer size, String sort, String order) {
-        LitemallRegionExample example = new LitemallRegionExample();
-        LitemallRegionExample.Criteria criteria = example.createCriteria();
+     List<LitemallRegion> querySelective(String name, Integer code, Integer page, Integer size, String sort, String order) ;
 
-        if(!StringUtils.isEmpty(name)){
-            criteria.andNameLike("%" + name + "%");
-        }
-        if(code != null){
-            criteria.andCodeEqualTo(code);
-        }
-        PageHelper.startPage(page, size);
-        return regionMapper.selectByExample(example);
-    }
-
-    public int countSelective(String name, Integer code, Integer page, Integer size, String sort, String order) {
-        LitemallRegionExample example = new LitemallRegionExample();
-        LitemallRegionExample.Criteria criteria = example.createCriteria();
-
-        if(!StringUtils.isEmpty(name)){
-            criteria.andNameLike("%" + name + "%");
-        }
-        if(code != null){
-            criteria.andCodeEqualTo(code);
-        }
-        return (int)regionMapper.countByExample(example);
-    }
+     int countSelective(String name, Integer code, Integer page, Integer size, String sort, String order) ;
 }

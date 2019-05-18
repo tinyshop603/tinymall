@@ -10,82 +10,25 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service
-public class LitemallKeywordService {
-    @Resource
-    private LitemallKeywordMapper keywordsMapper;
+public interface LitemallKeywordService {
 
-    public List<LitemallKeyword> queryDefaults() {
-        LitemallKeywordExample example = new LitemallKeywordExample();
-        example.or().andIsDefaultEqualTo(true).andDeletedEqualTo(false);
-        return keywordsMapper.selectByExample(example);
-    }
+     List<LitemallKeyword> queryDefaults() ;
 
-    public LitemallKeyword queryDefault() {
-        LitemallKeywordExample example = new LitemallKeywordExample();
-        example.or().andIsDefaultEqualTo(true).andDeletedEqualTo(false);
-        return keywordsMapper.selectOneByExample(example);
-    }
+     LitemallKeyword queryDefault() ;
 
-    public List<LitemallKeyword> queryHots() {
-        LitemallKeywordExample example = new LitemallKeywordExample();
-        example.or().andIsHotEqualTo(true).andDeletedEqualTo(false);
-        return keywordsMapper.selectByExample(example);
-    }
+     List<LitemallKeyword> queryHots() ;
 
-    public List<LitemallKeyword> queryByKeyword(String keyword, Integer page, Integer size) {
-        LitemallKeywordExample example = new LitemallKeywordExample();
-        example.setDistinct(true);
-        example.or().andKeywordLike("%" + keyword + "%").andDeletedEqualTo(false);
-        PageHelper.startPage(page, size);
-        return keywordsMapper.selectByExampleSelective(example, LitemallKeyword.Column.keyword);
-    }
+     List<LitemallKeyword> queryByKeyword(String keyword, Integer page, Integer size) ;
 
-    public List<LitemallKeyword> querySelective(String keyword, String url, Integer page, Integer limit, String sort, String order) {
-        LitemallKeywordExample example = new LitemallKeywordExample();
-        LitemallKeywordExample.Criteria criteria = example.createCriteria();
+     List<LitemallKeyword> querySelective(String keyword, String url, Integer page, Integer limit, String sort, String order) ;
 
-        if (!StringUtils.isEmpty(keyword)) {
-            criteria.andKeywordLike("%" + keyword + "%");
-        }
-        if (!StringUtils.isEmpty(url)) {
-            criteria.andUrlLike("%" + url + "%");
-        }
-        criteria.andDeletedEqualTo(false);
+     int countSelective(String keyword, String url, Integer page, Integer limit, String sort, String order) ;
 
-        PageHelper.startPage(page, limit);
-        return keywordsMapper.selectByExample(example);
-    }
+     void add(LitemallKeyword keywords);
 
-    public int countSelective(String keyword, String url, Integer page, Integer limit, String sort, String order) {
-        LitemallKeywordExample example = new LitemallKeywordExample();
-        LitemallKeywordExample.Criteria criteria = example.createCriteria();
+     LitemallKeyword findById(Integer id);
 
-        if (!StringUtils.isEmpty(keyword)) {
-            criteria.andKeywordLike("%" + keyword + "%");
-        }
-        if (!StringUtils.isEmpty(url)) {
-            criteria.andUrlLike("%" + url + "%");
-        }
-        criteria.andDeletedEqualTo(false);
+     void updateById(LitemallKeyword keywords);
 
-        PageHelper.startPage(page, limit);
-        return (int)keywordsMapper.countByExample(example);
-    }
-
-    public void add(LitemallKeyword keywords) {
-        keywordsMapper.insertSelective(keywords);
-    }
-
-    public LitemallKeyword findById(Integer id) {
-        return keywordsMapper.selectByPrimaryKey(id);
-    }
-
-    public void updateById(LitemallKeyword keywords) {
-        keywordsMapper.updateByPrimaryKeySelective(keywords);
-    }
-
-    public void deleteById(Integer id) {
-        keywordsMapper.logicalDeleteByPrimaryKey(id);
-    }
+     void deleteById(Integer id);
 }

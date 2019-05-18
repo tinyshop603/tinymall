@@ -10,94 +10,25 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service
-public class LitemallTopicService {
-    @Resource
-    private LitemallTopicMapper topicMapper;
+public interface LitemallTopicService {
 
-    public List<LitemallTopic> queryList(int offset, int limit) {
-        LitemallTopicExample example = new LitemallTopicExample();
-        example.or().andDeletedEqualTo(false);
-        PageHelper.startPage(offset, limit);
-        return topicMapper.selectByExampleWithBLOBs(example);
-    }
+     List<LitemallTopic> queryList(int offset, int limit) ;
 
-    public int queryTotal() {
-        LitemallTopicExample example = new LitemallTopicExample();
-        example.or().andDeletedEqualTo(false);
-        return (int)topicMapper.countByExample(example);
-    }
+     int queryTotal() ;
 
-    public LitemallTopic findById(Integer id) {
-        LitemallTopicExample example = new LitemallTopicExample();
-        example.or().andIdEqualTo(id).andDeletedEqualTo(false);
-        return topicMapper.selectOneByExampleWithBLOBs(example);
-    }
+     LitemallTopic findById(Integer id) ;
 
-    public List<LitemallTopic> queryRelatedList(Integer id, int offset, int limit) {
-        LitemallTopicExample example = new LitemallTopicExample();
-        example.or().andIdEqualTo(id).andDeletedEqualTo(false);
-        List<LitemallTopic> topics = topicMapper.selectByExample(example);
-        if(topics.size() == 0){
-            return queryList(offset, limit);
-        }
-        LitemallTopic topic = topics.get(0);
+     List<LitemallTopic> queryRelatedList(Integer id, int offset, int limit) ;
 
-        example = new LitemallTopicExample();
-        example.or().andIdNotEqualTo(topic.getId()).andDeletedEqualTo(false);
-        PageHelper.startPage(offset, limit);
-        List<LitemallTopic> relateds = topicMapper.selectByExampleWithBLOBs(example);
-        if(relateds.size() != 0){
-            return relateds;
-        }
+     List<LitemallTopic> querySelective(String title, String subtitle, Integer page, Integer limit, String sort, String order) ;
 
-        return queryList(offset, limit);
-    }
+     int countSelective(String title, String subtitle, Integer page, Integer size, String sort, String order) ;
 
-    public List<LitemallTopic> querySelective(String title, String subtitle, Integer page, Integer limit, String sort, String order) {
-        LitemallTopicExample example = new LitemallTopicExample();
-        LitemallTopicExample.Criteria criteria = example.createCriteria();
+     void updateById(LitemallTopic topic) ;
 
-        if(!StringUtils.isEmpty(title)){
-            criteria.andTitleLike("%" + title + "%");
-        }
-        if(!StringUtils.isEmpty(subtitle)){
-            criteria.andSubtitleLike("%" + subtitle + "%");
-        }
-        criteria.andDeletedEqualTo(false);
+     void deleteById(Integer id) ;
 
-        PageHelper.startPage(page, limit);
-        return topicMapper.selectByExampleWithBLOBs(example);
-    }
-
-    public int countSelective(String title, String subtitle, Integer page, Integer size, String sort, String order) {
-        LitemallTopicExample example = new LitemallTopicExample();
-        LitemallTopicExample.Criteria criteria = example.createCriteria();
-
-        if(!StringUtils.isEmpty(title)){
-            criteria.andTitleLike("%" + title + "%");
-        }
-        if(!StringUtils.isEmpty(subtitle)){
-            criteria.andSubtitleLike("%" + subtitle + "%");
-        }
-        criteria.andDeletedEqualTo(false);
-
-        return (int)topicMapper.countByExample(example);
-    }
-
-    public void updateById(LitemallTopic topic) {
-        LitemallTopicExample example = new LitemallTopicExample();
-        example.or().andIdEqualTo(topic.getId());
-        topicMapper.updateByExampleWithBLOBs(topic, example);
-    }
-
-    public void deleteById(Integer id) {
-        topicMapper.logicalDeleteByPrimaryKey(id);
-    }
-
-    public void add(LitemallTopic topic) {
-        topicMapper.insertSelective(topic);
-    }
+     void add(LitemallTopic topic) ;
 
 
 }
