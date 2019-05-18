@@ -3,17 +3,20 @@ package com.attitude.tinymall.service.impl;
 import com.attitude.tinymall.dao.LitemallBrandMapper;
 import com.attitude.tinymall.domain.LitemallBrand;
 import com.attitude.tinymall.domain.LitemallBrandExample;
+import com.attitude.tinymall.service.LitemallBrandService;
 import com.github.pagehelper.PageHelper;
 import java.util.List;
 import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-public class LitemallBrandServiceImpl {
-    @Resource
+public class LitemallBrandServiceImpl implements LitemallBrandService {
+    @Autowired
     private LitemallBrandMapper brandMapper;
 
+    @Override
     public List<LitemallBrand> queryWithNew(int offset, int limit) {
         LitemallBrandExample example = new LitemallBrandExample();
         example.or().andIsNewEqualTo(true).andDeletedEqualTo(false);
@@ -21,6 +24,7 @@ public class LitemallBrandServiceImpl {
         return brandMapper.selectByExample(example);
     }
 
+    @Override
     public List<LitemallBrand> query(int offset, int limit) {
         LitemallBrandExample example = new LitemallBrandExample();
         example.or().andDeletedEqualTo(false);
@@ -28,6 +32,7 @@ public class LitemallBrandServiceImpl {
         return brandMapper.selectByExample(example);
     }
 
+    @Override
     public int queryTotalCount() {
         LitemallBrandExample example = new LitemallBrandExample();
         example.or().andDeletedEqualTo(false);
