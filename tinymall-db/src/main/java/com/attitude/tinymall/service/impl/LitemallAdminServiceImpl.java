@@ -8,6 +8,7 @@ import com.attitude.tinymall.domain.LitemallCategory;
 import com.attitude.tinymall.domain.baidu.fence.ShopFenceResult;
 import com.attitude.tinymall.service.BaiduFenceService;
 import com.attitude.tinymall.service.LitemallAdminService;
+import com.attitude.tinymall.service.LitemallCategoryService;
 import com.github.pagehelper.PageHelper;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class LitemallAdminServiceImpl implements LitemallAdminService {
   private BaiduFenceService baiduFenceService;
 
   @Autowired
-  private LitemallCategoryServiceImpl categoryService;
+  private LitemallCategoryService categoryService;
 
   @Override
   public LitemallAdmin findAdmin(String username) {
