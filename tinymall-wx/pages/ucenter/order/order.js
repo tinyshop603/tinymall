@@ -4,7 +4,7 @@ var api = require('../../../config/api.js');
 Page({
   data:{
     orderList: [],
-    showType: 1
+    showType: 0
   },
   //右上角转发分享功能
   onShareAppMessage: function () {

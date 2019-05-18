@@ -173,46 +173,42 @@ public class OrderUtil {
     }
 
     public static List<Short> orderStatus(Integer showType){
+        List<Short> status = new ArrayList<Short>(2);
         // 全部订单
         if (showType == 0) {
-            return null;
-        }
+            status.add((short)101); // 待付款订单
 
-        List<Short> status = new ArrayList<Short>(2);
+            status.add((short)201); // 待发货订单 微信支付
+            status.add((short)301); // 待收货订单 微信支付
 
-        if (showType.equals(1)) {
-            // 待付款订单
-            status.add((short)101);
+            status.add((short)401); // 已完成订单（待评价）
+
+            status.add((short)102);  //商家取消订单
+            status.add((short)203); //退款完成
         }
+        // 待付款
+        else if (showType.equals(1)) {
+            status.add((short)101); // 待付款订单
+        }
+        // 代收货
         else if (showType.equals(2)) {
-            // 待发货订单
-            status.add((short)201);//微信支付
-            status.add((short)001);//货到付款
-            status.add((short)202);//货到付款，申请退款
+            status.add((short)201);// 待发货订单 微信支付
+            status.add((short)301);// 待收货订单 微信支付
         }
+        // 已完成
         else if (showType.equals(3)) {
-            // 待收货订单
-            status.add((short)301);//微信支付
-            status.add((short)003);//货到付款
-        }
-        else if (showType.equals(4)) {
-            // 已完成订单（待评价）
-            status.add((short)401);
-            status.add((short)004);//货到付款，买家确认
-            status.add((short)005);//货到付款，系统超时确认
-
-//            系统超时自动取消，此时应该不支持评价
-//            status.add((short)402);
-        }
-        else if (showType.equals(5)) {
-            //商家取消订单
-            status.add((short)102);
-            status.add((short)002);//货到付款取消订单
-            status.add((short)203);//退款完成
+            status.add((short)401);  // 已完成订单（待评价）
         }
         else {
             return null;
         }
+//        status.add((short)001);// 货到付款
+//        status.add((short)202);// 货到付款，申请退款
+//        status.add((short)002);// 货到付款取消订单
+//        status.add((short)402);// 系统超时自动取消，此时应该不支持评价
+//        status.add((short)004); // 货到付款，买家确认
+//        status.add((short)005); // 货到付款，系统超时确认
+//        status.add((short)003);// 待收货订单 货到付款
 
         return status;
     }

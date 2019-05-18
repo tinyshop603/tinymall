@@ -33,6 +33,7 @@
     <result column="deleted" jdbcType="BIT" property="deleted" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="payment_way" jdbcType="INTEGER" property="paymentWay" />
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
   </resultMap>
   <resultMap type="com.attitude.tinymall.db.domain.LitemallOrderWithGoods" id="Order_With_Goods">
     <!--复用上面声明的订单-->

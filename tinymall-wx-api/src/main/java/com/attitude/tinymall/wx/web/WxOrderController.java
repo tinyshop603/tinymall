@@ -3,6 +3,7 @@ package com.attitude.tinymall.wx.web;
 import com.alibaba.fastjson.JSONObject;
 import com.attitude.tinymall.core.common.SocketEvent;
 import com.attitude.tinymall.core.domain.MessageInfo;
+import com.attitude.tinymall.core.service.BaiduFenceService;
 import com.attitude.tinymall.core.util.ResponseUtil;
 import com.attitude.tinymall.core.util.WxPayEngine;
 import com.attitude.tinymall.core.wx.WxPayMpOrderResult;
@@ -90,6 +91,8 @@ public class WxOrderController {
   private WxPayService wxPayService;
   @Autowired
   private WxPayEngine wxPayEngine;
+  @Autowired
+  private BaiduFenceService baiduFenceService;
   /**
    * 消息传递信息
    */
@@ -138,7 +141,7 @@ public class WxOrderController {
       return ResponseUtil.fail401();
     }
     if (showType == null) {
-      showType = 1;
+      showType = 0;
     }
 
     List<Short> orderStatus = OrderUtil.orderStatus(showType);
@@ -266,7 +269,7 @@ public class WxOrderController {
     Integer cartId = JacksonUtil.parseInteger(body, "cartId");
     Integer addressId = JacksonUtil.parseInteger(body, "addressId");
     Integer couponId = JacksonUtil.parseInteger(body, "couponId");
-    Integer modeId = JacksonUtil.parseInteger(body, "modeId");
+//    Integer modeId = JacksonUtil.parseInteger(body, "modeId");
     String remarkText = JacksonUtil.parseString(body, "remarkText");
     if (cartId == null || addressId == null || couponId == null) {
       return ResponseUtil.badArgument();
@@ -274,6 +277,19 @@ public class WxOrderController {
 
     // 收货地址
     LitemallAddress checkedAddress = addressService.findById(addressId);
+
+    // 验证地址是否在合法的范围内
+//      try {
+//        boolean isValidAddress = baiduFenceService
+//            .isValidLocationWithinFence(userId.toString(), checkedAddress.getAddress(),
+//                adminService.findAdminByOwnerId(appId).getShopFenceId());
+//        if (!isValidAddress) {
+//          return ResponseUtil.unReachAddress();
+//        }
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//        return ResponseUtil.badArgument();
+//      }
 
     // 获取可用的优惠券信息
     // 使用优惠券减免的金额
@@ -323,13 +339,13 @@ public class WxOrderController {
       order.setUserId(userId);
       order.setOrderSn(orderService.generateOrderSn(userId));
       order.setAddTime(LocalDateTime.now());
-      if (modeId == 1) {
-        order.setOrderStatus(OrderUtil.STATUS_CREATE);//微信支付
-
-      } else {
-        order.setOrderStatus(OrderUtil.STATUS_AFTER_PAY);//货到付款
-      }
-      order.setPaymentWay(modeId);
+      order.setOrderStatus(OrderUtil.STATUS_CREATE);//微信支付
+//      if (modeId == 1) {
+//        order.setOrderStatus(OrderUtil.STATUS_CREATE);//微信支付
+//      } else {
+//        order.setOrderStatus(OrderUtil.STATUS_AFTER_PAY);//货到付款
+//      }
+//      order.setPaymentWay(modeId);
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
       //提交时不显示省市区，只显示详细地址
@@ -389,23 +405,22 @@ public class WxOrderController {
 
     Map<String, Object> data = new HashMap<>();
     data.put("orderId", orderId);
-    if (modeId != 1) {//货到付款在此处触发
-      //想办法提醒管理端进行刷新
-      messageInfo.setMsgType("order-submit");
-      //目标端
-      messageInfo.setTargetClientId("admin-api-" + admin.getId());
-      LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
-      orderWithGoods.setOrder(order);
-      // 查找此订单的商品信息
-      orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
-      Map<String, Object> dataSoc = new HashMap<>(2);
-      dataSoc.put("adminId", admin.getId());
-      dataSoc.put("orderData", orderWithGoods);
-      messageInfo.setDomainData(dataSoc);
-      client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
-
-    }
-
+//    if (modeId != 1) {//货到付款在此处触发
+//      //想办法提醒管理端进行刷新
+//      messageInfo.setMsgType("order-submit");
+//      //目标端
+//      messageInfo.setTargetClientId("admin-api-" + admin.getId());
+//      LitemallOrderWithGoods orderWithGoods = new LitemallOrderWithGoods();
+//      orderWithGoods.setOrder(order);
+//      // 查找此订单的商品信息
+//      orderWithGoods.setGoods(orderGoodsService.queryByOid(order.getId()));
+//      Map<String, Object> dataSoc = new HashMap<>(2);
+//      dataSoc.put("adminId", admin.getId());
+//      dataSoc.put("orderData", orderWithGoods);
+//      messageInfo.setDomainData(dataSoc);
+//      client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
+//
+//    }
     return ResponseUtil.ok(data);
   }
 
@@ -527,6 +542,8 @@ public class WxOrderController {
     result.setPaySign(finalsign);
     result.setSignType("MD5");
     result.setTimeStamp(timestamp);
+    // TODO 该列暂时存储prepay_id，用于[服务通知]消息推送
+    order.setTransactionId(prepay_id);
     orderService.updateById(order);
     return ResponseUtil.ok(result);
   }

@@ -52,7 +52,7 @@
                 <text class="txt">￥{{freightPrice}}元</text>
             </view>
         </view>
-        <picker class="picker" bindchange='pickerIndex' value='{{pickerIndex}}' range='{{array}}'>
+        <!-- <picker class="picker" bindchange='pickerIndex' value='{{pickerIndex}}' range='{{array}}'>
           <view class="order-picker">
             <view class='l'>
               <text class="name">支付方式</text>
@@ -62,7 +62,7 @@
                 <image src="/static/images/address_right.png"></image>
             </view>
           </view>
-        </picker>
+        </picker> -->
         <view class="order-item">
             <input name="input" class="like" bindblur="onKeywordConfirm" placeholder="口味，偏好" />
         </view>
@@ -95,6 +95,6 @@
 
     <view class="order-total">
         <view class="l">实付：￥{{actualPrice}}</view>
-        <view class="r" bindtap="submitOrder">{{array[pickerIndex]}}</view>
+        <view class="r" bindtap="submitOrder">微信支付</view>
     </view>
 </view>
