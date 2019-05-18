@@ -11,5 +11,5 @@ import lombok.Data;
 @Builder
 public class ShopUpdateParams {
     @JSONField(name = "origin_shop_id")
-    private Integer originShopId;
+    private String originShopId;
 }

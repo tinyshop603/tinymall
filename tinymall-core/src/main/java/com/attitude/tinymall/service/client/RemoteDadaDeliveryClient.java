@@ -32,6 +32,8 @@ import com.attitude.tinymall.domain.dada.shop.ShopDetailParams;
 import com.attitude.tinymall.domain.dada.shop.ShopDetailResult;
 import com.attitude.tinymall.domain.dada.shop.ShopUpdateParams;
 import java.util.List;
+
+import com.attitude.tinymall.domain.dada.testorder.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -101,6 +103,30 @@ public interface RemoteDadaDeliveryClient {
   @GetMapping("/api/shop/detail")
   ResponseEntity<ShopDetailResult> getShopDetail(@RequestBody ShopDetailParams shopParams);
 
+/**
+ * 下面的方法仅供测试环境使用
+ */
+  //模拟接受订单
+  @PostMapping("/api/order/accept")
+  ResponseEntity abnormalBackOrder(@RequestBody AbnormalBackOrderParams orderParams);
 
+  //模拟完成取货
+  @PostMapping("/api/order/fetch")
+  ResponseEntity acceptOrder(@RequestBody AcceptOrderParams orderParams);
+
+  //完成订单
+  @PostMapping("/api/order/finish")
+  ResponseEntity cancelOrder(@RequestBody TestCancelOrderParams orderParams);
+
+  //取消订单
+  @PostMapping("/api/order/cancel")
+  ResponseEntity expireOrder(@RequestBody ExpireOrderParams orderParams);
+
+  //模拟订单过期
+  @PostMapping("/api/shop/update")
+  ResponseEntity fetchOrder(@RequestBody FetchOrderParams orderParams);
+  //模拟异常妥投物品返还中
+  @PostMapping("/api/order/delivery/abnormal/back")
+  ResponseEntity finishOrder(@RequestBody FinishOrderParams orderParams);
 
 }
