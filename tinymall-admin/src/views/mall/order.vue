@@ -33,7 +33,6 @@
       </el-table-column>
       <el-table-column align="center" width="80px" label="用户昵称" prop="order.consignee"></el-table-column>
       <el-table-column align="center" min-width="80px" label="用户地址" prop="order.address"></el-table-column>
-      <el-table-column align="center" min-width="80px" label="订单备注" prop="order.remark"></el-table-column>
       <el-table-column align="center" width="100px" label="用户电话" prop="order.mobile"></el-table-column>
       <el-table-column align="center" width="80px" label="订单费用" prop="order.orderPrice"></el-table-column>
       <el-table-column align="center" min-width="80px" label="支付方式" prop="order.paymentWay">
@@ -41,8 +40,22 @@
           <el-tag :type="scope.row.order.paymentWay ? 'success' : 'error' ">{{scope.row.order.paymentWay==1 ? '在线支付' : '货到付款'}}</el-tag>
         </template>
       </el-table-column>
+      <!-- TODO 订单详情页的修改, 点击弹出订单的详情-->
+      <el-table-column align="center" min-width="80px" label="订单详情" prop="order.remark"></el-table-column>
       <el-table-column align="center" label="操作" width="370" class-name="small-padding fixed-width" prop="type">
         <template slot-scope="scope">
+          <el-dropdown>
+            <el-button type="primary">
+              更多菜单<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>黄金糕</el-dropdown-item>
+              <el-dropdown-item>狮子头</el-dropdown-item>
+              <el-dropdown-item>螺蛳粉</el-dropdown-item>
+              <el-dropdown-item>双皮奶</el-dropdown-item>
+              <el-dropdown-item>蚵仔煎</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <el-button :type="scope.row.sendBtnStatus.type" :disabled="scope.row.sendBtnStatus.disabled" size="small" @click="handleSend(scope.row.order)">发货</el-button>
           <el-button :type="scope.row.cancelBtnStatus.type" :disabled="scope.row.cancelBtnStatus.disabled" size="small" @click="handleCancelOrder(scope.row.order)">取消订单</el-button>
           <el-button :type="scope.row.confirmBtnStatus.type" :disabled="scope.row.confirmBtnStatus.disabled" size="small" @click="handleConfirmOrder(scope.row.order)">确认完成</el-button>
