@@ -44,13 +44,17 @@
       <el-table-column align="center" width="80px" label="订单费用" prop="order.orderPrice"></el-table-column>
       <el-table-column align="center" min-width="80px" label="支付方式" prop="order.paymentWay">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.order.paymentWay ? 'success' : 'error' ">{{scope.row.order.paymentWay==1 ? '在线支付' :
-            '货到付款'}}
+          <el-tag :type="scope.row.order.paymentWay ? 'success' : 'error' ">{{textMap.orderPayWay[scope.row.order.paymentWay]}}
           </el-tag>
         </template>
       </el-table-column>
       <!-- TODO 订单详情页的修改, 点击弹出订单的详情-->
-      <el-table-column align="center" min-width="80px" label="订单详情" prop="order.remark"></el-table-column>
+      <el-table-column align="center" min-width="80px" label="订单备注" prop="order.remark"></el-table-column>
+      <el-table-column align="center" min-width="80px" label="详情" prop="order.remark">
+        <template slot-scope="scope">
+          <el-link @click="viewOrderDetail(scope.row.order)">查看详情<i class="el-icon-view el-icon--right"></i> </el-link>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="操作" width="370" class-name="small-padding fixed-width" prop="type">
         <template slot-scope="scope">
           <el-dropdown trigger="click" @command="handleOrderOptionCommand">
@@ -111,6 +115,14 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="refundDialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="refundData">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="当前订单详情" :visible.sync="sendDialogFormVisible">
+      is
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="sendDialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="sendData">确定</el-button>
       </div>
     </el-dialog>
     <audio id="bgMusic">
@@ -190,7 +202,15 @@ export default {
         { name:'申请退款', type:'danger', status:202 },
         { name:'退款完成', type:'info', status:203 },
         { name:'已取消', type:'info', status:2 }
-      ]
+      ],
+      textMap:{
+        orderPayWay:{
+          'ONLINE_WECHAT_PAY':'微信支付',
+          'ONLINE_ALI_PAY':'支付宝支付',
+          'CASH_ON_DELIVERY':'货到付款'
+
+        }
+      }
     }
   },
   created() {
@@ -457,6 +477,10 @@ export default {
           break
         }
       }
+    },
+    viewOrderDetail(data) {
+      this.sendDialogFormVisible = true
+      debugger
     }
   }
 }
