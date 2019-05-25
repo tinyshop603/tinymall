@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @project Wechat
  */
 @RestController
-@RequestMapping("dada-order/")
+@RequestMapping("/dada-order")
 @Slf4j
 public class DadaOrderStatusCallbackController {
 
-  @PostMapping("callback/status")
+  @PostMapping("/callback/status")
   public Object callBackOrderStatus(@RequestBody DadaCallbackParams callbackParams){
     // TODO singure feature的校验, 以及订单状态的变更
     log.info(callbackParams.toString());
