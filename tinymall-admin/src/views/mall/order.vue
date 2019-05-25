@@ -167,9 +167,12 @@ import {
   listOrder,
   getBtnStateByCode,
   updateOrderCode,
+  callDadaRider,
   STATUS,
   refundOrder,
   formatDate,
+  readOrder,
+  getOrderDetail,
   formatDate2
 } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
@@ -289,12 +292,26 @@ export default {
   },
   methods:{
     handleOrderOptionCommand(command) {
+      const orderData = command.itemData
       switch (command.type) {
         case 'acceptOrder':
           this.$message('click on item ' + command.type)
           break
         case 'callRider':
           this.$message('click on item ' + command.type)
+          callDadaRider({ 'orderId':orderData.deliveryId }).then(response => {
+            const responseData = response.data
+            if (responseData.errno === 0) {
+              // 修改订单的状态
+
+              this.$notify({
+                title:'成功',
+                message:'呼叫骑手成功',
+                type:'success',
+                duration:2000
+              })
+            }
+          })
           break
         case 'cancelOrder':
           this.$message('click on item ' + command.type)
@@ -494,18 +511,26 @@ export default {
         }
       }
     },
-    viewOrderDetail(data) {
-      this.showDeliveryDetail = true
-      this.deliveryDetailsDialogData = [
-        { 'key':'配送编号', 'value':data.deliveryDetail.dmId },
-        { 'key':'配送员', 'value':data.deliveryDetail.dmName },
-        { 'key':'配送员手机号', 'value':data.deliveryDetail.dmMobile },
-        { 'key':'配送费', 'value':data.deliveryDetail.deliverFee },
-        { 'key':'配送状态', 'value':data.order.tpdStatusMsg },
-        { 'key':'取消来源', 'value':data.deliveryDetail.cancelFrom },
-        { 'key':'取消原因', 'value':data.deliveryDetail.cancelReason }
-      ]
-      debugger
+    viewOrderDetail(currentData) {
+      // 获取订单的详细信息
+
+      if (currentData.order) {
+        getOrderDetail({ 'id':currentData.order.id }).then(response => {
+          const data = response.data.data
+          this.updateOrderItemStatus(data.order)
+          debugger
+          this.showDeliveryDetail = true
+          this.deliveryDetailsDialogData = [
+            { 'key':'配送编号', 'value':data.deliveryDetail.dmId },
+            { 'key':'配送员', 'value':data.deliveryDetail.dmName },
+            { 'key':'配送员手机号', 'value':data.deliveryDetail.dmMobile },
+            { 'key':'配送费', 'value':data.deliveryDetail.deliverFee },
+            { 'key':'配送状态', 'value':data.order.tpdStatusMsg },
+            { 'key':'取消来源', 'value':data.deliveryDetail.cancelFrom },
+            { 'key':'取消原因', 'value':data.deliveryDetail.cancelReason }
+          ]
+        })
+      }
     }
   }
 }

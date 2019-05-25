@@ -55,6 +55,14 @@ export function listOrder(query) {
   })
 }
 
+export function callDadaRider(data) {
+  return request({
+    url:'/dada/order',
+    method:'post',
+    data
+  })
+}
+
 export function createOrder(data) {
   return request({
     url:'/order/create',
@@ -66,7 +74,20 @@ export function readOrder(data) {
   return request({
     url:'/order/read',
     method:'get',
-    data
+    params:data
+  })
+}
+
+/**
+ * 获取订单详情
+ * 包含配送的全部信息
+ * @param data
+ */
+export function getOrderDetail(data) {
+  return request({
+    url:'/order/detail',
+    method:'get',
+    params:data
   })
 }
 

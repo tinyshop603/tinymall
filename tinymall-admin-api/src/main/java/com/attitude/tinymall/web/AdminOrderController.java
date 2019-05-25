@@ -1,5 +1,6 @@
 package com.attitude.tinymall.web;
 
+import com.attitude.tinymall.VO.OrderVO;
 import com.attitude.tinymall.annotation.LoginAdmin;
 import com.attitude.tinymall.domain.LitemallAdmin;
 import com.attitude.tinymall.domain.LitemallDeliveryDetail;
@@ -157,6 +158,21 @@ public class AdminOrderController {
     LitemallOrder order = orderService.findById(id);
     return ResponseUtil.ok(order);
   }
+
+  @GetMapping("/detail")
+  public Object getOrderWithdeliveryMsgByOrderId(@LoginAdmin Integer adminId, Integer id){
+    if (adminId == null) {
+      return ResponseUtil.fail401();
+    }
+
+    LitemallOrder order = orderService.findById(id);
+    LitemallDeliveryDetail deliveryDetail = detailService.getDeliveryDetailByDeliveryId(order.getDeliveryId());
+    OrderVO orderVO = new OrderVO();
+    orderVO.setOrder(order);
+    orderVO.setDeliveryDetail(deliveryDetail);
+    return ResponseUtil.ok(orderVO);
+  }
+
 
   /*
    * 目前仅仅支持管理员设置发货相关的信息
