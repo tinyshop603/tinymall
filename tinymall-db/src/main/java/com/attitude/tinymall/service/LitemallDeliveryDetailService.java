@@ -1,5 +1,6 @@
 package com.attitude.tinymall.service;
 
+import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.domain.dada.order.QueryOrderStatusResult;
 
 /**
@@ -13,4 +14,6 @@ public interface LitemallDeliveryDetailService {
     String dadaFormalCancelOrder( String originId);
 
     QueryOrderStatusResult dadaQueryOrderStatus(String originId);
+
+    LitemallDeliveryDetail getDeliveryDetailByDeliveryId(String deliveryId);
 }
