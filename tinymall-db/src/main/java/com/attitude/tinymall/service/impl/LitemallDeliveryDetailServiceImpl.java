@@ -2,6 +2,7 @@ package com.attitude.tinymall.service.impl;
 
 import com.attitude.tinymall.dao.LitemallDeliveryDetailMapper;
 import com.attitude.tinymall.dao.LitemallOrderMapper;
+import com.attitude.tinymall.domain.LitemallAddress;
 import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.domain.LitemallOrder;
 import com.attitude.tinymall.domain.LitemallOrderExample;
@@ -11,6 +12,7 @@ import com.attitude.tinymall.domain.dada.ResponseEntity;
 import com.attitude.tinymall.domain.dada.order.*;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.TPDStatusEnum;
+import com.attitude.tinymall.service.LitemallAddressService;
 import com.attitude.tinymall.service.LitemallAdminService;
 import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 import com.attitude.tinymall.service.LitemallOrderService;
@@ -33,25 +35,31 @@ import java.math.BigDecimal;
 public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetailService {
 
   @Autowired
-  RemoteDadaDeliveryClient remoteDadaDeliveryClient;
+  private RemoteDadaDeliveryClient remoteDadaDeliveryClient;
 
   @Autowired
-  LitemallOrderService litemallOrderService;
+  private LitemallOrderService litemallOrderService;
 
   @Autowired
-  LitemallOrderMapper litemallOrderMapper;
+  private LitemallOrderMapper litemallOrderMapper;
 
   @Autowired
-  LitemallUserService litemalluserService;
+  private LitemallUserService litemalluserService;
 
   @Autowired
-  BaiduFenceServiceImpl BaiduFenceService;
+  private BaiduFenceServiceImpl BaiduFenceService;
 
   @Autowired
-  LitemallDeliveryDetailMapper litemallDeliveryDetailMapper;
+  private LitemallDeliveryDetailMapper litemallDeliveryDetailMapper;
+
+  @Autowired
+  private LitemallAddressService addressService;
 
   @Value("${delivery.dada.source-id}")
   public String shopNo;
+
+  @Value("${delivery.dada.callback-address}")
+  public String dadaCallbackAddress;
 
   /**
    * 新增订单
@@ -63,6 +71,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     LitemallOrder order = litemallOrderService.findById(orderId);
     LitemallUser user = litemalluserService.findById(order.getUserId());
     Location location = BaiduFenceService.geocoding(order.getAddress()).getLocation();
+    LitemallAddress userDefaultAddress = addressService.findDefault(order.getUserId());
     //TODO
     order.setDeliveryId(IdGeneratorUtil.generateId("TPD"));
     AddOrderParams orderParams = AddOrderParams.builder()
@@ -75,21 +84,24 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         .receiverAddress(order.getAddress())
         .receiverLat(Float.parseFloat("" + location.getLat()))
         .receiverLng(Float.parseFloat("" + location.getLng()))
-        .receiverPhone(user.getMobile())
-        .originId(orderId.toString())
+        .receiverPhone(userDefaultAddress.getMobile())
+        .callback(dadaCallbackAddress)
+        .originId(order.getDeliveryId())
         .build();
 
     ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
-    order.setDeliverFee(Integer.parseInt("" + res.getResult().getFee()));
-
-    //setDeliveryId  setDistance setDeliverFee setFee
-    LitemallDeliveryDetail litemallDeliveryDetail = new LitemallDeliveryDetail();
-    litemallDeliveryDetail.setDeliveryId(order.getDeliveryId());
-    litemallDeliveryDetail.setDistance("" + res.getResult().getDistance());
-    litemallDeliveryDetail.setDeliverFee(Integer.parseInt("" + res.getResult().getDeliverFee()));
-    litemallDeliveryDetail.setFee(Integer.parseInt("" + res.getResult().getFee()));
     if (res.isSuccess()) {
+      order.setDeliverFee(res.getResult().getFee().intValue());
+
+      //setDeliveryId  setDistance setDeliverFee setFee
+      LitemallDeliveryDetail litemallDeliveryDetail = new LitemallDeliveryDetail();
+      litemallDeliveryDetail.setDeliveryId(order.getDeliveryId());
+      litemallDeliveryDetail.setDistance("" + res.getResult().getDistance());
+      litemallDeliveryDetail.setDeliverFee(res.getResult().getDeliverFee().intValue());
+      litemallDeliveryDetail.setFee(res.getResult().getFee().intValue());
+
       order.setTpdStatus(TPDStatusEnum.WAITING);
+      order.setOrderStatus(OrderStatusEnum.ONGOING);
       litemallOrderService.updateById(order);
       litemallDeliveryDetailMapper.insert(litemallDeliveryDetail);
     }

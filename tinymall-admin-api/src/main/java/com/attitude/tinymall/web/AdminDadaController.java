@@ -46,8 +46,9 @@ public class AdminDadaController {
     // 能够呼叫达达的订单状态
     if (Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_ACCEPT,
         OrderStatusEnum.MERCHANT_SHIP).contains(currentOrder.getOrderStatus())) {
-      litemallDeliveryDetailService.dadaAddOrder(currentOrder.getId());
-      return ResponseUtil.ok();
+      if (litemallDeliveryDetailService.dadaAddOrder(currentOrder.getId())) {
+        return ResponseUtil.ok();
+      }
     }
     log.info("订单: {} 创建第三方个订单失败!!", orderId);
     return ResponseUtil.fail(-1, "无法呼叫第三方配送, 订单状态: " + currentOrder.getOrderStatus().getMessage());
