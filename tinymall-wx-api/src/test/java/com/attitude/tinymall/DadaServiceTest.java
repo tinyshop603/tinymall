@@ -222,7 +222,7 @@ public class DadaServiceTest {
   @Test
   public void getCityCodeList() {
 
-    ResponseEntity<List<ListCityResult>> result = remoteDadaDeliveryClient.getCityCodeList();
+    ResponseEntity<List<CityResult>> result = remoteDadaDeliveryClient.getCityCodeList();
 
     log.info(result.toString());
   }

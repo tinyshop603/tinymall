@@ -68,7 +68,7 @@ public interface RemoteDadaDeliveryClient {
   ResponseEntity<FormalCancelOrderResult> formalCancelOrder(@RequestBody FormalCancelParams params);
 
   @PostMapping("/api/order/cancel/reasons")
-  ResponseEntity<CancelOrderReasonsResult> cancelOrderReasons();
+  ResponseEntity<List<CancelOrderReasonsResult>> cancelOrderReasons();
 
   @PostMapping("/api/order/appoint/exist")
   ResponseEntity existOrderAppoint(@RequestBody ExistOrderParams params);
@@ -83,7 +83,7 @@ public interface RemoteDadaDeliveryClient {
   ResponseEntity dadaComplaint(@RequestBody DadaParams params);
 
   @PostMapping("/api/complaint/reasons")
-  ResponseEntity<ComplaintReasonsResult> complaintReasons();
+  ResponseEntity<List<ComplaintReasonsResult>> complaintReasons();
 
   @PostMapping("/api/order/confirm/goods")
   ResponseEntity confirmOrderGoods(@RequestBody GoodsParam params);

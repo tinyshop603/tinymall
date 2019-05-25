@@ -15,6 +15,7 @@ import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import com.attitude.tinymall.util.IdGeneratorUtil;
 import com.attitude.tinymall.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
  * @author zhaoguiyang on 2019/5/23.
  * @project Wechat
  */
+@Service
 public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetailService {
 
   @Autowired
