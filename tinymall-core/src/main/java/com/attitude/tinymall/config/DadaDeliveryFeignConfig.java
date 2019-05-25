@@ -99,6 +99,7 @@ public class DadaDeliveryFeignConfig {
     @Override
     public void apply(RequestTemplate template) {
       // TODO 发请求的时候进行拦截, 加入head等验证信息
+      template.header("Content-Type", "application/json;charset=UTF-8");
 
       Map<String, String> postBody = new HashMap<String, String>(8);
       postBody.put("format", "json");

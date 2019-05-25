@@ -2,12 +2,14 @@ package com.attitude.tinymall.web;
 
 import com.attitude.tinymall.annotation.LoginAdmin;
 import com.attitude.tinymall.domain.LitemallAdmin;
+import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.domain.LitemallOrder;
 import com.attitude.tinymall.domain.LitemallOrderGoods;
 import com.attitude.tinymall.domain.LitemallOrderWithGoods;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.PayStatusEnum;
 import com.attitude.tinymall.service.LitemallAdminService;
+import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 import com.attitude.tinymall.service.LitemallOrderGoodsService;
 import com.attitude.tinymall.service.LitemallOrderService;
 import com.attitude.tinymall.service.LitemallProductService;
@@ -52,6 +54,8 @@ public class AdminOrderController {
   private WxPayEngine wxPayEngine;
   @Autowired
   private LitemallAdminService adminService;
+  @Autowired
+  private LitemallDeliveryDetailService detailService;
 
 
   @GetMapping("/list")
@@ -72,7 +76,8 @@ public class AdminOrderController {
     for (LitemallOrder curOrder : orderList) {
       LitemallOrderWithGoods itemallOrderWithGoods = new LitemallOrderWithGoods();
       List<LitemallOrderGoods> curOrderGoodsList = new ArrayList<LitemallOrderGoods>();
-
+      LitemallDeliveryDetail deliveryDetail = null;
+      itemallOrderWithGoods.setDeliveryDetail(deliveryDetail);
       for (LitemallOrderGoods curOrderGoods : orderGoodsList) {
         if (curOrderGoods.getOrderId().equals(curOrder.getId())) {
           curOrderGoodsList.add(curOrderGoods);
