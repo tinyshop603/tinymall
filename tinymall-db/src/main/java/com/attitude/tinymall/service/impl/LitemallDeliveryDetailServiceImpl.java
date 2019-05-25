@@ -77,6 +77,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         .receiverLng(Float.parseFloat("" + location.getLng()))
         .receiverPhone(user.getMobile())
         .originId(orderId.toString())
+        .callback("http://39.107.81.107:8084/dada-order/callback/status")
         .build();
 
     ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
