@@ -1,4 +1,4 @@
-package com.attitude.tinymall.VO;
+package com.attitude.tinymall.vo;
 
 import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.domain.LitemallOrder;
