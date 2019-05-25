@@ -9,6 +9,7 @@ import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -221,7 +222,7 @@ public class DadaServiceTest {
   @Test
   public void getCityCodeList() {
 
-    ResponseEntity<ListCityResult> shopResult = remoteDadaDeliveryClient.getCityCodeList();
+    ResponseEntity<List<CityResult>> shopResult = remoteDadaDeliveryClient.getCityCodeList();
 
     log.info(shopResult.toString());
   }

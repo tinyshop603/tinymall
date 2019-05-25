@@ -26,7 +26,7 @@ import com.attitude.tinymall.domain.dada.order.TransporterOrderAppointResult;
 import com.attitude.tinymall.domain.dada.order.TransporterParams;
 import com.attitude.tinymall.domain.dada.shop.AddShopParams;
 import com.attitude.tinymall.domain.dada.shop.AddShopResult;
-import com.attitude.tinymall.domain.dada.shop.ListCityResult;
+import com.attitude.tinymall.domain.dada.shop.CityResult;
 import com.attitude.tinymall.domain.dada.shop.MerchantAddParams;
 import com.attitude.tinymall.domain.dada.shop.ShopDetailParams;
 import com.attitude.tinymall.domain.dada.shop.ShopDetailResult;
@@ -92,7 +92,7 @@ public interface RemoteDadaDeliveryClient {
   ResponseEntity<AddShopResult> addShop(@RequestBody List<AddShopParams> shopParams);
 
   @GetMapping("/api/cityCode/list")
-  ResponseEntity<ListCityResult> getCityCodeList();
+  ResponseEntity<List<CityResult>> getCityCodeList();
 
   @PostMapping("/merchantApi/merchant/add")
   ResponseEntity addMerchant(@RequestBody MerchantAddParams shopParams);
