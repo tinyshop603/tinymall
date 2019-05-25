@@ -1,6 +1,7 @@
 package com.attitude.tinymall.callback;
 
 import com.attitude.tinymall.callback.params.DadaCallbackParams;
+import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.enums.TPDStatusEnum;
 import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 import com.attitude.tinymall.util.ResponseUtil;
@@ -25,14 +26,17 @@ public class DadaOrderStatusCallbackController {
   LitemallDeliveryDetailService litemallDeliveryDetailService;
 
   @PostMapping("/callback/status")
-  public Object callBackOrderStatus(@RequestBody DadaCallbackParams callbackParams){
+  public Object callBackOrderStatus(@RequestBody DadaCallbackParams callbackParams) {
     // TODO singure feature的校验, 以及订单状态的变更
-    Integer orderStatus = callbackParams.getOrderStatus() ;
-    String delivery = callbackParams.getOrderId();
-    if(orderStatus==1){
-      litemallDeliveryDetailService.getDeliveryDetailByDeliveryId(delivery);
+    TPDStatusEnum tpdStatusEnum = TPDStatusEnum.getByCode(callbackParams.getOrderStatus());
+    String deliveryId = callbackParams.getOrderId();
+    LitemallDeliveryDetail currentDeliveyDetail = litemallDeliveryDetailService
+        .getDeliveryDetailByDeliveryId(deliveryId);
+    if (currentDeliveyDetail == null) {
+      litemallDeliveryDetailService.initDeliveryDetailsByDeliveryId(deliveryId);
     }
-    litemallDeliveryDetailService.updateOrderStatus(orderStatus,delivery);
+
+    litemallDeliveryDetailService.updateOrderStatus(tpdStatusEnum, deliveryId);
     log.info(callbackParams.toString());
     return ResponseUtil.ok();
   }

@@ -55,6 +55,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
    *
    * @return status :0 成功   其余: 失败
    */
+  @Override
   public String dadaAddOrder(Integer orderId) {
     LitemallOrder order = litemallOrderService.findById(orderId);
     LitemallUser user = litemalluserService.findById(order.getUserId());
@@ -92,6 +93,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
   }
 
   //取消订单
+  @Override
   public String dadaFormalCancelOrder(String originId) {
     FormalCancelParams orderParams = FormalCancelParams.builder()
         .build();
@@ -106,29 +108,37 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
 
   @Override
   public LitemallDeliveryDetail getDeliveryDetailByDeliveryId(String deliveryId) {
-    return new LitemallDeliveryDetail();
-//    QueryOrderParams  orderParams = QueryOrderParams.builder()
-//            .orderId(deliveryId)
-//            .build();
-//    ResponseEntity<QueryOrderStatusResult> res = remoteDadaDeliveryClient.queryOrderStatus(orderParams);
-//    LitemallDeliveryDetail litemallDeliveryDetail = new LitemallDeliveryDetail();
-//    litemallDeliveryDetail.setDeliveryId(deliveryId);
-//    litemallDeliveryDetail.setDmName(res.getResult().getTransporterName());
-//    litemallDeliveryDetail.setDmMobile(res.getResult().getTransporterPhone());
-//    litemallDeliveryDetail.setDeliveryId(deliveryId);
-//    litemallDeliveryDetail.setDistance(""+res.getResult().getDistance());
-//    litemallDeliveryDetail.setDeliverFee(Integer.parseInt(""+res.getResult().getDeliveryFee()));
-//    litemallDeliveryDetail.setFee(Integer.parseInt(""+res.getResult().getActualFee()));
-//    litemallDeliveryDetailMapper.insert(litemallDeliveryDetail);
-//    return litemallDeliveryDetail;
+    return litemallDeliveryDetailMapper.selectByPrimaryKey(deliveryId);
   }
 
   @Override
-  public void updateOrderStatus(Integer orderStatus, String delivery) {
+  public void updateOrderStatus(TPDStatusEnum orderStatus, String delivery) {
     LitemallOrder order = new LitemallOrder();
-    order.setTpdStatus(TPDStatusEnum.getByCode(orderStatus));
+    order.setTpdStatus(orderStatus);
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andOrderSnEqualTo(delivery).andDeletedEqualTo(false);
     litemallOrderMapper.updateByExampleSelective(order, example);
+  }
+
+  @Override
+  public boolean initDeliveryDetailsByDeliveryId(String deliveryId) {
+
+    QueryOrderParams orderParams = QueryOrderParams.builder()
+        .orderId(deliveryId)
+        .build();
+    ResponseEntity<QueryOrderStatusResult> res = remoteDadaDeliveryClient
+        .queryOrderStatus(orderParams);
+    if (!res.isSuccess()) {
+      return false;
+    }
+    LitemallDeliveryDetail litemallDeliveryDetail = new LitemallDeliveryDetail();
+    litemallDeliveryDetail.setDeliveryId(deliveryId);
+    litemallDeliveryDetail.setDmName(res.getResult().getTransporterName());
+    litemallDeliveryDetail.setDmMobile(res.getResult().getTransporterPhone());
+    litemallDeliveryDetail.setDeliveryId(deliveryId);
+    litemallDeliveryDetail.setDistance("" + res.getResult().getDistance());
+    litemallDeliveryDetail.setDeliverFee(Integer.parseInt("" + res.getResult().getDeliveryFee()));
+    litemallDeliveryDetail.setFee(Integer.parseInt("" + res.getResult().getActualFee()));
+    return litemallDeliveryDetailMapper.insert(litemallDeliveryDetail) > 0;
   }
 }
