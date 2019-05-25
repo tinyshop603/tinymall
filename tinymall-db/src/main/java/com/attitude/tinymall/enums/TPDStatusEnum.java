@@ -56,7 +56,7 @@ public enum TPDStatusEnum {
     return message;
   }
 
-  TPDStatusEnum getByCode(int code) {
+ public static TPDStatusEnum getByCode(int code) {
     for (TPDStatusEnum value : TPDStatusEnum.values()) {
       if (value.code == code) {
         return value;

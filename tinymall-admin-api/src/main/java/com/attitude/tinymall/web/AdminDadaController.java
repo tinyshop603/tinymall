@@ -41,12 +41,6 @@ public class AdminDadaController {
     }
   }
 
-  //接受订单
-  @RequestMapping("/callback/status")
-  public Object dadaCallback(ResponseEntity orderResult) {
-    return orderResult.getStatus();
-  }
-
   @PostMapping("/order")
   public Object addDadaOrder(@RequestBody Map<String, String> params) {
     // 创建达达订单, 并进行呼叫骑手
