@@ -19,6 +19,7 @@ import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import com.attitude.tinymall.util.IdGeneratorUtil;
 import com.attitude.tinymall.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -49,6 +50,8 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
   @Autowired
   LitemallDeliveryDetailMapper litemallDeliveryDetailMapper;
 
+  @Value("${delivery.dada.source-id}")
+  public String shopNo;
 
   /**
    * 新增订单
@@ -56,15 +59,16 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
    * @return status :0 成功   其余: 失败
    */
   @Override
-  public String dadaAddOrder(Integer orderId) {
+  public boolean dadaAddOrder(Integer orderId) {
     LitemallOrder order = litemallOrderService.findById(orderId);
     LitemallUser user = litemalluserService.findById(order.getUserId());
-    Location location = BaiduFenceService.geocoding("order.getAddress()").getLocation();
-
-    order.setDeliveryId(IdGeneratorUtil.generateId("dada"));//TODO
+    Location location = BaiduFenceService.geocoding(order.getAddress()).getLocation();
+    //TODO
+    order.setDeliveryId(IdGeneratorUtil.generateId("TPD"));
     AddOrderParams orderParams = AddOrderParams.builder()
-        .shopNo("${delivery.dada.source-id}")
-        .cityCode("010")//北京
+        .shopNo(shopNo)
+        //北京地区
+        .cityCode("010")
         .cargoPrice(order.getActualPrice())
         .isPrepay(0)
         .receiverName(user.getUsername())
@@ -84,15 +88,14 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     litemallDeliveryDetail.setDistance("" + res.getResult().getDistance());
     litemallDeliveryDetail.setDeliverFee(Integer.parseInt("" + res.getResult().getDeliverFee()));
     litemallDeliveryDetail.setFee(Integer.parseInt("" + res.getResult().getFee()));
-    if ("0".equals(res.getStatus())) {
+    if (res.isSuccess()) {
       order.setTpdStatus(TPDStatusEnum.WAITING);
       litemallOrderService.updateById(order);
       litemallDeliveryDetailMapper.insert(litemallDeliveryDetail);
     }
-    return res.status;
+    return res.isSuccess();
   }
 
-  //取消订单
   @Override
   public String dadaFormalCancelOrder(String originId) {
     FormalCancelParams orderParams = FormalCancelParams.builder()

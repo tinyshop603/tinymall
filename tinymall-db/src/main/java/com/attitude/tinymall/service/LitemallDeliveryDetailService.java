@@ -10,7 +10,7 @@ import com.attitude.tinymall.enums.TPDStatusEnum;
  */
 public interface LitemallDeliveryDetailService {
 
-    String dadaAddOrder( Integer orderId);
+    boolean dadaAddOrder( Integer orderId);
 
     String dadaFormalCancelOrder( String originId);
 

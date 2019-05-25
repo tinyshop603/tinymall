@@ -55,6 +55,7 @@ public class AdminDadaController {
     // 能够呼叫达达的订单状态
     if (Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_ACCEPT,
         OrderStatusEnum.MERCHANT_SHIP).contains(currentOrder.getOrderStatus())) {
+      litemallDeliveryDetailService.dadaAddOrder(currentOrder.getId());
       return ResponseUtil.ok();
     }
     return ResponseUtil.fail(-1, "无法呼叫第三方配送, 叮当状态: " + currentOrder.getOrderStatus().getMessage());
