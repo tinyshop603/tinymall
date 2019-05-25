@@ -27,7 +27,7 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="120px" label="订单编号" prop="order.orderSn"></el-table-column>
+      <el-table-column v-if="false" align="center" width="120px" label="订单编号" prop="order.orderSn"></el-table-column>
       <el-table-column align="center" width="85px" label="下单时间" prop="order.addTime" sortable></el-table-column>
       <el-table-column align="center" min-width="80px" label="订单状态" prop="order.orderStatus">
         <template slot-scope="scope">
@@ -44,18 +44,18 @@
       <el-table-column align="center" width="80px" label="订单费用" prop="order.orderPrice"></el-table-column>
       <el-table-column align="center" min-width="80px" label="支付方式" prop="order.paymentWay">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.order.paymentWay ? 'success' : 'error' ">{{textMap.orderPayWay[scope.row.order.paymentWay]}}
+          <el-tag :type="textMap.orderPayWay[scope.row.order.paymentWay].type">{{textMap.orderPayWay[scope.row.order.paymentWay].text}}
           </el-tag>
         </template>
       </el-table-column>
       <!-- TODO 订单详情页的修改, 点击弹出订单的详情-->
-      <el-table-column align="center" min-width="80px" label="订单备注" prop="order.remark"></el-table-column>
-      <el-table-column align="center" min-width="80px" label="详情" prop="order.remark">
+
+      <el-table-column align="center" min-width="80px" label="配送信息" prop="order.remark">
         <template slot-scope="scope">
           <el-link @click="viewOrderDetail(scope.row.order)">查看详情<i class="el-icon-view el-icon--right"></i> </el-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="370" class-name="small-padding fixed-width" prop="type">
+      <el-table-column align="center" label="操作"  class-name="small-padding fixed-width" prop="type">
         <template slot-scope="scope">
           <el-dropdown trigger="click" @command="handleOrderOptionCommand">
             <el-button type="primary">
@@ -74,6 +74,8 @@
           <!--          <el-button :type="scope.row.refundBtnStatus.type" :disabled="scope.row.refundBtnStatus.disabled" size="small" @click="handleRefundOrder(scope.row.order)">申请退货</el-button>-->
         </template>
       </el-table-column>
+
+      <el-table-column align="center" min-width="80px" label="订单备注" prop="order.remark"></el-table-column>
     </el-table>
     <!-- 分页 -->
     <div class="pagination-container">
@@ -118,7 +120,8 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="当前订单详情" :visible.sync="sendDialogFormVisible">
+    <!--   展示当前订单详情对话框-->
+    <el-dialog title="配送详情" :visible.sync="sendDialogFormVisible">
       is
       <div slot="footer" class="dialog-footer">
         <el-button @click="sendDialogFormVisible = false">取消</el-button>
@@ -190,24 +193,21 @@ export default {
       refundDialogFormVisible:false,
       downloadLoading:false,
       tags:[
-        { name:'未知', type:'', status:'' },
-        { name:'待发货', type:'warning', status:201 },
-        { name:'待发货', type:'warning', status:1 },
-        { name:'已发货', type:'success', status:301 },
-        { name:'已发货', type:'success', status:3 },
-        { name:'已完成', type:'info', status:401 },
-        { name:'已完成', type:'info', status:402 },
-        { name:'已完成', type:'info', status:4 },
-        { name:'已完成', type:'info', status:5 },
-        { name:'申请退款', type:'danger', status:202 },
-        { name:'退款完成', type:'info', status:203 },
-        { name:'已取消', type:'info', status:2 }
+        { name:'待付款', type:'warning', status:'PENDING_PAYMENT' },
+        { name:'系统取消', type:'warning', status:'SYSTEM_AUTO_CANCEL' },
+        { name:'商家取消', type:'warning', status:'MERCHANT_CANCEL' },
+        { name:'用户取消', type:'warning', status:'CUSTOMER_CANCEL' },
+        { name:'订单进行中', type:'success', status:'ONGOING' },
+        { name:'商家确认收单', type:'info', status:'MERCHANT_ACCEPT' },
+        { name:'商家发货', type:'info', status:'MERCHANT_SHIP' },
+        { name:'申请退款', type:'danger', status:'MERCHANT_REFUNDING' },
+        { name:'订单完成', type:'success', status:'COMPLETE' }
       ],
       textMap:{
         orderPayWay:{
-          'ONLINE_WECHAT_PAY':'微信支付',
-          'ONLINE_ALI_PAY':'支付宝支付',
-          'CASH_ON_DELIVERY':'货到付款'
+          'ONLINE_WECHAT_PAY':{ text:'微信支付', type:'success' },
+          'ONLINE_ALI_PAY':{ text:'支付宝支付', type:'normal' },
+          'CASH_ON_DELIVERY':{ text:'货到付款', type:'warning' }
 
         }
       }

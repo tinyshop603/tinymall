@@ -151,16 +151,7 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
       criteria.andOrderSnEqualTo(orderSn);
     }
     criteria.andDeletedEqualTo(false);
-    List<OrderStatusEnum> unshowOrderStatus = new ArrayList<OrderStatusEnum>();
-    //订单生成，未支付；
-    unshowOrderStatus.add(OrderStatusEnum.PENDING_PAYMENT);
-    //下单后未支付用户取消；
-    unshowOrderStatus.add(OrderStatusEnum.CUSTOMER_CANCEL);
-    //下单后未支付超时系统自动取消
-    unshowOrderStatus.add(OrderStatusEnum.SYSTEM_AUTO_CANCEL);
-    criteria.andOrderStatusNotIn(unshowOrderStatus);
 
-    Page<Object> objects = PageHelper.startPage(page, size);
     return orderMapper.selectByExample(example);
   }
   @Override
