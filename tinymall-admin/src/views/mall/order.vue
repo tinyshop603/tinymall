@@ -84,11 +84,11 @@
                      layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <!-- 发货对话框 -->
-    <el-dialog title="发货" :visible.sync="sendDialogFormVisible">
+    <el-dialog title="接受订单准备发货" :visible.sync="sendDialogFormVisible">
       确认发货后，您必须在30分钟内为客户送货到门，是否继续发货？
       <div slot="footer" class="dialog-footer">
         <el-button @click="sendDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="sendData">确定</el-button>
+        <el-button type="primary" @click="merchantAccept">确定</el-button>
       </div>
     </el-dialog>
     <!-- 取消订单对话框 -->
@@ -98,16 +98,7 @@
       何操作，确认继续取消？
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelSendDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="cancelData">确定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 收货对话框 -->
-    <el-dialog title="确定完成" :visible.sync="recvDialogFormVisible">
-      确定订单完成前,请确认已经完成送货到门,并且已完成线下收付款,</br>
-      订单确认完成后不可再对该订单做任何操作,继续确认完成订单?</br>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="recvDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="recvData">确定</el-button>
+        <el-button type="primary" @click="merchantCancelOrder">确定</el-button>
       </div>
     </el-dialog>
     <!-- 确认退款对话框 -->
@@ -116,7 +107,7 @@
       确定退款后不可再对该订单做任何操作,继续操作?</br>
       <div slot="footer" class="dialog-footer">
         <el-button @click="refundDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="refundData">确定</el-button>
+        <el-button type="primary" @click="merchantConfirmRefund">确定</el-button>
       </div>
     </el-dialog>
 
@@ -165,11 +156,13 @@
 <script>
 import {
   listOrder,
-  getBtnStateByCode,
   updateOrderCode,
+  callDadaRider,
   STATUS,
   refundOrder,
   formatDate,
+  readOrder,
+  getOrderDetail,
   formatDate2
 } from '@/api/order'
 import waves from '@/directive/waves' // 水波纹指令
@@ -248,39 +241,35 @@ export default {
   },
   watch:{
     submitOrderEvent:function(ov, nv) {
-      let newOrder = this.$store.state.order.submitOrder
+      const newOrder = this.$store.state.order.submitOrder
       // socket传数据对时间格式的处理-wz
       const date = new Date(newOrder.order.addTime)
       newOrder.order.addTime = formatDate(date, 'yyyy-MM-dd hh:mm:ss')
       if (newOrder) {
-        newOrder = Object.assign(newOrder, getBtnStateByCode(newOrder.order.orderStatus))
         this.list.unshift(newOrder)
       }
     },
     cancelOrderEvent:function(ov, nv) {
-      let cancelOrder = this.$store.state.order.cancelOrder
+      const cancelOrder = this.$store.state.order.cancelOrder
       // TODO 临时写法，需找到时间格式变化原因 socket传数据对时间格式的处理-wz
       cancelOrder.addTime = formatDate2(cancelOrder.addTime)
       if (cancelOrder) {
-        cancelOrder = Object.assign(cancelOrder, getBtnStateByCode(cancelOrder.orderStatus))
         this.updateOrderItemStatus(cancelOrder)
       }
     },
     refundOrderEvent:function(ov, nv) {
-      let refundOrder = this.$store.state.order.refundOrder
+      const refundOrder = this.$store.state.order.refundOrder
       // TODO 临时写法，需找到时间格式变化原因 socket传数据对时间格式的处理-wz
       refundOrder.addTime = formatDate2(refundOrder.addTime)
       if (refundOrder) {
-        refundOrder = Object.assign(refundOrder, getBtnStateByCode(refundOrder.orderStatus))
         this.updateOrderItemStatus(refundOrder)
       }
     },
     confirmOrderEvent:function(ov, nv) {
-      let confirmOrder = this.$store.state.order.confirmOrder
+      const confirmOrder = this.$store.state.order.confirmOrder
       // TODO 临时写法，需找到时间格式变化原因 socket传数据对时间格式的处理-wz
       confirmOrder.addTime = formatDate2(confirmOrder.addTime)
       if (confirmOrder) {
-        confirmOrder = Object.assign(confirmOrder, getBtnStateByCode(confirmOrder.orderStatus))
         this.updateOrderItemStatus(confirmOrder)
       }
     }
@@ -289,18 +278,33 @@ export default {
   },
   methods:{
     handleOrderOptionCommand(command) {
+      const orderData = command.itemData
+      this.dataForm.id = orderData.id
       switch (command.type) {
         case 'acceptOrder':
-          this.$message('click on item ' + command.type)
+          this.sendDialogFormVisible = true
           break
         case 'callRider':
           this.$message('click on item ' + command.type)
+          callDadaRider({ 'orderId':orderData.deliveryId }).then(response => {
+            const responseData = response.data
+            if (responseData.errno === 0) {
+              // 修改订单的状态
+              orderData.orderStatus = 'ONGOING'
+              this.$notify({
+                title:'成功',
+                message:responseData.errmsg,
+                type:'success',
+                duration:1000
+              })
+            }
+          })
           break
         case 'cancelOrder':
-          this.$message('click on item ' + command.type)
+          this.cancelSendDialogFormVisible = true
           break
         case 'confirmRefund':
-          this.$message('click on item ' + command.type)
+          this.refundDialogFormVisible = true
           break
       }
     },
@@ -336,135 +340,67 @@ export default {
       this.dataForm.shipEndTime = row.shipEndTime
       this.dataForm.orderStatus = row.orderStatus
     },
-    handleSend(row) {
-      debugger
-      this.resetForm(row)
-      this.sendDialogFormVisible = true
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
-    },
-    sendData() {
-      /**
-         this.$refs['dataForm'].validate((valid) => {
-              if (valid) {
-                updateOrder(this.dataForm).then(response => {
-                  const updatedOrder = response.data.data
-                  for (const v of this.list) {
-                    if (v.id === updatedOrder.id) {
-                      const index = this.list.indexOf(v)
-                      this.list.splice(index, 1, updatedOrder)
-                      break
-                    }
-                  }
-                  this.sendDialogFormVisible = false
-                  this.$notify({
-                    title: '成功',
-                    message: '更新成功',
-                    type: 'success',
-                    duration: 2000
-                  })
-                })
-              }
-            })
-         **/
+    merchantAccept() {
       // 更改当前的订单的状态为发货状态
-      if (this.dataForm.orderStatus === 201) {
-        this.dataForm.orderStatus = STATUS.SHIP // 微信支付
-      } else {
-        this.dataForm.orderStatus = STATUS.AFTER_SHIP // 货到付款
-      }
-      updateOrderCode(this.dataForm).then(response => {
-        const updatedOrder = response.data.data
-        this.updateOrderItemStatus(updatedOrder)
+      updateOrderCode({ orderId:this.dataForm.id, orderStatus:STATUS.MERCHANT_ACCEPT }).then(response => {
+        const responseData = response.data
         this.sendDialogFormVisible = false
+        if (responseData.errno !== 0) {
+          this.$notify({
+            title:'失败',
+            message:responseData.errmsg,
+            type:'error'
+          })
+          return
+        }
+        this.updateOrderItemStatus(responseData.data)
         this.$notify({
           title:'成功',
-          message:'发货成功,请尽快送货',
-          type:'success',
-          duration:2000
+          message:response.data.errmsg,
+          type:'success'
         })
       })
     },
-    handleRecv(row) {
-      this.resetForm(row)
-      this.recvDialogFormVisible = true
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
-    },
-    handleCancelOrder(row) {
-      this.resetForm(row)
-      this.cancelSendDialogFormVisible = true
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
-    },
-    handleConfirmOrder(row) {
-      this.resetForm(row)
-      this.recvDialogFormVisible = true
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
-    },
-    // wz
-    handleRefundOrder(row) {
-      this.resetForm(row)
-      this.refundDialogFormVisible = true
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
-    },
-    recvData() {
-      // 更改当前的订单的状态为完成状态
-      if (this.dataForm.orderStatus === 201) {
-        this.dataForm.orderStatus = STATUS.RECEIVE_COMPLETE // 微信支付
-      } else {
-        this.dataForm.orderStatus = STATUS.AFTER_CONFIRM // 货到付款
-      }
-      updateOrderCode(this.dataForm).then(response => {
-        const updatedOrder = response.data.data
-        this.updateOrderItemStatus(updatedOrder)
-        this.recvDialogFormVisible = false
-        this.$notify({
-          title:'成功',
-          message:'订单已完成',
-          type:'success',
-          duration:2000
-        })
-      })
-    },
-    refundData() {
+    merchantConfirmRefund() {
       // 更改当前的订单的状态为完成状态
       refundOrder(this.dataForm).then(response => {
-        const updatedOrder = response.data.data
-        this.updateOrderItemStatus(updatedOrder)
         this.refundDialogFormVisible = false
+        const responseData = response.data
+        if (responseData.errno !== 0) {
+          this.$notify({
+            title:'失败',
+            message:responseData.errmsg,
+            type:'error'
+          })
+          return
+        }
+        const updatedOrder = responseData.data
+        this.updateOrderItemStatus(updatedOrder)
         this.$notify({
           title:'成功',
-          message:'退款成功',
-          type:'success',
-          duration:2000
+          message:responseData.errmsg,
+          type:'success'
         })
       })
     },
-    cancelData() {
+    merchantCancelOrder() {
       // 更改当前的订单的状态为取消状态
-      if (this.dataForm.orderStatus === 201) {
-        this.dataForm.orderStatus = STATUS.CANCEL // 微信支付
-      } else {
-        this.dataForm.orderStatus = STATUS.AFTER_CANCEL // 货到付款
-      }
-
-      updateOrderCode(this.dataForm).then(response => {
-        const updatedOrder = response.data.data
-        this.updateOrderItemStatus(updatedOrder)
+      updateOrderCode({ orderId:this.dataForm.id, orderStatus:STATUS.MERCHANT_CANCEL }).then(response => {
         this.cancelSendDialogFormVisible = false
+        const responseData = response.data
+        if (responseData.errno !== 0) {
+          this.$notify({
+            title:'失败',
+            message:responseData.errmsg,
+            type:'error'
+          })
+          return
+        }
+        this.updateOrderItemStatus(responseData.data)
         this.$notify({
           title:'成功',
-          message:'取消成功',
-          type:'success',
-          duration:2000
+          message:response.data.errmsg,
+          type:'success'
         })
       })
     },
@@ -494,18 +430,25 @@ export default {
         }
       }
     },
-    viewOrderDetail(data) {
-      this.showDeliveryDetail = true
-      this.deliveryDetailsDialogData = [
-        { 'key':'配送编号', 'value':data.deliveryDetail.dmId },
-        { 'key':'配送员', 'value':data.deliveryDetail.dmName },
-        { 'key':'配送员手机号', 'value':data.deliveryDetail.dmMobile },
-        { 'key':'配送费', 'value':data.deliveryDetail.deliverFee },
-        { 'key':'配送状态', 'value':data.order.tpdStatusMsg },
-        { 'key':'取消来源', 'value':data.deliveryDetail.cancelFrom },
-        { 'key':'取消原因', 'value':data.deliveryDetail.cancelReason }
-      ]
-      debugger
+    viewOrderDetail(currentData) {
+      // 获取订单的详细信息
+
+      if (currentData.order) {
+        getOrderDetail({ 'id':currentData.order.id }).then(response => {
+          const data = response.data.data
+          this.updateOrderItemStatus(data.order)
+          this.showDeliveryDetail = true
+          this.deliveryDetailsDialogData = [
+            { 'key':'配送编号', 'value':data.deliveryDetail.dmId },
+            { 'key':'配送员', 'value':data.deliveryDetail.dmName },
+            { 'key':'配送员手机号', 'value':data.deliveryDetail.dmMobile },
+            { 'key':'配送费', 'value':data.deliveryDetail.deliverFee },
+            { 'key':'配送状态', 'value':data.order.tpdStatusMsg },
+            { 'key':'取消来源', 'value':data.deliveryDetail.cancelFrom },
+            { 'key':'取消原因', 'value':data.deliveryDetail.cancelReason }
+          ]
+        })
+      }
     }
   }
 }

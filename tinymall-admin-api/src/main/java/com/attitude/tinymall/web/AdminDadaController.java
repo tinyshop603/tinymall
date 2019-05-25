@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  *
  */
-
+@RestController
 @RequestMapping("/admin/{userName}/dada")
 public class AdminDadaController {
 
@@ -43,6 +43,7 @@ public class AdminDadaController {
 
   @PostMapping("/order")
   public Object addDadaOrder(@RequestBody Map<String, String> params) {
+    // 创建达达订单, 并进行呼叫骑手
     String orderId = params.get("orderId");
     return ResponseUtil.ok();
   }

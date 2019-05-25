@@ -1,5 +1,7 @@
 package com.attitude.tinymall.web;
 
+import com.attitude.tinymall.ao.OrderStatusAO;
+import com.attitude.tinymall.vo.OrderVO;
 import com.attitude.tinymall.annotation.LoginAdmin;
 import com.attitude.tinymall.domain.LitemallAdmin;
 import com.attitude.tinymall.domain.LitemallDeliveryDetail;
@@ -158,6 +160,21 @@ public class AdminOrderController {
     return ResponseUtil.ok(order);
   }
 
+  @GetMapping("/detail")
+  public Object getOrderWithdeliveryMsgByOrderId(@LoginAdmin Integer adminId, Integer id){
+    if (adminId == null) {
+      return ResponseUtil.fail401();
+    }
+
+    LitemallOrder order = orderService.findById(id);
+    LitemallDeliveryDetail deliveryDetail = detailService.getDeliveryDetailByDeliveryId(order.getDeliveryId());
+    OrderVO orderVO = new OrderVO();
+    orderVO.setOrder(order);
+    orderVO.setDeliveryDetail(deliveryDetail);
+    return ResponseUtil.ok(orderVO);
+  }
+
+
   /*
    * 目前仅仅支持管理员设置发货相关的信息
    */
@@ -194,16 +211,16 @@ public class AdminOrderController {
     return ResponseUtil.ok(tinymallOrder);
   }
 
-  /*
+  /**
    * 更新订单的状态信息
    */
   @PostMapping("/update/status/")
-  public Object updateOrderStatues(@LoginAdmin Integer adminId, @RequestBody LitemallOrder order) {
+  public Object updateOrderStatues(@LoginAdmin Integer adminId, @RequestBody OrderStatusAO orderStatus) {
     if (adminId == null) {
       return ResponseUtil.unlogin();
     }
 
-    Integer orderId = order.getId();
+    Integer orderId = orderStatus.getOrderId();
     if (orderId == null) {
       return ResponseUtil.badArgument();
     }
@@ -214,7 +231,7 @@ public class AdminOrderController {
     }
 
     // 设置订单已取消状态
-    tinymallOrder.setOrderStatus(order.getOrderStatus());
+    tinymallOrder.setOrderStatus(orderStatus.getOrderStatus());
     orderService.updateById(tinymallOrder);
     return ResponseUtil.ok(tinymallOrder);
   }
