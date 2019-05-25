@@ -26,6 +26,10 @@ public enum OrderStatusEnum{
    */
   COMPLETE(""),
 
+  /**
+   * 订单退款完成, 即订单终态
+   */
+  REFUND_COMPLETE(""),
 
   /**
    * 商家确认收单
