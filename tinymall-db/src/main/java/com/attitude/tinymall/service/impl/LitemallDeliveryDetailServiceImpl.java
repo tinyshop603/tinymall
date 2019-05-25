@@ -1,5 +1,6 @@
 package com.attitude.tinymall.service.impl;
 
+import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 
 /**
@@ -8,4 +9,8 @@ import com.attitude.tinymall.service.LitemallDeliveryDetailService;
  */
 public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetailService {
 
+  @Override
+  public LitemallDeliveryDetail getDeliveryDetailByOrderId(String orderId) {
+    return null;
+  }
 }

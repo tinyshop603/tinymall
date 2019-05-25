@@ -193,15 +193,16 @@ export default {
       refundDialogFormVisible:false,
       downloadLoading:false,
       tags:[
-        { name:'待付款', type:'warning', status:'PENDING_PAYMENT' },
+        { name:'待付款', type:'normal', status:'PENDING_PAYMENT' },
         { name:'系统取消', type:'warning', status:'SYSTEM_AUTO_CANCEL' },
         { name:'商家取消', type:'warning', status:'MERCHANT_CANCEL' },
         { name:'用户取消', type:'warning', status:'CUSTOMER_CANCEL' },
         { name:'订单进行中', type:'success', status:'ONGOING' },
         { name:'商家确认收单', type:'info', status:'MERCHANT_ACCEPT' },
         { name:'商家发货', type:'info', status:'MERCHANT_SHIP' },
-        { name:'申请退款', type:'danger', status:'MERCHANT_REFUNDING' },
-        { name:'订单完成', type:'success', status:'COMPLETE' }
+        { name:'申请退款', type:'normal', status:'MERCHANT_REFUNDING' },
+        { name:'订单完成', type:'success', status:'COMPLETE' },
+        { name:'退款完成', type:'danger', status:'REFUND_COMPLETE' }
       ],
       textMap:{
         orderPayWay:{
