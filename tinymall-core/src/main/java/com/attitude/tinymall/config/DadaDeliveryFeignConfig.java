@@ -109,7 +109,7 @@ public class DadaDeliveryFeignConfig {
       // 需要抽取到配置文件 , 测试环境默认为：73753
       postBody.put("source_id", sourceId);
       byte[] bodyByte = template.body();
-      if (bodyByte.length > 0) {
+      if (bodyByte!=null&&bodyByte.length > 0) {
         postBody.put("body", new String(template.body(), Charset.forName("UTF-8")));
       } else {
         postBody.put("body", "");
