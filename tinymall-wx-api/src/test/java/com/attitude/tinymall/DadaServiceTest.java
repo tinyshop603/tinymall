@@ -138,7 +138,7 @@ public class DadaServiceTest {
 
   @Test
   public void cancelOrderReasons() {
-    ResponseEntity<List<CancelOrderReasonsResult>> res = remoteDadaDeliveryClient.cancelOrderReasons();
+    ResponseEntity<CancelOrderReasonsResult> res = remoteDadaDeliveryClient.cancelOrderReasons();
     log.error(res.toString());
   }
 
@@ -185,7 +185,7 @@ public class DadaServiceTest {
   }
   @Test
   public void complaintReasons() {
-    ResponseEntity<List<ComplaintReasonsResult>> res = remoteDadaDeliveryClient.complaintReasons();
+    ResponseEntity<ComplaintReasonsResult> res = remoteDadaDeliveryClient.complaintReasons();
     log.error(res.toString());
   }
 

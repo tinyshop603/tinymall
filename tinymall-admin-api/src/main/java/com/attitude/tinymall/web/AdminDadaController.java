@@ -24,7 +24,6 @@ import java.util.Map;
  *
  */
 
-@RestController
 @RequestMapping("/admin/{userName}/dada")
 public class AdminDadaController {
 
