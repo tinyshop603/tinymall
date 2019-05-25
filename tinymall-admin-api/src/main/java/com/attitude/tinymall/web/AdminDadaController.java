@@ -13,6 +13,7 @@ import com.attitude.tinymall.service.LitemallOrderService;
 import com.attitude.tinymall.util.RegexUtil;
 import com.attitude.tinymall.util.ResponseUtil;
 import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/admin/{userName}/dada")
+@Slf4j
 public class AdminDadaController {
 
   @Autowired
@@ -39,7 +41,7 @@ public class AdminDadaController {
   public Object addDadaOrder(@RequestBody Map<String, Integer> params) {
     // 创建达达订单, 并进行呼叫骑手
     Integer orderId = params.get("orderId");
-
+    log.info("订单: {} 正在创建dada的第三方订单", orderId);
     LitemallOrder currentOrder = orderService.findById(orderId);
     // 能够呼叫达达的订单状态
     if (Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_ACCEPT,
@@ -47,7 +49,8 @@ public class AdminDadaController {
       litemallDeliveryDetailService.dadaAddOrder(currentOrder.getId());
       return ResponseUtil.ok();
     }
-    return ResponseUtil.fail(-1, "无法呼叫第三方配送, 叮当状态: " + currentOrder.getOrderStatus().getMessage());
+    log.info("订单: {} 创建第三方个订单失败!!", orderId);
+    return ResponseUtil.fail(-1, "无法呼叫第三方配送, 订单状态: " + currentOrder.getOrderStatus().getMessage());
   }
 
   @GetMapping("/order")
