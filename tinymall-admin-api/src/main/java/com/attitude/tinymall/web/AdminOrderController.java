@@ -236,17 +236,21 @@ public class AdminOrderController {
     switch (targetStatus) {
       case MERCHANT_ACCEPT:
         // 商家能接单的情况
-        if (!Arrays.asList(OrderStatusEnum.PENDING_PAYMENT)
+        if (!Arrays.asList(OrderStatusEnum.MERCHANT_ACCEPT, OrderStatusEnum.CUSTOMER_PAIED)
             .contains(currentOrder.getOrderStatus())) {
-          return ResponseUtil.fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
+          return ResponseUtil
+              .fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
         }
         break;
       case MERCHANT_CANCEL:
         // 商家能取消的情况
         if (!Arrays.asList(OrderStatusEnum.PENDING_PAYMENT,
+            OrderStatusEnum.CUSTOMER_PAIED,
+            OrderStatusEnum.MERCHANT_ACCEPT,
             OrderStatusEnum.MERCHANT_SHIP
         ).contains(currentOrder.getOrderStatus())) {
-          return ResponseUtil.fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
+          return ResponseUtil
+              .fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
         }
         break;
       default:
