@@ -8,8 +8,8 @@ import com.attitude.tinymall.domain.dada.testorder.*;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import java.math.BigDecimal;
 import java.util.Arrays;
-
 import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -138,7 +138,7 @@ public class DadaServiceTest {
 
   @Test
   public void cancelOrderReasons() {
-    ResponseEntity<CancelOrderReasonsResult> res = remoteDadaDeliveryClient.cancelOrderReasons();
+    ResponseEntity<List<CancelOrderReasonsResult>> res = remoteDadaDeliveryClient.cancelOrderReasons();
     log.error(res.toString());
   }
 
@@ -167,7 +167,7 @@ public class DadaServiceTest {
   public void transporterOrderAppoint() {
     TransporterParams orderParams = TransporterParams
             .builder()
-            .shopNo("123")
+            .shopNo("12316")
             .build();
     ResponseEntity<TransporterOrderAppointResult> res = remoteDadaDeliveryClient.transporterOrderAppoint(orderParams);
     log.error(res.toString());
@@ -185,7 +185,7 @@ public class DadaServiceTest {
   }
   @Test
   public void complaintReasons() {
-    ResponseEntity<ComplaintReasonsResult> res = remoteDadaDeliveryClient.complaintReasons();
+    ResponseEntity<List<ComplaintReasonsResult>> res = remoteDadaDeliveryClient.complaintReasons();
     log.error(res.toString());
   }
 
@@ -222,9 +222,9 @@ public class DadaServiceTest {
   @Test
   public void getCityCodeList() {
 
-    ResponseEntity<List<CityResult>> shopResult = remoteDadaDeliveryClient.getCityCodeList();
+    ResponseEntity<List<ListCityResult>> result = remoteDadaDeliveryClient.getCityCodeList();
 
-    log.info(shopResult.toString());
+    log.info(result.toString());
   }
   @Test
   public void addMerchant() {
@@ -265,7 +265,7 @@ public class DadaServiceTest {
   }
 
   /**
-   * 下面的是Order测试环境调试方法 仅供测试环境使用 生产上不调用
+   * 下面的是Order测试环境调试方法 仅供测试环境使用
    */
   @Test
   public void abnormalBackOrder() {
@@ -273,9 +273,9 @@ public class DadaServiceTest {
             .builder()
             .orderId("6666666")
             .build();
-    ResponseEntity<ShopDetailResult> shopResult = remoteDadaDeliveryClient.abnormalBackOrder(orderParams);
+    ResponseEntity orderResult = remoteDadaDeliveryClient.abnormalBackOrder(orderParams);
 
-    log.info(shopResult.toString());
+    log.info(orderResult.toString());
   }
   @Test
   public void acceptOrder() {
@@ -283,9 +283,9 @@ public class DadaServiceTest {
             .builder()
             .orderId("6666666")
             .build();
-    ResponseEntity<ShopDetailResult> shopResult = remoteDadaDeliveryClient.acceptOrder(orderParams);
+    ResponseEntity orderResult = remoteDadaDeliveryClient.acceptOrder(orderParams);
 
-    log.info(shopResult.toString());
+    log.info(orderResult.toString());
   }
   @Test
   public void cancelOrder() {
@@ -294,9 +294,9 @@ public class DadaServiceTest {
             .orderId("6666666")
             .reason("fall")
             .build();
-    ResponseEntity<ShopDetailResult> shopResult = remoteDadaDeliveryClient.cancelOrder(orderParams);
+    ResponseEntity orderResult = remoteDadaDeliveryClient.cancelOrder(orderParams);
 
-    log.info(shopResult.toString());
+    log.info(orderResult.toString());
   }
   @Test
   public void expireOrder() {
@@ -304,9 +304,9 @@ public class DadaServiceTest {
             .builder()
             .orderId("6666666")
             .build();
-    ResponseEntity<ShopDetailResult> shopResult = remoteDadaDeliveryClient.expireOrder(orderParams);
+    ResponseEntity orderResult = remoteDadaDeliveryClient.expireOrder(orderParams);
 
-    log.info(shopResult.toString());
+    log.info(orderResult.toString());
   }
   @Test
   public void fetchOrder() {
@@ -314,9 +314,9 @@ public class DadaServiceTest {
             .builder()
             .orderId("6666666")
             .build();
-    ResponseEntity<ShopDetailResult> shopResult = remoteDadaDeliveryClient.fetchOrder(orderParams);
+    ResponseEntity orderResult = remoteDadaDeliveryClient.fetchOrder(orderParams);
 
-    log.info(shopResult.toString());
+    log.info(orderResult.toString());
   }
   @Test
   public void finishOrder() {
@@ -324,9 +324,9 @@ public class DadaServiceTest {
             .builder()
             .orderId("6666666")
             .build();
-    ResponseEntity<ShopDetailResult> shopResult = remoteDadaDeliveryClient.finishOrder(orderParams);
+    ResponseEntity orderResult = remoteDadaDeliveryClient.finishOrder(orderParams);
 
-    log.info(shopResult.toString());
+    log.info(orderResult.toString());
   }
 
 }
