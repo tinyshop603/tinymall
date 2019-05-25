@@ -33,6 +33,7 @@ public class DadaServiceTest {
   @Autowired
   private RemoteDadaDeliveryClient remoteDadaDeliveryClient;
 
+
   @Test
   public void testDadaAddOrder() {
     AddOrderParams orderParams = AddOrderParams
@@ -138,7 +139,7 @@ public class DadaServiceTest {
 
   @Test
   public void cancelOrderReasons() {
-    ResponseEntity<CancelOrderReasonsResult> res = remoteDadaDeliveryClient.cancelOrderReasons();
+    ResponseEntity<List<CancelOrderReasonsResult>> res = remoteDadaDeliveryClient.cancelOrderReasons();
     log.error(res.toString());
   }
 
@@ -185,7 +186,7 @@ public class DadaServiceTest {
   }
   @Test
   public void complaintReasons() {
-    ResponseEntity<ComplaintReasonsResult> res = remoteDadaDeliveryClient.complaintReasons();
+    ResponseEntity<List<ComplaintReasonsResult>> res = remoteDadaDeliveryClient.complaintReasons();
     log.error(res.toString());
   }
 
