@@ -28,16 +28,17 @@ public class DadaOrderStatusCallbackController {
   @PostMapping("/callback/status")
   public Object callBackOrderStatus(@RequestBody DadaCallbackParams callbackParams) {
     // TODO singure feature的校验, 以及订单状态的变更
+    log.info("dada的回调参数如下: ", callbackParams.toString());
     TPDStatusEnum tpdStatusEnum = TPDStatusEnum.getByCode(callbackParams.getOrderStatus());
     String deliveryId = callbackParams.getOrderId();
     LitemallDeliveryDetail currentDeliveyDetail = litemallDeliveryDetailService
         .getDeliveryDetailByDeliveryId(deliveryId);
     if (currentDeliveyDetail == null) {
+      log.info("初始化订单的deliveryId: {}", deliveryId);
       litemallDeliveryDetailService.initDeliveryDetailsByDeliveryId(deliveryId);
     }
-
+    log.info("更新订单状态deliveryId; ${}", deliveryId);
     litemallDeliveryDetailService.updateOrderStatus(tpdStatusEnum, deliveryId);
-    log.info(callbackParams.toString());
     return ResponseUtil.ok();
   }
 }

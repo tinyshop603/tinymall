@@ -13,6 +13,6 @@ public class IdGeneratorUtil {
 
   public static String generateId(String prefix) {
     return String
-        .format(Locale.US, "${prefix}%d%04d", System.currentTimeMillis(), random.nextInt(10000));
+        .format(Locale.US, prefix + "%d%04d", System.currentTimeMillis(), random.nextInt(10000));
   }
 }
