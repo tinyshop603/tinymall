@@ -33,6 +33,8 @@ public class QueryOrderStatusResult {
 
     private BigDecimal actualFee; //实际支付费用,单位为元
 
+    private Double distance; //距离
+
     private Double createTime; //发单时间
 
     private String acceptTime; //接单时间,若未接单,则为空

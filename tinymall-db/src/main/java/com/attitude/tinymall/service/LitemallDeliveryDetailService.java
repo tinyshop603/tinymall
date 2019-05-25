@@ -13,7 +13,7 @@ public interface LitemallDeliveryDetailService {
 
     String dadaFormalCancelOrder( String originId);
 
-    QueryOrderStatusResult dadaQueryOrderStatus(String originId);
-
     LitemallDeliveryDetail getDeliveryDetailByDeliveryId(String deliveryId);
+
+    void updateOrderStatus(Integer orderStatus,String delivery);
 }
