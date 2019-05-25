@@ -35,17 +35,6 @@ public class AdminDadaController {
   @Autowired
   private LitemallOrderService orderService;
 
-  //申请配送
-  @RequestMapping("/addOrder")
-  public Object dadaAddOrder(Integer orderId) {
-    String status = (String) litemallDeliveryDetailService.dadaAddOrder(orderId);
-    if ("0".equals(status)) {
-      return ResponseUtil.ok();
-    } else {
-      return ResponseUtil.fail();
-    }
-  }
-
   @PostMapping("/order")
   public Object addDadaOrder(@RequestBody Map<String, Integer> params) {
     // 创建达达订单, 并进行呼叫骑手
