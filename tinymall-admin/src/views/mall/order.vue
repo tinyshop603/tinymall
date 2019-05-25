@@ -210,6 +210,7 @@ export default {
         { name:'商家发货', type:'info', status:'MERCHANT_SHIP' },
         { name:'申请退款', type:'normal', status:'MERCHANT_REFUNDING' },
         { name:'订单完成', type:'success', status:'COMPLETE' },
+        { name:'用户已付款', type:'success', status:'CUSTOMER_PAIED' },
         { name:'退款完成', type:'danger', status:'REFUND_COMPLETE' }
       ],
       textMap:{
@@ -285,8 +286,7 @@ export default {
           this.sendDialogFormVisible = true
           break
         case 'callRider':
-          this.$message('click on item ' + command.type)
-          callDadaRider({ 'orderId':orderData.deliveryId }).then(response => {
+          callDadaRider({ 'orderId':parseInt(orderData.id) }).then(response => {
             const responseData = response.data
             if (responseData.errno === 0) {
               // 修改订单的状态
@@ -294,8 +294,13 @@ export default {
               this.$notify({
                 title:'成功',
                 message:responseData.errmsg,
-                type:'success',
-                duration:1000
+                type:'success'
+              })
+            } else {
+              this.$notify({
+                title:'失败',
+                message:responseData.errmsg,
+                type:'error'
               })
             }
           })

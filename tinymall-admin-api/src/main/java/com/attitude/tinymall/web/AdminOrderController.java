@@ -78,7 +78,8 @@ public class AdminOrderController {
     for (LitemallOrder curOrder : orderList) {
       LitemallOrderWithGoods itemallOrderWithGoods = new LitemallOrderWithGoods();
       List<LitemallOrderGoods> curOrderGoodsList = new ArrayList<LitemallOrderGoods>();
-      LitemallDeliveryDetail deliveryDetail = detailService.getDeliveryDetailByDeliveryId(curOrder.getDeliveryId());
+      LitemallDeliveryDetail deliveryDetail = detailService
+          .getDeliveryDetailByDeliveryId(curOrder.getDeliveryId());
       itemallOrderWithGoods.setDeliveryDetail(deliveryDetail);
       for (LitemallOrderGoods curOrderGoods : orderGoodsList) {
         if (curOrderGoods.getOrderId().equals(curOrder.getId())) {
@@ -161,13 +162,14 @@ public class AdminOrderController {
   }
 
   @GetMapping("/detail")
-  public Object getOrderWithdeliveryMsgByOrderId(@LoginAdmin Integer adminId, Integer id){
+  public Object getOrderWithdeliveryMsgByOrderId(@LoginAdmin Integer adminId, Integer id) {
     if (adminId == null) {
       return ResponseUtil.fail401();
     }
 
     LitemallOrder order = orderService.findById(id);
-    LitemallDeliveryDetail deliveryDetail = detailService.getDeliveryDetailByDeliveryId(order.getDeliveryId());
+    LitemallDeliveryDetail deliveryDetail = detailService
+        .getDeliveryDetailByDeliveryId(order.getDeliveryId());
     OrderVO orderVO = new OrderVO();
     orderVO.setOrder(order);
     orderVO.setDeliveryDetail(deliveryDetail);
@@ -194,7 +196,8 @@ public class AdminOrderController {
       return ResponseUtil.badArgumentValue();
     }
 
-    if (tinymallOrder.getPayStatus() == PayStatusEnum.PAID || tinymallOrder.getOrderStatus() == OrderStatusEnum.MERCHANT_SHIP) {
+    if (tinymallOrder.getPayStatus() == PayStatusEnum.PAID
+        || tinymallOrder.getOrderStatus() == OrderStatusEnum.MERCHANT_SHIP) {
       LitemallOrder newOrder = new LitemallOrder();
       newOrder.setId(orderId);
       newOrder.setShipChannel(order.getShipChannel());
@@ -215,25 +218,49 @@ public class AdminOrderController {
    * 更新订单的状态信息
    */
   @PostMapping("/update/status/")
-  public Object updateOrderStatues(@LoginAdmin Integer adminId, @RequestBody OrderStatusAO orderStatus) {
+  public Object updateOrderStatues(@LoginAdmin Integer adminId, @RequestBody OrderStatusAO ao) {
     if (adminId == null) {
       return ResponseUtil.unlogin();
     }
 
-    Integer orderId = orderStatus.getOrderId();
+    Integer orderId = ao.getOrderId();
     if (orderId == null) {
       return ResponseUtil.badArgument();
     }
 
-    LitemallOrder tinymallOrder = orderService.findById(orderId);
-    if (tinymallOrder == null) {
+    LitemallOrder currentOrder = orderService.findById(orderId);
+    if (currentOrder == null) {
       return ResponseUtil.badArgumentValue();
+    }
+    OrderStatusEnum targetStatus = ao.getOrderStatus();
+    switch (targetStatus) {
+      case MERCHANT_ACCEPT:
+        // 商家能接单的情况
+        if (!Arrays.asList(OrderStatusEnum.MERCHANT_ACCEPT, OrderStatusEnum.CUSTOMER_PAIED)
+            .contains(currentOrder.getOrderStatus())) {
+          return ResponseUtil
+              .fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
+        }
+        break;
+      case MERCHANT_CANCEL:
+        // 商家能取消的情况
+        if (!Arrays.asList(OrderStatusEnum.PENDING_PAYMENT,
+            OrderStatusEnum.CUSTOMER_PAIED,
+            OrderStatusEnum.MERCHANT_ACCEPT,
+            OrderStatusEnum.MERCHANT_SHIP
+        ).contains(currentOrder.getOrderStatus())) {
+          return ResponseUtil
+              .fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
+        }
+        break;
+      default:
+        break;
     }
 
     // 设置订单已取消状态
-    tinymallOrder.setOrderStatus(orderStatus.getOrderStatus());
-    orderService.updateById(tinymallOrder);
-    return ResponseUtil.ok(tinymallOrder);
+    currentOrder.setOrderStatus(ao.getOrderStatus());
+    orderService.updateById(currentOrder);
+    return ResponseUtil.ok(currentOrder);
   }
 
 
