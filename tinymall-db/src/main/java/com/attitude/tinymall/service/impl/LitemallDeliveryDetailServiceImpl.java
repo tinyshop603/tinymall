@@ -1,5 +1,6 @@
 package com.attitude.tinymall.service.impl;
 
+import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.domain.LitemallOrder;
 import com.attitude.tinymall.domain.LitemallUser;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
@@ -76,6 +77,11 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
               .build();
     ResponseEntity<QueryOrderStatusResult> res = remoteDadaDeliveryClient.queryOrderStatus(orderParams);
     return res.getResult();
+  }
+
+  @Override
+  public LitemallDeliveryDetail getDeliveryDetailByDeliveryId(String deliveryId) {
+    return null;
   }
 
 }
