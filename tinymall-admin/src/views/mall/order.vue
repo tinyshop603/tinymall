@@ -42,7 +42,7 @@
       <el-table-column align="center" min-width="80px" label="用户地址" prop="order.address"></el-table-column>
       <el-table-column align="center" width="100px" label="用户电话" prop="order.mobile"></el-table-column>
       <el-table-column align="center" width="80px" label="订单费用" prop="order.orderPrice"></el-table-column>
-      <el-table-column align="center" min-width="80px" label="支付方式" prop="order.paymentWay">
+      <el-table-column align="center" v-if="false" min-width="80px" label="支付方式" prop="order.paymentWay">
         <template slot-scope="scope">
           <el-tag :type="textMap.orderPayWay[scope.row.order.paymentWay].type">{{textMap.orderPayWay[scope.row.order.paymentWay].text}}
           </el-tag>
@@ -52,7 +52,7 @@
 
       <el-table-column align="center" min-width="80px" label="配送信息" prop="order.remark">
         <template slot-scope="scope">
-          <el-link @click="viewOrderDetail(scope.row.order)">查看详情<i class="el-icon-view el-icon--right"></i> </el-link>
+          <el-link @click="viewOrderDetail(scope.row)">查看详情<i class="el-icon-view el-icon--right"></i> </el-link>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作"  class-name="small-padding fixed-width" prop="type">
@@ -120,12 +120,25 @@
       </div>
     </el-dialog>
 
-    <!--   展示当前订单详情对话框-->
-    <el-dialog title="配送详情" :visible.sync="sendDialogFormVisible">
-      is
+    <!--   展示当前订单配送详情对话框-->
+    <el-dialog title="配送详情" :visible.sync="showDeliveryDetail">
+      <template>
+        <el-table
+          :data="deliveryDetailsDialogData"
+          style="width: 100%">
+          <el-table-column
+            prop="key"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop="value">
+          </el-table-column>
+        </el-table>
+      </template>
+
+
       <div slot="footer" class="dialog-footer">
-        <el-button @click="sendDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="sendData">确定</el-button>
+        <el-button @click="showDeliveryDetail = false">关闭</el-button>
       </div>
     </el-dialog>
     <audio id="bgMusic">
@@ -167,6 +180,7 @@ export default {
   },
   data() {
     return {
+      deliveryDetailsDialogData:[],
       isShowDeleteColumn:false, // 是否显示订单表格删除状态的列
       list:undefined,
       player:undefined, // 后台音频播放器
@@ -191,6 +205,7 @@ export default {
       recvDialogFormVisible:false,
       cancelSendDialogFormVisible:false,
       refundDialogFormVisible:false,
+      showDeliveryDetail:false,
       downloadLoading:false,
       tags:[
         { name:'待付款', type:'normal', status:'PENDING_PAYMENT' },
@@ -480,7 +495,16 @@ export default {
       }
     },
     viewOrderDetail(data) {
-      this.sendDialogFormVisible = true
+      this.showDeliveryDetail = true
+      this.deliveryDetailsDialogData = [
+        { 'key':'配送编号', 'value':data.deliveryDetail.dmId },
+        { 'key':'配送员', 'value':data.deliveryDetail.dmName },
+        { 'key':'配送员手机号', 'value':data.deliveryDetail.dmMobile },
+        { 'key':'配送费', 'value':data.deliveryDetail.deliverFee },
+        { 'key':'配送状态', 'value':data.order.tpdStatusMsg },
+        { 'key':'取消来源', 'value':data.deliveryDetail.cancelFrom },
+        { 'key':'取消原因', 'value':data.deliveryDetail.cancelReason }
+      ]
       debugger
     }
   }

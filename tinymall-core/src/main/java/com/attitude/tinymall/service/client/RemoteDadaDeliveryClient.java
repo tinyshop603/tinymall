@@ -26,7 +26,7 @@ import com.attitude.tinymall.domain.dada.order.TransporterOrderAppointResult;
 import com.attitude.tinymall.domain.dada.order.TransporterParams;
 import com.attitude.tinymall.domain.dada.shop.AddShopParams;
 import com.attitude.tinymall.domain.dada.shop.AddShopResult;
-import com.attitude.tinymall.domain.dada.shop.ListCityResult;
+import com.attitude.tinymall.domain.dada.shop.CityResult;
 import com.attitude.tinymall.domain.dada.shop.MerchantAddParams;
 import com.attitude.tinymall.domain.dada.shop.ShopDetailParams;
 import com.attitude.tinymall.domain.dada.shop.ShopDetailResult;
@@ -68,7 +68,7 @@ public interface RemoteDadaDeliveryClient {
   ResponseEntity<FormalCancelOrderResult> formalCancelOrder(@RequestBody FormalCancelParams params);
 
   @PostMapping("/api/order/cancel/reasons")
-  ResponseEntity<List<CancelOrderReasonsResult>> cancelOrderReasons();
+  ResponseEntity<CancelOrderReasonsResult> cancelOrderReasons();
 
   @PostMapping("/api/order/appoint/exist")
   ResponseEntity existOrderAppoint(@RequestBody ExistOrderParams params);
@@ -83,7 +83,7 @@ public interface RemoteDadaDeliveryClient {
   ResponseEntity dadaComplaint(@RequestBody DadaParams params);
 
   @PostMapping("/api/complaint/reasons")
-  ResponseEntity<List<ComplaintReasonsResult>> complaintReasons();
+  ResponseEntity<ComplaintReasonsResult> complaintReasons();
 
   @PostMapping("/api/order/confirm/goods")
   ResponseEntity confirmOrderGoods(@RequestBody GoodsParam params);
@@ -92,7 +92,7 @@ public interface RemoteDadaDeliveryClient {
   ResponseEntity<AddShopResult> addShop(@RequestBody List<AddShopParams> shopParams);
 
   @GetMapping("/api/cityCode/list")
-  ResponseEntity<List<ListCityResult>> getCityCodeList();
+  ResponseEntity<List<CityResult>> getCityCodeList();
 
   @PostMapping("/merchantApi/merchant/add")
   ResponseEntity addMerchant(@RequestBody MerchantAddParams shopParams);

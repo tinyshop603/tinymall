@@ -76,7 +76,7 @@ public class AdminOrderController {
     for (LitemallOrder curOrder : orderList) {
       LitemallOrderWithGoods itemallOrderWithGoods = new LitemallOrderWithGoods();
       List<LitemallOrderGoods> curOrderGoodsList = new ArrayList<LitemallOrderGoods>();
-      LitemallDeliveryDetail deliveryDetail = null;
+      LitemallDeliveryDetail deliveryDetail = detailService.getDeliveryDetailByOrderId(curOrder.getDeliveryId());
       itemallOrderWithGoods.setDeliveryDetail(deliveryDetail);
       for (LitemallOrderGoods curOrderGoods : orderGoodsList) {
         if (curOrderGoods.getOrderId().equals(curOrder.getId())) {
