@@ -46,9 +46,13 @@ Page({
       wx.navigateTo({ url: "/pages/auth/login/login" });
     }
   },
-  goOrder() {
+  goOrder(e) {
+    var status = e.currentTarget.dataset.status;
+    if (status === undefined || status === ""){
+      status = "0";
+    }
     if (app.globalData.hasLogin) {
-      wx.navigateTo({ url: "/pages/ucenter/order/order?showType=0" });
+      wx.navigateTo({ url: "/pages/ucenter/order/order?showType=" + status });
     }
     else {
       wx.navigateTo({ url: "/pages/auth/login/login" });

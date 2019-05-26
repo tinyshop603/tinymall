@@ -1,18 +1,40 @@
 <view class="container">
   <view class="profile-info" bindtap="goLogin">
-    <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+    <view class="picture">
+        <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+    </view>
+    
     <view class="info">
        <text class="name">{{userInfo.nickName}}</text> 
+    </view>
+    <view class="order" bindtap="goOrder">
+        <text class="l">我的订单</text>
+        <text class="r">查看全部订单</text>
+        <text class="icon"></text>
+    </view>
+    <view style="clear:both;"></view>
+    <view class="orderDetail">
+        <view bindtap="goOrder" data-status="1">
+           <image src='/static/images/ucenter-unpaid.png'></image>
+           <text>待付款</text>
+        </view>
+        <view bindtap="goOrder" data-status="2">
+          <image src='/static/images/ucenter-accepting.png'></image>
+          <text>待收获</text>
+        </view>
+        <view bindtap="goOrder" data-status="3">
+          <image src='/static/images/ucrnter-complete.png'></image>
+          <text>已完成</text>
+        </view>
     </view>
   </view>
 
   <view class="user-menu">
-    <view class="item">
+    <!-- <view class="item">
       <view class="a" bindtap="goOrder">
-        <!-- <text class="icon order"></text> -->
         <text class="txt">我的订单</text>
       </view>
-    </view>
+    </view> -->
     <!-- <view class="item">
       <view class="a" bindtap="goCoupon">
         <text class="icon coupon"></text>
@@ -67,12 +89,18 @@
         <text class="txt">帮助中心</text>
       </view>
     </view> -->
-    <view class="item item-bottom">
+    <view class="item">
       <view class="a" bindtap="aboutUs">
         <!-- <text class="icon help"></text> -->
         <text class="txt">联系商家</text>
       </view>
-    </view> 
+    </view>
+    <view class="item">
+      <view class="a" bindtap="aboutUs">
+        <!-- <text class="icon help"></text> -->
+        <text class="txt">关于我们</text>
+      </view>
+    </view>
 
   </view>
 
