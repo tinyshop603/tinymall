@@ -27,13 +27,14 @@ public enum OrderStatusEnum{
   COMPLETE("订单已完成"),
 
   /**
-   * 订单退款完成, 即订单终态
-   */
-  REFUND_COMPLETE("订单退款已完成"),
-  /**
    * 因超时系统自动完成, 订单终态
    */
   SYSTEM_AUTO_COMPLETE(""),
+  /*
+   * 订单退款完成, 即订单终态
+   */
+  REFUND_COMPLETE("订单退款已完成"),
+
   /**
    * 商家确认收单
    */

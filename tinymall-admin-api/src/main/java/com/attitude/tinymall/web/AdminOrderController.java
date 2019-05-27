@@ -1,5 +1,13 @@
 package com.attitude.tinymall.web;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.attitude.tinymall.annotation.LoginAdmin;
+import com.attitude.tinymall.domain.*;
+import com.attitude.tinymall.enums.OrderStatusEnum;
+import com.attitude.tinymall.enums.PayStatusEnum;
+import com.attitude.tinymall.service.*;
+import com.attitude.tinymall.util.*;
 import com.attitude.tinymall.ao.OrderStatusAO;
 import com.attitude.tinymall.vo.OrderVO;
 import com.attitude.tinymall.annotation.LoginAdmin;
@@ -23,6 +31,7 @@ import com.attitude.tinymall.util.OrderUtil;
 import com.attitude.tinymall.util.ResponseUtil;
 import com.attitude.tinymall.util.WxPayEngine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -30,9 +39,15 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.text.DecimalFormat;
+import com.attitude.tinymall.enums.OrderStatusEnum.*;
+
+import static com.attitude.tinymall.enums.OrderStatusEnum.ONGOING;
+import static com.attitude.tinymall.enums.OrderStatusEnum.SYSTEM_AUTO_CANCEL;
+import static com.attitude.tinymall.enums.OrderStatusEnum.SYSTEM_AUTO_COMPLETE;
 
 @RestController
 @RequestMapping("/admin/{userName}/order")
@@ -63,6 +78,9 @@ public class AdminOrderController {
   @Autowired
   private LitemallAdminService adminService;
   @Autowired
+  private LitemallUserService userService;
+//  @Autowired
+//  private LitemallUser
   private LitemallDeliveryDetailService detailService;
 
 
@@ -238,6 +256,33 @@ public class AdminOrderController {
     if (currentOrder == null) {
       return ResponseUtil.badArgumentValue();
     }
+<<<<<<<<< Temporary merge branch 1
+//    Short preOrderStatus = tinymallOrder.getOrderStatus();
+//    if(order.getOrderStatus() == 301 || order.getOrderStatus() == 3){//发货
+//        //检测改为发货状态前是否为待发货（201，001）
+//        if(preOrderStatus != 201 && preOrderStatus != 1){
+//          return ResponseUtil.fail(403, "订单不能发货");
+//        }
+//        // [服务通知] 通知用户商家接单
+//        sendTmplMsg(adminId, orderId, SendMsgTmplStatus.MERCHANT_ACCEPT_MSG);
+//
+//    }else if(order.getOrderStatus() == 102 || order.getOrderStatus() == 2){//取消订单
+//        //检测改为发货状态前是否为待发货（201,001）或已发货（301,3）
+//        if(preOrderStatus != 201 && preOrderStatus != 1 && preOrderStatus != 301 && preOrderStatus != 3){
+//          return ResponseUtil.fail(403, "订单不能取消");
+//        }
+//        tinymallOrder.setEndTime(LocalDateTime.now());
+//        // [服务通知] 通知用户取消订单，同时退款给用户
+//        sendTmplMsg(adminId, orderId, SendMsgTmplStatus.CANCEL_ORDER_MSG);
+//        return refundConf(adminId, orderId);
+//    }else if(order.getOrderStatus() == 401 || order.getOrderStatus() == 4 ){//确认完成
+//        //检测改为发货状态前是否为已发货（301，3）
+//        if(preOrderStatus != 301 && preOrderStatus != 3){
+//          return ResponseUtil.fail(403, "订单不能确认完成");
+//        }
+//        tinymallOrder.setConfirmTime(LocalDateTime.now());
+//    }
+=========
     OrderStatusEnum targetStatus = ao.getOrderStatus();
     switch (targetStatus) {
       case MERCHANT_ACCEPT:
@@ -263,6 +308,7 @@ public class AdminOrderController {
         break;
     }
 
+>>>>>>>>> Temporary merge branch 2
     // 设置订单已取消状态
     currentOrder.setOrderStatus(ao.getOrderStatus());
     orderService.updateById(currentOrder);
@@ -382,7 +428,7 @@ public class AdminOrderController {
       order.setEndTime(LocalDateTime.now());
       orderService.update(order);
 
-      // 商品货品数量增加
+          // 商品货品数量增加
 //      List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
 //      for (LitemallOrderGoods orderGoods : orderGoodsList) {
 //        Integer productId = orderGoods.getProductId();
@@ -391,14 +437,14 @@ public class AdminOrderController {
 //        product.setGoodsNumber(number);
 //        productService.updateById(product);
 //      }
-    } catch (Exception ex) {
-      txManager.rollback(status);
-      logger.error("系统内部错误", ex);
-      return ResponseUtil.fail(403, "订单退款失败");
-    }
-    txManager.commit(status);
+      } catch (Exception ex) {
+          txManager.rollback(status);
+          logger.error("系统内部错误", ex);
+          return ResponseUtil.fail(403, "订单退款失败");
+      }
+      txManager.commit(status);
 
-    return ResponseUtil.ok(order);
+      return ResponseUtil.ok(order);
   }
 
   /**
@@ -441,5 +487,194 @@ public class AdminOrderController {
 
     return ResponseUtil.ok();
   }
+
+  /**
+   * 自动取消订单
+   *
+   * 定时检查订单未付款情况，如果超时半个小时则自动取消订单 定时时间是每次相隔半个小时。
+   *
+   * 注意，因为是相隔半小时检查，因此导致有订单是超时一个小时以后才设置取消状态。 TODO 这里可以进一步地配合用户订单查询时订单未付款检查，如果订单超时半小时则取消。
+   * 这里暂时取消自动检查订单的逻辑
+   */
+  @Scheduled(fixedDelay = 30*60*1000)
+  public void checkOrderUnpaid() {
+    logger.debug(LocalDateTime.now());
+
+    List<LitemallOrder> orderList = orderService.queryUnpaid();
+    for (LitemallOrder order : orderList) {
+      LocalDateTime add = order.getAddTime();
+      LocalDateTime now = LocalDateTime.now();
+      LocalDateTime expired = add.plusMinutes(30);
+      if (expired.isAfter(now)) {
+        continue;
+      }
+
+      // 开启事务管理
+      DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+      def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+      TransactionStatus status = txManager.getTransaction(def);
+      try {
+        // 设置订单已取消状态
+        order.setOrderStatus(SYSTEM_AUTO_CANCEL);
+        order.setEndTime(LocalDateTime.now());
+        orderService.updateById(order);
+
+        // 商品货品数量增加
+        Integer orderId = order.getId();
+        List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
+        for (LitemallOrderGoods orderGoods : orderGoodsList) {
+          Integer productId = orderGoods.getProductId();
+          LitemallProduct product = productService.findById(productId);
+          Integer number = product.getGoodsNumber() + orderGoods.getNumber();
+          product.setGoodsNumber(number);
+          productService.updateById(product);
+        }
+      } catch (Exception ex) {
+        txManager.rollback(status);
+        logger.error("系统内部错误", ex);
+      }
+      txManager.commit(status);
+    }
+  }
+
+  /**
+   * 自动确认订单
+   *
+   * 定时检查订单未确认情况，如果超时七天则自动确认订单 定时时间是每天凌晨3点。
+   *
+   * 注意，因为是相隔一天检查，因此导致有订单是超时八天以后才设置自动确认。 这里可以进一步地配合用户订单查询时订单未确认检查，如果订单超时7天则自动确认。
+   * 但是，这里可能不是非常必要。相比订单未付款检查中存在商品资源有限所以应该 早点清理未付款情况，这里八天再确认是可以的。
+   *
+   * TODO 目前自动确认是基于管理后台管理员所设置的商品快递到达时间，见orderService.queryUnconfirm。 那么在实际业务上有可能存在商品寄出以后商品因为一些原因快递最终没有到达，
+   * 也就是商品快递失败而shipEndTime一直是空的情况，因此这里业务可能需要扩展，以防止订单一直 处于发货状态。
+   */
+  @Scheduled(cron = "0 0 3 * * ?")
+  public void checkOrderUnconfirm() {
+    logger.debug(LocalDateTime.now());
+
+    List<LitemallOrder> orderList = orderService.queryUnconfirm();
+    for (LitemallOrder order : orderList) {
+      LocalDateTime shipEnd = order.getShipEndTime();
+      LocalDateTime now = LocalDateTime.now();
+      LocalDateTime expired = shipEnd.plusDays(7);
+      if (expired.isAfter(now)) {
+        continue;
+      }
+      // 设置订单已取消状态
+      if(order.getOrderStatus()==ONGOING){
+        order.setOrderStatus(SYSTEM_AUTO_COMPLETE);
+      }
+      order.setConfirmTime(now);
+      orderService.updateById(order);
+    }
+  }
+
+    /**
+     * [服务通知] 调用接口
+     * @param adminId 商户ID
+     * @param orderId 发送短信订单ID
+     *  模板数据：
+     *  1.订单号    orderSn
+     *  2.订单状态  调用者提供
+     *  3.订单内容  orderDetail
+     *  4.更新时间  curTime
+     *  5.备注      remark
+     */
+    public void sendTmplMsg(Integer adminId,Integer orderId, String orderStatus) {
+        // 获取接口调用凭证
+        String access_token = getAccessToken(adminId);
+
+        LitemallOrder tinymallOrder = orderService.findById(orderId);
+        // 获取用户openId
+        Integer userId = tinymallOrder.getUserId();
+        LitemallUser user = userService.findById(userId);
+        String touser = user.getWeixinOpenid();
+        // 获取支付prepay_id
+        String form_id = tinymallOrder.getTransactionId();//tinymallOrder.getPayId();
+        //获取购买详情
+        String orderDetail = getOrderDetailStr(orderId);
+        // 填入模板数据
+        JSONObject data = new JSONObject();
+        JSONObject keyword1 = new JSONObject();
+        JSONObject keyword2 = new JSONObject();
+        JSONObject keyword3 = new JSONObject();
+        JSONObject keyword4 = new JSONObject();
+        JSONObject keyword5 = new JSONObject();
+        keyword1.put("value",tinymallOrder.getOrderSn());
+        keyword2.put("value",orderStatus);
+        keyword3.put("value",orderDetail);
+        keyword4.put("value",LocalDate.now());
+        keyword5.put("value",tinymallOrder.getRemark());
+//        data.put("keyword1", tinymallOrder.getOrderSn());
+//        data.put("keyword2", orderStatus);
+//        data.put("keyword3", (orderDetail==null)? "test":orderDetail);
+//        data.put("keyword4", LocalDate.now());
+//        data.put("keyword5",(tinymallOrder.getRemark()==null)? "test":tinymallOrder.getRemark());
+        data.put("keyword1",keyword1);
+        data.put("keyword2",keyword2);
+        data.put("keyword3",keyword3);
+        data.put("keyword4",keyword4);
+        data.put("keyword5",keyword5);
+        //调用通知接口
+        JSONObject params = new JSONObject();
+        params.put("touser", touser); // 必填 接收者openid
+        params.put("template_id", MSG_TMPL); // 必填 下发模板消息id
+        params.put("form_id", form_id);  // 必填 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
+    //    params.put("page", page);     // 选填 模板跳转功能
+        params.put("data", data);     // 选填 模板内容
+    //    params.put("emphasis_keyword", emphasis_keyword);  // 选填 放大关键词
+        try {
+    //      String post = HttpUtil .post(MSGTMPL_URL+"?access_token=" + access_token, params, 3000);
+            String test= HttpClientUtil.sendPost (MSGTMPL_URL+"?access_token=" + access_token , params.toString());
+            Map result = JSON.parseObject(test, Map.class);
+            log.info(test);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+    }
+    /**
+     *  获取[服务通知]接口调用凭证
+     */
+    private String getAccessToken (Integer adminId) {
+        LitemallAdmin admin =  adminService.findAllColunmById(adminId);
+        String param = "?grant_type=client_credential&appid="+admin.getOwnerId()+"&secret="+admin.getAppSecret();
+        try {
+            HttpClientUtil.HttpClientResult httpClientResult = HttpClientUtil
+                    .doGet(ACCESSTOKEN_URL + param);
+            Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
+            return result.get("access_token").toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return null;
+    }
+
+    private String getOrderDetailStr (Integer orderId){
+        String orderDetailStr = "";
+        StringBuilder orderDetailSb = new StringBuilder();
+        List<LitemallOrderGoods> goodsList = orderGoodsService.queryByOid(orderId);
+        if(goodsList.isEmpty()){
+            log.error("获取订单"+orderId+"详情失败");
+        }else{
+
+            for(int i = 0; i < goodsList.size(); i++){
+                LitemallOrderGoods goods = goodsList.get(i);
+                orderDetailSb.append(goods.getGoodsName());
+                orderDetailSb.append(" (");
+                orderDetailSb.append(goods.getNumber());
+                orderDetailSb.append("份) ");
+            }
+        }
+        if(orderDetailStr.length()>40){
+            orderDetailStr = orderDetailSb.toString().substring(0,40)+"...";
+        }else{
+            orderDetailStr = orderDetailSb.toString();
+        }
+        return orderDetailStr;
+    }
+
+
 
 }
