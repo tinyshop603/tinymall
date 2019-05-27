@@ -35,10 +35,10 @@ public class AddOrderParams {
   private String receiverAddress;
 
   @JSONField(name = "receiver_lat")//收货人地址
-  private Double receiverLat;
+  private float receiverLat;
 
   @JSONField(name = "receiver_lng")//收货人地址
-  private Double receiverLng;
+  private float receiverLng;
 
   private String callback;//回调URL
 

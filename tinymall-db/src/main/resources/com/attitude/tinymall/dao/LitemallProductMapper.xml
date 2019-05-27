@@ -49,15 +49,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler}
+                    #{listItem,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -101,15 +101,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler}
+                    #{listItem,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -258,7 +258,7 @@
     insert into tinymall_product (goods_id, goods_specification_ids,
       goods_number, retail_price, url,
       add_time, deleted)
-    values (#{goodsId,jdbcType=INTEGER}, #{goodsSpecificationIds,jdbcType=CHAR,typeHandler=JsonIntegerArrayTypeHandler},
+    values (#{goodsId,jdbcType=INTEGER}, #{goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler},
       #{goodsNumber,jdbcType=INTEGER}, #{retailPrice,jdbcType=DECIMAL}, #{url,jdbcType=VARCHAR},
       #{addTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT})
   </insert>
@@ -299,7 +299,7 @@
         #{goodsId,jdbcType=INTEGER},
       </if>
       <if test="goodsSpecificationIds != null">
-        #{goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler},
+        #{goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler},
       </if>
       <if test="goodsNumber != null">
         #{goodsNumber,jdbcType=INTEGER},
@@ -342,7 +342,7 @@
         goods_id = #{record.goodsId,jdbcType=INTEGER},
       </if>
       <if test="record.goodsSpecificationIds != null">
-        goods_specification_ids = #{record.goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler},
+        goods_specification_ids = #{record.goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler},
       </if>
       <if test="record.goodsNumber != null">
         goods_number = #{record.goodsNumber,jdbcType=INTEGER},
@@ -372,7 +372,7 @@
     update tinymall_product
     set id = #{record.id,jdbcType=INTEGER},
       goods_id = #{record.goodsId,jdbcType=INTEGER},
-      goods_specification_ids = #{record.goodsSpecificationIds,jdbcType=CHAR,typeHandler=JsonIntegerArrayTypeHandler},
+      goods_specification_ids = #{record.goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler},
       goods_number = #{record.goodsNumber,jdbcType=INTEGER},
       retail_price = #{record.retailPrice,jdbcType=DECIMAL},
       url = #{record.url,jdbcType=VARCHAR},
@@ -393,7 +393,7 @@
         goods_id = #{goodsId,jdbcType=INTEGER},
       </if>
       <if test="goodsSpecificationIds != null">
-        goods_specification_ids = #{goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonIntegerArrayTypeHandler},
+        goods_specification_ids = #{goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler},
       </if>
       <if test="goodsNumber != null">
         goods_number = #{goodsNumber,jdbcType=INTEGER},
@@ -420,7 +420,7 @@
     -->
     update tinymall_product
     set goods_id = #{goodsId,jdbcType=INTEGER},
-      goods_specification_ids = #{goodsSpecificationIds,jdbcType=CHAR,typeHandler=JsonIntegerArrayTypeHandler},
+      goods_specification_ids = #{goodsSpecificationIds,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonIntegerArrayTypeHandler},
       goods_number = #{goodsNumber,jdbcType=INTEGER},
       retail_price = #{retailPrice,jdbcType=DECIMAL},
       url = #{url,jdbcType=VARCHAR},

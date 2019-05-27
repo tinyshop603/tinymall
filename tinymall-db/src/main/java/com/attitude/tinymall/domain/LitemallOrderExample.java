@@ -2100,6 +2100,136 @@ public class LitemallOrderExample {
             addCriterion("tpd_status not between", value1, value2, "tpdStatus");
             return (Criteria) this;
         }
+
+        public Criteria andDeliveryIdIsNull() {
+            addCriterion("delivery_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdIsNotNull() {
+            addCriterion("delivery_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdEqualTo(String value) {
+            addCriterion("delivery_id =", value, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdNotEqualTo(String value) {
+            addCriterion("delivery_id <>", value, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdGreaterThan(String value) {
+            addCriterion("delivery_id >", value, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdGreaterThanOrEqualTo(String value) {
+            addCriterion("delivery_id >=", value, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdLessThan(String value) {
+            addCriterion("delivery_id <", value, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdLessThanOrEqualTo(String value) {
+            addCriterion("delivery_id <=", value, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdLike(String value) {
+            addCriterion("delivery_id like", value, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdNotLike(String value) {
+            addCriterion("delivery_id not like", value, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdIn(List<String> values) {
+            addCriterion("delivery_id in", values, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdNotIn(List<String> values) {
+            addCriterion("delivery_id not in", values, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdBetween(String value1, String value2) {
+            addCriterion("delivery_id between", value1, value2, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliveryIdNotBetween(String value1, String value2) {
+            addCriterion("delivery_id not between", value1, value2, "deliveryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeIsNull() {
+            addCriterion("deliver_fee is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeIsNotNull() {
+            addCriterion("deliver_fee is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeEqualTo(Integer value) {
+            addCriterion("deliver_fee =", value, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeNotEqualTo(Integer value) {
+            addCriterion("deliver_fee <>", value, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeGreaterThan(Integer value) {
+            addCriterion("deliver_fee >", value, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("deliver_fee >=", value, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeLessThan(Integer value) {
+            addCriterion("deliver_fee <", value, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeLessThanOrEqualTo(Integer value) {
+            addCriterion("deliver_fee <=", value, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeIn(List<Integer> values) {
+            addCriterion("deliver_fee in", values, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeNotIn(List<Integer> values) {
+            addCriterion("deliver_fee not in", values, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeBetween(Integer value1, Integer value2) {
+            addCriterion("deliver_fee between", value1, value2, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeliverFeeNotBetween(Integer value1, Integer value2) {
+            addCriterion("deliver_fee not between", value1, value2, "deliverFee");
+            return (Criteria) this;
+        }
     }
 
     /**

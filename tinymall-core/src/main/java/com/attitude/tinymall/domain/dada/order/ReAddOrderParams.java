@@ -35,10 +35,10 @@ public class ReAddOrderParams {
     private String receiverAddress;
 
     @JSONField(name = "receiver_lat")//收货人地址维度（高德坐标系）
-    private BigDecimal receiverLat;
+    private float receiverLat;
 
     @JSONField(name = "receiver_lng")//收货人地址经度（高德坐标系）
-    private BigDecimal receiverLng;
+    private float receiverLng;
 
     private String callback;//回调URL
 

@@ -1,15 +1,12 @@
-package com.attitude.tinymall.domain.dada.order;
+package com.attitude.tinymall.domain.dada.testorder;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Builder;
 import lombok.Data;
 
-/**
- * 妥投异常之物品返回完成
- */
-@Data
 @Builder
-public class GoodsParam {
+@Data
+public class FinishOrderParams {
     @JSONField(name = "order_id")
     private String orderId;
 }

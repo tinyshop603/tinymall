@@ -60,7 +60,7 @@ public class DadaDeliveryFeignConfig {
   }
 
   @Bean
-  public Retryer feignRetryer(){
+  public Retryer feignRetryer() {
     return new Retryer.Default(100, 1000, 2);
   }
 
@@ -99,6 +99,7 @@ public class DadaDeliveryFeignConfig {
     @Override
     public void apply(RequestTemplate template) {
       // TODO 发请求的时候进行拦截, 加入head等验证信息
+      template.header("Content-Type", "application/json;charset=UTF-8");
 
       Map<String, String> postBody = new HashMap<String, String>(8);
       postBody.put("format", "json");
@@ -109,7 +110,7 @@ public class DadaDeliveryFeignConfig {
       // 需要抽取到配置文件 , 测试环境默认为：73753
       postBody.put("source_id", sourceId);
       byte[] bodyByte = template.body();
-      if (bodyByte.length > 0) {
+      if (bodyByte != null && bodyByte.length > 0) {
         postBody.put("body", new String(template.body(), Charset.forName("UTF-8")));
       } else {
         postBody.put("body", "");
@@ -133,8 +134,6 @@ public class DadaDeliveryFeignConfig {
       //MD5签名并校验
       return MD5Utils.encode(signStr.toString()).toUpperCase();
     }
-
-
 
 
   }
