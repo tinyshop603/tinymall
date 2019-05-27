@@ -51,15 +51,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                    #{listItem,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -103,15 +103,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler} and #{criterion.secondValue,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler}
+                    #{listItem,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -261,7 +261,7 @@
       star, add_time, deleted
       )
     values (#{typeId,jdbcType=TINYINT}, #{valueId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR},
-      #{userId,jdbcType=INTEGER}, #{hasPicture,jdbcType=BIT}, #{picUrls,jdbcType=CHAR,typeHandler=JsonStringArrayTypeHandler},
+      #{userId,jdbcType=INTEGER}, #{hasPicture,jdbcType=BIT}, #{picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       #{star,jdbcType=SMALLINT}, #{addTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
       )
   </insert>
@@ -320,7 +320,7 @@
         #{hasPicture,jdbcType=BIT},
       </if>
       <if test="picUrls != null">
-        #{picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler},
+        #{picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       </if>
       <if test="star != null">
         #{star,jdbcType=SMALLINT},
@@ -369,7 +369,7 @@
         has_picture = #{record.hasPicture,jdbcType=BIT},
       </if>
       <if test="record.picUrls != null">
-        pic_urls = #{record.picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler},
+        pic_urls = #{record.picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       </if>
       <if test="record.star != null">
         star = #{record.star,jdbcType=SMALLINT},
@@ -397,7 +397,7 @@
       content = #{record.content,jdbcType=VARCHAR},
       user_id = #{record.userId,jdbcType=INTEGER},
       has_picture = #{record.hasPicture,jdbcType=BIT},
-      pic_urls = #{record.picUrls,jdbcType=CHAR,typeHandler=JsonStringArrayTypeHandler},
+      pic_urls = #{record.picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       star = #{record.star,jdbcType=SMALLINT},
       add_time = #{record.addTime,jdbcType=TIMESTAMP},
       deleted = #{record.deleted,jdbcType=BIT}
@@ -428,7 +428,7 @@
         has_picture = #{hasPicture,jdbcType=BIT},
       </if>
       <if test="picUrls != null">
-        pic_urls = #{picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.db.mybatis.JsonStringArrayTypeHandler},
+        pic_urls = #{picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       </if>
       <if test="star != null">
         star = #{star,jdbcType=SMALLINT},
@@ -453,7 +453,7 @@
       content = #{content,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=INTEGER},
       has_picture = #{hasPicture,jdbcType=BIT},
-      pic_urls = #{picUrls,jdbcType=CHAR,typeHandler=JsonStringArrayTypeHandler},
+      pic_urls = #{picUrls,jdbcType=CHAR,typeHandler=com.attitude.tinymall.mybatis.JsonStringArrayTypeHandler},
       star = #{star,jdbcType=SMALLINT},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       deleted = #{deleted,jdbcType=BIT}

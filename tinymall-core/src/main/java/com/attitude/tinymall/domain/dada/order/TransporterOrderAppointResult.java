@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class TransporterOrderAppointResult {
    private Integer id;
-
    private String name;
+   private String phone;
 
    @JSONField(name = "city_id")
    private Integer cityId;

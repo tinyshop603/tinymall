@@ -17,5 +17,5 @@ public class ExistOrderParams {
     private Integer transporterId;
 
     @JSONField(name = "order_id")//追加的第三方订单ID
-    private String a;
+    private String orderId;
 }

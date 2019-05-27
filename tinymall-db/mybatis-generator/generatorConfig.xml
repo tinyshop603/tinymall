@@ -54,7 +54,7 @@
         <sqlMapGenerator targetPackage="com.attitude.tinymall.dao" targetProject="src/main/resources" />
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.attitude.tinymall.dao" targetProject="src/main/java" />
         <!--表名-->
-        <table tableName="tinymall_order" domainObjectName="LitemallOrder">
+        <table tableName="tinymall_delivery_detail" domainObjectName="LitemallDeliveryDetail">
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride javaType="java.time.LocalDateTime" column="pay_time"/>
             <columnOverride javaType="java.time.LocalDateTime" column="ship_start_time"/>
@@ -62,6 +62,9 @@
             <columnOverride javaType="java.time.LocalDateTime" column="confirm_time"/>
             <columnOverride javaType="java.time.LocalDateTime" column="end_time"/>
             <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
+
+            <columnOverride javaType="java.time.LocalDateTime" column="update_time"/>
+            <columnOverride javaType="java.time.LocalDateTime" column="create_time"/>
 
             <columnOverride javaType="com.attitude.tinymall.enums.OrderStatusEnum" column="order_status"/>
             <columnOverride javaType="com.attitude.tinymall.enums.PayStatusEnum" column="pay_status"/>

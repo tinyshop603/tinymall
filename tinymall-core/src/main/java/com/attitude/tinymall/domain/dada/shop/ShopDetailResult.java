@@ -23,17 +23,17 @@ public class ShopDetailResult {
     @JSONField(name = "station_address")
     private String stationAddress;
 
-    private Double lng;
+    private float lng;
 
-    private Double lat;
+    private float lat;
 
     @JSONField(name = "contact_name")
     private String contactName;
 
     private String phone;
 
-    @JSONField(name = "idCard")
-    private String id_card;
+    @JSONField(name = "id_card")
+    private String idCard;
 
     private Integer status;
 }

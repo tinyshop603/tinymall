@@ -17,8 +17,8 @@ public class AddTipParams {
 
     private BigDecimal tips;//小费金额(单位：元)
 
-   @JSONField(name = "city_code")//订单城市区号
-    private String city_code;
+    @JSONField(name = "city_code")//订单城市区号
+    private String cityCode;
 
     private String info;//备注(字段最大长度：512)
 }
