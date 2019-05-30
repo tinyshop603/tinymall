@@ -256,7 +256,6 @@ public class AdminOrderController {
     if (currentOrder == null) {
       return ResponseUtil.badArgumentValue();
     }
-<<<<<<<<< Temporary merge branch 1
 //    Short preOrderStatus = tinymallOrder.getOrderStatus();
 //    if(order.getOrderStatus() == 301 || order.getOrderStatus() == 3){//发货
 //        //检测改为发货状态前是否为待发货（201，001）
@@ -282,7 +281,6 @@ public class AdminOrderController {
 //        }
 //        tinymallOrder.setConfirmTime(LocalDateTime.now());
 //    }
-=========
     OrderStatusEnum targetStatus = ao.getOrderStatus();
     switch (targetStatus) {
       case MERCHANT_ACCEPT:
@@ -308,7 +306,6 @@ public class AdminOrderController {
         break;
     }
 
->>>>>>>>> Temporary merge branch 2
     // 设置订单已取消状态
     currentOrder.setOrderStatus(ao.getOrderStatus());
     orderService.updateById(currentOrder);

@@ -23,32 +23,53 @@
     <view class="orders">
       <!-- <navigator url="../orderDetail/orderDetail?id={{item.id}}" class="order" open-type="navigate" wx:for="{{orderList}}" wx:key="id"> -->
       <view class="order" wx:for="{{orderList}}" wx:key="id">
-            <view class="h">
-                <view class="l">订单编号：{{item.orderSn}}</view>
-                
-            </view>
-            <view class="goods" wx:for="{{item.goodsList}}" wx:key="id" wx:for-item="gitem">
-                <view class="img">
-                    <image src="{{gitem.picUrl}}"></image>
+          <view class="box">
+              <view class="h">
+                <view class="order-info">
+                    <view class="title">{{item.address}}</view>
+                    <view class="subtitle">{{item.addTime}}</view>
                 </view>
-                <view class="info">
-                    <text class="name">{{gitem.goodsName}}</text>
-                    <text class="number">共{{gitem.number}}件商品</text>
+                <view class="order-status">待付款
                 </view>
-                <view class="status"></view>
-            </view>
-            <view class="b">
-                <view class="l">实付：￥{{item.actualPrice}}</view>
-                <view class="r">
-                    <view class="btn active" data-order-id="{{item.id}}" catchtap="cancelOrder" wx:if="{{item.handleOption.cancel}}">取消订单</view>
-                    <view class="btn active" data-order-id="{{item.id}}" catchtap="payOrder" wx:if="{{item.handleOption.pay}}">去付款</view>
-                    <view class="btn active" data-order-id="{{item.id}}" catchtap="confirmOrder" wx:if="{{item.handleOption.confirm}}">确认收货</view>
-                    <view class="btn active" data-order-id="{{item.id}}" catchtap="deleteOrder" wx:if="{{item.handleOption.delete}}">删除订单</view>
-                    <view class="btn active" data-order-id="{{item.id}}" catchtap="refundOrder" wx:if="{{item.handleOption.refund}}">申请退款</view>
-                </view>
+              </view>
+              <view class="goodsBox">
+                  <scroll-view scroll-x="true" class="goods">
+                    <view class="img" wx:for="{{item.goodsList}}" wx:key="id" wx:for-item="gitem">
+                        <image src="{{gitem.picUrl}}"></image>
+                        
+                        <!-- <view class="info">
+                            <text class="name">{{gitem.goodsName}}</text>
+                            <text class="number">共{{gitem.number}}件商品</text>
+                        </view> -->
+                        <!-- <view class="status"></view> -->
+                    </view>
+                  </scroll-view>
+              </view>
               
-            </view>
-            <view class="tips">{{item.orderStatusText}}</view>
+              
+              <view class="b">
+                  <view class="r">
+                      <view class="goods-price">￥{{item.actualPrice}}</view>
+                      <view class="goods-count">共6件商品</view>
+                  </view>
+                  <view class="r">
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="cancelOrder">取消订单</view>
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="payOrder">去付款</view>
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="confirmOrder">确认收货</view>
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="deleteOrder">删除订单</view>
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="refundOrder">申请退款</view>
+                      <!-- <view class="btn active" data-order-id="{{item.id}}" catchtap="cancelOrder" wx:if="{{item.handleOption.cancel}}">取消订单</view>
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="payOrder" wx:if="{{item.handleOption.pay}}">去付款</view>
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="confirmOrder" wx:if="{{item.handleOption.confirm}}">确认收货</view>
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="deleteOrder" wx:if="{{item.handleOption.delete}}">删除订单</view>
+                      <view class="btn active" data-order-id="{{item.id}}" catchtap="refundOrder" wx:if="{{item.handleOption.refund}}">申请退款</view> -->
+                  </view>
+                
+              </view>
+              <view class="clear"></view>
+              <!-- <view class="tips">{{item.orderStatusText}}</view> -->
+          </view>
+            
       </view>
       <!-- </navigator> -->
     </view>

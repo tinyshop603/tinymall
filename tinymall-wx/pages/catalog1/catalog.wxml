@@ -1,10 +1,17 @@
 <view class="container">
-  <view class="search">
-    <navigator url="/pages/search/search" class="input">
-      <image class="icon"></image>
-      <text class="txt">商品搜索, 共{{goodsCount}}款商品</text>
-    </navigator>
-  </view>
+    <view class="toolBar">
+        <view class="location">
+            <image class="icon"></image>
+            <view class="txt">test</view>
+        </view>
+        <view class="search">
+          <navigator url="/pages/search/search" class="input">
+            <image class="icon"></image>
+            <!-- <text class="txt">商品搜索, 共{{goodsCount}}款商品</text> -->
+          </navigator>
+        </view>
+    </view>
+  
   <view class="catalog">
     <scroll-view class="nav" scroll-top="0" scroll-y="true" style="height:{{systemHeight}}">
         <view class="item {{ currentCategory.id == item.id ? 'active' : ''}}" wx:for="{{categoryList}}" wx:key="id"  data-id="{{item.id}}" data-index="{{index}}" bindtap="switchCate">{{item.name}}</view>
@@ -17,10 +24,10 @@
                  <image wx:if="{{item.listPicUrl}}" style="width:100%;height:100%;" src="{{item.listPicUrl}}"></image> 
               </view>
               <view class="food-tit">
-                <view style="font-size: 30rpx;">{{item.name}}</view>
+                <view class="txt"style="font-size: 30rpx;">{{item.name}}</view>
                 <view class="addBtn">
                   <text>{{item.counterPrice}}￥</text>		
-                  <view class="btn" data-goodsId="{{item.id}}" bindtap="addToCart">+</view>
+                  <view class="btn" data-goodsId="{{item.id}}" bindtap="addToCart"></view>
                 </view>
               </view>
             </view>
