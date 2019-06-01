@@ -29,7 +29,9 @@ public enum OrderStatusEnum{
   /**
    * 因超时系统自动完成, 订单终态
    */
-  SYSTEM_AUTO_COMPLETE(""),
+
+  SYSTEM_AUTO_COMPLETE("系统自动取消"),
+
   /*
    * 订单退款完成, 即订单终态
    */

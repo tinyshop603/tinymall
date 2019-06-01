@@ -79,8 +79,10 @@ public class AdminOrderController {
   private LitemallAdminService adminService;
   @Autowired
   private LitemallUserService userService;
-//  @Autowired
+
 //  private LitemallUser
+
+  @Autowired
   private LitemallDeliveryDetailService detailService;
 
 

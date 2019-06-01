@@ -1,0 +1,11 @@
+.scroll-header{
+display: flex;
+white-space: nowrap; 
+}
+.scroll-header view{
+height:128rpx;
+width:128rpx;
+border:1px solid red;
+display: inline-block;
+}
+/* pages/test/test.wxss */
