@@ -11,8 +11,52 @@
           </navigator>
         </view>
     </view>
+    <view class="catalog">
+      <scroll-view class="nav" scroll-top="0" scroll-y="true" style="height:{{systemHeight}}">
+          <view class="item {{ curCategoryIndex == index ? 'active' : ''}}" wx:for="{{categoryList}}" wx:key="id"  data-id="g{{item.id}}" data-index="{{index}}" bindtap="switchCate">{{item.name}}</view>
+      </scroll-view>
+      <scroll-view class="cate" scroll-y="true" scroll-into-view="{{curCategoryId}}" scroll-with-animation="true"  bindscroll="monitorScroll" style="height:{{systemHeight}}">
+        <view class="r-right">
+            <view wx:for="{{allGoodsList}}" wx:key="key" wx:for-item="goodsList" id="g{{categoryList[index].id}}">
+              <view class="goods-title" >
+                <text class="txt">{{categoryList[index].name}}</text>
+              </view>
+              <view wx:for="{{goodsList}}" wx:key="id">
+                  
+                  <view class="listItem1 {{item.isOnSale ? '':'notOnSale' }}" id="g{{item.id}}">
+                      <view class="itemImg">
+                        <image wx:if="{{item.listPicUrl}}" style="width:100%;height:100%;" src="{{item.listPicUrl}}"></image> 
+                      </view>
+                      <view class="food-tit">
+                        <view class="txt"style="font-size: 30rpx;">{{item.name}}</view>
+                        <view class="addBtn">
+                          <text>{{item.counterPrice}}￥</text>		
+                          <view class="btn" data-goodsId="g{{item.id}}" bindtap="addToCart"></view>
+                        </view>
+                      </view>
+                    </view>
+              </view>
+            </view>
+
+            <!-- <view wx:for="{{currentSubCategoryList}}" wx:key="key">
+              <view class="listItem1 {{item.isOnSale ? '':'notOnSale' }}" id="{{item.id}}">
+                <view class="itemImg">
+                  <image wx:if="{{item.listPicUrl}}" style="width:100%;height:100%;" src="{{item.listPicUrl}}"></image> 
+                </view>
+                <view class="food-tit">
+                  <view class="txt"style="font-size: 30rpx;">{{item.name}}</view>
+                  <view class="addBtn">
+                    <text>{{item.counterPrice}}￥</text>		
+                    <view class="btn" data-goodsId="{{item.id}}" bindtap="addToCart"></view>
+                  </view>
+                </view>
+              </view>
+            </view> -->
+        </view>
+      </scroll-view>
+  </view>
   
-  <view class="catalog">
+  <!-- <view class="catalog">
     <scroll-view class="nav" scroll-top="0" scroll-y="true" style="height:{{systemHeight}}">
         <view class="item {{ currentCategory.id == item.id ? 'active' : ''}}" wx:for="{{categoryList}}" wx:key="id"  data-id="{{item.id}}" data-index="{{index}}" bindtap="switchCate">{{item.name}}</view>
     </scroll-view>
@@ -34,5 +78,5 @@
           </view>
       </view>
     </scroll-view>
-  </view>
+  </view> -->
 </view>

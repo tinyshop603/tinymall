@@ -10,6 +10,11 @@ Page({
     categoryList: [],
     currentCategory: {},
     currentSubCategoryList: {},
+    allGoodsList:[],
+    curCategoryId:"g",
+    curCategoryIndex:0,
+    scrollHigh:0,
+    isCalu:false,
     systemHeight: ""
   },
   onLoad: function () {
@@ -77,37 +82,83 @@ Page({
       .then(function (res) {
         that.setData({
           categoryList: res.data.categoryList,
-          currentCategory: res.data.currentCategory,
-          currentSubCategoryList:res.data.currentSubCategoryList
+          currentCategory: res.data.categoryList[0],// 初始化使用第一个
+          curCategoryId: 'g' + res.data.categoryList[0].id,
+          // currentSubCategoryList:res.data.currentSubCategoryList,
+          allGoodsList: res.data.allGoodsList
         });
         wx.hideLoading();
       });
-    util.request(api.GoodsCount, { storeid:that.data.storeId}).then(function (res) {
-      that.setData({
-        goodsCount: res.data.goodsCount
-      });
-    });
+    // util.request(api.GoodsCount, { storeid:that.data.storeId}).then(function (res) {
+    //   that.setData({
+    //     goodsCount: res.data.goodsCount
+    //   });
+    // });
   },
 
-  //左侧L2点击事件
+  // 左侧L2点击事件
   switchCate: function (event) {
     var that = this;
     if (this.data.currentCategory.id == event.currentTarget.dataset.id) {
       return false;
     }
-    this.getCurrentCategory(event.currentTarget.dataset.id);
+    this.getCurrentCategory(event.currentTarget.dataset.id, event.currentTarget.dataset.index);
   },
-  //TODO 当前只支持每页获取最多20（可调）个商品，将来会做懒加载技术
-  getCurrentCategory: function (categoryId) {
+  // 锚点跳转
+  getCurrentCategory: function (categoryId,index) {
     let that = this;
-    util.request(api.GoodsListCurrent, { categoryId: categoryId, page: that.data.page, size: that.data.size })
-      .then(function (res) {
-        that.setData({
-          currentCategory: res.data.currentCategory,
-          currentSubCategoryList: res.data.goodsList
-        });
-      });
+    that.setData({
+      curCategoryId: categoryId,
+      curCategoryIndex: index
+    });
+    // util.request(api.GoodsListCurrent, { categoryId: categoryId, page: that.data.page, size: that.data.size })
+    //   .then(function (res) {
+    //     that.setData({
+    //       currentCategory: res.data.currentCategory,
+    //       currentSubCategoryList: res.data.goodsList
+    //     });
+    //   });
   },
+  // 监听goods滚动，判断调节左侧展示
+  // monitorScroll:function(event){
+  //   var that = this;
+  //   console.log(event);
+  //   var isCalu = that.data.isCalu;
+  //   if (isCalu){
+  //     return false;
+  //   }
+  //   that.setData({
+  //     isCalu:true
+  //   });
+  //   var curScrollHeight = event.detail.scrollTop
+  //   //创建节点选择器
+  //   // var query = wx.createSelectorQuery();
+  //   var curCategoryId = this.data.categoryList[this.data.curCategoryIndex].id;
+  //   console.log(curCategoryId);
+  //   wx.createSelectorQuery().select("#g" + curCategoryId).fields({
+  //       dataset: true,
+  //       size: true,
+  //       scrollOffset: true,
+  //       properties: ['scrollX', 'scrollY'],
+  //       context: true,
+  //     }, function (res) {
+  //       var scrollHigh = that.data.scrollHigh;
+  //       if (event.detail.scrollTop > (res.height + scrollHigh)){
+  //         var categoryList = that.data.categoryList;
+  //         var index = that.data.curCategoryIndex;
+  //         var nextIndex = (index == categoryList.length) ? index : ++index;
+  //         that.setData({
+  //           curCategoryIndex: nextIndex,
+  //           scrollHigh: scrollHigh + res.height
+  //           // curCategoryId: "g" + categoryList[nextIndex].id,
+  //         });
+  //       } 
+  //       that.setData({
+  //         isCalu: false
+  //       });
+  //     }).exec()
+  // }
+  
 
   //添加商品
   addToCart: function (event) {

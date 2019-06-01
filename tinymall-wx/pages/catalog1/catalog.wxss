@@ -106,12 +106,23 @@ page {
   border-left: 4rpx solid #FDDE77;
   /* border-left: 6rpx solid #ab2b2b; */
 }
-
+.catalog .cur-goods{
+  height: 50rpx;
+}
 .catalog .cate {
   /* border-left: 1px solid #fafafa; */
   flex: 1;
   height: 100%;
   padding: 0 30rpx 0 30rpx;
+}
+
+.catalog .cate .goods-title{
+    padding: 16rpx 20rpx 6rpx 20rpx;
+}
+
+.catalog .cate .goods-title .txt{
+    width: auto;
+    border-bottom: 1px solid #FDDE77;
 }
 
 .listItem1{

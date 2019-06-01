@@ -3,18 +3,10 @@ package com.attitude.tinymall.web;
 import com.alibaba.fastjson.JSONObject;
 import com.attitude.tinymall.WxPayMpOrderResult;
 import com.attitude.tinymall.common.SocketEvent;
-import com.attitude.tinymall.domain.LitemallAdmin;
-import com.attitude.tinymall.domain.LitemallOrderWithGoods;
-import com.attitude.tinymall.domain.MessageInfo;
+import com.attitude.tinymall.domain.*;
 import com.attitude.tinymall.service.*;
 import com.attitude.tinymall.util.ResponseUtil;
 import com.attitude.tinymall.util.WxPayEngine;
-import com.attitude.tinymall.domain.LitemallAddress;
-import com.attitude.tinymall.domain.LitemallCart;
-import com.attitude.tinymall.domain.LitemallOrder;
-import com.attitude.tinymall.domain.LitemallOrderGoods;
-import com.attitude.tinymall.domain.LitemallProduct;
-import com.attitude.tinymall.domain.LitemallUser;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.PayStatusEnum;
 import com.attitude.tinymall.enums.PaymentWayEnum;
@@ -88,6 +80,8 @@ public class WxOrderController {
   private WxPayEngine wxPayEngine;
   @Autowired
   private BaiduFenceService baiduFenceService;
+  @Autowired
+  private LitemallDeliveryDetailService deliveryDetailService;
   /**
    * 消息传递信息
    */
@@ -219,6 +213,14 @@ public class WxOrderController {
     orderVo.put("freightPrice", order.getFreightPrice());
     orderVo.put("actualPrice", order.getActualPrice());
     orderVo.put("orderStatusText",order.getOrderStatus().getMessage());
+    // 添加骑手信息
+    String deliveryId = order.getDeliveryId();
+    if (deliveryId != null && !("").equals(deliveryId)) {
+        LitemallDeliveryDetail deliveryDetails = deliveryDetailService.getDeliveryDetailByDeliveryId(deliveryId);
+        orderVo.put("deliveryDetails", deliveryDetails);
+    }else{
+        orderVo.put("deliveryDetails", "");
+    }
 
     List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(order.getId());
     List<Map<String, Object>> orderGoodsVoList = new ArrayList<>(orderGoodsList.size());

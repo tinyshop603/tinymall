@@ -21,7 +21,7 @@
     </view>
 
     <view class="orders">
-      <!-- <navigator url="../orderDetail/orderDetail?id={{item.id}}" class="order" open-type="navigate" wx:for="{{orderList}}" wx:key="id"> -->
+      <navigator url="../orderDetail/orderDetail?id={{item.id}}" open-type="navigate" wx:for="{{orderList}}" wx:key="id">
       <view class="order" wx:for="{{orderList}}" wx:key="id">
           <view class="box">
               <view class="h">
@@ -71,6 +71,6 @@
           </view>
             
       </view>
-      <!-- </navigator> -->
+      </navigator>
     </view>
 </view>
