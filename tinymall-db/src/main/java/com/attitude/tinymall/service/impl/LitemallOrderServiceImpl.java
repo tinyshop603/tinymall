@@ -270,4 +270,11 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
     example.or().andOrderSnEqualTo(orderSn).andDeletedEqualTo(false);
     return orderMapper.selectOneByExample(example);
   }
+
+  @Override
+  public LitemallOrder findByDeliveryId(String deliveryId) {
+    LitemallOrderExample example = new LitemallOrderExample();
+    example.or().andDeliveryIdEqualTo(deliveryId).andDeletedEqualTo(false);
+    return orderMapper.selectOneByExample(example);
+  }
 }

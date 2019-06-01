@@ -20,9 +20,11 @@ import com.attitude.tinymall.service.LitemallUserService;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import com.attitude.tinymall.util.IdGeneratorUtil;
 import com.attitude.tinymall.util.ResponseUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
@@ -32,6 +34,7 @@ import java.math.BigDecimal;
  * @project Wechat
  */
 @Service
+@Slf4j
 public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetailService {
 
     @Autowired
@@ -127,12 +130,13 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     }
 
     @Override
-    public void updateOrderStatus(TPDStatusEnum orderStatus, String delivery) {
-        LitemallOrder order = new LitemallOrder();
+    @Transactional(rollbackFor = Exception.class)
+    public void updateDeliveryInfo(TPDStatusEnum orderStatus, LitemallDeliveryDetail deliveryDetail) {
+        // 更新订单信息
+        LitemallOrder order = litemallOrderService.findByDeliveryId(deliveryDetail.getDeliveryId());
         order.setTpdStatus(orderStatus);
-        LitemallOrderExample example = new LitemallOrderExample();
-        example.or().andOrderSnEqualTo(delivery).andDeletedEqualTo(false);
-        litemallOrderMapper.updateByExampleSelective(order, example);
+        litemallOrderMapper.updateByPrimaryKeySelective(order);
+        litemallDeliveryDetailMapper.updateByPrimaryKeySelective(deliveryDetail);
     }
 
     @Override
@@ -144,6 +148,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         ResponseEntity<QueryOrderStatusResult> res = remoteDadaDeliveryClient
                 .queryOrderStatus(orderParams);
         if (!res.isSuccess()) {
+            log.info("达达订单初始化失败:{}", res.toString());
             return false;
         }
         LitemallDeliveryDetail litemallDeliveryDetail = new LitemallDeliveryDetail();

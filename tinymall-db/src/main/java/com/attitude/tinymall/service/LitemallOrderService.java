@@ -51,7 +51,7 @@ public interface LitemallOrderService {
                                                                String orderSn, Integer page, Integer size, String sort, String order) ;
 
    List<LitemallOrder> listAdminOrdersByStatus(Integer adminId, List<OrderStatusEnum> orderStatus, Integer page, Integer size, String sort, String order);
-    
+
 
    int countAdminOrdersByAdminId(Integer adminId, Integer userId, String orderSn) ;
 
@@ -74,4 +74,7 @@ public interface LitemallOrderService {
    List<LitemallOrder> queryUnconfirm() ;
 
    LitemallOrder findBySn(String orderSn) ;
+
+
+   LitemallOrder findByDeliveryId(String deliveryId);
 }
