@@ -8,6 +8,21 @@ import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.PayStatusEnum;
 import com.attitude.tinymall.service.*;
 import com.attitude.tinymall.util.*;
+import com.attitude.tinymall.ao.OrderStatusAO;
+import com.attitude.tinymall.vo.OrderVO;
+import com.attitude.tinymall.annotation.LoginAdmin;
+import com.attitude.tinymall.domain.LitemallAdmin;
+import com.attitude.tinymall.domain.LitemallDeliveryDetail;
+import com.attitude.tinymall.domain.LitemallOrder;
+import com.attitude.tinymall.domain.LitemallOrderGoods;
+import com.attitude.tinymall.domain.LitemallOrderWithGoods;
+import com.attitude.tinymall.enums.OrderStatusEnum;
+import com.attitude.tinymall.enums.PayStatusEnum;
+import com.attitude.tinymall.service.LitemallAdminService;
+import com.attitude.tinymall.service.LitemallDeliveryDetailService;
+import com.attitude.tinymall.service.LitemallOrderGoodsService;
+import com.attitude.tinymall.service.LitemallOrderService;
+import com.attitude.tinymall.service.LitemallProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,8 +75,10 @@ public class AdminOrderController {
   private LitemallAdminService adminService;
   @Autowired
   private LitemallUserService userService;
-//  @Autowired
+
 //  private LitemallUser
+  @Autowired
+  private LitemallDeliveryDetailService detailService;
 
 
   @GetMapping("/list")
@@ -82,7 +99,9 @@ public class AdminOrderController {
     for (LitemallOrder curOrder : orderList) {
       LitemallOrderWithGoods itemallOrderWithGoods = new LitemallOrderWithGoods();
       List<LitemallOrderGoods> curOrderGoodsList = new ArrayList<LitemallOrderGoods>();
-
+      LitemallDeliveryDetail deliveryDetail = detailService
+          .getDeliveryDetailByDeliveryId(curOrder.getDeliveryId());
+      itemallOrderWithGoods.setDeliveryDetail(deliveryDetail);
       for (LitemallOrderGoods curOrderGoods : orderGoodsList) {
         if (curOrderGoods.getOrderId().equals(curOrder.getId())) {
           curOrderGoodsList.add(curOrderGoods);
@@ -163,6 +182,22 @@ public class AdminOrderController {
     return ResponseUtil.ok(order);
   }
 
+  @GetMapping("/detail")
+  public Object getOrderWithdeliveryMsgByOrderId(@LoginAdmin Integer adminId, Integer id) {
+    if (adminId == null) {
+      return ResponseUtil.fail401();
+    }
+
+    LitemallOrder order = orderService.findById(id);
+    LitemallDeliveryDetail deliveryDetail = detailService
+        .getDeliveryDetailByDeliveryId(order.getDeliveryId());
+    OrderVO orderVO = new OrderVO();
+    orderVO.setOrder(order);
+    orderVO.setDeliveryDetail(deliveryDetail);
+    return ResponseUtil.ok(orderVO);
+  }
+
+
   /*
    * 目前仅仅支持管理员设置发货相关的信息
    */
@@ -182,7 +217,8 @@ public class AdminOrderController {
       return ResponseUtil.badArgumentValue();
     }
 
-    if (tinymallOrder.getPayStatus() == PayStatusEnum.PAID || tinymallOrder.getOrderStatus() == OrderStatusEnum.MERCHANT_SHIP) {
+    if (tinymallOrder.getPayStatus() == PayStatusEnum.PAID
+        || tinymallOrder.getOrderStatus() == OrderStatusEnum.MERCHANT_SHIP) {
       LitemallOrder newOrder = new LitemallOrder();
       newOrder.setId(orderId);
       newOrder.setShipChannel(order.getShipChannel());
@@ -199,22 +235,22 @@ public class AdminOrderController {
     return ResponseUtil.ok(tinymallOrder);
   }
 
-  /*
+  /**
    * 更新订单的状态信息
    */
   @PostMapping("/update/status/")
-  public Object updateOrderStatues(@LoginAdmin Integer adminId, @RequestBody LitemallOrder order) {
+  public Object updateOrderStatues(@LoginAdmin Integer adminId, @RequestBody OrderStatusAO ao) {
     if (adminId == null) {
       return ResponseUtil.unlogin();
     }
 
-    Integer orderId = order.getId();
+    Integer orderId = ao.getOrderId();
     if (orderId == null) {
       return ResponseUtil.badArgument();
     }
 
-    LitemallOrder tinymallOrder = orderService.findById(orderId);
-    if (tinymallOrder == null) {
+    LitemallOrder currentOrder = orderService.findById(orderId);
+    if (currentOrder == null) {
       return ResponseUtil.badArgumentValue();
     }
 //    Short preOrderStatus = tinymallOrder.getOrderStatus();
@@ -242,10 +278,35 @@ public class AdminOrderController {
 //        }
 //        tinymallOrder.setConfirmTime(LocalDateTime.now());
 //    }
+    OrderStatusEnum targetStatus = ao.getOrderStatus();
+    switch (targetStatus) {
+      case MERCHANT_ACCEPT:
+        // 商家能接单的情况
+        if (!Arrays.asList(OrderStatusEnum.MERCHANT_ACCEPT, OrderStatusEnum.CUSTOMER_PAIED)
+            .contains(currentOrder.getOrderStatus())) {
+          return ResponseUtil
+              .fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
+        }
+        break;
+      case MERCHANT_CANCEL:
+        // 商家能取消的情况
+        if (!Arrays.asList(OrderStatusEnum.PENDING_PAYMENT,
+            OrderStatusEnum.CUSTOMER_PAIED,
+            OrderStatusEnum.MERCHANT_ACCEPT,
+            OrderStatusEnum.MERCHANT_SHIP
+        ).contains(currentOrder.getOrderStatus())) {
+          return ResponseUtil
+              .fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
+        }
+        break;
+      default:
+        break;
+    }
+
     // 设置订单已取消状态
-    tinymallOrder.setOrderStatus(order.getOrderStatus());
-    orderService.updateById(tinymallOrder);
-    return ResponseUtil.ok(tinymallOrder);
+    currentOrder.setOrderStatus(ao.getOrderStatus());
+    orderService.updateById(currentOrder);
+    return ResponseUtil.ok(currentOrder);
   }
 
 

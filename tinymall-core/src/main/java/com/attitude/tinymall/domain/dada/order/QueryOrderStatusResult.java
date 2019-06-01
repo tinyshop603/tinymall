@@ -19,9 +19,9 @@ public class QueryOrderStatusResult {
 
     private String transporterPhone;//骑手电话
 
-    private String transporterLng;//骑手经度
+    private float transporterLng;//骑手经度
 
-    private String transporterLat;//骑手纬度
+    private float transporterLat;//骑手纬度
 
     private BigDecimal deliveryFee;//	配送费,单位为元
 
@@ -32,6 +32,8 @@ public class QueryOrderStatusResult {
     private BigDecimal insuranceFee; //保价费,单位为元
 
     private BigDecimal actualFee; //实际支付费用,单位为元
+
+    private Double distance; //距离
 
     private Double createTime; //发单时间
 
