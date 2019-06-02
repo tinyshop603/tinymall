@@ -5,7 +5,6 @@ import com.attitude.tinymall.dao.LitemallOrderMapper;
 import com.attitude.tinymall.domain.LitemallAddress;
 import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.domain.LitemallOrder;
-import com.attitude.tinymall.domain.LitemallOrderExample;
 import com.attitude.tinymall.domain.LitemallUser;
 import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
@@ -13,21 +12,16 @@ import com.attitude.tinymall.domain.dada.order.*;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.TPDStatusEnum;
 import com.attitude.tinymall.service.LitemallAddressService;
-import com.attitude.tinymall.service.LitemallAdminService;
 import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 import com.attitude.tinymall.service.LitemallOrderService;
 import com.attitude.tinymall.service.LitemallUserService;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import com.attitude.tinymall.util.IdGeneratorUtil;
-import com.attitude.tinymall.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.math.BigDecimal;
 
 /**
  * @author zhaoguiyang on 2019/5/23.
@@ -50,7 +44,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     private LitemallUserService litemalluserService;
 
     @Autowired
-    private BaiduFenceServiceImpl BaiduFenceService;
+    private BaiduFenceServiceImpl baiduFenceService;
 
     @Autowired
     private LitemallDeliveryDetailMapper litemallDeliveryDetailMapper;
@@ -65,17 +59,21 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     public String dadaCallbackAddress;
 
     /**
-     * 新增订单
+     * 新增达达的订单,
+     * 订单
      *
-     * @return status :0 成功   其余: 失败
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean dadaAddOrder(Integer orderId) {
         LitemallOrder order = litemallOrderService.findById(orderId);
+        if (order.getOrderStatus() != OrderStatusEnum.CUSTOMER_PAIED){
+           throw new RuntimeException(String.format("订单:%s 状态异常,订单状态:%s, 不满足发货条件", order.getId(), order.getOrderStatus().getMessage()));
+        }
         LitemallUser user = litemalluserService.findById(order.getUserId());
-        Location location = BaiduFenceService.geocoding(order.getAddress()).getLocation();
+        Location location = baiduFenceService.geocoding(order.getAddress()).getLocation();
         LitemallAddress userDefaultAddress = addressService.findDefault(order.getUserId());
-        //TODO
+        //TODO 真实的shopNo, 可以tinymall admin 中获取
         order.setDeliveryId(IdGeneratorUtil.generateId("TPD"));
         AddOrderParams orderParams = AddOrderParams.builder()
                 .shopNo(shopNo)
