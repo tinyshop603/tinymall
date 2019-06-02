@@ -2,19 +2,13 @@ package com.attitude.tinymall.service.impl;
 
 import com.attitude.tinymall.dao.LitemallDeliveryDetailMapper;
 import com.attitude.tinymall.dao.LitemallOrderMapper;
-import com.attitude.tinymall.domain.LitemallAddress;
-import com.attitude.tinymall.domain.LitemallDeliveryDetail;
-import com.attitude.tinymall.domain.LitemallOrder;
-import com.attitude.tinymall.domain.LitemallUser;
+import com.attitude.tinymall.domain.*;
 import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
 import com.attitude.tinymall.domain.dada.order.*;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.TPDStatusEnum;
-import com.attitude.tinymall.service.LitemallAddressService;
-import com.attitude.tinymall.service.LitemallDeliveryDetailService;
-import com.attitude.tinymall.service.LitemallOrderService;
-import com.attitude.tinymall.service.LitemallUserService;
+import com.attitude.tinymall.service.*;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import com.attitude.tinymall.util.CoodinateCovertorUtil;
 import com.attitude.tinymall.util.IdGeneratorUtil;
@@ -53,6 +47,9 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     @Autowired
     private LitemallAddressService addressService;
 
+    @Autowired
+    private LitemallAdminService adminService;
+
     @Value("${delivery.dada.source-id}")
     public String shopNo;
 
@@ -76,11 +73,12 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         // 百度坐标转化为高德坐标
         location = CoodinateCovertorUtil.bd09ToGcj02(location);
         LitemallAddress userDefaultAddress = addressService.findDefault(order.getUserId());
-        //TODO 真实的shopNo, 可以tinymall admin 中获取
+        LitemallAdmin admin = adminService.findById(order.getAdminId());
+
         //TODO 按照预发布的思路调整 发单流程
         order.setDeliveryId(IdGeneratorUtil.generateId("TPD"));
         AddOrderParams orderParams = AddOrderParams.builder()
-                .shopNo(shopNo)
+                .shopNo(admin.getTpdShopNo().toString())
                 //北京地区
                 .cityCode("010")
                 .cargoPrice(order.getActualPrice())
