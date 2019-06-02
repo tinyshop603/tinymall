@@ -16,6 +16,7 @@ import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 import com.attitude.tinymall.service.LitemallOrderService;
 import com.attitude.tinymall.service.LitemallUserService;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
+import com.attitude.tinymall.util.CoodinateCovertorUtil;
 import com.attitude.tinymall.util.IdGeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +73,11 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         }
         LitemallUser user = litemalluserService.findById(order.getUserId());
         Location location = baiduFenceService.geocoding(order.getAddress()).getLocation();
+        // 百度坐标转化为高德坐标
+        location = CoodinateCovertorUtil.bd09ToGcj02(location);
         LitemallAddress userDefaultAddress = addressService.findDefault(order.getUserId());
         //TODO 真实的shopNo, 可以tinymall admin 中获取
+        //TODO 按照预发布的思路调整 发单流程
         order.setDeliveryId(IdGeneratorUtil.generateId("TPD"));
         AddOrderParams orderParams = AddOrderParams.builder()
                 .shopNo(shopNo)
