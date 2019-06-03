@@ -154,17 +154,17 @@ public class WxAddressController {
         }
 
         // 验证地址是否在合法的范围内
-      try {
-        boolean isValidAddress = baiduFenceService
-            .isValidLocationWithinFence(userId.toString(), address.getAddress(),
-                adminService.findAdminByOwnerId(appId).getShopFenceId());
-        if (!isValidAddress) {
-          return ResponseUtil.unReachAddress();
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseUtil.badArgument();
-      }
+//      try {
+//        boolean isValidAddress = baiduFenceService
+//            .isValidLocationWithinFence(userId.toString(), address.getAddress(),
+//                adminService.findAdminByOwnerId(appId).getShopFenceId());
+//        if (!isValidAddress) {
+//          return ResponseUtil.unReachAddress();
+//        }
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//        return ResponseUtil.badArgument();
+//      }
 
       if(address.getIsDefault()){
             // 重置其他收获地址的默认选项

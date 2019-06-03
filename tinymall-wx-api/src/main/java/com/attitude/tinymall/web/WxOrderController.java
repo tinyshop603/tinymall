@@ -5,13 +5,11 @@ import com.attitude.tinymall.WxPayMpOrderResult;
 import com.attitude.tinymall.common.SocketEvent;
 import com.attitude.tinymall.domain.*;
 import com.attitude.tinymall.service.*;
-import com.attitude.tinymall.util.ResponseUtil;
-import com.attitude.tinymall.util.WxPayEngine;
+import com.attitude.tinymall.util.*;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.PayStatusEnum;
 import com.attitude.tinymall.enums.PaymentWayEnum;
 import com.attitude.tinymall.annotation.LoginUser;
-import com.attitude.tinymall.util.IpUtil;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
@@ -19,7 +17,6 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import io.socket.client.Socket;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import com.attitude.tinymall.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -133,7 +130,7 @@ public class WxOrderController {
       showType = 0;
     }
 
-    List<OrderStatusEnum> orderStatus = Arrays.asList(OrderStatusEnum.values());
+    List<OrderStatusEnum> orderStatus = orderStatus(showType);
     List<LitemallOrder> orderList = orderService.queryByOrderStatus(userId, orderStatus);
     //对上述的集合进行排序
 //    orderList
@@ -153,7 +150,7 @@ public class WxOrderController {
       orderVo.put("orderStatusText", order.getOrderStatus().getMessage());
       orderVo.put("address", order.getAddress());
       orderVo.put("addTime", order.getAddTime());
-//      orderVo.put("handleOption", OrderUtil.build(order));
+      orderVo.put("handleOption", this.buildOption(order));
 
       List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(order.getId());
       List<Map<String, Object>> orderGoodsVoList = new ArrayList<>(orderGoodsList.size());
@@ -176,6 +173,96 @@ public class WxOrderController {
 
     return ResponseUtil.ok(result);
   }
+    /**
+     *  订单分类
+     */
+
+  public static List<OrderStatusEnum> orderStatus(Integer showType) {
+
+      List<OrderStatusEnum> status = new ArrayList<OrderStatusEnum>(2);
+      // 全部订单
+      if (showType.equals(0)) {
+          status = Arrays.asList(OrderStatusEnum.values());
+      }
+      else if (showType.equals(1)) {
+          // 待付款
+          status.add(OrderStatusEnum.PENDING_PAYMENT); // 等待用户支付
+      }
+      else if (showType.equals(2)) {
+          //  待收货
+          status.add(OrderStatusEnum.CUSTOMER_PAIED); // 用户已付款
+          status.add(OrderStatusEnum.MERCHANT_ACCEPT); // 商家已接单
+          status.add(OrderStatusEnum.MERCHANT_SHIP);// 商家已发货
+          status.add(OrderStatusEnum.ONGOING);// 达达订单进行中
+          status.add(OrderStatusEnum.MERCHANT_REFUNDING);// 用户申请退款
+      }
+      else if (showType.equals(3)) {
+          // 已完成
+          status.add(OrderStatusEnum.COMPLETE); // 订单已完成
+          status.add(OrderStatusEnum.SYSTEM_AUTO_COMPLETE);// 系统自动完成
+      }
+      else {
+          return null;
+      }
+//      status.add(OrderStatusEnum.REFUND_COMPLETE);// 订单退款已完成
+//      status.add(OrderStatusEnum.SYSTEM_AUTO_CANCEL);// 超时自动取消
+//      status.add(OrderStatusEnum.CUSTOMER_CANCEL);// 用户取消订单
+      // TODO 已下单 商家超时未接单 取消订单并退款
+//      status.add(OrderStatusEnum.MERCHANT_CANCEL);// 商家取消订单
+      return status;
+  }
+    /**
+     *  订单权限(功能)判断
+     */
+    public static OrderHandleOption buildOption(LitemallOrder order){
+        OrderStatusEnum status = order.getOrderStatus();
+        OrderHandleOption handleOption = new OrderHandleOption();
+
+        if (OrderStatusEnum.PENDING_PAYMENT.equals(status)) {// 用户待支付
+            // 如果订单没有被取消，且没有支付，则可支付，可取消
+            handleOption.setCancel(true);
+            handleOption.setPay(true);
+        }
+        else if (OrderStatusEnum.CUSTOMER_CANCEL.equals(status)   // 用户取消订单
+                || OrderStatusEnum.MERCHANT_CANCEL.equals(status)  // 商家取消订单
+                || OrderStatusEnum.SYSTEM_AUTO_CANCEL.equals(status)) { // 系统自动取消订单
+            // 已取消
+            // 如果订单已经取消或是已完成，则可删除
+            handleOption.setDelete(true);
+        }
+        else if (OrderStatusEnum.CUSTOMER_PAIED.equals(status)) { // 用户已付款
+            // 已付款未发货
+            // 如果订单已付款，没有发货，则可退款
+            handleOption.setRefund(true);
+        }
+        else if (OrderStatusEnum.MERCHANT_REFUNDING.equals(status)) { // 用户申请退款
+            // 如果订单申请退款中，商家可以退款
+            handleOption.setSeller_refund(true);
+        }
+        else if (OrderStatusEnum.REFUND_COMPLETE.equals(status)) {  // 订单退款已完成
+            // 退款成功
+            // 如果订单已经退款，则可删除
+            handleOption.setDelete(true);
+        }
+        else if (OrderStatusEnum.MERCHANT_ACCEPT.equals(status) // 商家确认接受订单
+                || OrderStatusEnum.MERCHANT_SHIP.equals(status)  // 商家已发货
+                || OrderStatusEnum.ONGOING.equals(status)) { // 达达订单进行中
+            // 如果订单已经发货，没有收货，则可收货操作
+            // 此时不能取消订单
+            handleOption.setConfirm(true);
+        }
+        else if (OrderStatusEnum.SYSTEM_AUTO_COMPLETE.equals(status) // 系统自动完成
+                || OrderStatusEnum.COMPLETE.equals(status)) { // 完成
+            //已完成
+            // 如果订单已经支付，且已经收货，则可删除、去评论和再次购买
+            handleOption.setDelete(true);
+            handleOption.setComment(true);
+            handleOption.setRebuy(true);
+        }else {
+            throw new IllegalStateException("status不支持");
+        }
+        return handleOption;
+    }
 
   /**
    * 订单详情
@@ -337,11 +424,12 @@ public class WxOrderController {
       order.setUserId(userId);
       order.setOrderSn(orderService.generateOrderSn(userId));
       order.setAddTime(LocalDateTime.now());
-      PaymentWayEnum paymentWay = PaymentWayEnum.CASH_ON_DELIVERY;
+      PaymentWayEnum paymentWay = PaymentWayEnum.ONLINE_WECHAT_PAY;
 //      if (modeId == 1) {
-//        paymentWay = PaymentWayEnum.ONLINE_WECHAT_PAY;
+//        paymentWay = PaymentWayEnum.CASH_ON_DELIVERY;
 //      }
-      order.setOrderStatus(OrderStatusEnum.ONGOING);
+      order.setOrderStatus(OrderStatusEnum.PENDING_PAYMENT);
+      order.setPayStatus(PayStatusEnum.UNPAID);
       order.setPaymentWay(paymentWay);
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
@@ -453,10 +541,10 @@ public class WxOrderController {
       return ResponseUtil.badArgumentValue();
     }
     // TODO 检测是否能够取消
-//    OrderHandleOption handleOption = OrderUtil.build(order);
-//    if (!handleOption.isPay()) {
-//      return ResponseUtil.fail(403, "订单不能支付");
-//    }
+    OrderHandleOption handleOption = buildOption(order);
+    if (!handleOption.isPay()) {
+      return ResponseUtil.fail(403, "订单不能支付");
+    }
 
     LitemallUser user = userService.findById(userId);
     String openId = user.getWeixinOpenid();
@@ -480,9 +568,9 @@ public class WxOrderController {
     String detail = "订单支付";
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-    String money = String.valueOf(realFee.intValue());
+//    String money = String.valueOf(realFee.intValue());
     // TODO 测试用例，1分钱
-//    String money = "1";
+    String money = "1";
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("attach", attach);//附加数据
@@ -585,6 +673,7 @@ public class WxOrderController {
       order.setPayId(payId);
       order.setPayTime(LocalDateTime.now());
       order.setPayStatus(PayStatusEnum.PAID);
+      order.setOrderStatus(OrderStatusEnum.CUSTOMER_PAIED);
       orderService.updateById(order);
 
       //想办法提醒管理端进行刷新

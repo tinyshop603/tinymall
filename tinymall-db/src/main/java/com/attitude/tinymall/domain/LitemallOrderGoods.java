@@ -1,5 +1,7 @@
 package com.attitude.tinymall.domain;
 
+import com.attitude.tinymall.annotion.AliyunImage;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -141,6 +143,7 @@ public class LitemallOrderGoods implements Serializable {
      *
      * @mbg.generated
      */
+    @AliyunImage
     private String picUrl;
 
     /**

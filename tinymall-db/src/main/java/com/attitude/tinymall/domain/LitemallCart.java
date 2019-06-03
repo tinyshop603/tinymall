@@ -1,5 +1,7 @@
 package com.attitude.tinymall.domain;
 
+import com.attitude.tinymall.annotion.AliyunImage;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -149,6 +151,7 @@ public class LitemallCart {
      *
      * @mbg.generated
      */
+    @AliyunImage
     private String picUrl;
 
     /**
