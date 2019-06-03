@@ -87,11 +87,11 @@ public class DadaServiceTest {
             .receiverLat(new Float("50.05703033345938"))
             .receiverLng(new Float("116.3084202915042"))
             .receiverPhone("13693002107")
-            .originId("AA23")
+            .originId("B1")
             .callback("http://39.107.81.107:8084/dada-order/callback/status")
             .build();
     ResponseEntity<QueryOrderDeliverFeeResult> res = remoteDadaDeliveryClient.queryOrderDeliverFee(orderParams);
-    log.error(res.toString());
+    log.info(res.toString());
   }
 
   @Test

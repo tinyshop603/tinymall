@@ -1,5 +1,6 @@
 package com.attitude.tinymall.web;
 
+import com.attitude.tinymall.common.Constants;
 import com.attitude.tinymall.util.ResponseUtil;
 import com.attitude.tinymall.domain.LitemallAdmin;
 import com.attitude.tinymall.domain.LitemallCategory;
@@ -46,7 +47,7 @@ public class WxMallController {
       return ResponseUtil.badArgument();
     }
     LitemallCategory cur = categoryService.findById(id);
-    if (cur.getParentId() <= LitemallAdmin.USER_LIMIT) {
+    if (cur.getParentId() <= Constants.ADMIN_USER_LIMIT) {
       return ResponseUtil.ok(cur);
     } else {
       return ResponseUtil.fail();

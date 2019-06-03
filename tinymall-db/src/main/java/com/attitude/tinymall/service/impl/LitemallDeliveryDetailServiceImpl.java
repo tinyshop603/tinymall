@@ -2,36 +2,28 @@ package com.attitude.tinymall.service.impl;
 
 import com.attitude.tinymall.dao.LitemallDeliveryDetailMapper;
 import com.attitude.tinymall.dao.LitemallOrderMapper;
-import com.attitude.tinymall.domain.LitemallAddress;
-import com.attitude.tinymall.domain.LitemallDeliveryDetail;
-import com.attitude.tinymall.domain.LitemallOrder;
-import com.attitude.tinymall.domain.LitemallOrderExample;
-import com.attitude.tinymall.domain.LitemallUser;
+import com.attitude.tinymall.domain.*;
 import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
 import com.attitude.tinymall.domain.dada.order.*;
 import com.attitude.tinymall.enums.OrderStatusEnum;
 import com.attitude.tinymall.enums.TPDStatusEnum;
-import com.attitude.tinymall.service.LitemallAddressService;
-import com.attitude.tinymall.service.LitemallAdminService;
-import com.attitude.tinymall.service.LitemallDeliveryDetailService;
-import com.attitude.tinymall.service.LitemallOrderService;
-import com.attitude.tinymall.service.LitemallUserService;
+import com.attitude.tinymall.service.*;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
+import com.attitude.tinymall.util.CoodinateCovertorUtil;
 import com.attitude.tinymall.util.IdGeneratorUtil;
-import com.attitude.tinymall.util.ResponseUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.math.BigDecimal;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author zhaoguiyang on 2019/5/23.
  * @project Wechat
  */
 @Service
+@Slf4j
 public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetailService {
 
     @Autowired
@@ -47,13 +39,16 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     private LitemallUserService litemalluserService;
 
     @Autowired
-    private BaiduFenceServiceImpl BaiduFenceService;
+    private BaiduFenceServiceImpl baiduFenceService;
 
     @Autowired
     private LitemallDeliveryDetailMapper litemallDeliveryDetailMapper;
 
     @Autowired
     private LitemallAddressService addressService;
+
+    @Autowired
+    private LitemallAdminService adminService;
 
     @Value("${delivery.dada.source-id}")
     public String shopNo;
@@ -62,20 +57,28 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     public String dadaCallbackAddress;
 
     /**
-     * 新增订单
+     * 新增达达的订单,
+     * 订单
      *
-     * @return status :0 成功   其余: 失败
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean dadaAddOrder(Integer orderId) {
         LitemallOrder order = litemallOrderService.findById(orderId);
+        if (order.getOrderStatus() != OrderStatusEnum.CUSTOMER_PAIED){
+           throw new RuntimeException(String.format("订单:%s 状态异常,订单状态:%s, 不满足发货条件", order.getId(), order.getOrderStatus().getMessage()));
+        }
         LitemallUser user = litemalluserService.findById(order.getUserId());
-        Location location = BaiduFenceService.geocoding(order.getAddress()).getLocation();
+        Location location = baiduFenceService.geocoding(order.getAddress()).getLocation();
+        // 百度坐标转化为高德坐标
+        location = CoodinateCovertorUtil.bd09ToGcj02(location);
         LitemallAddress userDefaultAddress = addressService.findDefault(order.getUserId());
-        //TODO
+        LitemallAdmin admin = adminService.findById(order.getAdminId());
+
+        //TODO 按照预发布的思路调整 发单流程
         order.setDeliveryId(IdGeneratorUtil.generateId("TPD"));
         AddOrderParams orderParams = AddOrderParams.builder()
-                .shopNo(shopNo)
+                .shopNo(admin.getTpdShopNo().toString())
                 //北京地区
                 .cityCode("010")
                 .cargoPrice(order.getActualPrice())
@@ -127,12 +130,13 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     }
 
     @Override
-    public void updateOrderStatus(TPDStatusEnum orderStatus, String delivery) {
-        LitemallOrder order = new LitemallOrder();
+    @Transactional(rollbackFor = Exception.class)
+    public void updateDeliveryInfo(TPDStatusEnum orderStatus, LitemallDeliveryDetail deliveryDetail) {
+        // 更新订单信息
+        LitemallOrder order = litemallOrderService.findByDeliveryId(deliveryDetail.getDeliveryId());
         order.setTpdStatus(orderStatus);
-        LitemallOrderExample example = new LitemallOrderExample();
-        example.or().andOrderSnEqualTo(delivery).andDeletedEqualTo(false);
-        litemallOrderMapper.updateByExampleSelective(order, example);
+        litemallOrderMapper.updateByPrimaryKeySelective(order);
+        litemallDeliveryDetailMapper.updateByPrimaryKeySelective(deliveryDetail);
     }
 
     @Override
@@ -144,6 +148,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         ResponseEntity<QueryOrderStatusResult> res = remoteDadaDeliveryClient
                 .queryOrderStatus(orderParams);
         if (!res.isSuccess()) {
+            log.info("达达订单初始化失败:{}", res.toString());
             return false;
         }
         LitemallDeliveryDetail litemallDeliveryDetail = new LitemallDeliveryDetail();

@@ -1,6 +1,8 @@
 package com.attitude.tinymall.domain;
 
 import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 
 public class LitemallDeliveryDetail {
     /**

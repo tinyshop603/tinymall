@@ -1345,6 +1345,66 @@ public class LitemallAdminExample {
             addCriterion("shop_fence_id not between", value1, value2, "shopFenceId");
             return (Criteria) this;
         }
+
+        public Criteria andTpdShopNoIsNull() {
+            addCriterion("tpd_shop_no is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoIsNotNull() {
+            addCriterion("tpd_shop_no is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoEqualTo(Integer value) {
+            addCriterion("tpd_shop_no =", value, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoNotEqualTo(Integer value) {
+            addCriterion("tpd_shop_no <>", value, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoGreaterThan(Integer value) {
+            addCriterion("tpd_shop_no >", value, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoGreaterThanOrEqualTo(Integer value) {
+            addCriterion("tpd_shop_no >=", value, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoLessThan(Integer value) {
+            addCriterion("tpd_shop_no <", value, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoLessThanOrEqualTo(Integer value) {
+            addCriterion("tpd_shop_no <=", value, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoIn(List<Integer> values) {
+            addCriterion("tpd_shop_no in", values, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoNotIn(List<Integer> values) {
+            addCriterion("tpd_shop_no not in", values, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoBetween(Integer value1, Integer value2) {
+            addCriterion("tpd_shop_no between", value1, value2, "tpdShopNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andTpdShopNoNotBetween(Integer value1, Integer value2) {
+            addCriterion("tpd_shop_no not between", value1, value2, "tpdShopNo");
+            return (Criteria) this;
+        }
     }
 
     /**

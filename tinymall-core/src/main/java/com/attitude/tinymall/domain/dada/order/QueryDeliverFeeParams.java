@@ -15,7 +15,7 @@ public class QueryDeliverFeeParams {
     @JSONField(name = "shop_no")//门店编号，门店创建后可在门店列表和单页查看
     private String shopNo;
 
-    @JSONField(name = "origin_id")
+    @JSONField(name = "origin_id")// 第三方订单ID
     private String originId;
 
     @JSONField(name = "city_code")//订单所在城市的code

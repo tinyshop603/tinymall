@@ -61,6 +61,10 @@ public enum OrderStatusEnum{
    */
   CUSTOMER_CANCEL("用户取消订单"),
 
+
+  /**
+   * 用户已付款
+   */
   CUSTOMER_PAIED("用户已付款");
 
   private String message;

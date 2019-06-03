@@ -31,11 +31,19 @@
       <el-table-column align="center" width="85px" label="下单时间" prop="order.addTime" sortable></el-table-column>
       <el-table-column align="center" min-width="80px" label="订单状态" prop="order.orderStatus">
         <template slot-scope="scope">
-          <template v-for="tag in tags">
+          <template v-for="tag in order_tags">
             <el-tag v-if="tag.status==scope.row.order.orderStatus" :type="tag.type">
               {{tag.name}}
             </el-tag>
           </template>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" min-width="80px" label="配送状态" prop="order.tpdStatus">
+        <template slot-scope="scope">
+          <el-tag>
+            {{scope.row.order.tpdStatusMsg}}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" width="80px" label="用户昵称" prop="order.consignee"></el-table-column>
@@ -200,7 +208,7 @@ export default {
       refundDialogFormVisible:false,
       showDeliveryDetail:false,
       downloadLoading:false,
-      tags:[
+      order_tags:[
         { name:'待付款', type:'normal', status:'PENDING_PAYMENT' },
         { name:'系统取消', type:'warning', status:'SYSTEM_AUTO_CANCEL' },
         { name:'商家取消', type:'warning', status:'MERCHANT_CANCEL' },

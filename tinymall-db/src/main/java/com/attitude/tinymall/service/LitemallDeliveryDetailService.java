@@ -16,7 +16,7 @@ public interface LitemallDeliveryDetailService {
 
     LitemallDeliveryDetail getDeliveryDetailByDeliveryId(String deliveryId);
 
-    void updateOrderStatus(TPDStatusEnum orderStatus,String delivery);
+    void updateDeliveryInfo(TPDStatusEnum orderStatus,LitemallDeliveryDetail deliveryDetail);
 
     /**
      * 根据配送的第三方Id进行初始化订单配送的详情
