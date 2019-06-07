@@ -11,11 +11,12 @@ import com.attitude.tinymall.domain.baidu.geocode.GeoDecodingAddress;
 import com.attitude.tinymall.service.BaiduFenceService;
 import com.attitude.tinymall.util.HttpClientUtil;
 import com.attitude.tinymall.util.HttpClientUtil.HttpClientResult;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author zhaoguiyang on 2019/1/6.
@@ -58,7 +59,7 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
   @Override
   public GeoDecodingAddress reverseGeocoding(double longitude, double latitude) {
     Map<String, String> params = new HashMap<>(4);
-    params.put("location", longitude + "," + latitude);
+    params.put("location", latitude + "," +  longitude);
     params.put("output", "json");
     params.put("ak", baiduAk);
     params.put("ret_coordtype", mapCoordtype);
@@ -74,6 +75,11 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
       log.error(e.getMessage());
     }
     return null;
+  }
+
+  @Override
+  public GeoDecodingAddress reverseGeocoding(Location location) {
+    return reverseGeocoding(location.getLng(), location.getLat());
   }
 
   @Override

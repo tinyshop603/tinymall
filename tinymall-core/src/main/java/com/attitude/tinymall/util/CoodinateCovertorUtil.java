@@ -57,7 +57,7 @@ public class CoodinateCovertorUtil {
      * @return 保留小数位后的数
      */
     static double dataDigit(int digit, double in) {
-        return new BigDecimal(in).setScale(6, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return new BigDecimal(in).setScale(7, BigDecimal.ROUND_HALF_UP).doubleValue();
 
     }
 

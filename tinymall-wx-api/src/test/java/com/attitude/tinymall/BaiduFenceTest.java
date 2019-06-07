@@ -29,7 +29,7 @@ public class BaiduFenceTest {
   @Test
   public void testJson() {
     assert baiduFenceService.geocoding("北京市海淀区上地十街10号") != null;
-    assert baiduFenceService.reverseGeocoding(39.915654, 116.404197) != null;
+    assert baiduFenceService.reverseGeocoding( 116.404197, 39.915654) != null;
   }
 
   @Test

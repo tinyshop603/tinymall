@@ -23,6 +23,13 @@ public interface BaiduFenceService {
    */
   GeoDecodingAddress reverseGeocoding(double longitude, double latitude);
 
+  /**
+   * 坐标转换为位置
+   *
+   * @return 代表该地理编码的位置信息
+   */
+  GeoDecodingAddress reverseGeocoding(Location location);
+
   ShopFenceResult createCircleFence(String shopId, String shopAddress, int deliveryRadius);
 
   /**
