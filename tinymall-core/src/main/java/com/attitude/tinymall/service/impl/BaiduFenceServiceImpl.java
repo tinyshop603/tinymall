@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.attitude.tinymall.domain.baidu.BaiduResponse;
 import com.attitude.tinymall.domain.baidu.address.Location;
+import com.attitude.tinymall.domain.baidu.address.PoiAddress;
 import com.attitude.tinymall.domain.baidu.fence.QueryFenceLocationResult;
 import com.attitude.tinymall.domain.baidu.fence.ShopFenceResult;
 import com.attitude.tinymall.domain.baidu.geocode.GeoCodingAddress;
@@ -15,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -199,6 +202,30 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     return result.getMonitoredStatuses().get(0).getMonitoredStatus()
         .equals(QueryFenceLocationResult.LOCATION_IN);
 
+  }
+
+  @Override
+  public List<PoiAddress> listPlacesByKeywords(String keywords, String region) throws Exception{
+    Map<String, String> params = new HashMap<>(8);
+    params.put("ak", baiduAk);
+    params.put("timestamp", String.valueOf(System.currentTimeMillis()));
+    params.put("ret_coordtype", "gcj02ll");
+    // 1是简单信息, 2 是详细信息
+    params.put("scope", "1");
+    params.put("output", "json");
+    params.put("city_limit", "true");
+    params.put("region", region);
+    params.put("query", keywords);
+    HttpClientResult httpClientResult = HttpClientUtil.doGet("http://api.map.baidu.com/place/v2/search", params);
+    BaiduResponse<List<PoiAddress>> result = JSON.parseObject(httpClientResult.getContent(),
+            new TypeReference<BaiduResponse<List<PoiAddress>>>() {
+            });
+
+    if (result.getStatus() != 0){
+      return Collections.emptyList();
+    }
+
+    return result.getResults();
   }
 
 

@@ -1,6 +1,7 @@
 package com.attitude.tinymall;
 
 import com.attitude.tinymall.domain.baidu.address.Location;
+import com.attitude.tinymall.domain.baidu.address.PoiAddress;
 import com.attitude.tinymall.service.BaiduFenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -10,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.util.List;
 
 /**
  * @author zhaoguiyang on 2019/1/11.
@@ -58,6 +61,17 @@ public class BaiduFenceTest {
     assert !baiduFenceService.isValidLocationWithinFence(
         "qwas",
         new Location(116.3084202915042, 50.05703033345938), 5);
+  }
+
+  @Test
+  public void testQueryPlaceApi(){
+    try {
+      List<PoiAddress> poiAddresses = baiduFenceService.listPlacesByKeywords("万商大厦", "北京");
+
+      System.out.println(poiAddresses.toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
 }

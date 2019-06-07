@@ -1,12 +1,15 @@
 package com.attitude.tinymall.web;
 
 import com.attitude.tinymall.domain.baidu.address.Location;
+import com.attitude.tinymall.domain.baidu.address.PoiAddress;
 import com.attitude.tinymall.domain.baidu.geocode.GeoDecodingAddress;
 import com.attitude.tinymall.service.BaiduFenceService;
 import com.attitude.tinymall.util.CoodinateCovertorUtil;
 import com.attitude.tinymall.util.ResponseUtil;
 import com.attitude.tinymall.service.LitemallAdminService;
 import com.attitude.tinymall.vo.LocationVO;
+import com.attitude.tinymall.vo.PoiAddressVO;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.util.RegexUtil;
@@ -18,10 +21,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/wx/{storeId}/address")
@@ -217,7 +218,6 @@ public class WxAddressController {
                                           @PathVariable("storeId") String appId) {
 
         Location bd09Location = CoodinateCovertorUtil.gcj02ToBd09(new Location(Double.valueOf(lng), Double.valueOf(lat)));
-
         try {
             GeoDecodingAddress geoDecodingAddress = baiduFenceService.reverseGeocoding(bd09Location);
             LocationVO locationVO = new LocationVO();
@@ -226,13 +226,23 @@ public class WxAddressController {
                     .isValidLocationWithinFence(userId.toString(), geoDecodingAddress.getLocation(),
                             adminService.findAdminByOwnerId(appId).getShopFenceId());
             locationVO.setDistributionStatus(isValidAddress ? "in" : "out");
+
+            if (StringUtils.isEmpty(keyword)){
+                locationVO.setKeywordsNearbyAddresses(Collections.emptyList());
+            }else {
+                // TODO region应根据店铺位置来, 目前只是在北京
+                List<PoiAddress> poiAddresses = baiduFenceService.listPlacesByKeywords(keyword, "北京");
+                locationVO.setKeywordsNearbyAddresses(poiAddresses
+                        .stream()
+                        .map(it -> new PoiAddressVO(it.getAddress(), it.getName()))
+                        .collect(Collectors.toList()));
+            }
+
             return ResponseUtil.ok(locationVO);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.fail();
         }
-
-
     }
 
 }
