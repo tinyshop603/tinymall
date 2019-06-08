@@ -35,6 +35,6 @@ public interface LitemallDeliveryDetailService {
      * @param
      * @return  Map:String setdeliveryNo String setdeliveryNo
      */
-    Map<String,String> queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , String address);
+    BigDecimal queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , String address);
 
 }

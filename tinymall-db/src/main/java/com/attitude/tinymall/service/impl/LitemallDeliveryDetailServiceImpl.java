@@ -166,7 +166,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     }
 
     @Override
-    public Map<String,String> queryDeliverFee4WX(Integer userId , Integer adminId, BigDecimal actualPrice
+    public BigDecimal queryDeliverFee4WX(Integer userId , Integer adminId, BigDecimal actualPrice
             ,String address ) {
         LitemallUser user = litemalluserService.findById(userId);
         // 百度坐标转化为高德坐标
@@ -175,7 +175,6 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         LitemallAddress userDefaultAddress = addressService.findDefault(userId);
         LitemallAdmin admin = adminService.findById(adminId);
 
-        Map resultMap4WX = new HashMap();
 
         String deliveryId = IdGeneratorUtil.generateId("TPD");
         QueryDeliverFeeParams orderParams = QueryDeliverFeeParams.builder()
@@ -195,8 +194,6 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
 
         ResponseEntity<QueryOrderDeliverFeeResult> res = remoteDadaDeliveryClient.queryOrderDeliverFee(orderParams);
         if (res.isSuccess()) {
-            resultMap4WX.put("deliverFee",res.getResult().getFee().intValue());
-            resultMap4WX.put("orderStatus",OrderStatusEnum.PENDING_PAYMENT);
             //setDeliveryId  setDistance setDeliverFee setFee
             LitemallPreDeliveryDetail litemallPreDeliveryDetail = new LitemallPreDeliveryDetail();
             litemallPreDeliveryDetail.setDeliveryId(deliveryId);
@@ -211,7 +208,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
             litemallPreDeliveryDetail.setCreateTime(LocalDateTime.now());
             litemallPreDeliveryDetailMapper.insert(litemallPreDeliveryDetail);
         }
-        return resultMap4WX;
+        return res.getResult().getFee();
     }
 
 }
