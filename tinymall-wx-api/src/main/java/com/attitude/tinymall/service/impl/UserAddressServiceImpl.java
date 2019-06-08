@@ -12,8 +12,20 @@ import com.attitude.tinymall.util.CoodinateCovertorUtil;
 import com.attitude.tinymall.util.IdGeneratorUtil;
 import com.attitude.tinymall.vo.LocationVO;
 import com.attitude.tinymall.vo.PoiAddressVO;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.list.SynchronizedList;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +36,21 @@ import org.springframework.stereotype.Service;
  * @project Wechat
  */
 @Service
+@Slf4j
 public class UserAddressServiceImpl implements IUserAddressService {
-
-  @Autowired
-  private LitemallAddressService addressService;
-  @Autowired
-  private LitemallRegionService regionService;
   @Autowired
   private BaiduFenceService baiduFenceService;
   @Autowired
   private LitemallAdminService adminService;
+
+  private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+      .setNameFormat("baidu-request-pool-%d").build();
+  /**
+   * 当前百度返回的默认的最多天数
+   */
+  private ExecutorService executorService = new ThreadPoolExecutor(10, 10,
+      0L, TimeUnit.MILLISECONDS,
+      new LinkedBlockingQueue<>(),namedThreadFactory);
 
   @Override
   public LocationVO getLocationDetailByGeoParams(
@@ -62,22 +79,27 @@ public class UserAddressServiceImpl implements IUserAddressService {
 
       }
 
-      locationVO.setKeywordsNearbyAddresses(poiAddresses
-          .stream()
-          .map(it -> {
-            boolean validLocationWithinFence = false;
-            try {
-              validLocationWithinFence = baiduFenceService
-                  .isValidLocationWithinFence(temUserId, it.getLocation(), shopFenceId);
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-            return new PoiAddressVO(it.getAddress(), it.getName(), validLocationWithinFence);
-          })
-          .collect(Collectors.toList()));
+      final CountDownLatch countDownLatch = new CountDownLatch(poiAddresses.size());
+      List<PoiAddressVO> poiAddressVOs = Collections.synchronizedList(new ArrayList<>(10));
+
+      poiAddresses.forEach(it -> executorService.execute(()->{
+        boolean validLocationWithinFence = false;
+        try {
+          validLocationWithinFence = baiduFenceService
+              .isValidLocationWithinFence(temUserId, it.getLocation(), shopFenceId);
+        } catch (Exception e) {
+          e.printStackTrace();
+          log.info("批量判断是否在配送范围内出错: {}", e.getMessage());
+        }finally {
+          countDownLatch.countDown();
+        }
+        poiAddressVOs.add(new PoiAddressVO(it.getAddress(), it.getName(), validLocationWithinFence));
+      }));
+      countDownLatch.await();
+
+      locationVO.setKeywordsNearbyAddresses(poiAddressVOs);
       // 从围栏中删除监控对象
       baiduFenceService.deleteMonitorPersonToFence(temUserId, shopFenceId);
-
       return locationVO;
     } catch (Exception e) {
       e.printStackTrace();

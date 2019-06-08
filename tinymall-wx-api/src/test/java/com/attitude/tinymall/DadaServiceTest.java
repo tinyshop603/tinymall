@@ -134,7 +134,7 @@ public class DadaServiceTest {
     FormalCancelParams orderParams = FormalCancelParams
             .builder()
             .orderId("123456879")
-            .cancelReasonId("1")
+            .cancelReasonId(1)
             .cancelReason("fail")
             .build();
     ResponseEntity<FormalCancelOrderResult> res = remoteDadaDeliveryClient.formalCancelOrder(orderParams);
@@ -336,9 +336,9 @@ public class DadaServiceTest {
 
   @Test
   public void query4WX() {
-    Map map = litemallDeliveryDetailService.queryDeliverFee4WX(55 , 1, new BigDecimal(50)
-            ,"回龙观北店嘉园南区烟酒茶行");
-   System.out.println(map.get("deliverFee"));
+//    Map map = litemallDeliveryDetailService.queryDeliverFee4WX(55 , 1, new BigDecimal(50)
+//            ,"回龙观北店嘉园南区烟酒茶行");
+//   System.out.println(map.get("deliverFee"));
   }
   @Test
   public void addDADA() {
