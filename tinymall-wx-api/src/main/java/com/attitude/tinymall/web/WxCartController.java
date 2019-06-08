@@ -1,18 +1,9 @@
 package com.attitude.tinymall.web;
 
+import com.attitude.tinymall.domain.*;
+import com.attitude.tinymall.service.*;
 import com.attitude.tinymall.util.JacksonUtil;
 import com.attitude.tinymall.util.ResponseUtil;
-import com.attitude.tinymall.domain.LitemallAddress;
-import com.attitude.tinymall.domain.LitemallCart;
-import com.attitude.tinymall.domain.LitemallGoods;
-import com.attitude.tinymall.domain.LitemallGoodsSpecification;
-import com.attitude.tinymall.domain.LitemallProduct;
-import com.attitude.tinymall.service.LitemallAddressService;
-import com.attitude.tinymall.service.LitemallCartService;
-import com.attitude.tinymall.service.LitemallCouponService;
-import com.attitude.tinymall.service.LitemallGoodsService;
-import com.attitude.tinymall.service.LitemallGoodsSpecificationService;
-import com.attitude.tinymall.service.LitemallProductService;
 import com.attitude.tinymall.annotation.LoginUser;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.logging.Log;
@@ -43,6 +34,10 @@ public class WxCartController {
     private LitemallAddressService addressService;
     @Autowired
     private LitemallCouponService apiCouponService;
+    @Autowired
+    private LitemallDeliveryDetailService deliveryDetailService;
+    @Autowired
+    private LitemallAdminService adminService;
 
     /**
      * 购物车
@@ -466,11 +461,13 @@ public class WxCartController {
      *   失败则 { errno: XXX, errmsg: XXX }
      */
     @GetMapping("checkout")
-    public Object checkout(@LoginUser Integer userId, Integer cartId, Integer addressId, Integer couponId) {
+    public Object checkout(@LoginUser Integer userId,@PathVariable("storeId") String appId, Integer cartId, Integer addressId, Integer couponId) {
         if(userId == null){
             return ResponseUtil.unlogin();
         }
-
+        // 商家信息
+        LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+        Integer adminId = admin.getId();
         // 收货地址
         LitemallAddress checkedAddress = null;
         if(addressId == null || addressId.equals(0)){
@@ -516,9 +513,14 @@ public class WxCartController {
         for (LitemallCart cart : checkedGoodsList) {
             checkedGoodsPrice = checkedGoodsPrice.add(cart.getRetailPrice().multiply(new BigDecimal(cart.getNumber())));
         }
+        String addressStr = checkedAddress.getAddress();
+        logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + addressStr);
+        Map<String,String>  deliveryDetail = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
+        String deliveryFee = deliveryDetail.get("deliverFee");
+        logger.info("获取运费：" + deliveryFee);
 
         // 根据订单商品总价计算运费，满88则免运费，否则8元；//wz-取消配送费
-        BigDecimal freightPrice = new BigDecimal(0.00);
+        BigDecimal freightPrice = new BigDecimal(deliveryFee);
 //        if(checkedGoodsPrice.compareTo(new BigDecimal(88.00)) == -1){
 ////            freightPrice = new BigDecimal(8.00);
 ////        }

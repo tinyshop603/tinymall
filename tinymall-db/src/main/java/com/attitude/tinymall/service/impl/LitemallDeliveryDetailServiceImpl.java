@@ -59,11 +59,9 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     @Autowired
     private LitemallAdminService adminService;
 
-    @Value("${delivery.dada.source-id}")
-    public String shopNo;
-
     @Value("${delivery.dada.callback-address}")
     public String dadaCallbackAddress;
+
     /**
      * 新增达达的订单,
      * 订单
@@ -73,7 +71,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     @Transactional(rollbackFor = Exception.class)
     public boolean dadaAddOrder(Integer orderId) {
         LitemallOrder order = litemallOrderService.findById(orderId);
-        if (order.getOrderStatus() != OrderStatusEnum.CUSTOMER_PAIED){
+        if (order.getOrderStatus() != OrderStatusEnum.MERCHANT_ACCEPT){
            throw new RuntimeException(String.format("订单:%s 状态异常,订单状态:%s, 不满足发货条件", order.getId(), order.getOrderStatus().getMessage()));
         }
         LitemallUser user = litemalluserService.findById(order.getUserId());
