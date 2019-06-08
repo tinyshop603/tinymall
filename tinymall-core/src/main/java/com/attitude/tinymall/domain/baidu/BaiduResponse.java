@@ -14,4 +14,5 @@ public class BaiduResponse<T> {
   private int status;
   private String message;
   private T result;
+  private T results;
 }

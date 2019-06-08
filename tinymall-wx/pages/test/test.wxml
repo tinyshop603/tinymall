@@ -1,1 +1,1 @@
-  <view class="usermotto" style="height:213px;" id='mjltest'/>
+<view bindtap="openLocationSetting">重新获取位置</view>
