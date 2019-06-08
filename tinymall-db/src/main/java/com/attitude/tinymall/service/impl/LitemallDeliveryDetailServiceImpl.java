@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -210,5 +211,12 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         }
         return res.getResult().getFee();
     }
-
+   public boolean formalCancelOrder(String orderId,Integer cancelReasonId){
+       FormalCancelParams orderParams = FormalCancelParams.builder()
+               .orderId(orderId)
+               .cancelReasonId(cancelReasonId)
+               .build();
+       ResponseEntity<FormalCancelOrderResult> res = remoteDadaDeliveryClient.formalCancelOrder(orderParams);
+       return res.isSuccess();
+    }
 }

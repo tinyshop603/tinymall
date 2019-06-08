@@ -14,7 +14,7 @@ public class FormalCancelParams {
     private String  orderId;
 
     @JSONField(name = "cancel_reason_id")//取消原因ID（取消原因列表）
-    private String cancelReasonId;
+    private Integer cancelReasonId;
 
     @JSONField(name = "cancel_reason")//取消原因(当取消原因ID为其他时，此字段必填)
     private String cancelReason;
