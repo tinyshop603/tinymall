@@ -2,8 +2,12 @@ package com.attitude.tinymall.service;
 
 import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.domain.baidu.address.Location;
+import com.attitude.tinymall.domain.dada.ResponseEntity;
+import com.attitude.tinymall.domain.dada.order.FormalCancelOrderResult;
+import com.attitude.tinymall.domain.dada.order.FormalCancelParams;
 import com.attitude.tinymall.domain.dada.order.QueryOrderStatusResult;
 import com.attitude.tinymall.enums.TPDStatusEnum;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -37,4 +41,8 @@ public interface LitemallDeliveryDetailService {
      */
     BigDecimal queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , String address);
 
+    /**
+     * 取消订单
+     */
+    boolean formalCancelOrder(Integer orderId,Integer cancelReasonId);
 }

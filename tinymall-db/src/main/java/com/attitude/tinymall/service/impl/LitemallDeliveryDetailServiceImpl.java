@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -207,8 +208,25 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
             litemallPreDeliveryDetail.setInsuranceFee(res.getResult().getInsuranceFee());
             litemallPreDeliveryDetail.setCreateTime(LocalDateTime.now());
             litemallPreDeliveryDetailMapper.insert(litemallPreDeliveryDetail);
+        }else{
+            throw  new  RuntimeException(String.format("查询运费失败 原因:%s", res.getMsg()));
         }
         return res.getResult().getFee();
     }
-
+   public boolean formalCancelOrder(Integer orderId,Integer cancelReasonId){
+       LitemallOrder order = litemallOrderService.findById(orderId);
+       FormalCancelParams orderParams = FormalCancelParams.builder()
+               .orderId(order.getDeliveryId())
+               .cancelReasonId(cancelReasonId)
+               .build();
+       ResponseEntity<FormalCancelOrderResult> res = remoteDadaDeliveryClient.formalCancelOrder(orderParams);
+       if(res.isSuccess()==true){
+           order.setTpdStatus(TPDStatusEnum.CANCEL);
+           order.setOrderStatus(OrderStatusEnum.MERCHANT_CANCEL);
+           litemallOrderService.updateById(order);
+           return res.isSuccess();
+       }else{
+           throw new RuntimeException(String.format("取消东单失败 原因:%s", res.getMsg()));
+       }
+    }
 }
