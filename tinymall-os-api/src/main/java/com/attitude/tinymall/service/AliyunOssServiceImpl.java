@@ -59,7 +59,6 @@ public class AliyunOssServiceImpl implements AliyunOssService {
   @Override
   public InputStream downloadFileByName(String fileName) {
     try {
-      log.info("download file from oss, file: {}", fileName);
       return oss.getObject(bucket, fileName).getObjectContent();
     } catch (Exception e) {
       log.error("download file from oss error, file: {}, detail: {}", fileName, e.getMessage());
@@ -71,7 +70,6 @@ public class AliyunOssServiceImpl implements AliyunOssService {
   @Override
   public InputStream downloadGeometricScalingFileByName(String fileName, int with, int height) {
     try {
-      log.info("download file from oss, file: {}", fileName);
       GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, fileName);
       if (with == -1 || height == -1){
         getObjectRequest.setProcess("image/resize,p_100");
@@ -140,9 +138,7 @@ public class AliyunOssServiceImpl implements AliyunOssService {
 
   private String getFileUrlByProcessRequest(String fileName, GeneratePresignedUrlRequest request) {
     try {
-      log.info("generate signed url from oss, file: {}", fileName);
       boolean isExist = oss.doesObjectExist(bucket, fileName);
-
       if (isExist) {
         Calendar nowTime = Calendar.getInstance();
         nowTime.add(Calendar.YEAR, Integer.MAX_VALUE);
