@@ -56,6 +56,8 @@ public interface BaiduFenceService {
 
   boolean addMonitorPersonToFence(String userId, int fenceId);
 
+  boolean deleteMonitorPersonToFence(String userId, int fenceId);
+
   boolean isValidLocationWithinFence(String userId, String address , int fenceId) throws Exception;
 
   boolean isValidLocationWithinFence(String userId, Location location, int fenceId) throws Exception;
@@ -69,5 +71,15 @@ public interface BaiduFenceService {
    * @return
    */
   List<PoiAddress> listPlacesByKeywords(String keywords, String region) throws Exception;
+
+  /**
+   * 坐标类型
+   * @param location 当前地理位置
+   * @param radius 多大的范围
+   * @return
+   * @throws Exception
+   */
+  List<PoiAddress> listCirclePlacesByLocation(Location location, String radius) throws Exception;
+
 
 }
