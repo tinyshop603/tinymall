@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.attitude.tinymall.domain.baidu.BaiduResponse;
 import com.attitude.tinymall.domain.baidu.address.Location;
+import com.attitude.tinymall.domain.baidu.address.PoiAddress;
 import com.attitude.tinymall.domain.baidu.fence.QueryFenceLocationResult;
 import com.attitude.tinymall.domain.baidu.fence.ShopFenceResult;
 import com.attitude.tinymall.domain.baidu.geocode.GeoCodingAddress;
@@ -11,11 +12,14 @@ import com.attitude.tinymall.domain.baidu.geocode.GeoDecodingAddress;
 import com.attitude.tinymall.service.BaiduFenceService;
 import com.attitude.tinymall.util.HttpClientUtil;
 import com.attitude.tinymall.util.HttpClientUtil.HttpClientResult;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhaoguiyang on 2019/1/6.
@@ -58,7 +62,7 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
   @Override
   public GeoDecodingAddress reverseGeocoding(double longitude, double latitude) {
     Map<String, String> params = new HashMap<>(4);
-    params.put("location", longitude + "," + latitude);
+    params.put("location", latitude + "," +  longitude);
     params.put("output", "json");
     params.put("ak", baiduAk);
     params.put("ret_coordtype", mapCoordtype);
@@ -74,6 +78,11 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
       log.error(e.getMessage());
     }
     return null;
+  }
+
+  @Override
+  public GeoDecodingAddress reverseGeocoding(Location location) {
+    return reverseGeocoding(location.getLng(), location.getLat());
   }
 
   @Override
@@ -193,6 +202,30 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     return result.getMonitoredStatuses().get(0).getMonitoredStatus()
         .equals(QueryFenceLocationResult.LOCATION_IN);
 
+  }
+
+  @Override
+  public List<PoiAddress> listPlacesByKeywords(String keywords, String region) throws Exception{
+    Map<String, String> params = new HashMap<>(8);
+    params.put("ak", baiduAk);
+    params.put("timestamp", String.valueOf(System.currentTimeMillis()));
+    params.put("ret_coordtype", "gcj02ll");
+    // 1是简单信息, 2 是详细信息
+    params.put("scope", "1");
+    params.put("output", "json");
+    params.put("city_limit", "true");
+    params.put("region", region);
+    params.put("query", keywords);
+    HttpClientResult httpClientResult = HttpClientUtil.doGet("http://api.map.baidu.com/place/v2/search", params);
+    BaiduResponse<List<PoiAddress>> result = JSON.parseObject(httpClientResult.getContent(),
+            new TypeReference<BaiduResponse<List<PoiAddress>>>() {
+            });
+
+    if (result.getStatus() != 0){
+      return Collections.emptyList();
+    }
+
+    return result.getResults();
   }
 
 

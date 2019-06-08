@@ -1,9 +1,12 @@
 package com.attitude.tinymall.service;
 
 import com.attitude.tinymall.domain.baidu.address.Location;
+import com.attitude.tinymall.domain.baidu.address.PoiAddress;
 import com.attitude.tinymall.domain.baidu.fence.ShopFenceResult;
 import com.attitude.tinymall.domain.baidu.geocode.GeoCodingAddress;
 import com.attitude.tinymall.domain.baidu.geocode.GeoDecodingAddress;
+
+import java.util.List;
 
 /**
  * @author zhaoguiyang on 2018/12/27.
@@ -22,6 +25,13 @@ public interface BaiduFenceService {
    * @return 代表该地理编码的位置信息
    */
   GeoDecodingAddress reverseGeocoding(double longitude, double latitude);
+
+  /**
+   * 坐标转换为位置
+   *
+   * @return 代表该地理编码的位置信息
+   */
+  GeoDecodingAddress reverseGeocoding(Location location);
 
   ShopFenceResult createCircleFence(String shopId, String shopAddress, int deliveryRadius);
 
@@ -49,5 +59,15 @@ public interface BaiduFenceService {
   boolean isValidLocationWithinFence(String userId, String address , int fenceId) throws Exception;
 
   boolean isValidLocationWithinFence(String userId, Location location, int fenceId) throws Exception;
+
+
+  /**
+   * 查询区域范围内的所有的关键字地点
+   * 目前返回的是简单信息
+   * @param keywords
+   * @param region
+   * @return
+   */
+  List<PoiAddress> listPlacesByKeywords(String keywords, String region) throws Exception;
 
 }
