@@ -10,6 +10,7 @@
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-download" @click="handleDownload"
                  :loading="downloadLoading">导出订单信息
       </el-button>
+      <el-button class="filter-item" type="primary" v-waves icon="el-icon-refresh" @click="handleCurrentChange">全部刷新</el-button>
     </div>
     <!-- 查询结果 -->
     <el-table size="small" :data="list" v-loading="listLoading" element-loading-text="正在查询中。。。" border fit
@@ -299,6 +300,8 @@ export default {
             if (responseData.errno === 0) {
               // 修改订单的状态
               orderData.orderStatus = 'ONGOING'
+              // 修改配送状态为待接单
+              orderData.tpdStatusMsg = '待接单'
               this.$notify({
                 title:'成功',
                 message:responseData.errmsg,
