@@ -515,12 +515,11 @@ public class WxCartController {
         }
         String addressStr = checkedAddress.getAddress();
         logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + addressStr);
-        Map<String,String>  deliveryDetail = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
-        String deliveryFee = deliveryDetail.get("deliverFee");
+        BigDecimal  deliveryFee = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
         logger.info("获取运费：" + deliveryFee);
 
         // 根据订单商品总价计算运费，满88则免运费，否则8元；//wz-取消配送费
-        BigDecimal freightPrice = new BigDecimal(deliveryFee);
+        BigDecimal freightPrice = deliveryFee;
 //        if(checkedGoodsPrice.compareTo(new BigDecimal(88.00)) == -1){
 ////            freightPrice = new BigDecimal(8.00);
 ////        }
