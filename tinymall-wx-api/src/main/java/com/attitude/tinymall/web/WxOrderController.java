@@ -670,7 +670,7 @@ public class WxOrderController {
       // TODO 这里1分钱需要改成实际订单金额
 //      if (!totalFee.equals("0.01")) {
       BigDecimal totalFreePrice = new BigDecimal(totalFee);
-      log.info("校验订单金额是否正确, 当前预计金额: {}, 实际金额: {}", totalFreePrice, order.getActualPrice());
+      log.info("校验订单金额是否正确, 当前微信回调金额: {}, 数据库订单实际金额: {}", totalFreePrice, order.getActualPrice());
       if (!totalFreePrice.equals(order.getActualPrice())) {
         throw new Exception("支付金额不符合 totalFee=" + totalFee);
       }
