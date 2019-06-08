@@ -62,10 +62,4 @@ public class AdminDadaController {
     return ResponseUtil.ok();
   }
 
-  @GetMapping("/queryFee")
-  public Object  queryDeliverFee4WX(Integer userId, Location location, Integer adminId, BigDecimal actualPrice , String address){
-  Map deliverfeeMap = litemallDeliveryDetailService.queryDeliverFee4WX( userId , adminId , actualPrice , address);
-  return ResponseUtil.ok(deliverfeeMap);
-
-}
 }
