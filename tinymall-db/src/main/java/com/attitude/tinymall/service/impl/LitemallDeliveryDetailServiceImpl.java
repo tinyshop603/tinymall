@@ -208,15 +208,25 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
             litemallPreDeliveryDetail.setInsuranceFee(res.getResult().getInsuranceFee());
             litemallPreDeliveryDetail.setCreateTime(LocalDateTime.now());
             litemallPreDeliveryDetailMapper.insert(litemallPreDeliveryDetail);
+        }else{
+            throw  new  RuntimeException(String.format("查询运费失败 原因:%s", res.getMsg()));
         }
         return res.getResult().getFee();
     }
-   public boolean formalCancelOrder(String orderId,Integer cancelReasonId){
+   public boolean formalCancelOrder(Integer orderId,Integer cancelReasonId){
+       LitemallOrder order = litemallOrderService.findById(orderId);
        FormalCancelParams orderParams = FormalCancelParams.builder()
-               .orderId(orderId)
+               .orderId(order.getDeliveryId())
                .cancelReasonId(cancelReasonId)
                .build();
        ResponseEntity<FormalCancelOrderResult> res = remoteDadaDeliveryClient.formalCancelOrder(orderParams);
-       return res.isSuccess();
+       if(res.isSuccess()==true){
+           order.setTpdStatus(TPDStatusEnum.CANCEL);
+           order.setOrderStatus(OrderStatusEnum.MERCHANT_CANCEL);
+           litemallOrderService.updateById(order);
+           return res.isSuccess();
+       }else{
+           throw new RuntimeException(String.format("取消东单失败 原因:%s", res.getMsg()));
+       }
     }
 }

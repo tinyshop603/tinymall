@@ -44,5 +44,5 @@ public interface LitemallDeliveryDetailService {
     /**
      * 取消订单
      */
-    boolean formalCancelOrder(String orderId,Integer cancelReasonId);
+    boolean formalCancelOrder(Integer orderId,Integer cancelReasonId);
 }

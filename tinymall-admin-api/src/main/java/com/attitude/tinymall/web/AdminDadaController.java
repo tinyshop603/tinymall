@@ -64,7 +64,7 @@ public class AdminDadaController {
 
 
    @GetMapping("/formalCancelOrder")
-  public Object formalCancelOrder(String orderId,Integer cancelReasonId) {
+  public Object formalCancelOrder(Integer orderId,Integer cancelReasonId) {
     //cancelReasonId  36:商家取消配送
      if (true==litemallDeliveryDetailService.formalCancelOrder(orderId,cancelReasonId)){
        log.info("订单: {} 取消订单成功!!", orderId);
