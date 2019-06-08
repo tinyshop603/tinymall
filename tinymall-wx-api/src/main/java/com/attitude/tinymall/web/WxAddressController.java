@@ -215,37 +215,16 @@ public class WxAddressController {
 
     @GetMapping("/location")
     public Object getLocationByGeoParams(@RequestParam String lng,
-                                          @RequestParam String lat,
-                                          String keyword,
-                                          @PathVariable("storeId") String appId) {
+                                         @RequestParam String lat,
+                                         String keyword,
+                                         @PathVariable("storeId") String appId) {
 
-        Location bd09Location = CoodinateCovertorUtil.gcj02ToBd09(new Location(Double.valueOf(lng), Double.valueOf(lat)));
-        try {
-            GeoDecodingAddress geoDecodingAddress = baiduFenceService.reverseGeocoding(bd09Location);
-            LocationVO locationVO = new LocationVO();
-            BeanUtils.copyProperties(geoDecodingAddress, locationVO);
-            boolean isValidAddress = baiduFenceService
-                    .isValidLocationWithinFence(userId.toString(), geoDecodingAddress.getLocation(),
-                            adminService.findAdminByOwnerId(appId).getShopFenceId());
-            locationVO.setDistributionStatus(isValidAddress ? "in" : "out");
-
-            if (StringUtils.isEmpty(keyword)){
-                locationVO.setKeywordsNearbyAddresses(Collections.emptyList());
-            }else {
-                // TODO region应根据店铺位置来, 目前只是在北京
-                List<PoiAddress> poiAddresses = baiduFenceService.listPlacesByKeywords(keyword, "北京");
-                locationVO.setKeywordsNearbyAddresses(poiAddresses
-                        .stream()
-                        .map(it -> new PoiAddressVO(it.getAddress(), it.getName()))
-                        .collect(Collectors.toList()));
-            }
-
-            return ResponseUtil.ok(locationVO);
-        } catch (Exception e) {
-            e.printStackTrace();
+        LocationVO res = userAddressService.getLocationDetailByGeoParams(lng, lat, keyword, appId);
+        if (res == null){
             return ResponseUtil.fail();
         }
         return ResponseUtil.ok(res);
     }
+
 
 }
