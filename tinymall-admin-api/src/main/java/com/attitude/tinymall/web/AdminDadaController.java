@@ -3,6 +3,7 @@ package com.attitude.tinymall.web;
 import com.attitude.tinymall.annotation.LoginAdmin;
 import com.attitude.tinymall.domain.LitemallAddress;
 import com.attitude.tinymall.domain.LitemallOrder;
+import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
 import com.attitude.tinymall.domain.dada.order.AddOrderParams;
 import com.attitude.tinymall.domain.dada.shop.ShopDetailResult;
@@ -12,6 +13,8 @@ import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 import com.attitude.tinymall.service.LitemallOrderService;
 import com.attitude.tinymall.util.RegexUtil;
 import com.attitude.tinymall.util.ResponseUtil;
+
+import java.math.BigDecimal;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +62,10 @@ public class AdminDadaController {
     return ResponseUtil.ok();
   }
 
+  @GetMapping("/queryFee")
+  public Object  queryDeliverFee4WX(Integer userId, Location location, Integer adminId, BigDecimal actualPrice , String address){
+  Map deliverfeeMap = litemallDeliveryDetailService.queryDeliverFee4WX( userId , adminId , actualPrice , address);
+  return ResponseUtil.ok(deliverfeeMap);
 
+}
 }
