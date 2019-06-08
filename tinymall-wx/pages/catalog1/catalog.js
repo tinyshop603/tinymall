@@ -4,6 +4,10 @@ var app = getApp();
 Page({
   data: {
     storeId: "",
+    // hiddenReAuthorizePop: true,//隐藏重新授权确认弹窗
+    latitude: "", //维度，浮点数
+    longitude: "", //经度，浮点数
+    locationText: "未获取位置信息",
     page: 1,
     size: 100,
     goodsCount: 0,
@@ -13,25 +17,38 @@ Page({
     allGoodsList:[],
     curCategoryId:"g",
     curCategoryIndex:0,
-    scrollHigh:0,
-    isCalu:false,
+    subHeightArr:[0],
+    toView:"",
     systemHeight: ""
   },
   onLoad: function () {
     let that = this;
-    //根据手机可用高度动态赋予容器高度
+    // 根据手机可用高度动态赋予容器高度
     wx.getSystemInfo({
-      success: function (res) {
-        that.setData({
-          systemHeight: res.windowHeight - (res.windowWidth / 750) * 94 + "px"
-        })
+      success: function (sysInfo) {
+        wx.createSelectorQuery().select('#toolBar').fields({
+          dataset: true,
+          size: true,
+          scrollOffset: true,
+          properties: ['scrollX', 'scrollY'],
+          computedStyle: ['margin', 'backgroundColor'],
+          context: true,
+        }, function (res) {
+          const systemHeight = sysInfo.windowHeight - res.height 
+          that.setData({
+            systemHeight: systemHeight + "px"
+          })
+        }).exec()
       }
     })
-    //商店ID赋值
+    // 商店ID赋值
     this.setData({
       storeId: app.globalData.storeId
     })
+    // 页面加载时获取商品
     this.getCatalog();
+    // 页面加载时获取定位
+    this.getLocation();
   },
 
   onReady: function () {
@@ -69,8 +86,7 @@ Page({
       path: '/pages/catalog1/catalog'
     }
   },
-  //TODO 当前只支持每页获取最多20（可调）个商品，将来会做懒加载技术
-    //TODO 是否能通过一次请求获取以下信息
+  //TODO 需要做懒加载技术
   getCatalog: function () {
     let that = this;
     wx.showLoading({
@@ -89,12 +105,120 @@ Page({
         });
         wx.hideLoading();
       });
+    that.caluSubHeight();
     // util.request(api.GoodsCount, { storeid:that.data.storeId}).then(function (res) {
     //   that.setData({
     //     goodsCount: res.data.goodsCount
     //   });
     // });
   },
+
+  // 计算右侧高度进行数组
+  caluSubHeight:function () {
+    let that = this;
+    var categoryList = this.data.categoryList;
+    if (categoryList.length == 0){
+      setTimeout(function () {
+        that.caluSubHeight();
+      }, 200)
+    }
+    var index = 0;
+    for (var i = 0; i < categoryList.length; i++) {
+      wx.createSelectorQuery().select("#g" + categoryList[i].id).fields({
+        dataset: true,
+        size: true,
+        scrollOffset: true,
+        properties: ['scrollX', 'scrollY'],
+        context: true,
+      }, function (result) {
+        var height = parseInt(that.data.subHeightArr[index]) + result.height;
+          that.setData({
+            subHeightArr: that.data.subHeightArr.concat(height)
+          })
+        index++;
+      }).exec();
+    }
+  },
+
+  /**
+   * 获取用户定位
+   */
+  getLocation: function () {
+    var self = this;
+    wx.getLocation({
+      type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的坐标，可传入'gcj02'
+      // altitude: true, //传入 true 会返回高度信息，由于获取高度需要较高精确度，会减慢接口返回速度
+      success: function (res) {
+        const latitude = res.latitude; // 纬度，浮点数
+        const longitude = res.longitude; // 经度，浮点数
+        util.request(api.ConsumerLOcation, { latitude: latitude, longitude: longitude }, "GET")
+          .then(function (res) {
+            console.log(res);
+            // self.setData({
+            //   latitude: latitude,
+            //   longitude: longitude,
+            //   locationText: "已获取经纬度"
+            // })
+          });
+      },
+      // fail: function (res) {
+      //   //未授权就弹出弹窗提示用户重新授权
+      //   self.reAuthorize();
+      // },
+      complete: function (res) {
+
+      }
+    });
+  },
+  /**
+   * 重新授权按钮点击事件
+   */
+  openLocationSetting: function () {
+    var self = this
+    //先获取用户的当前设置，返回值中只会出现小程序已经向用户请求过的权限
+    wx.getSetting({
+      success: function (res) {
+        if (res.authSetting && !res.authSetting["scope.userLocation"]) {
+          //未授权则打开授权设置界面
+          wx.openSetting({
+            success: function (res) {
+              if (res.authSetting && res.authSetting["scope.userLocation"]) {
+                //允许授权,则自动获取定位，并关闭二确弹窗，否则返回首页不处理
+                self.getLocation();
+                // self.setData({
+                //   hiddenReAuthorizePop: true
+                // })
+                wx.showToast({
+                  title: '您已授权获取位置信息',
+                  icon: 'none'
+                })
+              } 
+              // else {
+              //   //未授权就弹出弹窗提示用户重新授权      
+              //   self.reAuthorize();
+              // }
+            }
+          })
+        }
+         else {
+          //授权则重新获取位置（授权设置界面返回首页，首页授权二确弹窗未关闭）
+          self.getLocation();
+          wx.showToast({
+            title: '位置已更新',
+            icon: 'none'
+          })
+        }
+      }
+    })
+  },
+
+  /**
+   * 重新授权位置信息
+   */
+  // reAuthorize: function () {
+  //   var self = this
+  //   self.setData({ hiddenReAuthorizePop: false })
+  // },
 
   // 左侧L2点击事件
   switchCate: function (event) {
@@ -120,44 +244,23 @@ Page({
     //   });
   },
   // 监听goods滚动，判断调节左侧展示
-  // monitorScroll:function(event){
-  //   var that = this;
-  //   console.log(event);
-  //   var isCalu = that.data.isCalu;
-  //   if (isCalu){
-  //     return false;
-  //   }
-  //   that.setData({
-  //     isCalu:true
-  //   });
-  //   var curScrollHeight = event.detail.scrollTop
-  //   //创建节点选择器
-  //   // var query = wx.createSelectorQuery();
-  //   var curCategoryId = this.data.categoryList[this.data.curCategoryIndex].id;
-  //   console.log(curCategoryId);
-  //   wx.createSelectorQuery().select("#g" + curCategoryId).fields({
-  //       dataset: true,
-  //       size: true,
-  //       scrollOffset: true,
-  //       properties: ['scrollX', 'scrollY'],
-  //       context: true,
-  //     }, function (res) {
-  //       var scrollHigh = that.data.scrollHigh;
-  //       if (event.detail.scrollTop > (res.height + scrollHigh)){
-  //         var categoryList = that.data.categoryList;
-  //         var index = that.data.curCategoryIndex;
-  //         var nextIndex = (index == categoryList.length) ? index : ++index;
-  //         that.setData({
-  //           curCategoryIndex: nextIndex,
-  //           scrollHigh: scrollHigh + res.height
-  //           // curCategoryId: "g" + categoryList[nextIndex].id,
-  //         });
-  //       } 
-  //       that.setData({
-  //         isCalu: false
-  //       });
-  //     }).exec()
-  // }
+  monitorScroll:function(event){
+    var that = this;
+    var curScrollHeight = event.detail.scrollTop;
+    // console.log(curScrollHeight);
+    var curCategoryIndex = this.data.curCategoryIndex;
+    var minHeight = this.data.subHeightArr[curCategoryIndex];
+    var maxHeight = this.data.subHeightArr[curCategoryIndex+1];
+    if (event.detail.scrollTop > maxHeight) {
+      that.setData({
+        curCategoryIndex: curCategoryIndex + 1
+      });
+    } else if (event.detail.scrollTop < minHeight){
+      that.setData({
+        curCategoryIndex: curCategoryIndex - 1
+      });
+    }
+  },
   
 
   //添加商品

@@ -117,14 +117,16 @@ page{
 .cart-view .group-item{
     height: auto;
     width: 100%;
-    background: #fff;
+    /* background: #fff; */
     margin-bottom: 18rpx;
 }
 
 .cart-view .item{
+    background: #fff;
     height: 164rpx;
     width: 100%;
     overflow: hidden;
+    margin:10rpx 0;
 }
 .cart-view .item .checkbox{
     float: left;
@@ -136,7 +138,7 @@ page{
 }
 
 .cart-view .item .checkbox.checked{
-    background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/checkbox-checked-822e54472a.png) no-repeat;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAACRklEQVQ4T52UzWsTYRCHn0lj09Zuki20YsTiQVB6EaF+Fa2IrfXgTUFP3j34Z3jzIIgHBUE9KohgQUVRQUpBBVGKHvyiapNIbNIkTZu08R3Z3Zg2bJo0ndPyvjPPzL4zvxFVVepZOQMLn9DFL+B8/y1AIARtFnT0I127IbSjbqj4oKaAzj2H+feomrpB/w8ltA2xRyHUX+NXC12aQVN30XK+IWz1pYgg0REIH6oer0AdYPI2quV1A2vgkSNI9Jh75EGdX07caKnCepkDvWega8CDavohmn+3oQprqg1aSOwiostp1fi1pk1ZM2P3XiR8GI1fdV0C9iii2Qk1mWcbq9Laj9hjaPYlZF957xnaipjkLdXidOvQ8BABewSTeQq5ydqRMr+uqJazLUElchQiw2jmMeTf+GLFTF/S6hiFtoO0Q/HrmkkkehzCQ2h6HObrN1fMz8uqjgQdsw4g9glPUbkJfwX2SbAG0dkHUJhaO7GJX1ddSq44WPvcx6fwAZ0dBzypSs8p6N6D/rnv7oRGJib9SDX3utanYyfSexqWEi5YIsOweQBN3YPFz42Bzqxq8bua5B2/46Y+pO8cEoyipuQBi9+aNlSswYqikjfR0ow/QILQHoPlFJjF5kBpQ2IXKtov/UB/O8uk/mptSqs4SNhp9FgF6hzmJr1B3qCJs7i3nHeEugoK6NwLtCK3VtgusPcsBDq9SfFt/oWPaObJutagSJs7t+72J1Ctww91rnQZ8m/RhSm0lPCLIGhB5y4kfBCCPb77f3ILDuzq4vJYAAAAAElFTkSuQmCC) no-repeat;
     background-size: 34rpx;
 }
 
@@ -188,7 +190,7 @@ page{
 
 .cart-view .item .attr{
     margin-bottom: 17rpx;
-    height: 24rpx;
+    /* height: 24rpx; */
     line-height: 24rpx;
     font-size: 22rpx;
     color: #666;
@@ -196,6 +198,7 @@ page{
 }
 
 .cart-view .item .b{
+    margin-top: 32rpx;
     height: 28rpx;
     line-height: 28rpx;
     font-size: 25rpx;
@@ -205,6 +208,7 @@ page{
 
 .cart-view .item .price{
     float: left;
+    color:#FF4A00;
 }
 
 .cart-view .item .open{
@@ -237,13 +241,13 @@ page{
 
 .cart-view .item.edit .b{
     display: flex;
-    height: 52rpx;
+    height: 50rpx;
     overflow: hidden;
 }
 
 .cart-view .item.edit .price{
     line-height: 52rpx;
-    height: 52rpx;
+    height: 50rpx;
     flex: 1;
 }
 
@@ -260,41 +264,37 @@ page{
 } 
 
 .cart-view .item .selnum{
-    width: 235rpx;
+    width: 200rpx;
     height: 52rpx;
-    border: 1rpx solid #ccc;
+    border: 1rpx solid #F4F4F4;
     display: flex;
 }
 
 .cart-view .item.edit .selnum{
-    width: 235rpx;
+    width: 200rpx;
     height: 52rpx;
-    border: 1rpx solid #ccc;
+    /* border: 1rpx solid #F4F4F4; */
     display: flex;
 }
 
 .selnum .cut{
-    width: 70rpx;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAY0lEQVRIS2P88ePH/79//zLQCjB+/fr1PxMTE63MZxi1gGDQjgbRaBARDAGCCvCnol9PGFifNTAw/PuF06D/7AoMf6SbcMoPsAUEA4CwgtGMRjCMRoNoNIgIhgBBBYy0brYAAOZIc23q4/pBAAAAAElFTkSuQmCC) no-repeat;
+    width: 50rpx;
     height: 100%;
-    text-align: center;
-    line-height: 50rpx;
 }
 
 .selnum .number{
     flex: 1;
     height: 100%;
     text-align: center;
-    line-height: 68.75rpx;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    line-height: 50rpx;
     float: left;
 }
 
 .selnum .add{
-    width: 80rpx;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAYCAYAAAAPtVbGAAAAwklEQVRIS2P8+vXrfwYaAiYmJgZGkCUgBq0AIyPjqCXEB+5ocBEfVgwMDGQFF9tVI4bf8tMZ/vOYE2UZWZZwnOVl+KW0iOGfYOCoJZghAIoDph+3cQbNf0YWhl8a+xj+cxliVUNUnDB+OcnA+PsZ3AC2e3EMf8RzGP5xm0HEGNkY/vG7MTAwspJvCbrO4RPx7OcEGX4rLWH4J+BNuyTM+PUcw38uXZxxgG4zURFPlHPxKBq1hKQQpG9wkeQ0EhWDWkIAMweMu/YiRi8AAAAASUVORK5CYII=) no-repeat;
+    width: 50rpx;
     height: 100%;
-    text-align: center;
-    line-height: 50rpx;
 }
 
 
@@ -375,15 +375,19 @@ page{
 }
 
 .cart-bottom .checkbox.checked{
-    background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/checkbox-checked-822e54472a.png) no-repeat;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAACRklEQVQ4T52UzWsTYRCHn0lj09Zuki20YsTiQVB6EaF+Fa2IrfXgTUFP3j34Z3jzIIgHBUE9KohgQUVRQUpBBVGKHvyiapNIbNIkTZu08R3Z3Zg2bJo0ndPyvjPPzL4zvxFVVepZOQMLn9DFL+B8/y1AIARtFnT0I127IbSjbqj4oKaAzj2H+feomrpB/w8ltA2xRyHUX+NXC12aQVN30XK+IWz1pYgg0REIH6oer0AdYPI2quV1A2vgkSNI9Jh75EGdX07caKnCepkDvWega8CDavohmn+3oQprqg1aSOwiostp1fi1pk1ZM2P3XiR8GI1fdV0C9iii2Qk1mWcbq9Laj9hjaPYlZF957xnaipjkLdXidOvQ8BABewSTeQq5ydqRMr+uqJazLUElchQiw2jmMeTf+GLFTF/S6hiFtoO0Q/HrmkkkehzCQ2h6HObrN1fMz8uqjgQdsw4g9glPUbkJfwX2SbAG0dkHUJhaO7GJX1ddSq44WPvcx6fwAZ0dBzypSs8p6N6D/rnv7oRGJib9SDX3utanYyfSexqWEi5YIsOweQBN3YPFz42Bzqxq8bua5B2/46Y+pO8cEoyipuQBi9+aNlSswYqikjfR0ow/QILQHoPlFJjF5kBpQ2IXKtov/UB/O8uk/mptSqs4SNhp9FgF6hzmJr1B3qCJs7i3nHeEugoK6NwLtCK3VtgusPcsBDq9SfFt/oWPaObJutagSJs7t+72J1Ctww91rnQZ8m/RhSm0lPCLIGhB5y4kfBCCPb77f3ILDuzq4vJYAAAAAElFTkSuQmCC) no-repeat;
     background-size: 34rpx;
 }
 
 .cart-bottom .total{
-    height: 34rpx;
     flex: 1;
-    margin: 33rpx 10rpx;
-    font-size: 29rpx;
+    margin: 22rpx 10rpx;
+    font-size: 36rpx;
+    text-align: right;
+    color: #FF4A00;
+}
+.cart-bottom .total .label{
+  color: #888;
 }
 
 
@@ -400,6 +404,6 @@ page{
     text-align: center;
     line-height: 100rpx;
     font-size: 29rpx;
-    background: #b4282d;
+    background: #ffd827;
     color: #fff;
 }

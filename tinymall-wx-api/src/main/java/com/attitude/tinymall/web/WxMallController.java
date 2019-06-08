@@ -119,6 +119,14 @@ public class WxMallController {
 
   }
 
+  @GetMapping("/location")
+  public Object getConsumerLocation(double latitude,double longitude){
+    Map<String, Object> data = new HashMap();
+    data.put("locationName", "北店嘉园南里");
+    data.put("canDistribution", false);
+    return ResponseUtil.ok(data);
+  }
+
   @GetMapping("/category")
   public Object getMallCategoryDetail(@PathVariable("storeId") String appid) {
     final String replacePic = "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";

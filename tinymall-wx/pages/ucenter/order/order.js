@@ -4,7 +4,8 @@ var api = require('../../../config/api.js');
 Page({
   data:{
     orderList: [],
-    showType: 0
+    showType: 0,
+    systemHeight:""
   },
   //右上角转发分享功能
   onShareAppMessage: function () {
@@ -14,6 +15,24 @@ Page({
     }
   },
   onLoad:function(options){
+    var self = this;
+    wx.getSystemInfo({
+      success: function (sysInfo) {
+        wx.createSelectorQuery().select('#ordersSwitch').fields({
+          dataset: true,
+          size: true,
+          scrollOffset: true,
+          properties: ['scrollX', 'scrollY'],
+          computedStyle: ['margin', 'backgroundColor'],
+          context: true,
+        }, function (res) {
+          const systemHeight = sysInfo.windowHeight - res.height
+          self.setData({
+            systemHeight: systemHeight + "px"
+          })
+        }).exec()
+      }
+    })
     this.setData({
       showType: options.showType
     });

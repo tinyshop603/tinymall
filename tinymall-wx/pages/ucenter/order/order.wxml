@@ -1,5 +1,5 @@
 <view class="container">
-    <view class="orders-switch">
+    <view class="orders-switch" id="ordersSwitch">
         <view class="item {{ showType == 0 ? 'active' : ''}}" bindtap="switchTab" data-index='0'>
             <view class="txt">全部</view>
         </view>
@@ -19,8 +19,8 @@
         <text>还没有任何订单呢</text>
       </view>
     </view>
-
-    <view class="orders">
+    
+    <scroll-view class="orders" style="height:{{systemHeight}}"  scroll-y="true">
       <navigator url="../orderDetail/orderDetail?id={{item.id}}" open-type="navigate" wx:for="{{orderList}}" wx:key="id">
       <view class="order" wx:for="{{orderList}}" wx:key="id">
           <view class="box">
@@ -73,5 +73,5 @@
             
       </view>
       </navigator>
-    </view>
+    </scroll-view>
 </view>

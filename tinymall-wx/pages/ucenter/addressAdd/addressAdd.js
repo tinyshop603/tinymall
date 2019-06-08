@@ -261,6 +261,10 @@ Page({
   cancelAddress(){
     wx.navigateBack();
   },
+
+  chooseAddress(){
+    wx.navigateTo({ url: "/pages/ucenter/addressChoose/addressChoose"});
+  },
   saveAddress(){
     console.log(this.data.address)
     let address = this.data.address;

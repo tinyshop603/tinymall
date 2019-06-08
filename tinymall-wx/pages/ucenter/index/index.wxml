@@ -9,8 +9,9 @@
     </view>
     <view class="order" bindtap="goOrder">
         <text class="l">我的订单</text>
+        <text class="r-arrow"></text>
         <text class="r">查看全部订单</text>
-        <text class="icon"></text>
+        
     </view>
     <view style="clear:both;"></view>
     <view class="orderDetail">
@@ -30,6 +31,27 @@
   </view>
 
   <view class="user-menu">
+    <view class="item">
+      <view class="a" bindtap="goAddress">
+        <!-- <text class="icon address"></text> -->
+        <text class="txt">地址管理</text>
+        <view class="r-arrow"></view>
+      </view>
+    </view>
+    <view class="item">
+      <view class="a" bindtap="aboutUs">
+        <!-- <text class="icon help"></text> -->
+        <text class="txt">联系商家</text>
+        <view class="r-arrow"></view>
+      </view>
+    </view>
+    <view class="item">
+      <view class="a" bindtap="aboutUs">
+        <!-- <text class="icon help"></text> -->
+        <text class="txt">关于我们</text>
+        <view class="r-arrow"></view>
+      </view>
+    </view>
     <!-- <view class="item">
       <view class="a" bindtap="goOrder">
         <text class="txt">我的订单</text>
@@ -65,12 +87,7 @@
         <text class="txt">会员福利</text>
       </view>
     </view> -->
-    <view class="item">
-      <view class="a" bindtap="goAddress">
-        <!-- <text class="icon address"></text> -->
-        <text class="txt">地址管理</text>
-      </view>
-    </view>
+    
     <!-- <view class="item">
       <view class="a">
         <text class="icon security"></text>
@@ -89,19 +106,6 @@
         <text class="txt">帮助中心</text>
       </view>
     </view> -->
-    <view class="item">
-      <view class="a" bindtap="aboutUs">
-        <!-- <text class="icon help"></text> -->
-        <text class="txt">联系商家</text>
-      </view>
-    </view>
-    <view class="item">
-      <view class="a" bindtap="aboutUs">
-        <!-- <text class="icon help"></text> -->
-        <text class="txt">关于我们</text>
-      </view>
-    </view>
-
   </view>
 
   <!--<view class="logout" bindtap="exitLogin">退出登录</view>-->

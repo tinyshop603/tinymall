@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 13,
+			"current": 20,
 			"list": [
 				{
 					"id": -1,
@@ -61,16 +61,16 @@
 					"query": "status=true"
 				},
 				{
-					"id": -1,
+					"id": 5,
 					"name": "我的订单列表",
 					"pathName": "pages/ucenter/order/order",
-					"query": ""
+					"query": "showType=0"
 				},
 				{
 					"id": 6,
 					"name": "我的订单详情",
 					"pathName": "pages/ucenter/orderDetail/orderDetail",
-					"query": "orderId=60"
+					"query": "orderId=622"
 				},
 				{
 					"id": -1,
@@ -112,6 +112,48 @@
 					"id": -1,
 					"name": "测试",
 					"pathName": "pages/test/test",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "test",
+					"pathName": "pages/test/test",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "个人中心",
+					"pathName": "pages/ucenter/index/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "购物车",
+					"pathName": "pages/cart/cart",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "地址管理",
+					"pathName": "pages/ucenter/address/address",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "地址选择",
+					"pathName": "pages/ucenter/addressChoose/addressChoose",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "地址管理",
+					"pathName": "pages/ucenter/address/address",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "地址选择",
+					"pathName": "pages/ucenter/addressChoose/addressChoose",
 					"query": ""
 				}
 			]

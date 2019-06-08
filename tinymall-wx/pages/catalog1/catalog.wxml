@@ -1,8 +1,8 @@
 <view class="container">
-    <view class="toolBar">
+    <view class="toolBar" id="toolBar">
         <view class="location">
             <image class="icon"></image>
-            <view class="txt">test</view>
+            <view class="txt" bindtap='openLocationSetting'>{{locationText}}</view>
         </view>
         <view class="search">
           <navigator url="/pages/search/search" class="input">
@@ -12,12 +12,12 @@
         </view>
     </view>
     <view class="catalog">
-      <scroll-view class="nav" scroll-top="0" scroll-y="true" style="height:{{systemHeight}}">
-          <view class="item {{ curCategoryIndex == index ? 'active' : ''}}" wx:for="{{categoryList}}" wx:key="id"  data-id="g{{item.id}}" data-index="{{index}}" bindtap="switchCate">{{item.name}}</view>
+      <scroll-view class="nav" scroll-top="0" scroll-y="true" style="height:{{systemHeight}}" scroll-with-animation="true" scroll-into-view="{{ curCategoryIndex > 7 ? 'cata'+categoryList[curCategoryIndex-7].id : ''}}">
+          <view class="item {{ curCategoryIndex == index ? 'active' : ''}}" wx:for="{{categoryList}}" wx:key="id"  id="cata{{item.id}}" data-id="g{{item.id}}" data-index="{{index}}" bindtap="switchCate">{{item.name}}</view>
       </scroll-view>
-      <scroll-view class="cate" scroll-y="true" scroll-into-view="{{curCategoryId}}" scroll-with-animation="true"  bindscroll="monitorScroll" style="height:{{systemHeight}}">
+      <scroll-view class="cate r-right" scroll-y="true" scroll-into-view="{{curCategoryId}}" scroll-with-animation="true"  style="height:{{systemHeight}}" bindscroll="monitorScroll">
         <view class="r-right">
-            <view wx:for="{{allGoodsList}}" wx:key="key" wx:for-item="goodsList" id="g{{categoryList[index].id}}">
+            <view  wx:for="{{allGoodsList}}" wx:key="key" wx:for-item="goodsList" id="g{{categoryList[index].id}}"  >
               <view class="goods-title" >
                 <text class="txt">{{categoryList[index].name}}</text>
               </view>

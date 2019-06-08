@@ -1,7 +1,101 @@
 <view class="container">
-    <view class="order-info">
-        <view class="item-a">下单时间：{{orderInfo.addTime}}</view>
+    <view class="delivery-info box">
+        <view class="title">
+            <!-- <view class="title-c"> -->
+                <text class="txt">骑手正在前往商家</text>
+                <text class="status">退款成功</text>
+            <!-- </view> -->
+            
+        </view>
+        <view class="tool">
+            <view class="tool-item">
+                    <text class="txt">{{orderInfo.orderStatusText}}</text>
+
+                    <view class="btn active" bindtap="cancelOrder" wx:if="{{handleOption.cancel}}">取消订单</view>
+                    <view class="btn active" bindtap="payOrder" wx:if="{{handleOption.pay}}">去付款</view>
+                    <view class="btn active" bindtap="confirmOrder" wx:if="{{handleOption.confirm}}">确认收货</view>
+                    <view class="btn active" bindtap="deleteOrder" wx:if="{{handleOption.delete}}">删除订单</view>
+                    <view class="btn active" bindtap="refundOrder" wx:if="{{handleOption.refund}}">申请退款</view>
+            </view>
+            
+        </view>
+        <view class="clear"></view>
+        <view class="msg">
+            <view class="item">
+                <text class="item-k">配货员:</text><text class="item-v">{{orderInfo.deliveryDetails.dmName}}</text>
+            </view >
+            <view class="item">
+                <text class="item-k">联系电话:</text><text class="item-v">{{orderInfo.deliveryDetails.dmMobile}}</text>
+            </view>
+            <view class="item">
+                <text class="item-k">收货人:</text><text class="item-v">{{orderInfo.consignee}}</text>
+            </view>
+            <view class="item">
+                <text class="item-k">联系电话:</text><text class="item-v">{{orderInfo.mobile}}</text>
+            </view>
+            <view class="item">
+                <text class="item-k">收货地址:</text><text class="item-v">{{orderInfo.address}}</text>
+            </view>
+            <view class="item">
+                <text class="item-k">订单备注:</text><text class="item-v">{{orderInfo.remark}}</text>
+            </view>
+        </view>
+    </view>
+
+    <view class="order-goods box">
+        <view class="goods">
+            <view class="item" wx:for="{{orderGoods}}" wx:key="id">
+                <view class="img">
+                    <image src="{{item.picUrl}}"></image>
+                </view>
+                <view class="info">
+                    <view class="t">
+                        <text class="name">{{item.goodsName}}</text>
+                        <text class="price">￥{{item.retailPrice}}</text>
+                    </view>
+                    <view class="number">x{{item.number}}</view>
+                    <!-- <view class="attr">{{item.goodsSpecificationValues}}</view> -->
+                    <!-- <view class="price">￥{{item.retailPrice}}</view> -->
+                    <!-- <view class="btn active" wx:if="{{handleOption.comment}}">
+                      <navigator url="../../commentPost/commentPost?orderId={{item.orderId}}&&valueId={{item.goodsId}}&typeId=0">去评价</navigator>
+                    </view> -->
+                    <!-- <view class="btn active" wx:if="{{handleOption.rebuy}}">
+                      <navigator url="../../goods/goods?id={{item.goodsId}}">再次购买</navigator>
+                    </view> -->
+                </view>
+            </view>
+        </view>
+        <view class="total">
+            <view class="t">
+                <text class="label l">商品总额：</text>
+                <text class="txt r">￥{{orderInfo.goodsPrice}}</text>
+            </view>
+            <view class="clear"></view>
+            <view class="t">
+                <text class="label l">配送费：</text>
+                <text class="txt r">￥{{orderInfo.freightPrice}}</text>
+            </view>
+            <view class="clear"></view>
+        </view>
+        <view class="pay-fee r">
+            <text class="label">实付金额：</text>
+            <text class="txt">￥{{orderInfo.actualPrice}}</text>
+        </view>
+    </view>
+
+    <view class="order-info box">
         <view class="item-b">订单编号：{{orderInfo.orderSn}}</view>
+        <view class="item-b">下单时间：{{orderInfo.addTime}}</view>
+        <view class="item-a">支付时间：{{orderInfo.payTime}}</view>
+    </view>
+
+
+
+
+    <!-- <view class="order-info">
+        
+        <view class="item-b">订单编号：{{orderInfo.orderSn}}</view>
+        <view class="item-a">下单时间：{{orderInfo.addTime}}</view>
         <view class="item-c">
             <view class="l">实付：<text class="cost">￥{{orderInfo.actualPrice}}</text></view>
             <view class="r">
@@ -12,9 +106,9 @@
                 <view class="btn active" bindtap="refundOrder" wx:if="{{handleOption.refund}}">申请退款</view>
             </view>
         </view>
-    </view>
+    </view> -->
 
-    <view class="order-goods">
+    <!-- <view class="order-goods">
         <view class="h">
             <view class="label">商品信息</view>
         </view>
@@ -30,12 +124,6 @@
                     </view>
                     <view class="attr">{{item.goodsSpecificationValues}}</view>
                     <view class="price">￥{{item.retailPrice}}</view>
-                    <!-- <view class="btn active" wx:if="{{handleOption.comment}}">
-                      <navigator url="../../commentPost/commentPost?orderId={{item.orderId}}&&valueId={{item.goodsId}}&typeId=0">去评价</navigator>
-                    </view> -->
-                    <!-- <view class="btn active" wx:if="{{handleOption.rebuy}}">
-                      <navigator url="../../goods/goods?id={{item.goodsId}}">再次购买</navigator>
-                    </view> -->
                 </view>
             </view>
         </view>
@@ -67,5 +155,5 @@
           <view class="status">{{orderInfo.orderStatusText}}</view>
         </view>
         
-    </view>
+    </view> -->
 </view>

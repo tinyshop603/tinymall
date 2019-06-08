@@ -326,10 +326,25 @@ Page({
     }
 
   },
+  preDeleteCart:function(){
+    let that = this;
+    // 弹出提示框
+    wx.showModal({
+      title: '提示',
+      content: '确定删除商品？',
+      success(res) {
+        if (res.confirm) {
+          that.deleteCart();
+        } else if (res.cancel) {
+          return false;
+        }
+      }
+    })
+  },
   deleteCart: function () {
     //获取已选择的商品
     let that = this;
-
+    
     let productIds = this.data.cartGoods.filter(function (element, index, array) {
       if (element.checked == true) {
         return true;

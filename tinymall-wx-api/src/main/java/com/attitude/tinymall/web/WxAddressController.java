@@ -70,6 +70,12 @@ public class WxAddressController {
         return ResponseUtil.ok(addressVoList);
     }
 
+//    @GetMapping("location")
+//    public Object location(double latitude,double longitude) {
+//        String json = ''
+//        return ResponseUtil.ok(addressVoList);
+//    }
+
     /**
      * 收货地址详情
      *

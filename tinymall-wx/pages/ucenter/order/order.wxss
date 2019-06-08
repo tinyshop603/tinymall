@@ -1,18 +1,24 @@
-page{
-    height: 100%;
-    width: 100%;
-    background: #f4f4f4;
+page {
+  height: 100%;
+}
+
+.container {
+  background: #f9f9f9;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 
 .orders-switch{
     display: flex;
     width: 100%;
-    background: #fff;
+    /* background: #fff; */
     height: 84rpx;
-    border-bottom: 1px solid rgba(0,0,0,.15);
-    position:fixed; 
-    top:0;
+    /* border-bottom: 1px solid rgba(0,0,0,.15); */
+    /* position:fixed;  */
+    /* top:0; */
 }
 
 .orders-switch .item{
@@ -72,15 +78,19 @@ page{
 }
 
 .orders{
-  padding-top: 84rpx;
-    height: auto;
+  flex: 1;
+  width: 100%;
+  /* background: #fff; */
+  display: flex;
+  /* border-top: 1px solid #fafafa; */
+    /* height: auto;
     width: 100%;
-    overflow: hidden;
+    overflow: hidden; */
 }
 
 .order{
-    margin: 30rpx;
-    margin-top: 20rpx;
+    margin: 15rpx 30rpx;
+    /* margin-top: 20rpx; */
 }
 
 .order .box{
@@ -92,10 +102,11 @@ page{
     display: flex;
     height: 100.6rpx;
     line-height: 39.3rpx;
-    margin-left: 31.25rpx;
+    /* margin-left: 31.25rpx; */
     padding: 12rpx;
     /* padding-right: 31.25rpx; */
-    border-bottom: 1px solid #f4f4f4;
+    padding-left: 31.25rpx;
+    border-bottom: 2px solid #f4f4f4;
     justify-content:space-between;
     align-items:center;
 }
@@ -218,12 +229,12 @@ page{
 }
 
 .order .b .btn{
-    line-height: 40rpx;
+    line-height: 48rpx;
     border-radius: 8rpx;
     text-align: center;
     margin: 5rpx;
     padding: 0 20rpx;
-    height: 40rpx;
+    height: 48rpx;
 }
 
 .order .tips{
@@ -236,5 +247,4 @@ page{
 
 .order .clear{
   clear:both;
-  height: 20rpx;
 }
