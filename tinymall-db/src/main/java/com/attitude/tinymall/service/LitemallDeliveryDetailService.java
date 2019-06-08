@@ -1,8 +1,12 @@
 package com.attitude.tinymall.service;
 
 import com.attitude.tinymall.domain.LitemallDeliveryDetail;
+import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.dada.order.QueryOrderStatusResult;
 import com.attitude.tinymall.enums.TPDStatusEnum;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * @author zhaoguiyang on 2019/5/23.
@@ -25,4 +29,12 @@ public interface LitemallDeliveryDetailService {
      * @return
      */
     boolean initDeliveryDetailsByDeliveryId(String deliveryId);
+
+    /**
+     * 预发布流程 查询达达运费
+     * @param
+     * @return  Map:String setdeliveryNo String setdeliveryNo
+     */
+    Map<String,String> queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , String address);
+
 }

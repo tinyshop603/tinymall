@@ -5,10 +5,12 @@ import com.attitude.tinymall.domain.dada.order.*;
 import com.attitude.tinymall.domain.dada.order.CancelOrderParams;
 import com.attitude.tinymall.domain.dada.shop.*;
 import com.attitude.tinymall.domain.dada.testorder.*;
+import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -33,6 +35,8 @@ public class DadaServiceTest {
   @Autowired
   private RemoteDadaDeliveryClient remoteDadaDeliveryClient;
 
+  @Autowired
+  private LitemallDeliveryDetailService litemallDeliveryDetailService;
 
   @Test
   public void testDadaAddOrder() {
@@ -112,7 +116,7 @@ public class DadaServiceTest {
             .builder()
             .deliveryNo("123456879")
             .build();
-    ResponseEntity<AfterAddOrderQueryResult> res = remoteDadaDeliveryClient.addOrderAfterQuery(orderParams);
+    ResponseEntity res = remoteDadaDeliveryClient.addOrderAfterQuery(orderParams);
     log.error(res.toString());
   }
   @Test
@@ -330,4 +334,15 @@ public class DadaServiceTest {
     log.info(orderResult.toString());
   }
 
+  @Test
+  public void query4WX() {
+    Map map = litemallDeliveryDetailService.queryDeliverFee4WX(55 , 1, new BigDecimal(50)
+            ,"回龙观北店嘉园南区烟酒茶行");
+   System.out.println(map.get("deliverFee"));
+  }
+  @Test
+  public void addDADA() {
+    boolean a  = litemallDeliveryDetailService.dadaAddOrder(622);
+    System.out.println(a);
+  }
 }

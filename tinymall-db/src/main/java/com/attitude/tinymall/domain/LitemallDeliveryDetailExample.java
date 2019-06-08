@@ -1,5 +1,6 @@
 package com.attitude.tinymall.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -916,52 +917,52 @@ public class LitemallDeliveryDetailExample {
             return (Criteria) this;
         }
 
-        public Criteria andFeeEqualTo(Integer value) {
+        public Criteria andFeeEqualTo(BigDecimal value) {
             addCriterion("fee =", value, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeNotEqualTo(Integer value) {
+        public Criteria andFeeNotEqualTo(BigDecimal value) {
             addCriterion("fee <>", value, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeGreaterThan(Integer value) {
+        public Criteria andFeeGreaterThan(BigDecimal value) {
             addCriterion("fee >", value, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeGreaterThanOrEqualTo(Integer value) {
+        public Criteria andFeeGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("fee >=", value, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeLessThan(Integer value) {
+        public Criteria andFeeLessThan(BigDecimal value) {
             addCriterion("fee <", value, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeLessThanOrEqualTo(Integer value) {
+        public Criteria andFeeLessThanOrEqualTo(BigDecimal value) {
             addCriterion("fee <=", value, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeIn(List<Integer> values) {
+        public Criteria andFeeIn(List<BigDecimal> values) {
             addCriterion("fee in", values, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeNotIn(List<Integer> values) {
+        public Criteria andFeeNotIn(List<BigDecimal> values) {
             addCriterion("fee not in", values, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeBetween(Integer value1, Integer value2) {
+        public Criteria andFeeBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("fee between", value1, value2, "fee");
             return (Criteria) this;
         }
 
-        public Criteria andFeeNotBetween(Integer value1, Integer value2) {
+        public Criteria andFeeNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("fee not between", value1, value2, "fee");
             return (Criteria) this;
         }
@@ -976,52 +977,52 @@ public class LitemallDeliveryDetailExample {
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeEqualTo(Integer value) {
+        public Criteria andDeliverFeeEqualTo(BigDecimal value) {
             addCriterion("deliver_fee =", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeNotEqualTo(Integer value) {
+        public Criteria andDeliverFeeNotEqualTo(BigDecimal value) {
             addCriterion("deliver_fee <>", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeGreaterThan(Integer value) {
+        public Criteria andDeliverFeeGreaterThan(BigDecimal value) {
             addCriterion("deliver_fee >", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeGreaterThanOrEqualTo(Integer value) {
+        public Criteria andDeliverFeeGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("deliver_fee >=", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeLessThan(Integer value) {
+        public Criteria andDeliverFeeLessThan(BigDecimal value) {
             addCriterion("deliver_fee <", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeLessThanOrEqualTo(Integer value) {
+        public Criteria andDeliverFeeLessThanOrEqualTo(BigDecimal value) {
             addCriterion("deliver_fee <=", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeIn(List<Integer> values) {
+        public Criteria andDeliverFeeIn(List<BigDecimal> values) {
             addCriterion("deliver_fee in", values, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeNotIn(List<Integer> values) {
+        public Criteria andDeliverFeeNotIn(List<BigDecimal> values) {
             addCriterion("deliver_fee not in", values, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeBetween(Integer value1, Integer value2) {
+        public Criteria andDeliverFeeBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("deliver_fee between", value1, value2, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeNotBetween(Integer value1, Integer value2) {
+        public Criteria andDeliverFeeNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("deliver_fee not between", value1, value2, "deliverFee");
             return (Criteria) this;
         }
