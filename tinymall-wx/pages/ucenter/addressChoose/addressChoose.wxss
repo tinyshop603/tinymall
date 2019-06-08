@@ -1,0 +1,48 @@
+page {
+  height: 100%;
+}
+
+.container {
+  background: #fff;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.search{
+    background: #F4F4F4;
+    border-radius: 10rpx;
+    padding: 0 20rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    margin: 0 20rpx;
+}
+.search .icon{
+  float: left;
+  width: 38rpx;
+  height: 38rpx;
+  margin-top: 10rpx;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAADM0lEQVQ4T6XUQWhcVRQG4P+ce+/MJMQkxYI1NIrtm5kQkybapi0tLiy4EOxGwUCNdR1x4ULGtqsBxaKoCKUbRaRQBFMiLnQXLLUqLWpNmqbtZMYImkWUtouQTDrvvnuOJBLtpMMI9u3e5fLd9865/yE0ePQsLLZGrRBOYVkIIjEwV6Vd8I3237lGd76owvjL2V3O8kFl2k2ELapkQLKgQlMs8jluz15sBteBtcloxGXMcRAeREIagtwikJDB/WzBAN0UH97jsHiSBv5YbvS1a6COwYSe7DBb/piAZQh9Ca8fIfgrN9oWpaO2qZcZLxlnhqGqPsEbrq90ggiyEV0D48ncbpuhcVJkvEfBtYRPKVup1ZWjHKVDFQc5Zd8BYEJVRtzO2fN3gat1k+lskVLmqMR6ynBplPoQN2yWwibT+aNsUdCgX5lrs4fp+fq9dPNC1L6p036GgAOJT/amBis/N+ukXo32KplPNMAx+6epd65c1+XFH3Ob29poQmro/P1WqeeRJ3G7KTi9vTvAnTYpREktOeR2VM7VgVrKbRblryXRjH201EuEpCl4vbsr8a2nbZrySdWPuMFfztaDF6J2dNgzEnS/X4l3ZoZ+LTUD46nocePsKVJt8UGfSe+YvV4PKqzM5N8kR6+Fmh63/aUiEULDpozB+J7cqE1xUWL5xixVX6B98yt3JSWeyu5xafMFoJz48KLtq0xsvGOqYFyNBoTcGJPelyzpc26o9F3De/h35PKvuDSOqdANDfohk5xD1S8gbQQsWwSp/TD0KqtuE0WZxQ+jf25m48H/RE+/39oiHW2HyaAAoBOi8yFggUgDgbrYoSt4EKn+ScwPC/SiiH/9rfG5S8Xiv4nZOBwIM7mhAB4l0n2colYoWBNdEsGU8fRBzH7RWfM+ER0AcB5BXqb+8rX1X68D1xdXs418/qFE0AVWts4swPnfVuO4Wkt/ORq0xrxLRHsUOkEiRzBeLlER0hD8r5mnCoqvZHsY/LYxeApK3yY+KbiByuT/AtcPrF2Kel3KnADREwKcMalk9J5ALYL9s9sfY2ML5OgHblk6eU/g2ixVEH7a1o4H4pi651f+AvWAdzZvhG2OAAAAAElFTkSuQmCC) no-repeat;
+}
+.search input{
+  float: left;
+  height: 100%;
+  width: 600rpx;
+  margin-left:20rpx;
+}
+.line{
+  margin-top:30rpx;
+  height: 2rpx;
+  background-color: #F4F4F4;
+}
+.title{
+  margin: 20rpx;
+  font-size: 20rpx;
+  color: #ccc;
+}
+.nearby-address .item{
+  height: 80rpx;
+  margin: 20rpx;
+  border-bottom: 1px solid #ccc;
+}
