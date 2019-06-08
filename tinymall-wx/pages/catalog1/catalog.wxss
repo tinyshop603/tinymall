@@ -18,7 +18,7 @@ page {
 
 .toolBar .location{
   float: left;
-  width: 50%;
+  width: 80%;
   height: 100%;
   
 }
@@ -28,16 +28,18 @@ page {
     width: 28rpx;
     height: 34rpx;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
+    margin-top: 15rpx;
 }
 .location .txt{
   margin-left: 20rpx;
   display: inline-block;
+  overflow: hidden;
 }
 
 .toolBar .search {
   float: right;
-  width: 50%;
+  width: 20%;
   height: 100%;
 }
 

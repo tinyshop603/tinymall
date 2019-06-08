@@ -4,10 +4,7 @@ var app = getApp();
 Page({
   data: {
     storeId: "",
-    // hiddenReAuthorizePop: true,//隐藏重新授权确认弹窗
-    latitude: "", //维度，浮点数
-    longitude: "", //经度，浮点数
-    locationText: "未获取位置信息",
+    addressText: "未获取位置信息",
     page: 1,
     size: 100,
     goodsCount: 0,
@@ -149,16 +146,21 @@ Page({
       type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的坐标，可传入'gcj02'
       // altitude: true, //传入 true 会返回高度信息，由于获取高度需要较高精确度，会减慢接口返回速度
       success: function (res) {
+        console.log(res);
         const latitude = res.latitude; // 纬度，浮点数
         const longitude = res.longitude; // 经度，浮点数
-        util.request(api.ConsumerLOcation, { latitude: latitude, longitude: longitude }, "GET")
+        util.request(api.ConsumerLocation, { lat: latitude, lng: longitude }, "GET")
           .then(function (res) {
             console.log(res);
-            // self.setData({
-            //   latitude: latitude,
-            //   longitude: longitude,
-            //   locationText: "已获取经纬度"
-            // })
+            var address;
+            if (res.data.poiRegions.length > 0){
+              address = res.data.poiRegions[0].name;
+            }else{
+              address = res.data.formattedAddress;
+            }
+            self.setData({
+              addressText: address
+            })
           });
       },
       // fail: function (res) {

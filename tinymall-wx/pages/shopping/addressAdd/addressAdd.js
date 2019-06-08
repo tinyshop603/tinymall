@@ -17,7 +17,8 @@ Page({
       isDefault: 0,
       provinceName:'',
       cityName: '',
-      areaName: ''
+      areaName: '',
+      chooseName: ''
     },
     addressId: 0,
     openSelectRegion: false,
@@ -79,6 +80,9 @@ Page({
       selectRegionDone: doneStatus
     })
 
+  },
+  chooseAddress() {
+    wx.navigateTo({ url: "/pages/ucenter/addressChoose/addressChoose" });
   },
   chooseRegion() {
     let that = this;

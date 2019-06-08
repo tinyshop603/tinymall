@@ -22,7 +22,8 @@
     
     <scroll-view class="orders" style="height:{{systemHeight}}"  scroll-y="true">
       <navigator url="../orderDetail/orderDetail?id={{item.id}}" open-type="navigate" wx:for="{{orderList}}" wx:key="id">
-      <view class="order" wx:for="{{orderList}}" wx:key="id">
+      <!-- <view class="order" wx:for="{{orderList}}" wx:key="id"> -->
+      <view class="order">
           <view class="box">
               <view class="h">
                 <view class="order-info">

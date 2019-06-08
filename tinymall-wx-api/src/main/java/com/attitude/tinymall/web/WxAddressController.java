@@ -216,7 +216,7 @@ public class WxAddressController {
                                           @RequestParam String lat,
                                           String keyword,
                                           @PathVariable("storeId") String appId) {
-
+        userId = 58;
         Location bd09Location = CoodinateCovertorUtil.gcj02ToBd09(new Location(Double.valueOf(lng), Double.valueOf(lat)));
         try {
             GeoDecodingAddress geoDecodingAddress = baiduFenceService.reverseGeocoding(bd09Location);

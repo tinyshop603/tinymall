@@ -2,7 +2,7 @@
     <view class="toolBar" id="toolBar">
         <view class="location">
             <image class="icon"></image>
-            <view class="txt" bindtap='openLocationSetting'>{{locationText}}</view>
+            <view class="txt" bindtap='openLocationSetting'>{{addressText}}</view>
         </view>
         <view class="search">
           <navigator url="/pages/search/search" class="input">

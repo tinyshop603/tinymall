@@ -25,7 +25,7 @@ WxApiRoot +=APP_ID;
 module.exports = {
     // FirstScreenUrl: WxApiRoot+'mall/category', // 首屏的分类效果
   FirstScreenUrl: WxApiRoot + 'mall/new/category', // 首屏的分类效果
-  ConsumerLOcation: WxApiRoot + 'mall/location', //获取用户位置
+  ConsumerLocation: WxApiRoot + 'address/location', //获取用户位置
 
     IndexUrl: WxApiRoot + 'home/index', //首页数据接口
     CatalogList: WxApiRoot + 'catalog/index',  //分类目录全部分类数据接口

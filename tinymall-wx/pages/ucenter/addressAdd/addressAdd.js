@@ -16,7 +16,8 @@ Page({
       isDefault: 0,
       provinceName: '',
       cityName: '',
-      areaName: ''
+      areaName: '',
+      chooseName:''
     },
     addressId: 0,
     openSelectRegion: false,
