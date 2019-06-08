@@ -48,7 +48,8 @@ public class UserAddressServiceImpl implements IUserAddressService {
   /**
    * 当前百度返回的默认的最多天数
    */
-  private ExecutorService executorService = new ThreadPoolExecutor(10, 10,
+  private final int CORE_SIZE = 5;
+  private ExecutorService executorService = new ThreadPoolExecutor(CORE_SIZE, CORE_SIZE,
       0L, TimeUnit.MILLISECONDS,
       new LinkedBlockingQueue<>(),namedThreadFactory);
 
