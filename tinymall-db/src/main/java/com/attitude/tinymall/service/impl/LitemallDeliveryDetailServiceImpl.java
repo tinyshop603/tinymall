@@ -64,7 +64,6 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
 
     @Value("${delivery.dada.callback-address}")
     public String dadaCallbackAddress;
-
     /**
      * 新增达达的订单,
      * 订单
@@ -96,7 +95,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .receiverLng(Float.parseFloat("" + location.getLng()))
                 .receiverPhone(userDefaultAddress.getMobile())
                 .callback(dadaCallbackAddress)
-                .originId(order.getDeliveryId())
+                .originId(deliveryId)
                 .build();
 
         ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);

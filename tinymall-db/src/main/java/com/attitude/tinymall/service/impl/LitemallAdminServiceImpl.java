@@ -51,7 +51,7 @@ public class LitemallAdminServiceImpl implements LitemallAdminService {
     return adminMapper.selectOneByExample(example);
   }
 
-  private final Column[] result = new Column[]{Column.id, Column.username, Column.avatar};
+  private final Column[] result = new Column[]{Column.id, Column.username, Column.avatar,Column.tpdShopNo};
 
   @Override
   public List<LitemallAdmin> querySelective(String username, Integer page, Integer limit,
