@@ -178,6 +178,27 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
   }
 
   @Override
+  public boolean deleteMonitorPersonToFence(String userId, int fenceId) {
+    Map<String, String> params = new HashMap<>(4);
+    params.put("ak", baiduAk);
+    params.put("service_id", eagleEyeServiceId.toString());
+    params.put("fence_id", String.valueOf(fenceId));
+    params.put("monitored_person", userId);
+    try {
+      HttpClientResult httpClientResult = HttpClientUtil
+          .doPost("http://yingyan.baidu.com/api/v3/fence/deletemonitoredperson", params);
+      Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
+      log.info("delete the user: {}, to the fence: {}, result is: {}", userId, fenceId, result.toString());
+      // 删除终端的实体对象
+      return result.get("status").equals(0) && deleteHangUpPersion(userId);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error(e.getMessage());
+    }
+    return false;
+  }
+
+  @Override
   public boolean isValidLocationWithinFence(String userId, String address, int fenceId)
       throws Exception {
     GeoCodingAddress geocoding = this.geocoding(address);
@@ -209,11 +230,11 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     Map<String, String> params = new HashMap<>(8);
     params.put("ak", baiduAk);
     params.put("timestamp", String.valueOf(System.currentTimeMillis()));
-    params.put("ret_coordtype", "gcj02ll");
     // 1是简单信息, 2 是详细信息
     params.put("scope", "1");
     params.put("output", "json");
     params.put("city_limit", "true");
+    params.put("coord_type", mapCoordtype);
     params.put("region", region);
     params.put("query", keywords);
     HttpClientResult httpClientResult = HttpClientUtil.doGet("http://api.map.baidu.com/place/v2/search", params);
@@ -224,7 +245,36 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     if (result.getStatus() != 0){
       return Collections.emptyList();
     }
+    return result.getResults();
+  }
 
+  @Override
+  public List<PoiAddress> listCirclePlacesByLocation(Location location, String radius)
+      throws Exception {
+    Map<String, String> params = new HashMap<>(8);
+    params.put("ak", baiduAk);
+    params.put("timestamp", String.valueOf(System.currentTimeMillis()));
+    // 1是简单信息, 2 是详细信息
+    params.put("scope", "1");
+    params.put("output", "json");
+
+    params.put("coord_type", mapCoordtype);
+
+    params.put("location", location.getLat() + "," +  location.getLng());
+    params.put("radius", radius);
+    params.put("filter", "true");
+
+    params.put("radius_limit", "true");
+
+    params.put("query", "住宅区$宿舍$写字楼$政府机构$公司企业");
+    HttpClientResult httpClientResult = HttpClientUtil.doGet("http://api.map.baidu.com/place/v2/search", params);
+    BaiduResponse<List<PoiAddress>> result = JSON.parseObject(httpClientResult.getContent(),
+        new TypeReference<BaiduResponse<List<PoiAddress>>>() {
+        });
+
+    if (result.getStatus() != 0){
+      return Collections.emptyList();
+    }
     return result.getResults();
   }
 
@@ -248,4 +298,23 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     }
     return false;
   }
+
+  private boolean deleteHangUpPersion(String userId){
+    Map<String, String> params = new HashMap<>(4);
+    params.put("entity_name", userId);
+    params.put("ak", baiduAk);
+    params.put("service_id", eagleEyeServiceId.toString());
+    try {
+      HttpClientResult httpClientResult = HttpClientUtil
+          .doPost("http://yingyan.baidu.com/api/v3/entity/delete", params);
+      Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
+      return result.get("status").equals(0) || result.get("status").equals(3005);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error(e.getMessage());
+    }
+    return false;
+  }
+
+
 }

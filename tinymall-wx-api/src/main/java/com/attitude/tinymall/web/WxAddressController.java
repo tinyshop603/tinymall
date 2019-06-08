@@ -4,6 +4,7 @@ import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.baidu.address.PoiAddress;
 import com.attitude.tinymall.domain.baidu.geocode.GeoDecodingAddress;
 import com.attitude.tinymall.service.BaiduFenceService;
+import com.attitude.tinymall.service.IUserAddressService;
 import com.attitude.tinymall.util.CoodinateCovertorUtil;
 import com.attitude.tinymall.util.ResponseUtil;
 import com.attitude.tinymall.service.LitemallAdminService;
@@ -37,6 +38,8 @@ public class WxAddressController {
     private BaiduFenceService baiduFenceService;
     @Autowired
     private LitemallAdminService adminService;
+    @Autowired
+    private IUserAddressService userAddressService;
 
     /**
      * 用户收货地址列表
@@ -160,17 +163,17 @@ public class WxAddressController {
         }
 
         // 验证地址是否在合法的范围内
-      try {
-        boolean isValidAddress = baiduFenceService
-            .isValidLocationWithinFence(userId.toString(), address.getAddress(),
-                adminService.findAdminByOwnerId(appId).getShopFenceId());
-        if (!isValidAddress) {
-          return ResponseUtil.unReachAddress();
+        try {
+            boolean isValidAddress = baiduFenceService
+                    .isValidLocationWithinFence(userId.toString(), address.getAddress(),
+                            adminService.findAdminByOwnerId(appId).getShopFenceId());
+            if (!isValidAddress) {
+                return ResponseUtil.unReachAddress();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtil.badArgument();
         }
-      } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseUtil.badArgument();
-      }
 
         if (address.getIsDefault()) {
             // 重置其他收获地址的默认选项
@@ -210,13 +213,12 @@ public class WxAddressController {
         return ResponseUtil.ok();
     }
 
-    @GetMapping("location")
-    public Object getLoacationByGeoParams(@LoginUser Integer userId,
-                                          @RequestParam String lng,
+    @GetMapping("/location")
+    public Object getLocationByGeoParams(@RequestParam String lng,
                                           @RequestParam String lat,
                                           String keyword,
                                           @PathVariable("storeId") String appId) {
-        userId = 58;
+
         Location bd09Location = CoodinateCovertorUtil.gcj02ToBd09(new Location(Double.valueOf(lng), Double.valueOf(lat)));
         try {
             GeoDecodingAddress geoDecodingAddress = baiduFenceService.reverseGeocoding(bd09Location);
@@ -243,6 +245,7 @@ public class WxAddressController {
             e.printStackTrace();
             return ResponseUtil.fail();
         }
+        return ResponseUtil.ok(res);
     }
 
 }

@@ -3,6 +3,7 @@ package com.attitude.tinymall.domain.baidu.geocode;
 import com.attitude.tinymall.domain.baidu.address.Location;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author zhaoguiyang on 2019/1/11.
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
+@ToString
 public class GeoCodingAddress {
 
   /**

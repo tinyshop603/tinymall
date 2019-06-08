@@ -7,7 +7,6 @@ import com.attitude.tinymall.domain.dada.order.AddOrderParams;
 import com.attitude.tinymall.domain.dada.order.AddOrderResult;
 import com.attitude.tinymall.domain.dada.order.AddOrderTipResult;
 import com.attitude.tinymall.domain.dada.order.AddTipParams;
-import com.attitude.tinymall.domain.dada.order.AfterAddOrderQueryResult;
 import com.attitude.tinymall.domain.dada.order.CancelOrderParams;
 import com.attitude.tinymall.domain.dada.order.CancelOrderReasonsResult;
 import com.attitude.tinymall.domain.dada.order.ComplaintReasonsResult;
@@ -59,7 +58,7 @@ public interface RemoteDadaDeliveryClient {
   ResponseEntity<AddOrderTipResult> addOrderTip(@RequestBody AddTipParams params);
 
   @PostMapping("/api/order/addAfterQuery")
-  ResponseEntity<AfterAddOrderQueryResult> addOrderAfterQuery(@RequestBody AddAfterQueryParams params);
+  ResponseEntity addOrderAfterQuery(@RequestBody AddAfterQueryParams params);
 
   @PostMapping("/api/order/status/query")
   ResponseEntity<QueryOrderStatusResult> queryOrderStatus(@RequestBody QueryOrderParams params);

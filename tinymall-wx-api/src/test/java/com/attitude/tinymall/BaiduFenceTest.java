@@ -2,6 +2,8 @@ package com.attitude.tinymall;
 
 import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.baidu.address.PoiAddress;
+import com.attitude.tinymall.domain.baidu.fence.ShopFenceResult;
+import com.attitude.tinymall.domain.baidu.geocode.GeoCodingAddress;
 import com.attitude.tinymall.service.BaiduFenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -31,7 +33,9 @@ public class BaiduFenceTest {
 
   @Test
   public void testJson() {
-    assert baiduFenceService.geocoding("北京市海淀区上地十街10号") != null;
+    GeoCodingAddress address = baiduFenceService
+        .geocoding("北京市昌平区回龙观镇龙禧三街北店嘉园南区底商2号");
+    System.out.println(address);
     assert baiduFenceService.reverseGeocoding( 116.404197, 39.915654) != null;
   }
 
@@ -45,10 +49,12 @@ public class BaiduFenceTest {
 
   @Test
   public void testCreateFenceByAddress() {
-    assert baiduFenceService.createCircleFence("test_fence_1",
-        "北京市昌平区回龙观镇龙禧三街北店嘉园南区底商10号",
+    ShopFenceResult circleFence = baiduFenceService.createCircleFence("fence_789_shop",
+        "北京市昌平区回龙观镇龙禧三街北店嘉园南区底商2号",
         5000
-    ).getFenceId() > 5;
+    );
+
+    System.out.println(circleFence.toString());
   }
 
   @Test
@@ -67,6 +73,17 @@ public class BaiduFenceTest {
   public void testQueryPlaceApi(){
     try {
       List<PoiAddress> poiAddresses = baiduFenceService.listPlacesByKeywords("万商大厦", "北京");
+
+      System.out.println(poiAddresses.toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
+  public void testQueryLocationPlaceApi(){
+    try {
+      List<PoiAddress> poiAddresses = baiduFenceService.listCirclePlacesByLocation(new Location(116.3084202915042, 40.05703033345938), "3000");
 
       System.out.println(poiAddresses.toString());
     } catch (Exception e) {

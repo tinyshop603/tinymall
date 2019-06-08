@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class PoiAddressVO {
     private String address;
     private String name;
+    private Boolean inDistributionScope;
 }
