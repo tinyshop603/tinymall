@@ -17,6 +17,8 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import io.socket.client.Socket;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -50,7 +52,6 @@ import static com.attitude.tinymall.enums.OrderStatusEnum.COMPLETE;
 @RequestMapping("/wx/{storeId}/order")
 @Slf4j
 public class WxOrderController {
-
   private final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
   @Autowired
@@ -717,7 +718,9 @@ public class WxOrderController {
       System.out.println("===回调开始===");
       String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
       WxPayOrderNotifyResult result = wxPayService.parseOrderNotifyResult(xmlResult);
-      System.out.println("result："+result);
+
+      log.info("微信回调结果: {}", result.toString());
+
       String orderSn = result.getOutTradeNo();
       String payId = result.getTransactionId();
       // 分转化成元
@@ -730,6 +733,7 @@ public class WxOrderController {
 
       // 检查这个订单是否已经处理过
       if (order.getPayStatus() == PayStatusEnum.PAID && order.getPayId() != null) {
+        log.info("订单已经付过款了: {}", order.getId());
         return WxPayNotifyResponse.success("处理成功!");
       }
 
@@ -737,10 +741,12 @@ public class WxOrderController {
       // TODO 这里1分钱需要改成实际订单金额
 //      if (!totalFee.equals("0.01")) {
       BigDecimal totalFreePrice = new BigDecimal(totalFee);
+      log.info("校验订单金额是否正确, 当前微信回调金额: {}, 数据库订单实际金额: {}", totalFreePrice, order.getActualPrice());
       if (!totalFreePrice.equals(order.getActualPrice())) {
         throw new Exception("支付金额不符合 totalFee=" + totalFee);
       }
 
+      log.info("支付完成更新订单: {} 状态", order.getId());
       order.setPayId(payId);
       order.setPayTime(LocalDateTime.now());
       order.setPayStatus(PayStatusEnum.PAID);
@@ -764,7 +770,8 @@ public class WxOrderController {
 
       return WxPayNotifyResponse.success("处理成功!");
     } catch (Exception e) {
-//      log.error("微信回调结果异常,异常原因 " + e.getMessage());
+      String errorMsg = String.format("微信回调结果异常,异常原因 %s", e.getMessage());
+      log.error(errorMsg, e);
       return WxPayNotifyResponse.fail(e.getMessage());
     }
   }

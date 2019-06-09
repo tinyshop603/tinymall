@@ -62,4 +62,17 @@ public class AdminDadaController {
     return ResponseUtil.ok();
   }
 
+
+   @GetMapping("/formalCancelOrder")
+  public Object formalCancelOrder(Integer orderId,Integer cancelReasonId) {
+    //cancelReasonId  36:商家取消配送
+     if (true==litemallDeliveryDetailService.formalCancelOrder(orderId,cancelReasonId)){
+       log.info("订单: {} 取消订单成功!!", orderId);
+       return ResponseUtil.ok();
+     }else {
+       log.info("订单: {} 取消订单失败!!", orderId);
+       return  ResponseUtil.fail();
+     }
+
+}
 }

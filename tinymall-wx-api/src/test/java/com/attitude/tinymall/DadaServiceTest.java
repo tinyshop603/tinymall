@@ -334,7 +334,12 @@ public class DadaServiceTest {
     log.info(orderResult.toString());
   }
 
-
+  @Test
+  public void query4WX() {
+//    Map map = litemallDeliveryDetailService.queryDeliverFee4WX(55 , 1, new BigDecimal(50)
+//            ,"回龙观北店嘉园南区烟酒茶行");
+//   System.out.println(map.get("deliverFee"));
+  }
   @Test
   public void addDADA() {
     boolean a  = litemallDeliveryDetailService.dadaAddOrder(622);
