@@ -1,10 +1,13 @@
 package com.attitude.tinymall;
 
+import com.attitude.tinymall.dao.LitemallAdminMapper;
+import com.attitude.tinymall.domain.LitemallAdmin;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
 import com.attitude.tinymall.domain.dada.order.*;
 import com.attitude.tinymall.domain.dada.order.CancelOrderParams;
 import com.attitude.tinymall.domain.dada.shop.*;
 import com.attitude.tinymall.domain.dada.testorder.*;
+import com.attitude.tinymall.service.LitemallAdminService;
 import com.attitude.tinymall.service.LitemallDeliveryDetailService;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import java.math.BigDecimal;
@@ -38,6 +41,11 @@ public class DadaServiceTest {
   @Autowired
   private LitemallDeliveryDetailService litemallDeliveryDetailService;
 
+  @Autowired
+  private LitemallAdminMapper adminMapper;
+
+  @Autowired
+  LitemallAdminService litemallAdminService;
   @Test
   public void testDadaAddOrder() {
     AddOrderParams orderParams = AddOrderParams
@@ -134,7 +142,7 @@ public class DadaServiceTest {
     FormalCancelParams orderParams = FormalCancelParams
             .builder()
             .orderId("123456879")
-            .cancelReasonId("1")
+            .cancelReasonId(1)
             .cancelReason("fail")
             .build();
     ResponseEntity<FormalCancelOrderResult> res = remoteDadaDeliveryClient.formalCancelOrder(orderParams);
@@ -335,14 +343,15 @@ public class DadaServiceTest {
   }
 
   @Test
-  public void query4WX() {
-    Map map = litemallDeliveryDetailService.queryDeliverFee4WX(55 , 1, new BigDecimal(50)
-            ,"回龙观北店嘉园南区烟酒茶行");
-   System.out.println(map.get("deliverFee"));
-  }
-  @Test
   public void addDADA() {
     boolean a  = litemallDeliveryDetailService.dadaAddOrder(622);
     System.out.println(a);
   }
+
+  @Test
+  public void queryadmin() {
+    LitemallAdmin litemallAdmin = litemallAdminService.findById(1);
+    String a ;
 }
+
+  }
