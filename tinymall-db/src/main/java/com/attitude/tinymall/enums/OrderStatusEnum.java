@@ -3,6 +3,7 @@ package com.attitude.tinymall.enums;
 /**
  *
  * @author zhaoguiyang on 2019/5/16.
+ * 注意：提示消息字数简化在6个字内，小程序端展示限制
  * @project Wechat
  */
 public enum OrderStatusEnum{
@@ -15,7 +16,7 @@ public enum OrderStatusEnum{
   /**
    * 因超时系统自动取消, 订单终态
    */
-  SYSTEM_AUTO_CANCEL("系统超时自动取消"),
+  SYSTEM_AUTO_CANCEL("超时自动取消"),
   /**
    * 订单进行中
    */
@@ -35,12 +36,12 @@ public enum OrderStatusEnum{
   /*
    * 订单退款完成, 即订单终态
    */
-  REFUND_COMPLETE("订单退款已完成"),
+  REFUND_COMPLETE("退款已完成"),
 
   /**
    * 商家确认收单
    */
-  MERCHANT_ACCEPT("商家确认接受订单"),
+  MERCHANT_ACCEPT("商家接收订单"),
   /**
    * 商家发货
    */

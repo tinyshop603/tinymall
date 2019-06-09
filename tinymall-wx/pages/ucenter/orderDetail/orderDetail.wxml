@@ -1,11 +1,9 @@
 <view class="container">
     <view class="delivery-info box">
         <view class="title">
-            <!-- <view class="title-c"> -->
-                <text class="txt">骑手正在前往商家</text>
-                <text class="status">退款成功</text>
-            <!-- </view> -->
-            
+                <text class="txt">{{orderInfo.titleText}}</text>
+                <text class="status-a" wx:if="{{handleOption.seller_refund}}">退款中</text>
+                <text class="status-b" wx:if="{{handleOption.refund_success}}">退款成功</text>     
         </view>
         <view class="tool">
             <view class="tool-item">
@@ -21,10 +19,10 @@
         </view>
         <view class="clear"></view>
         <view class="msg">
-            <view class="item">
+            <view class="item" wx:if="{{orderInfo.deliveryDetails != ''}}">
                 <text class="item-k">配货员:</text><text class="item-v">{{orderInfo.deliveryDetails.dmName}}</text>
             </view >
-            <view class="item">
+            <view class="item" wx:if="{{orderInfo.deliveryDetails != ''}}">
                 <text class="item-k">联系电话:</text><text class="item-v">{{orderInfo.deliveryDetails.dmMobile}}</text>
             </view>
             <view class="item">

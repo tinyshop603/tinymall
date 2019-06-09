@@ -9,6 +9,7 @@ public class OrderHandleOption {
     private boolean refund = false;     // 取消订单并退款操作
     private boolean seller_refund = false;     // 商家进行退款操作
     private boolean rebuy = false;        // 再次购买
+    private boolean refund_success = false;  // 退款成功
 
     public void setCancel(boolean cancel) {
         this.cancel = cancel;
@@ -42,6 +43,8 @@ public class OrderHandleOption {
         this.rebuy = rebuy;
     }
 
+    public void setRefundSuccess(boolean refund_success) { this.refund_success = refund_success; }
+
     public boolean isCancel() {
         return cancel;
     }
@@ -72,6 +75,10 @@ public class OrderHandleOption {
 
     public boolean isRebuy() {
         return rebuy;
+    }
+
+    public boolean isRefundSuccess() {
+        return refund_success;
     }
 
 }

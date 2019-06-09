@@ -8,6 +8,7 @@ Page({
   data: {
     latitude: "", //维度，浮点数
     longitude: "", //经度，浮点数
+    keywordsNearbyAddresses:[]
   },
 
   /**
@@ -28,15 +29,11 @@ Page({
       success: function (res) {
         const latitude = res.latitude; // 纬度，浮点数
         const longitude = res.longitude; // 经度，浮点数
-        util.request(api.ConsumerLocation, { lat: latitude, lng: longitude }, "GET")
-          .then(function (res) {
-            console.log(res);
-            // self.setData({
-            //   latitude: latitude,
-            //   longitude: longitude,
-            //   locationText: "已获取经纬度"
-            // })
-          });
+        self.setData({
+          latitude: latitude,
+          longitude: longitude
+        })
+        self.getResList("");
       },
       // fail: function (res) {
       //   //未授权就弹出弹窗提示用户重新授权
@@ -47,10 +44,29 @@ Page({
       }
     });
   },
+  getResList: function (key) {
+    var self = this;
+    if(key == null){
+      key = "";
+    }
+    let lat = this.data.latitude;
+    let lng = this.data.longitude;
+    if (lat == "" || lng == ""){
+      this.openLocationSetting();
+      return false;
+    }
+    util.request(api.ConsumerLocation, { lat: lat, lng: lng, keyword: key}, "GET")
+      .then(function (res) {
+        console.log(res);
+        self.setData({
+          keywordsNearbyAddresses: res.data.keywordsNearbyAddresses
+        })
+      });
+  },
 
   getAddressByKey:function (e) {
     var key = e.detail.value;
-    console.log(key);
+    this.getResList(key);
   },
   /**
    * 重新授权按钮点击事件
@@ -101,7 +117,7 @@ Page({
 
     //直接调用上一个页面的setData()方法，把数据存到上一个页面中去
     prevPage.setData({
-      chooseName: "test"
+      chooseName: e.target.dataset.name
     })
     wx.navigateBack({
       delta: 1

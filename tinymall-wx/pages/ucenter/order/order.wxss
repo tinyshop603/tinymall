@@ -112,7 +112,8 @@ page {
 }
 
 .order .h .order-info{
-  flex:3;
+  flex:2;
+  overflow: hidden;
 }
 
 .order .h .order-info .title{
