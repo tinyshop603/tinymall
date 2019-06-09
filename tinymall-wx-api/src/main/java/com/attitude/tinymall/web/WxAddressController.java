@@ -71,7 +71,8 @@ public class WxAddressController {
             String city = regionService.findById(address.getCityId()).getName();
             String area = regionService.findById(address.getAreaId()).getName();
             String addr = address.getAddress();
-            String detailedAddress = province + city + area + " " + addr;
+            String addrDetail = address.getAddressDetail();
+            String detailedAddress = province + city + area + " " + addr + " " + addrDetail;
             addressVo.put("detailedAddress", detailedAddress);
 
             addressVoList.add(addressVo);
@@ -128,6 +129,7 @@ public class WxAddressController {
         data.put("districtId", address.getAreaId());
         data.put("mobile", address.getMobile());
         data.put("address", address.getAddress());
+        data.put("addressDetail", address.getAddressDetail());
         data.put("isDefault", address.getIsDefault());
         String pname = regionService.findById(address.getProvinceId()).getName();
         data.put("provinceName", pname);

@@ -112,13 +112,16 @@ Page({
 
   getAddress:function(e){
     var pages = getCurrentPages();
-    var currPage = pages[pages.length - 1];   //当前页面
+    // var currPage = pages[pages.length - 1];   //当前页面
     var prevPage = pages[pages.length - 2];  //上一个页面
 
     //直接调用上一个页面的setData()方法，把数据存到上一个页面中去
+    let address = prevPage.data.address;
+    address.address = e.target.dataset.name
+
     prevPage.setData({
-      chooseName: e.target.dataset.name
-    })
+      address: address
+    });
     wx.navigateBack({
       delta: 1
     })
