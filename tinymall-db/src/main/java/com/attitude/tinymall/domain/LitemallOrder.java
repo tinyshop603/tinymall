@@ -13,7 +13,7 @@ public class LitemallOrder {
         if (this.getTpdStatus() != null) {
             return this.getTpdStatus().getMessage();
         }
-        return "";
+        return "--/--";
     }
 
     /**

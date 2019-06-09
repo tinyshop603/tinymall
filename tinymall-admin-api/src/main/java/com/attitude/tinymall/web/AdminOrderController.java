@@ -258,31 +258,6 @@ public class AdminOrderController {
     if (currentOrder == null) {
       return ResponseUtil.badArgumentValue();
     }
-//    Short preOrderStatus = tinymallOrder.getOrderStatus();
-//    if(order.getOrderStatus() == 301 || order.getOrderStatus() == 3){//发货
-//        //检测改为发货状态前是否为待发货（201，001）
-//        if(preOrderStatus != 201 && preOrderStatus != 1){
-//          return ResponseUtil.fail(403, "订单不能发货");
-//        }
-//        // [服务通知] 通知用户商家接单
-//        sendTmplMsg(adminId, orderId, SendMsgTmplStatus.MERCHANT_ACCEPT_MSG);
-//
-//    }else if(order.getOrderStatus() == 102 || order.getOrderStatus() == 2){//取消订单
-//        //检测改为发货状态前是否为待发货（201,001）或已发货（301,3）
-//        if(preOrderStatus != 201 && preOrderStatus != 1 && preOrderStatus != 301 && preOrderStatus != 3){
-//          return ResponseUtil.fail(403, "订单不能取消");
-//        }
-//        tinymallOrder.setEndTime(LocalDateTime.now());
-//        // [服务通知] 通知用户取消订单，同时退款给用户
-//        sendTmplMsg(adminId, orderId, SendMsgTmplStatus.CANCEL_ORDER_MSG);
-//        return refundConf(adminId, orderId);
-//    }else if(order.getOrderStatus() == 401 || order.getOrderStatus() == 4 ){//确认完成
-//        //检测改为发货状态前是否为已发货（301，3）
-//        if(preOrderStatus != 301 && preOrderStatus != 3){
-//          return ResponseUtil.fail(403, "订单不能确认完成");
-//        }
-//        tinymallOrder.setConfirmTime(LocalDateTime.now());
-//    }
     OrderStatusEnum targetStatus = ao.getOrderStatus();
     switch (targetStatus) {
       case MERCHANT_ACCEPT:
@@ -296,9 +271,7 @@ public class AdminOrderController {
       case MERCHANT_CANCEL:
         // 商家能取消的情况
         if (!Arrays.asList(OrderStatusEnum.PENDING_PAYMENT,
-            OrderStatusEnum.CUSTOMER_PAIED,
-            OrderStatusEnum.MERCHANT_ACCEPT,
-            OrderStatusEnum.MERCHANT_SHIP
+            OrderStatusEnum.CUSTOMER_PAIED
         ).contains(currentOrder.getOrderStatus())) {
           return ResponseUtil
               .fail(-1, "当前订单无法接单, 订单状态为: " + currentOrder.getOrderStatus().getMessage());
