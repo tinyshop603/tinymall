@@ -170,6 +170,7 @@ public class WxAddressController {
                     .isValidLocationWithinFence(userId.toString(), address.getAddress(),
                             adminService.findAdminByOwnerId(appId).getShopFenceId());
             if (!isValidAddress) {
+                logger.info("地址未在配送范围：" + address.getAddress());
                 return ResponseUtil.unReachAddress();
             }
         } catch (Exception e) {
@@ -223,6 +224,7 @@ public class WxAddressController {
 
         LocationVO res = userAddressService.getLocationDetailByGeoParams(lng, lat, keyword, appId);
         if (res == null){
+            logger.error("位置查询未找到结果：lng:"+ lng + ";lat:" + lat + ";keywaord:" + keyword + ";appid:" + appId);
             return ResponseUtil.fail();
         }
         return ResponseUtil.ok(res);
