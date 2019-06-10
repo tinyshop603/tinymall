@@ -54,6 +54,7 @@ import static com.attitude.tinymall.enums.OrderStatusEnum.COMPLETE;
 public class WxOrderController {
   private final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
+  private final Log logger = LogFactory.getLog(WxOrderController.class);
   @Autowired
   private PlatformTransactionManager txManager;
   @Autowired
@@ -469,9 +470,17 @@ public class WxOrderController {
       checkedGoodsPrice = checkedGoodsPrice
           .add(checkGoods.getRetailPrice().multiply(new BigDecimal(checkGoods.getNumber())));
     }
+      // 商家信息
+      LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+      Integer adminId = admin.getId();
+      String addressStr = checkedAddress.getAddress();
+      logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + addressStr);
+      BigDecimal  deliveryFee = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
+      logger.info("获取运费：" + deliveryFee);
 
     // 根据订单商品总价计算运费，满88则免运费，否则8元；
-    BigDecimal freightPrice = new BigDecimal(0.00);
+      BigDecimal freightPrice = deliveryFee;
+//    BigDecimal freightPrice = new BigDecimal(0.00);
 //    if (checkedGoodsPrice.compareTo(new BigDecimal(88.00)) < 0) {
 //      freightPrice = new BigDecimal(8.00);
 //    }
@@ -489,7 +498,7 @@ public class WxOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     Integer orderId = null;
     LitemallOrder order = null;
-    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+//    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
     try {
       // 订单
       order = new LitemallOrder();
@@ -640,9 +649,9 @@ public class WxOrderController {
     String detail = "订单支付";
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-//    String money = String.valueOf(realFee.intValue());
+    String money = String.valueOf(realFee.intValue());
     // TODO 测试用例，1分钱
-    String money = "1";
+//    String money = "1";
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("attach", attach);//附加数据
