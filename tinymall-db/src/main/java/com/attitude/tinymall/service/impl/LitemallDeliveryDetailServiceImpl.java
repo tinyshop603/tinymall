@@ -13,6 +13,7 @@ import com.attitude.tinymall.service.*;
 import com.attitude.tinymall.service.client.RemoteDadaDeliveryClient;
 import com.attitude.tinymall.util.CoodinateCovertorUtil;
 import com.attitude.tinymall.util.IdGeneratorUtil;
+import com.attitude.tinymall.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -167,7 +168,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     }
 
     @Override
-    public BigDecimal queryDeliverFee4WX(Integer userId , Integer adminId, BigDecimal actualPrice
+    public Object queryDeliverFee4WX(Integer userId , Integer adminId, BigDecimal actualPrice
             ,String address ) {
         LitemallUser user = litemalluserService.findById(userId);
         // 百度坐标转化为高德坐标
@@ -175,7 +176,6 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         location = CoodinateCovertorUtil.bd09ToGcj02(location);
         LitemallAddress userDefaultAddress = addressService.findDefault(userId);
         LitemallAdmin admin = adminService.findById(adminId);
-
 
         String deliveryId = IdGeneratorUtil.generateId("TPD");
         QueryDeliverFeeParams orderParams = QueryDeliverFeeParams.builder()
@@ -192,26 +192,33 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .callback(dadaCallbackAddress)
                 .originId(deliveryId)
                 .build();
-
-        ResponseEntity<QueryOrderDeliverFeeResult> res = remoteDadaDeliveryClient.queryOrderDeliverFee(orderParams);
-        if (res.isSuccess()) {
-            //setDeliveryId  setDistance setDeliverFee setFee
-            LitemallPreDeliveryDetail litemallPreDeliveryDetail = new LitemallPreDeliveryDetail();
-            litemallPreDeliveryDetail.setDeliveryId(deliveryId);
-            litemallPreDeliveryDetail.setDistance("" + res.getResult().getDistance());
-            litemallPreDeliveryDetail.setDeliverFee(new BigDecimal(res.getResult().getDeliverFee().intValue()));
-            litemallPreDeliveryDetail.setFee(res.getResult().getFee().intValue());
-            litemallPreDeliveryDetail.setDeliveryNo(res.getResult().getDeliveryNo());
-            litemallPreDeliveryDetail.setDeliverFee(res.getResult().getDeliverFee());
-            litemallPreDeliveryDetail.setCouponFee(res.getResult().getCouponFee());
-            litemallPreDeliveryDetail.setTips(res.getResult().getTips());
-            litemallPreDeliveryDetail.setInsuranceFee(res.getResult().getInsuranceFee());
-            litemallPreDeliveryDetail.setCreateTime(LocalDateTime.now());
-            litemallPreDeliveryDetailMapper.insert(litemallPreDeliveryDetail);
-        }else{
-            throw  new  RuntimeException(String.format("查询运费失败 原因:%s", res.getMsg()));
+        ResponseEntity<QueryOrderDeliverFeeResult> res = new  ResponseEntity<QueryOrderDeliverFeeResult>();
+        try {
+                res = remoteDadaDeliveryClient.queryOrderDeliverFee(orderParams);
+                if (res.isSuccess()) {
+                    //setDeliveryId  setDistance setDeliverFee setFee
+                    LitemallPreDeliveryDetail litemallPreDeliveryDetail = new LitemallPreDeliveryDetail();
+                    litemallPreDeliveryDetail.setDeliveryId(deliveryId);
+                    litemallPreDeliveryDetail.setDistance("" + res.getResult().getDistance());
+                    litemallPreDeliveryDetail.setDeliverFee(new BigDecimal(res.getResult().getDeliverFee().intValue()));
+                    litemallPreDeliveryDetail.setFee(res.getResult().getFee().intValue());
+                    litemallPreDeliveryDetail.setDeliveryNo(res.getResult().getDeliveryNo());
+                    litemallPreDeliveryDetail.setDeliverFee(res.getResult().getDeliverFee());
+                    litemallPreDeliveryDetail.setCouponFee(res.getResult().getCouponFee());
+                    litemallPreDeliveryDetail.setTips(res.getResult().getTips());
+                    litemallPreDeliveryDetail.setInsuranceFee(res.getResult().getInsuranceFee());
+                    litemallPreDeliveryDetail.setCreateTime(LocalDateTime.now());
+                    litemallPreDeliveryDetailMapper.insert(litemallPreDeliveryDetail);
+                    return ResponseUtil.ok(res.getResult().getDeliverFee());
+                }else{
+                    log.info(String.format("查询运费失败 原因:%s", res.getMsg()));
+                    return ResponseUtil.fail(-1,res.getMsg());
+                }
+        }catch(Exception e){
+              e.printStackTrace();
         }
-        return res.getResult().getFee();
+        log.info("与达达通讯失败");
+        return ResponseUtil.fail(-1,"与达达通讯失败");
     }
    public boolean formalCancelOrder(Integer orderId,Integer cancelReasonId){
        LitemallOrder order = litemallOrderService.findById(orderId);
@@ -226,7 +233,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
            litemallOrderService.updateById(order);
            return res.isSuccess();
        }else{
-           throw new RuntimeException(String.format("取消东单失败 原因:%s", res.getMsg()));
+           throw new RuntimeException(String.format("取消订单失败 原因:%s", res.getMsg()));
        }
     }
 }

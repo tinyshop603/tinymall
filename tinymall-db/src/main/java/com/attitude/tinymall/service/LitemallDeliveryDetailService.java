@@ -5,6 +5,7 @@ import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
 import com.attitude.tinymall.domain.dada.order.FormalCancelOrderResult;
 import com.attitude.tinymall.domain.dada.order.FormalCancelParams;
+import com.attitude.tinymall.domain.dada.order.QueryOrderDeliverFeeResult;
 import com.attitude.tinymall.domain.dada.order.QueryOrderStatusResult;
 import com.attitude.tinymall.enums.TPDStatusEnum;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +40,7 @@ public interface LitemallDeliveryDetailService {
      * @param
      * @return  Map:String setdeliveryNo String setdeliveryNo
      */
-    BigDecimal queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , String address);
+    Object queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , String address);
 
     /**
      * 取消订单

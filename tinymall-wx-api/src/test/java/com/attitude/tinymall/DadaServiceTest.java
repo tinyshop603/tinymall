@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.attitude.tinymall.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -353,5 +354,10 @@ public class DadaServiceTest {
     LitemallAdmin litemallAdmin = litemallAdminService.findById(1);
     String a ;
 }
-
+ @Test
+  public void preAddOrder(){
+   Map res = (Map)litemallDeliveryDetailService.queryDeliverFee4WX(50 , 1, new BigDecimal(3)
+            ,"兴隆都市馨园");
+   System.out.println(res);
+ }
   }
