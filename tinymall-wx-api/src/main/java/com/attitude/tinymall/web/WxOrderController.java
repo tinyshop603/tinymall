@@ -474,9 +474,22 @@ public class WxOrderController {
       LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
       Integer adminId = admin.getId();
       String addressStr = checkedAddress.getAddress();
-      logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + addressStr);
-      BigDecimal  deliveryFee = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
-      logger.info("获取运费：" + deliveryFee);
+
+      BigDecimal deliveryFee;
+      try {
+          logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + addressStr);
+          Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
+          if(deliveryObj != null && ("0").equals(((HashMap) deliveryObj).get("errno").toString())){
+              double fee = Double.parseDouble(((HashMap) deliveryObj).get("data").toString());
+              logger.info("获取运费：" + fee);
+              deliveryFee = new BigDecimal(fee);
+          }else{
+              return deliveryObj;
+          }
+      }catch (Exception e){
+          logger.error(e.getMessage());
+          return ResponseUtil.fail(-1,"提交订单失败");
+      }
 
     // 根据订单商品总价计算运费，满88则免运费，否则8元；
       BigDecimal freightPrice = deliveryFee;

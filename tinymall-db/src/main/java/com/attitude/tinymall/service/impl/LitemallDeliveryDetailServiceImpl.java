@@ -211,13 +211,13 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                     litemallPreDeliveryDetailMapper.insert(litemallPreDeliveryDetail);
                     return ResponseUtil.ok(res.getResult().getDeliverFee());
                 }else{
-                    log.info(String.format("查询运费失败 原因:%s", res.getMsg()));
+                    log.error(String.format("查询运费失败 原因:%s", res.getMsg()));
                     return ResponseUtil.fail(-1,res.getMsg());
                 }
         }catch(Exception e){
               e.printStackTrace();
         }
-        log.info("与达达通讯失败");
+        log.error("与达达通讯失败");
         return ResponseUtil.fail(-1,"与达达通讯失败");
     }
    public boolean formalCancelOrder(Integer orderId,Integer cancelReasonId){
