@@ -241,11 +241,6 @@ public class LitemallAddressExample {
             return (Criteria) this;
         }
 
-        public Criteria andAdminIdEqualTo(Integer value) {
-            addCriterion("admin_id =", value, "adminId");
-            return (Criteria) this;
-        }
-
         public Criteria andIdNotEqualTo(Integer value) {
             addCriterion("id <>", value, "id");
             return (Criteria) this;
@@ -671,6 +666,76 @@ public class LitemallAddressExample {
             return (Criteria) this;
         }
 
+        public Criteria andAddressDetailIsNull() {
+            addCriterion("address_detail is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailIsNotNull() {
+            addCriterion("address_detail is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailEqualTo(String value) {
+            addCriterion("address_detail =", value, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailNotEqualTo(String value) {
+            addCriterion("address_detail <>", value, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailGreaterThan(String value) {
+            addCriterion("address_detail >", value, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailGreaterThanOrEqualTo(String value) {
+            addCriterion("address_detail >=", value, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailLessThan(String value) {
+            addCriterion("address_detail <", value, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailLessThanOrEqualTo(String value) {
+            addCriterion("address_detail <=", value, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailLike(String value) {
+            addCriterion("address_detail like", value, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailNotLike(String value) {
+            addCriterion("address_detail not like", value, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailIn(List<String> values) {
+            addCriterion("address_detail in", values, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailNotIn(List<String> values) {
+            addCriterion("address_detail not in", values, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailBetween(String value1, String value2) {
+            addCriterion("address_detail between", value1, value2, "addressDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressDetailNotBetween(String value1, String value2) {
+            addCriterion("address_detail not between", value1, value2, "addressDetail");
+            return (Criteria) this;
+        }
+
         public Criteria andMobileIsNull() {
             addCriterion("mobile is null");
             return (Criteria) this;
@@ -918,6 +983,66 @@ public class LitemallAddressExample {
 
         public Criteria andDeletedNotBetween(Boolean value1, Boolean value2) {
             addCriterion("deleted not between", value1, value2, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIsNull() {
+            addCriterion("admin_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIsNotNull() {
+            addCriterion("admin_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdEqualTo(Integer value) {
+            addCriterion("admin_id =", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotEqualTo(Integer value) {
+            addCriterion("admin_id <>", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdGreaterThan(Integer value) {
+            addCriterion("admin_id >", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("admin_id >=", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdLessThan(Integer value) {
+            addCriterion("admin_id <", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdLessThanOrEqualTo(Integer value) {
+            addCriterion("admin_id <=", value, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdIn(List<Integer> values) {
+            addCriterion("admin_id in", values, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotIn(List<Integer> values) {
+            addCriterion("admin_id not in", values, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdBetween(Integer value1, Integer value2) {
+            addCriterion("admin_id between", value1, value2, "adminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAdminIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("admin_id not between", value1, value2, "adminId");
             return (Criteria) this;
         }
     }

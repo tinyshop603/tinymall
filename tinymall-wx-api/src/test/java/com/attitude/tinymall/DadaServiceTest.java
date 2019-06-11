@@ -143,7 +143,7 @@ public class DadaServiceTest {
     FormalCancelParams orderParams = FormalCancelParams
             .builder()
             .orderId("123456879")
-            .cancelReasonId(1)
+            .cancelReasonId("1")
             .cancelReason("fail")
             .build();
     ResponseEntity<FormalCancelOrderResult> res = remoteDadaDeliveryClient.formalCancelOrder(orderParams);

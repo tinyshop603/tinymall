@@ -12,13 +12,14 @@ Page({
       cityId: 0,
       areaId: 0,
       address: '',
+      addressDetail: '',
       name: '',
       mobile: '',
       isDefault: 0,
       provinceName:'',
       cityName: '',
       areaName: '',
-      chooseName: ''
+      addressName: ''
     },
     addressId: 0,
     openSelectRegion: false,
@@ -45,9 +46,9 @@ Page({
       address: address
     });
   },
-  bindinputAddress(event) {
+  bindinputAddressDetail(event) {
     let address = this.data.address;
-    address.address = event.detail.value;
+    address.addressDetail = event.detail.value;
     this.setData({
       address: address
     });
@@ -287,6 +288,11 @@ Page({
     // }
 
     if (address.address == '') {
+      util.showErrorToast('请输入送货地址');
+      return false;
+    }
+
+    if (address.addressDetail == '') {
       util.showErrorToast('请输入详细地址');
       return false;
     }
@@ -305,6 +311,7 @@ Page({
       cityId: address.cityId,
       areaId: address.areaId,
       address: address.address,
+      addressDetail: address.addressDetail,
       isDefault: address.isDefault,
     }, 'POST').then(function (res) {
       if (res.errno === 0) {

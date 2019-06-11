@@ -27,7 +27,16 @@ page{
 .delivery-info .title .txt{
   font-size: 42rpx;
 }
-.delivery-info .title .status{
+.delivery-info .title .status-a{
+  font-size: 24rpx;
+  line-height: 24rpx;
+  margin-left: 15rpx;
+  color:#fff;
+  background-color: #F69E0C;
+  padding:5rpx;
+  border-radius: 10rpx;
+}
+.delivery-info .title .status-b{
   font-size: 24rpx;
   line-height: 24rpx;
   margin-left: 15rpx;
@@ -66,7 +75,7 @@ page{
   vertical-align: top;
   display: inline-block;
   text-align-last: justify;
-  width: 120rpx;
+  width: 134rpx;
   color: #7A7A7A;
 }
 .delivery-info .msg .item-v{

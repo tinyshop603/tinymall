@@ -54,6 +54,7 @@ import static com.attitude.tinymall.enums.OrderStatusEnum.COMPLETE;
 public class WxOrderController {
   private final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
+  private final Log logger = LogFactory.getLog(WxOrderController.class);
   @Autowired
   private PlatformTransactionManager txManager;
   @Autowired
@@ -154,16 +155,17 @@ public class WxOrderController {
       orderVo.put("handleOption", this.buildOption(order));
 
       List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(order.getId());
-      List<Map<String, Object>> orderGoodsVoList = new ArrayList<>(orderGoodsList.size());
-      for (LitemallOrderGoods orderGoods : orderGoodsList) {
-        Map<String, Object> orderGoodsVo = new HashMap<>();
-        orderGoodsVo.put("id", orderGoods.getId());
-        orderGoodsVo.put("goodsName", orderGoods.getGoodsName());
-        orderGoodsVo.put("number", orderGoods.getNumber());
-        orderGoodsVo.put("picUrl", orderGoods.getPicUrl());
-        orderGoodsVoList.add(orderGoodsVo);
-      }
-      orderVo.put("goodsList", orderGoodsVoList);
+//      List<Map<String, Object>> orderGoodsVoList = new ArrayList<>(orderGoodsList.size());
+//      for (LitemallOrderGoods orderGoods : orderGoodsList) {
+//        Map<String, Object> orderGoodsVo = new HashMap<>();
+//        orderGoodsVo.put("id", orderGoods.getId());
+//        orderGoodsVo.put("goodsName", orderGoods.getGoodsName());
+//        orderGoodsVo.put("number", orderGoods.getNumber());
+//        orderGoodsVo.put("picUrl", orderGoods.getPicUrl());
+//        orderGoodsVoList.add(orderGoodsVo);
+//      }
+//      orderVo.put("goodsList", orderGoodsVoList);
+        orderVo.put("goodsList", orderGoodsList);
 
       orderVoList.add(orderVo);
     }
@@ -244,6 +246,7 @@ public class WxOrderController {
             // 退款成功
             // 如果订单已经退款，则可删除
             handleOption.setDelete(true);
+            handleOption.setRefundSuccess(true);
         }
         else if (OrderStatusEnum.MERCHANT_ACCEPT.equals(status) // 商家确认接受订单
                 || OrderStatusEnum.MERCHANT_SHIP.equals(status)  // 商家已发货
@@ -290,6 +293,7 @@ public class WxOrderController {
     if (!order.getUserId().equals(userId)) {
       return ResponseUtil.fail(403, "不是当前用户的订单");
     }
+    Map<String, String> showTxt = this.buildShowTxt(order);
     Map<String, Object> orderVo = new HashMap<String, Object>();
     orderVo.put("id", order.getId());
     orderVo.put("orderSn", order.getOrderSn());
@@ -300,7 +304,9 @@ public class WxOrderController {
     orderVo.put("goodsPrice", order.getGoodsPrice());
     orderVo.put("freightPrice", order.getFreightPrice());
     orderVo.put("actualPrice", order.getActualPrice());
-    orderVo.put("orderStatusText",order.getOrderStatus().getMessage());
+    orderVo.put("orderStatusText",showTxt.get("orderStatusText") );
+    orderVo.put("handleOption", this.buildOption(order));
+    orderVo.put("titleText",showTxt.get("titleText"));
     // 添加骑手信息
     String deliveryId = order.getDeliveryId();
     if (deliveryId != null && !("").equals(deliveryId)) {
@@ -311,28 +317,94 @@ public class WxOrderController {
     }
 
     List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(order.getId());
-    List<Map<String, Object>> orderGoodsVoList = new ArrayList<>(orderGoodsList.size());
-    for (LitemallOrderGoods orderGoods : orderGoodsList) {
-      Map<String, Object> orderGoodsVo = new HashMap<>();
-      orderGoodsVo.put("id", orderGoods.getId());
-      orderGoodsVo.put("orderId", orderGoods.getOrderId());
-      orderGoodsVo.put("goodsId", orderGoods.getGoodsId());
-      orderGoodsVo.put("goodsName", orderGoods.getGoodsName());
-      orderGoodsVo.put("number", orderGoods.getNumber());
-      orderGoodsVo.put("retailPrice", orderGoods.getRetailPrice());
-      orderGoodsVo.put("picUrl", orderGoods.getPicUrl());
-      orderGoodsVo.put("goodsSpecificationValues", orderGoods.getGoodsSpecificationValues());
-      orderGoodsVoList.add(orderGoodsVo);
-    }
+//    List<Map<String, Object>> orderGoodsVoList = new ArrayList<>(orderGoodsList.size());
+//    for (LitemallOrderGoods orderGoods : orderGoodsList) {
+//      Map<String, Object> orderGoodsVo = new HashMap<>();
+//      orderGoodsVo.put("id", orderGoods.getId());
+//      orderGoodsVo.put("orderId", orderGoods.getOrderId());
+//      orderGoodsVo.put("goodsId", orderGoods.getGoodsId());
+//      orderGoodsVo.put("goodsName", orderGoods.getGoodsName());
+//      orderGoodsVo.put("number", orderGoods.getNumber());
+//      orderGoodsVo.put("retailPrice", orderGoods.getRetailPrice());
+//      orderGoodsVo.put("picUrl", orderGoods.getPicUrl());
+//      orderGoodsVo.put("goodsSpecificationValues", orderGoods.getGoodsSpecificationValues());
+//      orderGoodsVoList.add(orderGoodsVo);
+//    }
 
     Map<String, Object> result = new HashMap<>();
     result.put("orderInfo", orderVo);
-    result.put("orderGoods", orderGoodsVoList);
+    result.put("orderGoods", orderGoodsList);
     return ResponseUtil.ok(result);
 
   }
 
-  /**
+    /**
+     *  订单详情显示信息
+     */
+    public Map<String, String> buildShowTxt(LitemallOrder order){
+        Map<String, String> showTxt = new HashMap<>();
+        OrderStatusEnum status = order.getOrderStatus();
+        String titleText = "";
+        String orderStatusText = "";
+        // 待支付
+        if (OrderStatusEnum.PENDING_PAYMENT.equals(status)) {// 用户待支付
+            titleText = "待付款";
+            orderStatusText = "";
+        }
+        // 已取消
+        else if (OrderStatusEnum.CUSTOMER_CANCEL.equals(status)) {  // 用户取消订单
+            titleText = "已取消";
+            orderStatusText = "您已取消订单";
+        }
+        else if (OrderStatusEnum.SYSTEM_AUTO_CANCEL.equals(status) ) {  // 系统自动取消订单
+            titleText = "已取消";
+            orderStatusText = "超时取消订单";
+        }
+        else if (OrderStatusEnum.MERCHANT_CANCEL.equals(status) ) {  // 商家取消订单
+            titleText = "已取消";
+            orderStatusText = "商家未接单";
+        }
+        else if (OrderStatusEnum.MERCHANT_REFUNDING.equals(status)  // 用户申请退款
+            || OrderStatusEnum.REFUND_COMPLETE.equals(status)) {   // 订单退款已完成
+            titleText = "已取消";
+            orderStatusText = "您已取消订单";
+        }
+        // 待收货
+        else if (OrderStatusEnum.CUSTOMER_PAIED.equals(status)) { // 用户已付款
+            titleText = "待接单";
+            orderStatusText = "";
+        }
+        else if (OrderStatusEnum.MERCHANT_ACCEPT.equals(status) ) { // 商家确认接受订单
+            titleText = "店家正在配货";
+            orderStatusText = "预计送达：";
+        }
+        else if (OrderStatusEnum.MERCHANT_SHIP.equals(status) ) { // 商家已发货
+            titleText = "骑手正在赶往商家";
+            orderStatusText = "预计送达：";
+        }
+        else if (OrderStatusEnum.ONGOING.equals(status) ) {  // 达达订单进行中
+            titleText = "骑手正在配送中";
+            orderStatusText = "预计送达：";
+        }
+        // 已完成
+        else if ( OrderStatusEnum.COMPLETE.equals(status)) { // 完成
+            titleText = "已完成";
+            orderStatusText = "您已完成订单";
+        }
+        else if (OrderStatusEnum.SYSTEM_AUTO_COMPLETE.equals(status)) {  // 系统自动完成
+            titleText = "已完成";
+            orderStatusText = "系统自动完成";
+        }
+        else {
+            throw new IllegalStateException("status不支持");
+        }
+        showTxt.put("titleText", titleText);
+        showTxt.put("orderStatusText", orderStatusText);
+        return showTxt;
+    }
+
+
+    /**
    * 提交订单 1. 根据购物车ID、地址ID、优惠券ID，创建订单表项 2. 购物车清空 3. TODO 优惠券设置已用 4. 商品货品数量减少
    *
    * @param userId 用户ID
@@ -398,9 +470,17 @@ public class WxOrderController {
       checkedGoodsPrice = checkedGoodsPrice
           .add(checkGoods.getRetailPrice().multiply(new BigDecimal(checkGoods.getNumber())));
     }
+      // 商家信息
+      LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+      Integer adminId = admin.getId();
+      String addressStr = checkedAddress.getAddress();
+      logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + addressStr);
+      BigDecimal  deliveryFee = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
+      logger.info("获取运费：" + deliveryFee);
 
     // 根据订单商品总价计算运费，满88则免运费，否则8元；
-    BigDecimal freightPrice = new BigDecimal(0.00);
+      BigDecimal freightPrice = deliveryFee;
+//    BigDecimal freightPrice = new BigDecimal(0.00);
 //    if (checkedGoodsPrice.compareTo(new BigDecimal(88.00)) < 0) {
 //      freightPrice = new BigDecimal(8.00);
 //    }
@@ -418,7 +498,7 @@ public class WxOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     Integer orderId = null;
     LitemallOrder order = null;
-    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+//    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
     try {
       // 订单
       order = new LitemallOrder();
@@ -569,9 +649,9 @@ public class WxOrderController {
     String detail = "订单支付";
     BigDecimal radix = new BigDecimal(100);
     BigDecimal realFee = order.getActualPrice().multiply(radix);
-//    String money = String.valueOf(realFee.intValue());
+    String money = String.valueOf(realFee.intValue());
     // TODO 测试用例，1分钱
-    String money = "1";
+//    String money = "1";
     SortedMap<String, String> packageParams = new TreeMap<String, String>();
     packageParams.put("appid", admin.getOwnerId());
     packageParams.put("attach", attach);//附加数据

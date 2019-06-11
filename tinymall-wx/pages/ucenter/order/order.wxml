@@ -30,7 +30,7 @@
                     <view class="title">{{item.address}}</view>
                     <view class="subtitle">{{item.addTime}}</view>
                 </view>
-                <view class="order-status">待付款
+                <view class="order-status">{{item.orderStatusText}}
                 </view>
               </view>
               <view class="goodsBox">

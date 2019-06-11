@@ -11,13 +11,13 @@ Page({
       cityId: 0,
       areaId: 0,
       address: '',
+      addressDetail:'',
       name: '',
       mobile: '',
       isDefault: 0,
       provinceName: '',
       cityName: '',
-      areaName: '',
-      chooseName:''
+      areaName: ''
     },
     addressId: 0,
     openSelectRegion: false,
@@ -44,9 +44,9 @@ Page({
       address: address
     });
   },
-  bindinputAddress (event){
+  bindinputAddressDetail (event){
     let address = this.data.address;
-    address.address = event.detail.value;
+    address.addressDetail = event.detail.value;
     this.setData({
       address: address
     });
@@ -245,14 +245,12 @@ Page({
       if (res.errno === 0) {
         that.setData({
           regionList: res.data.map(item => {
-
             //标记已选择的
             if (regionType == item.type && that.data.selectRegionList[regionType - 1].id == item.id) {
               item.selected = true;
             } else {
               item.selected = false;
             }
-
             return item;
           })
         });
@@ -288,6 +286,11 @@ Page({
     // }
 
     if (address.address == '') {
+      util.showErrorToast('请输入送货地址');
+      return false;
+    }
+
+    if (address.addressDetail == '') {
       util.showErrorToast('请输入详细地址');
       return false;
     }
@@ -306,6 +309,7 @@ Page({
       cityId: address.cityId,
       areaId: address.areaId,
       address: address.address,
+      addressDetail: address.addressDetail,
       isDefault: address.isDefault,
       provinceName: address.provinceName,
       cityName: address.cityName,
