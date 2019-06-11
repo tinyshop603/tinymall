@@ -318,6 +318,8 @@ Page({
     }, 'POST').then(function (res) {
       if (res.errno === 0) {
         wx.navigateBack();
+      } else if (res.errno === -1){
+        util.showErrorToast(res.errmsg);
       }
     });
 

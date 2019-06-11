@@ -73,5 +73,10 @@
     "uploadFile": 10000,
     "downloadFile": 10000
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于配送范围提醒"
+    }
+  },
   "debug": true
 }

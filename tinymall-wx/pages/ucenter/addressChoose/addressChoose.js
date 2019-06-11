@@ -58,9 +58,15 @@ Page({
     util.request(api.ConsumerLocation, { lat: lat, lng: lng, keyword: key}, "GET")
       .then(function (res) {
         console.log(res);
-        self.setData({
-          keywordsNearbyAddresses: res.data.keywordsNearbyAddresses
-        })
+        if(res.erron == -1){
+          self.setData({
+            keywordsNearbyAddresses: ""
+          })
+        }else{
+          self.setData({
+            keywordsNearbyAddresses: res.data.keywordsNearbyAddresses
+          })
+        }
       });
   },
 

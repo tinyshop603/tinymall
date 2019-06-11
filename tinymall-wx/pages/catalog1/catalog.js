@@ -20,6 +20,8 @@ Page({
   },
   onLoad: function () {
     let that = this;
+    // 页面加载时获取定位
+    this.getLocation();
     // 根据手机可用高度动态赋予容器高度
     wx.getSystemInfo({
       success: function (sysInfo) {
@@ -44,8 +46,7 @@ Page({
     })
     // 页面加载时获取商品
     this.getCatalog();
-    // 页面加载时获取定位
-    this.getLocation();
+    
   },
 
   onReady: function () {
@@ -114,10 +115,10 @@ Page({
   caluSubHeight:function () {
     let that = this;
     var categoryList = this.data.categoryList;
-    if (categoryList.length == 0){
+    if (categoryList.length === 0){
       setTimeout(function () {
         that.caluSubHeight();
-      }, 200)
+      }, 500)
     }
     var index = 0;
     for (var i = 0; i < categoryList.length; i++) {
@@ -153,13 +154,15 @@ Page({
           .then(function (res) {
             console.log(res);
             var address;
-            if (res.data.poiRegions.length > 0){
+            if (res.erron === -1){
+              console.log("位置获取错误");
+            }else if(res.data.poiRegions.length > 0){
               address = res.data.poiRegions[0].name;
             }else{
               address = res.data.formattedAddress;
             }
             self.setData({
-              addressText: address
+              addressText: address,
             })
           });
       },
@@ -168,7 +171,6 @@ Page({
       //   self.reAuthorize();
       // },
       complete: function (res) {
-
       }
     });
   },

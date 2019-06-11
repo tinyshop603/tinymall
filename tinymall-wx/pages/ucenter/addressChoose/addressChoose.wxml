@@ -16,5 +16,6 @@
       <view class="item" bindtap="getAddress">北店嘉园北区</view>
       <view class="item" bindtap="getAddress">龙禧园二区</view> -->
     </view>
+    <view wx:if="{{keywordsNearbyAddresses == ''}}">没有结果呦！</view>
 </view>
 

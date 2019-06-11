@@ -321,6 +321,8 @@ Page({
 
         }
         wx.navigateBack();
+      } else if (res.errno === -1) {
+        util.showErrorToast(res.errmsg);
       }
     });
 

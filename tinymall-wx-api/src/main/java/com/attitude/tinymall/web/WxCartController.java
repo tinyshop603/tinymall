@@ -521,8 +521,8 @@ public class WxCartController {
         // 根据订单商品总价计算运费，满88则免运费，否则8元；//wz-取消配送费
         BigDecimal freightPrice = deliveryFee;
 //        if(checkedGoodsPrice.compareTo(new BigDecimal(88.00)) == -1){
-////            freightPrice = new BigDecimal(8.00);
-////        }
+//           freightPrice = new BigDecimal(8.00);
+//        }
 
         // 可以使用的其他钱，例如用户积分
         BigDecimal integralPrice = new BigDecimal(0.00);
