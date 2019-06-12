@@ -141,6 +141,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         LitemallOrder order = litemallOrderService.findByDeliveryId(deliveryDetail.getDeliveryId());
         order.setTpdStatus(orderStatus);
         litemallOrderMapper.updateByPrimaryKeySelective(order);
+        deliveryDetail.setUpdateTime(LocalDateTime.now());
         litemallDeliveryDetailMapper.updateByPrimaryKeySelective(deliveryDetail);
     }
 
