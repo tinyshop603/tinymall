@@ -1,4 +1,4 @@
-package com.attitude.tinymall.core.common;
+package com.attitude.tinymall.common;
 
 /**
  *  定义[服务通知]订单状态
