@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
@@ -34,6 +35,7 @@ import feign.codec.Encoder;
  * @author zhaoguiyang on 2019/5/9.
  * @project Wechat
  */
+@Slf4j
 public class DadaDeliveryFeignConfig {
 
   @Bean
@@ -115,9 +117,11 @@ public class DadaDeliveryFeignConfig {
       } else {
         postBody.put("body", "");
       }
-      postBody.put("signature", getSign(postBody, appSecret));
 
-      template.body(JSON.toJSONString(postBody));
+      postBody.put("signature", getSign(postBody, appSecret));
+      String body = JSON.toJSONString(postBody);
+      log.info("达达当前请求参数: {}", body);
+      template.body(body);
 
     }
 
