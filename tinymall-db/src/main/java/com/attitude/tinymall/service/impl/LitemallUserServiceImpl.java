@@ -36,11 +36,12 @@ public class LitemallUserServiceImpl implements LitemallUserService {
   }
   @Override
   public void add(LitemallUser user) {
-    tryToMontionPerson(user);
     userMapper.insertSelective(user);
+    tryToMontionPerson(user);
   }
   @Override
   public void tryToMontionPerson(LitemallUser user) {
+    log.info("try to monitor persion: {}", user.getId());
     if (user.getAdminId() != null) {
       // 挂接, 并监控
       LitemallAdmin litemallAdmin = adminService.findAllColunmById(user.getAdminId());

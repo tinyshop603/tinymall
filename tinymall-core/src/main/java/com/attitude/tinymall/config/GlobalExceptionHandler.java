@@ -1,27 +1,29 @@
 package com.attitude.tinymall.config;
 
 import com.attitude.tinymall.util.ResponseUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    @ResponseBody
-    public Object argumentHandler(MethodArgumentTypeMismatchException e){
-        e.printStackTrace();
-        return ResponseUtil.badArgumentValue();
-    }
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  @ResponseBody
+  public Object argumentHandler(MethodArgumentTypeMismatchException e) {
+    log.info("invalid input error: {}", e.getMessage());
+    return ResponseUtil.badArgumentValue();
+  }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public Object exceptionHandler(Exception e){
-        e.printStackTrace();
-        return ResponseUtil.serious();
-    }
+  @ExceptionHandler(Exception.class)
+  @ResponseBody
+  public Object exceptionHandler(Exception e) {
+    log.error("un except error", e);
+    return ResponseUtil.serious();
+  }
 
 }
