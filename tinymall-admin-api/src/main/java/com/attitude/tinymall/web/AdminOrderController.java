@@ -470,7 +470,7 @@ public class AdminOrderController {
    */
   @Scheduled(fixedDelay = 30*60*1000)
   public void checkOrderUnpaid() {
-    logger.debug(LocalDateTime.now());
+    logger.info(LocalDateTime.now());
 
     List<LitemallOrder> orderList = orderService.queryUnpaid();
     for (LitemallOrder order : orderList) {
@@ -522,7 +522,7 @@ public class AdminOrderController {
    */
   @Scheduled(cron = "0 0 3 * * ?")
   public void checkOrderUnconfirm() {
-    logger.debug(LocalDateTime.now());
+    logger.info(LocalDateTime.now());
 
     List<LitemallOrder> orderList = orderService.queryUnconfirm();
     for (LitemallOrder order : orderList) {

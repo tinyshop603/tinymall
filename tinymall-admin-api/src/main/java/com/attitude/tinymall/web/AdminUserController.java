@@ -57,7 +57,7 @@ public class AdminUserController {
 
   @PostMapping("/create")
   public Object create(@LoginAdmin Integer adminId, @RequestBody LitemallUser user) {
-    logger.debug(user);
+    logger.info(user);
 
     userService.add(user);
     return ResponseUtil.ok(user);
@@ -65,7 +65,7 @@ public class AdminUserController {
 
   @PostMapping("/update")
   public Object update(@LoginAdmin Integer adminId, @RequestBody LitemallUser user) {
-    logger.debug(user);
+    logger.info(user);
 
     userService.update(user);
     return ResponseUtil.ok(user);

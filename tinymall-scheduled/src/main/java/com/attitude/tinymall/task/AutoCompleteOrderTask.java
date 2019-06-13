@@ -48,7 +48,7 @@ public class AutoCompleteOrderTask {
    */
   @Scheduled(fixedDelay = 30 * 60 * 1000)
   public void checkOrderUnpaid() {
-    log.debug(LocalDateTime.now().toString());
+    log.info(LocalDateTime.now().toString());
 
     List<LitemallOrder> orderList = orderService.queryUnpaid();
     for (LitemallOrder order : orderList) {
@@ -100,7 +100,7 @@ public class AutoCompleteOrderTask {
    */
   @Scheduled(cron = "0 0 3 * * ?")
   public void checkOrderUnconfirm() {
-    log.debug(LocalDateTime.now().toString());
+    log.info(LocalDateTime.now().toString());
 
     List<LitemallOrder> orderList = orderService.queryUnconfirm();
     for (LitemallOrder order : orderList) {

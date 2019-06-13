@@ -19,6 +19,6 @@ public class ServerRunner  implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
     server.startAsync();
-    logger.debug("连接初始化已完成");
+    logger.info("连接初始化已完成");
   }
 }
