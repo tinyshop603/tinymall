@@ -221,6 +221,8 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         log.error("与达达通讯失败");
         return ResponseUtil.fail(-1,"与达达通讯失败");
     }
+
+    @Override
    public boolean formalCancelOrder(Integer orderId,Integer cancelReasonId){
        LitemallOrder order = litemallOrderService.findById(orderId);
        FormalCancelParams orderParams = FormalCancelParams.builder()
