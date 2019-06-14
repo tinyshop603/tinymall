@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
           })
         }).catch(() => {
           store.dispatch('FedLogOut').then(() => {
-            Message.error('Verification failed, please login again')
+            Message.error('登陆超时, 请重新登陆')
             next({ path:'/login' })
           })
         })

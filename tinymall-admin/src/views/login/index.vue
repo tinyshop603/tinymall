@@ -101,7 +101,6 @@ export default {
               })
             }
           }).catch(() => {
-            debugger
             this.loading = false
           })
         } else {
