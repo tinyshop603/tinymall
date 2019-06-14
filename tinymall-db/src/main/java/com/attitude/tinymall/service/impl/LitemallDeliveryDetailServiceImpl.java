@@ -140,6 +140,16 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         // 更新订单信息
         LitemallOrder order = litemallOrderService.findByDeliveryId(deliveryDetail.getDeliveryId());
         order.setTpdStatus(orderStatus);
+        switch (orderStatus){
+            case RIDER_ARRIVE:
+                order.setShipStartTime(LocalDateTime.now());
+                break;
+            case FINISHED:
+                order.setShipEndTime(LocalDateTime.now());
+                break;
+            default:
+                break;
+        }
         litemallOrderMapper.updateByPrimaryKeySelective(order);
         deliveryDetail.setUpdateTime(LocalDateTime.now());
         litemallDeliveryDetailMapper.updateByPrimaryKeySelective(deliveryDetail);

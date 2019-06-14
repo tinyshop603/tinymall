@@ -40,12 +40,6 @@ import static com.attitude.tinymall.enums.OrderStatusEnum.COMPLETE;
 /**
  * 订单设计
  *
- * 订单状态： 101 订单生成，未支付；102，下单后未支付用户取消；103，下单后未支付超时系统自动取消 201 支付完成，商家未发货；202，订单生产，已付款未发货，但是退款取消； 301
- * 商家发货，用户未确认； 401 用户确认收货，订单结束； 402 用户没有确认收货，但是快递反馈已收获后，超过一定时间，系统自动确认收货，订单结束。
- *
- * 当101用户未付款时，此时用户可以进行的操作是取消订单，或者付款操作 当201支付完成而商家未发货时，此时用户可以取消订单并申请退款 当301商家已发货时，此时用户可以有确认收货的操作
- * 当401用户确认收货以后，此时用户可以进行的操作是删除订单，评价商品，或者再次购买 当402系统自动确认收货以后，此时用户可以删除订单，评价商品，或者再次购买
- *
  * 目前不支持订单退货和售后服务
  */
 @RestController
@@ -829,29 +823,15 @@ public class WxOrderController {
     if (order.getPayStatus() == PayStatusEnum.UNPAID) {
       isNotPayCancel = true;
     }
-    try {
-      // 设置订单已取消状态
-      if (isNotPayCancel){
-        order.setOrderStatus(OrderStatusEnum.CUSTOMER_CANCEL);
-      }
-      order.setEndTime(LocalDateTime.now());
-      orderService.update(order);
-
-      // 商品货品数量增加
-      List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
-      for (LitemallOrderGoods orderGoods : orderGoodsList) {
-        Integer productId = orderGoods.getProductId();
-        LitemallProduct product = productService.findById(productId);
-        Integer number = product.getGoodsNumber() + orderGoods.getNumber();
-        product.setGoodsNumber(number);
-        productService.updateById(product);
-      }
-    } catch (Exception ex) {
-      txManager.rollback(status);
-//      log.error("系统内部错误", ex);
-      return ResponseUtil.fail(403, "订单取消失败");
+    // 设置订单已取消状态
+    if (isNotPayCancel) {
+      order.setOrderStatus(OrderStatusEnum.CUSTOMER_CANCEL);
     }
-    txManager.commit(status);
+    order.setEndTime(LocalDateTime.now());
+    orderService.update(order);
+
+    // 商品货品数量增加
+    orderService.refundOrderGoodsByOrderId(orderId);
     //想办法提醒管理端进行刷新,在线支付未支付订单取消
     if (!isNotPayCancel) {
       messageInfo.setMsgType("order-cancel");

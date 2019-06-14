@@ -69,12 +69,18 @@ public interface LitemallOrderService {
 
    int countByAdminId(Integer adminId) ;
 
-   List<LitemallOrder> queryUnpaid() ;
+   List<LitemallOrder> queryUnPaid() ;
 
-   List<LitemallOrder> queryUnconfirm() ;
+   List<LitemallOrder> queryUnConfirm() ;
 
    LitemallOrder findBySn(String orderSn) ;
 
 
    LitemallOrder findByDeliveryId(String deliveryId);
+
+  /**
+   * 退还订单中所有的商品
+   * @param orderId
+   */
+  void refundOrderGoodsByOrderId(Integer orderId);
 }

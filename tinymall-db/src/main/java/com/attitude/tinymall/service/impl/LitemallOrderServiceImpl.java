@@ -6,20 +6,29 @@ import com.attitude.tinymall.dao.manual.LitemallOrderManualMapper;
 import com.attitude.tinymall.domain.LitemallAdmin;
 import com.attitude.tinymall.domain.LitemallOrder;
 import com.attitude.tinymall.domain.LitemallOrderExample;
+import com.attitude.tinymall.domain.LitemallOrderGoods;
 import com.attitude.tinymall.domain.LitemallOrderWithGoods;
+import com.attitude.tinymall.domain.LitemallProduct;
 import com.attitude.tinymall.enums.OrderStatusEnum;
+import com.attitude.tinymall.enums.PayStatusEnum;
+import com.attitude.tinymall.enums.TPDStatusEnum;
+import com.attitude.tinymall.service.LitemallOrderGoodsService;
 import com.attitude.tinymall.service.LitemallOrderService;
+import com.attitude.tinymall.service.LitemallProductService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -33,6 +42,10 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
   private LitemallAdminServiceImpl adminService;
   @Autowired
   private LitemallOrderManualMapper orderManualMapper;
+  @Autowired
+  private LitemallProductService productService;
+  @Autowired
+  private LitemallOrderGoodsService orderGoodsService;
 
 
   @Override
@@ -250,18 +263,26 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
   }
 
   @Override
-  public List<LitemallOrder> queryUnpaid() {
+  public List<LitemallOrder> queryUnPaid() {
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andOrderStatusEqualTo(OrderStatusEnum.PENDING_PAYMENT).andDeletedEqualTo(false);
     return orderMapper.selectByExample(example);
   }
+
   @Override
-  public List<LitemallOrder> queryUnconfirm() {
+  public List<LitemallOrder> queryUnConfirm() {
     LitemallOrderExample example = new LitemallOrderExample();
-    List<OrderStatusEnum> unconfirmIds = new ArrayList<OrderStatusEnum>();
+    List<OrderStatusEnum> unconfirmIds = new ArrayList<>(2);
+    unconfirmIds.add(OrderStatusEnum.ONGOING);
     unconfirmIds.add(OrderStatusEnum.MERCHANT_SHIP);
-    example.or().andOrderStatusIn(unconfirmIds).andShipEndTimeIsNotNull()
-            .andDeletedEqualTo(false);
+    LocalDateTime now = LocalDateTime.now();
+    example.or()
+        .andAddTimeBetween(now.minusHours(12), now.plusHours(12))
+        .andPayStatusEqualTo(PayStatusEnum.PAID)
+        .andTpdStatusEqualTo(TPDStatusEnum.FINISHED)
+        .andOrderStatusIn(unconfirmIds)
+        .andShipEndTimeIsNotNull()
+        .andDeletedEqualTo(false);
     return orderMapper.selectByExample(example);
   }
   @Override
@@ -276,5 +297,18 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
     LitemallOrderExample example = new LitemallOrderExample();
     example.or().andDeliveryIdEqualTo(deliveryId).andDeletedEqualTo(false);
     return orderMapper.selectOneByExample(example);
+  }
+
+  @Transactional(rollbackFor = Exception.class)
+  @Override
+  public void refundOrderGoodsByOrderId(Integer orderId) {
+    List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
+    for (LitemallOrderGoods orderGoods : orderGoodsList) {
+      Integer productId = orderGoods.getProductId();
+      LitemallProduct product = productService.findById(productId);
+      Integer number = product.getGoodsNumber() + orderGoods.getNumber();
+      product.setGoodsNumber(number);
+      productService.updateById(product);
+    }
   }
 }

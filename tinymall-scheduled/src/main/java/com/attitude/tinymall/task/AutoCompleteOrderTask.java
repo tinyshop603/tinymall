@@ -1,23 +1,16 @@
 package com.attitude.tinymall.task;
 
 import com.attitude.tinymall.domain.LitemallOrder;
-import com.attitude.tinymall.domain.LitemallOrderGoods;
-import com.attitude.tinymall.domain.LitemallProduct;
 import com.attitude.tinymall.enums.OrderStatusEnum;
-import com.attitude.tinymall.enums.PayStatusEnum;
-import com.attitude.tinymall.service.LitemallOrderGoodsService;
 import com.attitude.tinymall.service.LitemallOrderService;
-import com.attitude.tinymall.service.LitemallProductService;
-import com.attitude.tinymall.util.OrderUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
@@ -28,15 +21,10 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @Component
 public class AutoCompleteOrderTask {
 
-  @Autowired
-  private PlatformTransactionManager txManager;
 
   @Autowired
-  private LitemallOrderGoodsService orderGoodsService;
-  @Autowired
   private LitemallOrderService orderService;
-  @Autowired
-  private LitemallProductService productService;
+
 
   /**
    * 自动取消订单
@@ -47,10 +35,11 @@ public class AutoCompleteOrderTask {
    * 这里暂时取消自动检查订单的逻辑
    */
   @Scheduled(fixedDelay = 30 * 60 * 1000)
+  @Transactional(rollbackFor = Exception.class)
   public void checkOrderUnpaid() {
     log.info(LocalDateTime.now().toString());
 
-    List<LitemallOrder> orderList = orderService.queryUnpaid();
+    List<LitemallOrder> orderList = orderService.queryUnPaid();
     for (LitemallOrder order : orderList) {
       LocalDateTime add = order.getAddTime();
       LocalDateTime now = LocalDateTime.now();
@@ -62,28 +51,14 @@ public class AutoCompleteOrderTask {
       // 开启事务管理
       DefaultTransactionDefinition def = new DefaultTransactionDefinition();
       def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-      TransactionStatus status = txManager.getTransaction(def);
-      try {
-        // 设置订单已取消状态
-        order.setOrderStatus(OrderStatusEnum.SYSTEM_AUTO_CANCEL);
-        order.setEndTime(LocalDateTime.now());
-        orderService.updateById(order);
+      // 设置订单已取消状态
+      order.setOrderStatus(OrderStatusEnum.SYSTEM_AUTO_CANCEL);
+      order.setEndTime(LocalDateTime.now());
+      orderService.updateById(order);
 
-        // 商品货品数量增加
-        Integer orderId = order.getId();
-        List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
-        for (LitemallOrderGoods orderGoods : orderGoodsList) {
-          Integer productId = orderGoods.getProductId();
-          LitemallProduct product = productService.findById(productId);
-          Integer number = product.getGoodsNumber() + orderGoods.getNumber();
-          product.setGoodsNumber(number);
-          productService.updateById(product);
-        }
-      } catch (Exception ex) {
-        txManager.rollback(status);
-        log.error("系统内部错误", ex);
-      }
-      txManager.commit(status);
+      // 商品货品数量增加
+      orderService.refundOrderGoodsByOrderId(order.getId());
+
     }
   }
 
@@ -91,30 +66,19 @@ public class AutoCompleteOrderTask {
    * 自动确认订单
    *
    * 定时检查订单未确认情况，如果超时七天则自动确认订单 定时时间是每天凌晨3点。
-   *
-   * 注意，因为是相隔一天检查，因此导致有订单是超时八天以后才设置自动确认。 这里可以进一步地配合用户订单查询时订单未确认检查，如果订单超时7天则自动确认。
-   * 但是，这里可能不是非常必要。相比订单未付款检查中存在商品资源有限所以应该 早点清理未付款情况，这里八天再确认是可以的。
-   *
-   * TODO 目前自动确认是基于管理后台管理员所设置的商品快递到达时间，见orderService.queryUnconfirm。 那么在实际业务上有可能存在商品寄出以后商品因为一些原因快递最终没有到达，
-   * 也就是商品快递失败而shipEndTime一直是空的情况，因此这里业务可能需要扩展，以防止订单一直 处于发货状态。
    */
   @Scheduled(cron = "0 0 3 * * ?")
   public void checkOrderUnconfirm() {
     log.info(LocalDateTime.now().toString());
-
-    List<LitemallOrder> orderList = orderService.queryUnconfirm();
+    List<LitemallOrder> orderList = orderService.queryUnConfirm();
     for (LitemallOrder order : orderList) {
       LocalDateTime shipEnd = order.getShipEndTime();
       LocalDateTime now = LocalDateTime.now();
-      LocalDateTime expired = shipEnd.plusDays(7);
+      LocalDateTime expired = shipEnd.plusHours(2);
       if (expired.isAfter(now)) {
         continue;
       }
-      // TODO 将用户未点击确认的, 自动设置成确认状态
-      if(order.getPayStatus() == PayStatusEnum.PAID
-          && OrderStatusEnum.ONGOING == order.getOrderStatus()){
-        order.setOrderStatus(OrderStatusEnum.COMPLETE);
-      }
+      order.setOrderStatus(OrderStatusEnum.SYSTEM_AUTO_COMPLETE);
       order.setConfirmTime(now);
       orderService.updateById(order);
     }
