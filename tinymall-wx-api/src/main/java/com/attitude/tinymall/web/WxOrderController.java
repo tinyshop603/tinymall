@@ -100,16 +100,6 @@ public class WxOrderController {
   public WxOrderController() {
   }
 
-  private String detailedAddress(LitemallAddress tinymallAddress) {
-    Integer provinceId = tinymallAddress.getProvinceId();
-    Integer cityId = tinymallAddress.getCityId();
-    Integer areaId = tinymallAddress.getAreaId();
-    String provinceName = regionService.findById(provinceId).getName();
-    String cityName = regionService.findById(cityId).getName();
-    String areaName = regionService.findById(areaId).getName();
-    String fullRegion = provinceName + " " + cityName + " " + areaName;
-    return fullRegion + " " + tinymallAddress.getAddress();
-  }
 
   /**
    * 订单列表
@@ -528,8 +518,8 @@ public class WxOrderController {
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
       //提交时不显示省市区，只显示详细地址
-//      String detailedAddress = detailedAddress(checkedAddress);
-      order.setAddress(checkedAddress.getAddress());
+      // TODO 确认显示的详细地址信息是否有必要显示这么完全
+      order.setAddress(addressService.getFullDetailAddress(checkedAddress));
       order.setGoodsPrice(checkedGoodsPrice);
       order.setFreightPrice(freightPrice);
       order.setCouponPrice(couponPrice);

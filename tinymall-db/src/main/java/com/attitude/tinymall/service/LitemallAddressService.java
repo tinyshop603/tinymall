@@ -43,4 +43,7 @@ public interface LitemallAddressService {
       String order);
 
   void updateById(LitemallAddress address);
+
+  String getFullDetailAddress(LitemallAddress address);
+
 }

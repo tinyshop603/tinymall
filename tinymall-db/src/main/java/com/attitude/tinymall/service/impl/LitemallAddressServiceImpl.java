@@ -6,6 +6,7 @@ import com.attitude.tinymall.domain.LitemallAddress;
 import com.attitude.tinymall.domain.LitemallAddressExample;
 import com.attitude.tinymall.domain.LitemallAdmin;
 import com.attitude.tinymall.service.LitemallAddressService;
+import com.attitude.tinymall.service.LitemallRegionService;
 import com.github.pagehelper.PageHelper;
 import java.util.List;
 import javax.annotation.Resource;
@@ -25,6 +26,8 @@ public class LitemallAddressServiceImpl implements LitemallAddressService {
   @Autowired
   private LitemallAdminServiceImpl adminService;
 
+  @Autowired
+  private LitemallRegionService regionService;
 
   @Override
   public List<LitemallAddress> queryByUid(Integer uid) {
@@ -154,5 +157,17 @@ public class LitemallAddressServiceImpl implements LitemallAddressService {
   @Override
   public void updateById(LitemallAddress address) {
     addressMapper.updateByPrimaryKeySelective(address);
+  }
+
+  @Override
+  public String getFullDetailAddress(LitemallAddress tinymallAddress) {
+    Integer provinceId = tinymallAddress.getProvinceId();
+    Integer cityId = tinymallAddress.getCityId();
+    Integer areaId = tinymallAddress.getAreaId();
+    String provinceName = regionService.findById(provinceId).getName();
+    String cityName = regionService.findById(cityId).getName();
+    String areaName = regionService.findById(areaId).getName();
+    String fullRegion = provinceName + " " + cityName + " " + areaName;
+    return fullRegion + " " + tinymallAddress.getAddress()+tinymallAddress.getAddressDetail();
   }
 }

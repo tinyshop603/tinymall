@@ -111,7 +111,8 @@ public class AutoCompleteOrderTask {
         continue;
       }
       // TODO 将用户未点击确认的, 自动设置成确认状态
-      if(order.getPayStatus() == PayStatusEnum.PAID && OrderStatusEnum.ONGOING == order.getOrderStatus()){
+      if(order.getPayStatus() == PayStatusEnum.PAID
+          && OrderStatusEnum.ONGOING == order.getOrderStatus()){
         order.setOrderStatus(OrderStatusEnum.COMPLETE);
       }
       order.setConfirmTime(now);

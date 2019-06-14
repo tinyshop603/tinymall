@@ -167,7 +167,7 @@ public class WxAddressController {
         //  TODO 需要修改验证逻辑 验证地址是否在合法的范围内
         try {
             boolean isValidAddress = baiduFenceService
-                    .isValidLocationWithinFence(userId.toString(), address.getAddress(),
+                    .isValidLocationWithinFence(userId.toString(), addressService.getFullDetailAddress(address),
                             adminService.findAdminByOwnerId(appId).getShopFenceId());
             if (!isValidAddress) {
                 logger.info("地址未在配送范围：" + address.getAddress());
