@@ -77,7 +77,7 @@ export default {
           })),
           'others':[{
             'name':'配送费',
-            'value':'0元'
+            'value':`${newOrder.order.deliverFee}元`
           }],
           'orignTotalPrice':newOrder.order.orderPrice,
           'trueTotalPrice':newOrder.order.actualPrice,
