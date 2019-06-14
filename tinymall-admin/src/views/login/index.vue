@@ -89,10 +89,19 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid && !this.loading) {
           this.loading = true
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
+          this.$store.dispatch('LoginByUsername', this.loginForm).then((data) => {
             this.loading = false
-            this.$router.push({ path:'/' })
+            if (data.errno === 0) {
+              this.$router.push({ path:'/' })
+            } else {
+              this.$notify({
+                title:'失败',
+                message:data.errmsg,
+                type:'error'
+              })
+            }
           }).catch(() => {
+            debugger
             this.loading = false
           })
         } else {

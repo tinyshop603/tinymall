@@ -1,6 +1,7 @@
 package com.attitude.tinymall.web;
 
 import com.attitude.tinymall.annotation.LoginAdmin;
+import com.attitude.tinymall.domain.LitemallCategory;
 import com.attitude.tinymall.service.AdminTokenManager;
 import com.attitude.tinymall.util.ResponseUtil;
 import com.attitude.tinymall.util.bcrypt.BCryptPasswordEncoder;
@@ -40,7 +41,10 @@ public class AdminAdminController {
     data.put("name", admin.getUsername());
     data.put("avatar", admin.getAvatar());
     data.put("adminId", adminId);
-    data.put("shopId",categoryService.queryIdByPid(adminId,"L1").get(0).getId());
+    List<LitemallCategory> adminCategory = categoryService.queryIdByPid(adminId, "L1");
+    if (!adminCategory.isEmpty()){
+      data.put("shopId", adminCategory.get(0).getId());
+    }
 
     // 目前roles不支持，这里简单设置admin
     List<String> roles = new ArrayList<>();

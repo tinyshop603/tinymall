@@ -25,9 +25,6 @@ public class AdminAuthController {
     @Autowired
     private LitemallAdminService adminService;
 
-    /*
-     *  { username : value, password : value }
-     */
     @PostMapping("/login")
     public Object login(@RequestBody String body){
         String username = JacksonUtil.parseString(body, "username");
@@ -39,13 +36,13 @@ public class AdminAuthController {
 
         LitemallAdmin admin = adminService.findAdmin(username);
         if(admin == null){
-            return ResponseUtil.badArgumentValue();
+            return ResponseUtil.fail(404, "当前账号不存在");
         }
 
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if(!encoder.matches(password, admin.getPassword())){
-            return ResponseUtil.fail(403, "账号密码不对");
+            return ResponseUtil.fail(403, "账号或者密码不对");
         }
 
         Integer adminId = admin.getId();
