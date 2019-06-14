@@ -212,6 +212,7 @@ export default {
       order_tags:[
         { name:'待付款', type:'normal', status:'PENDING_PAYMENT' },
         { name:'系统取消', type:'warning', status:'SYSTEM_AUTO_CANCEL' },
+        { name:'系统完成', type:'warning', status:'SYSTEM_AUTO_COMPLETE' },
         { name:'商家取消', type:'warning', status:'MERCHANT_CANCEL' },
         { name:'用户取消', type:'warning', status:'CUSTOMER_CANCEL' },
         { name:'订单进行中', type:'success', status:'ONGOING' },
