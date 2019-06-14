@@ -5,5 +5,5 @@ alter table tinymall_order add tpd_status varchar(50);
 
 
 Alter table tinymall_order add delivery_id varchar(50);
-Alter table tinymall_order add deliver_fee int(10);
+Alter table tinymall_order add deliver_fee decimal(10,2);
 
