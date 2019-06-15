@@ -180,12 +180,11 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
 
     @Override
     public Object queryDeliverFee4WX(Integer userId , Integer adminId, BigDecimal actualPrice
-            ,String address ) {
+            ,LitemallAddress checkedAddress ) {
         LitemallUser user = litemalluserService.findById(userId);
         // 百度坐标转化为高德坐标
-        Location location = baiduFenceService.geocoding(address).getLocation();
+        Location location = baiduFenceService.geocoding(checkedAddress.getAddress()).getLocation();
         location = CoodinateCovertorUtil.bd09ToGcj02(location);
-        LitemallAddress userDefaultAddress = addressService.findDefault(userId);
         LitemallAdmin admin = adminService.findById(adminId);
 
         String deliveryId = IdGeneratorUtil.generateId("TPD");
@@ -196,10 +195,10 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .cargoPrice(actualPrice)
                 .isPrepay(0)
                 .receiverName(user.getUsername())
-                .receiverAddress(address)
+                .receiverAddress(checkedAddress.getAddress())
                 .receiverLat(Float.parseFloat("" + location.getLat()))
                 .receiverLng(Float.parseFloat("" + location.getLng()))
-                .receiverPhone(userDefaultAddress.getMobile())
+                .receiverPhone(checkedAddress.getMobile())
                 .callback(dadaCallbackAddress)
                 .originId(deliveryId)
                 .build();

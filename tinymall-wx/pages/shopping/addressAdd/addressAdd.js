@@ -18,8 +18,7 @@ Page({
       isDefault: 0,
       provinceName:'',
       cityName: '',
-      areaName: '',
-      addressName: ''
+      areaName: ''
     },
     addressId: 0,
     openSelectRegion: false,
@@ -64,10 +63,11 @@ Page({
     let that = this;
     util.request(api.AddressDetail, { id: that.data.addressId }).then(function (res) {
       if (res.errno === 0) {
-        that.setData({
-          address: res.data
-        });
-        
+        if (res.data) {
+          that.setData({
+            address: res.data
+          });
+        }
       }
     });
   },
@@ -136,7 +136,6 @@ Page({
       });
       this.getAddressDetail();
     }
-
   },
   onReady: function () {
 
@@ -249,7 +248,6 @@ Page({
       if (res.errno === 0) {
         that.setData({
           regionList: res.data.map(item => {
-
             //标记已选择的
             if (regionType == item.type && that.data.selectRegionList[regionType - 1].id == item.id) {
               item.selected = true;
@@ -262,9 +260,6 @@ Page({
         });
       }
     });
-  },
-  cancelAddress() {
-    wx.navigateBack();
   },
   saveAddress() {
     console.log(this.data.address)

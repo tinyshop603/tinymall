@@ -407,3 +407,13 @@ page{
     background: #ffd827;
     color: #fff;
 }
+
+.cart-bottom .noOrder{
+    height: 100rpx;
+    width: 210rpx;
+    text-align: center;
+    line-height: 100rpx;
+    font-size: 29rpx;
+    background: #EAEAEA;
+    color: #fff;
+}

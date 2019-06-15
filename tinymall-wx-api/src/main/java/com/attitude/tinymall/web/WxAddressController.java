@@ -22,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -126,10 +127,11 @@ public class WxAddressController {
         data.put("name", address.getName());
         data.put("provinceId", address.getProvinceId());
         data.put("cityId", address.getCityId());
+        data.put("areaId", address.getCityId());
         data.put("districtId", address.getAreaId());
-        data.put("mobile", address.getMobile());
         data.put("address", address.getAddress());
         data.put("addressDetail", address.getAddressDetail());
+        data.put("mobile", address.getMobile());
         data.put("isDefault", address.getIsDefault());
         String pname = regionService.findById(address.getProvinceId()).getName();
         data.put("provinceName", pname);
@@ -186,6 +188,7 @@ public class WxAddressController {
         if (address.getId() == null || address.getId().equals(0)) {
             address.setId(null);
             address.setUserId(userId);
+            address.setAddTime(LocalDateTime.now());
             addressService.add(address, appId);
         } else {
             address.setUserId(userId);

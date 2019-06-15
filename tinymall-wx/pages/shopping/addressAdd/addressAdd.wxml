@@ -1,19 +1,25 @@
 <view class="add-address">
     <view class="add-form">
         <view class="form-item">
-            <input class="input" bindinput="bindinputName" placeholder="姓名" value="{{address.name}}" auto-focus/>
+            <text class="form-txt">联系人：</text>
+            <input class="input" bindinput="bindinputName" placeholder="你的名字" placeholder-class="placeholder" value="{{address.name}}" auto-focus/>
         </view>
         <view class="form-item">
-            <input class="input" bindinput="bindinputMobile" value="{{address.mobile}}" placeholder="手机号码"/>
+            <text class="form-txt">手机号码：</text>
+            <input class="input" bindinput="bindinputMobile" value="{{address.mobile}}" placeholder="配送员联系您的手机号" placeholder-class="placeholder"/>
         </view>
-         <view class="form-item">
-            <input class="input" value="{{address.provinceName + address.cityName + address.areaName}}" disabled="true" bindtap="chooseRegion" placeholder="省份、城市、区县"/>
+        <view class="form-item">
+            <text class="form-txt">收货地址：</text>
+            <text class="icon" wx:if="{{address.address == ''}}"></text>
+            <text class="fwidth {{address.address == '' ? 'placeholder' : ''}}" bindtap="chooseAddress">{{address.address == "" ? "点击获取" : address.address}}</text>
+        </view>
+        <view class="form-item">
+            <text class="form-txt">省份、城市、区县：</text>
+            <input class="input" value="{{address.provinceName + address.cityName + address.areaName}}" disabled="true" bindtap="chooseRegion" placeholder="省份、城市、区县" placeholder-class="placeholder"/>
         </view> 
         <view class="form-item">
-            <text>收货地址:</text><text class="input" bindtap="chooseAddress">{{address.address}}</text>
-        </view>
-        <view class="form-item">
-            <input class="input" bindinput="bindinputAddressDetail" value="{{address.addressDetail}}" placeholder="详细地址, 楼号，单元号及门牌号等"/>
+            <text class="form-txt">门牌号：</text>
+            <input class="input" bindinput="bindinputAddressDetail" value="{{address.addressDetail}}" placeholder="详细地址, 楼号，单元号及门牌号等" placeholder-class="placeholder"/>
         </view>
         <view class="form-default">
             <text bindtap="bindIsDefault" class="default-input {{address.isDefault == 1 ? 'selected' : ''}}">设为默认地址</text>
@@ -21,7 +27,6 @@
     </view>
 
     <view class="btns">
-        <button class="cannel" bindtap="cancelAddress">取消</button>
         <button class="save" bindtap="saveAddress">保存</button>
     </view>
 
@@ -33,9 +38,9 @@
         <view class="done {{selectRegionDone ? '' : 'disabled'}}" bindtap="doneSelectRegion">确定</view>
       </view>
       <view class="bd">
-        <scroll-view scroll-y class="region-list">
-          <view class="item {{item.selected ? 'selected' : ''}}" bindtap="selectRegion" data-region-index="{{index}}" wx:for="{{regionList}}" wx:key="id">{{item.name}}</view>
-        </scroll-view>
+      <scroll-view scroll-y class="region-list">
+        <view class="item {{item.selected ? 'selected' : ''}}" bindtap="selectRegion" data-region-index="{{index}}" wx:for="{{regionList}}" wx:key="id">{{item.name}}</view>
+      </scroll-view>
       </view>
     </view>
 </view>

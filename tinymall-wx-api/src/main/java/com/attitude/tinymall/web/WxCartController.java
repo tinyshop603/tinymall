@@ -472,7 +472,14 @@ public class WxCartController {
         LitemallAddress checkedAddress = null;
         if(addressId == null || addressId.equals(0)){
             checkedAddress = addressService.findDefault(userId);
-            // 如果仍然没有地址，则是没有收获地址
+            // 如果仍然没有地址，则是没有收获默认地址
+            if(checkedAddress == null){
+                List<LitemallAddress> addressList = addressService.queryByUid(userId);
+                if(addressList != null && addressList.size() > 0){
+                    checkedAddress = addressList.get(0);
+                }
+            }
+
             // 返回一个空的地址id=0，这样前端则会提醒添加地址
             if(checkedAddress == null){
                 checkedAddress = new LitemallAddress();
@@ -513,12 +520,11 @@ public class WxCartController {
         for (LitemallCart cart : checkedGoodsList) {
             checkedGoodsPrice = checkedGoodsPrice.add(cart.getRetailPrice().multiply(new BigDecimal(cart.getNumber())));
         }
-        String addressStr = checkedAddress.getAddress();
 
         BigDecimal deliveryFee;
         try {
-            logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + addressStr);
-            Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
+            logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + checkedAddress.getId());
+            Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, checkedAddress);
             if(deliveryObj != null && ("0").equals(((HashMap) deliveryObj).get("errno").toString())){
                 double fee = Double.parseDouble(((HashMap) deliveryObj).get("data").toString());
                 logger.info("获取运费：" + fee);

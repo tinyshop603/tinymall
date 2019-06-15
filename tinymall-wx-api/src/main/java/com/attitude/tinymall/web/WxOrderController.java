@@ -457,12 +457,11 @@ public class WxOrderController {
       // 商家信息
       LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
       Integer adminId = admin.getId();
-      String addressStr = checkedAddress.getAddress();
 
       BigDecimal deliveryFee;
       try {
-          logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + addressStr);
-          Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, addressStr);
+          logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + checkedAddress.getId());
+          Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, checkedAddress);
           if(deliveryObj != null && ("0").equals(((HashMap) deliveryObj).get("errno").toString())){
               double fee = Double.parseDouble(((HashMap) deliveryObj).get("data").toString());
               logger.info("获取运费：" + fee);

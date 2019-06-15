@@ -1,5 +1,6 @@
 package com.attitude.tinymall.service;
 
+import com.attitude.tinymall.domain.LitemallAddress;
 import com.attitude.tinymall.domain.LitemallDeliveryDetail;
 import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
@@ -40,7 +41,7 @@ public interface LitemallDeliveryDetailService {
      * @param
      * @return  Map:String setdeliveryNo String setdeliveryNo
      */
-    Object queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , String address);
+    Object queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , LitemallAddress checkedAddress);
 
     /**
      * 取消订单

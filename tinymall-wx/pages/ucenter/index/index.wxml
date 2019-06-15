@@ -45,13 +45,13 @@
         <view class="r-arrow"></view>
       </view>
     </view>
-    <view class="item">
+    <!-- <view class="item">
       <view class="a" bindtap="aboutUs">
-        <!-- <text class="icon help"></text> -->
+        <text class="icon help"></text>
         <text class="txt">关于我们</text>
         <view class="r-arrow"></view>
       </view>
-    </view>
+    </view> -->
     <!-- <view class="item">
       <view class="a" bindtap="goOrder">
         <text class="txt">我的订单</text>
