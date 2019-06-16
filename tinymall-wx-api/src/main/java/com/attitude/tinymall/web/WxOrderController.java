@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import com.attitude.tinymall.enums.OrderStatusEnum.*;
 
@@ -264,6 +265,7 @@ public class WxOrderController {
 
     // 订单信息
     LitemallOrder order = orderService.findById(orderId);
+      String estimateTime = estimateTime(order);
     if (null == order) {
       return ResponseUtil.fail(403, "订单不存在");
     }
@@ -274,7 +276,8 @@ public class WxOrderController {
     Map<String, Object> orderVo = new HashMap<String, Object>();
     orderVo.put("id", order.getId());
     orderVo.put("orderSn", order.getOrderSn());
-    orderVo.put("addTime", LocalDate.now());
+    orderVo.put("addTime", order.getAddTime());
+    orderVo.put("payTime", order.getPayTime());
     orderVo.put("consignee", order.getConsignee());
     orderVo.put("mobile", order.getMobile());
     orderVo.put("address", order.getAddress());
@@ -349,14 +352,17 @@ public class WxOrderController {
       titleText = "待接单";
       orderStatusText = "";
     } else if (OrderStatusEnum.MERCHANT_ACCEPT.equals(status)) { // 商家确认接受订单
+      String estimateTime = estimateTime(order);
       titleText = "店家正在配货";
-      orderStatusText = "预计送达：";
+      orderStatusText = "预计送达：" + estimateTime;
     } else if (OrderStatusEnum.MERCHANT_SHIP.equals(status)) { // 商家已发货
+      String estimateTime = estimateTime(order);
       titleText = "骑手正在赶往商家";
-      orderStatusText = "预计送达：";
+      orderStatusText = "预计送达：" + estimateTime;
     } else if (OrderStatusEnum.ONGOING.equals(status)) {  // 达达订单进行中
+      String estimateTime = estimateTime(order);
       titleText = "骑手正在配送中";
-      orderStatusText = "预计送达：";
+      orderStatusText = "预计送达：" + estimateTime;
     }
     // 已完成
     else if (OrderStatusEnum.COMPLETE.equals(status)) { // 完成
@@ -371,6 +377,21 @@ public class WxOrderController {
     showTxt.put("titleText", titleText);
     showTxt.put("orderStatusText", orderStatusText);
     return showTxt;
+  }
+
+  /**
+   *  预计到达时间 每米权重为0.36(10公里/小时，小区骑行较慢) 超出5千米不予计算
+   *  1km以内20min算 1km-5km 按权重算 (s - 1000)*0.36 + 1200 时间区间在 15min-44min
+   * */
+  private String estimateTime(LitemallOrder order){
+    LitemallDeliveryDetail deliveryDetail = deliveryDetailService.getDeliveryDetailByDeliveryId(order.getDeliveryId());
+    double distance = Double.parseDouble(deliveryDetail.getDistance());
+    long estimateInterval = (long)((distance - 1000)*0.36 + 1200);
+    LocalDateTime dateTime = deliveryDetail.getCreateTime();
+    LocalDateTime estimateTime = dateTime.plusSeconds(estimateInterval);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+    String formattedDateTime = estimateTime.format(formatter);
+    return formattedDateTime;
   }
 
 
