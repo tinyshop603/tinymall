@@ -76,7 +76,7 @@ public class WxGoodsController {
     @Autowired
     private LitemallGoodsSpecificationService goodsSpecificationService;
 
-    private String replacePic = "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+    private String replacePic = "x-oss-process=image/resize,m_fixed,h_120,w_120";// "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
 
 
     /**

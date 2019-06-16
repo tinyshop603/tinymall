@@ -34,7 +34,7 @@ Page({
           for (let i = 0; i < res.data.orderGoods.length; i++) {
             let oldPicUrl = res.data.orderGoods[i].picUrl;
             if(oldPicUrl.indexOf("fuss10") != -1){
-              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_120,w_120";//"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
             }          
           }
         }
