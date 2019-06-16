@@ -41,6 +41,14 @@ public class LitemallRegionServiceImpl implements LitemallRegionService {
         return regionMapper.selectByExample(example);
     }
     @Override
+    public LitemallRegion queryByCode(Integer code){
+        LitemallRegionExample example = new LitemallRegionExample();
+
+        example.or().andCodeEqualTo(code);
+        return regionMapper.selectOneByExample(example);
+    }
+
+    @Override
     public int countSelective(String name, Integer code, Integer page, Integer size, String sort, String order) {
         LitemallRegionExample example = new LitemallRegionExample();
         LitemallRegionExample.Criteria criteria = example.createCriteria();

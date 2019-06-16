@@ -1,5 +1,6 @@
 package com.attitude.tinymall.web;
 
+import com.attitude.tinymall.domain.LitemallRegion;
 import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.baidu.address.PoiAddress;
 import com.attitude.tinymall.domain.baidu.geocode.GeoDecodingAddress;
@@ -160,6 +161,17 @@ public class WxAddressController {
             return ResponseUtil.badArgument();
         }
 
+        // 借用areaId传递areaType,保存时需要转换一下
+        if (address.getAreaId() != null){
+            LitemallRegion areaRegion = regionService.queryByCode(address.getAreaId());
+            if(areaRegion == null){
+                logger.error("保存地址code转换错误：" + address.getAreaId());
+                return ResponseUtil.badArgument();
+            }else{
+                address.setAreaId(areaRegion.getId());
+            }
+        }
+
         // 测试收货手机号码是否正确
         String mobile = address.getMobile();
         if (!RegexUtil.isMobileExact(mobile)) {
@@ -189,6 +201,8 @@ public class WxAddressController {
             address.setId(null);
             address.setUserId(userId);
             address.setAddTime(LocalDateTime.now());
+            address.setProvinceId(1); // 北京市 默认
+            address.setCityId(32); // 市辖区 默认
             addressService.add(address, appId);
         } else {
             address.setUserId(userId);
