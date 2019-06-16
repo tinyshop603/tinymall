@@ -374,9 +374,9 @@ export default {
       })
       // 更改当前的订单的状态为完成状态
       refundOrder(this.dataForm).then(response => {
+        loading.close()
         const responseData = response.data
         if (responseData.errno !== 0) {
-          loading.close()
           this.$notify({
             title:'失败',
             message:responseData.errmsg,
