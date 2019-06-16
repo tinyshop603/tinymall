@@ -73,8 +73,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command='{type:"acceptOrder", itemData:scope.row.order}'>接受订单</el-dropdown-item>
               <el-dropdown-item :command='{type:"callRider", itemData:scope.row.order}'>呼叫骑手</el-dropdown-item>
-              <el-dropdown-item :command='{type:"cancelOrder", itemData:scope.row.order}'>取消订单</el-dropdown-item>
-              <el-dropdown-item :command='{type:"confirmRefund", itemData:scope.row.order}'>确认退款</el-dropdown-item>
+              <el-dropdown-item :command='{type:"confirmCancelAndRefund", itemData:scope.row.order}'>取消订单</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <!--          <el-button :type="scope.row.sendBtnStatus.type" :disabled="scope.row.sendBtnStatus.disabled" size="small" @click="handleSend(scope.row.order)">发货</el-button>-->
@@ -100,23 +99,14 @@
         <el-button type="primary" @click="merchantAccept">确定</el-button>
       </div>
     </el-dialog>
-    <!-- 取消订单对话框 -->
-    <el-dialog title="取消订单" :visible.sync="cancelSendDialogFormVisible">
-      取消订单前，请确保已跟客户进行电话沟通，与客户协商后才可进行</br>
-      取消，否则会影响您的信誉，并且，订单取消后将无法对该订单做任</br>
-      何操作，确认继续取消？
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelSendDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="merchantCancelOrder">确定</el-button>
-      </div>
-    </el-dialog>
     <!-- 确认退款对话框 -->
-    <el-dialog title="确定退款" :visible.sync="refundDialogFormVisible">
-      确定退款后，金钱将直接退回给用户</br>
+    <el-dialog title="取消订单" :visible.sync="refundAndCancleDialogFormVisible">
+      取消订单前，请确保已跟客户进行电话沟通，与客户协商后才可进行</br>
+      取消，否则会影响您的信誉，并且，金钱将直接退回给用户</br>
       确定退款后不可再对该订单做任何操作,继续操作?</br>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="refundDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="merchantConfirmRefund">确定</el-button>
+        <el-button @click="refundAndCancleDialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="merchantConfirmCancelAndRefund">确定</el-button>
       </div>
     </el-dialog>
 
@@ -205,8 +195,7 @@ export default {
       },
       sendDialogFormVisible:false,
       recvDialogFormVisible:false,
-      cancelSendDialogFormVisible:false,
-      refundDialogFormVisible:false,
+      refundAndCancleDialogFormVisible:false,
       showDeliveryDetail:false,
       downloadLoading:false,
       order_tags:[
@@ -317,11 +306,8 @@ export default {
             }
           })
           break
-        case 'cancelOrder':
-          this.cancelSendDialogFormVisible = true
-          break
-        case 'confirmRefund':
-          this.refundDialogFormVisible = true
+        case 'confirmCancelAndRefund':
+          this.refundAndCancleDialogFormVisible = true
           break
       }
     },
@@ -378,10 +364,10 @@ export default {
         })
       })
     },
-    merchantConfirmRefund() {
+    merchantConfirmCancelAndRefund() {
       // 更改当前的订单的状态为完成状态
       refundOrder(this.dataForm).then(response => {
-        this.refundDialogFormVisible = false
+        this.refundAndCancleDialogFormVisible = false
         const responseData = response.data
         if (responseData.errno !== 0) {
           this.$notify({
@@ -395,28 +381,7 @@ export default {
         this.updateOrderItemStatus(updatedOrder)
         this.$notify({
           title:'成功',
-          message:'退款成功',
-          type:'success'
-        })
-      })
-    },
-    merchantCancelOrder() {
-      // 更改当前的订单的状态为取消状态
-      updateOrderCode({ orderId:this.dataForm.id, orderStatus:STATUS.MERCHANT_CANCEL }).then(response => {
-        this.cancelSendDialogFormVisible = false
-        const responseData = response.data
-        if (responseData.errno !== 0) {
-          this.$notify({
-            title:'失败',
-            message:responseData.errmsg,
-            type:'error'
-          })
-          return
-        }
-        this.updateOrderItemStatus(responseData.data)
-        this.$notify({
-          title:'成功',
-          message:response.data.errmsg,
+          message:'取消成功, 并将钱已退回客户钱包',
           type:'success'
         })
       })
