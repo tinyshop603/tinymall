@@ -98,6 +98,7 @@ public class MessageEventHandler {
 
 
   private void emitDataOnEvent(String eventName, String jsonData) {
+    log.info("准备发送事件名称 {}, 预计发送的数据: {}", eventName, jsonData);
     MessageInfo data = JSONObject.parseObject(jsonData, MessageInfo.class);
     String targetClientId = data.getTargetClientId();
     ClientInfo clientInfo = clientInfos.get(targetClientId);
