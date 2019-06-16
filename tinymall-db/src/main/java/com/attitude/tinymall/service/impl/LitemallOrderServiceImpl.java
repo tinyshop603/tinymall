@@ -62,6 +62,9 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
 
   @Override
   public int add(LitemallOrder order, String appId) {
+    Integer orderCount =  orderMapper.queryCountByAdminAndDate(order.getAdminId())+1;
+//    order.setOrderSn();
+    order.setOriginMarkNo("#"+orderCount);
     LitemallAdmin litemallAdmin = adminService.findAdminByOwnerId(appId);
     if (null != litemallAdmin) {
       // 关联外键
