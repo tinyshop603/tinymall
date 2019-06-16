@@ -502,24 +502,18 @@ public class WxOrderController {
     TransactionStatus status = txManager.getTransaction(def);
     Integer orderId = null;
     LitemallOrder order = null;
-//    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
     try {
       // 订单
       order = new LitemallOrder();
       order.setUserId(userId);
-      order.setOrderSn(orderService.generateOrderSn(userId));
+      order.setOrderSn(IdGeneratorUtil.generateId("SN"));
       order.setAddTime(LocalDateTime.now());
       PaymentWayEnum paymentWay = PaymentWayEnum.ONLINE_WECHAT_PAY;
-//      if (modeId == 1) {
-//        paymentWay = PaymentWayEnum.CASH_ON_DELIVERY;
-//      }
       order.setOrderStatus(OrderStatusEnum.PENDING_PAYMENT);
       order.setPayStatus(PayStatusEnum.UNPAID);
       order.setPaymentWay(paymentWay);
       order.setConsignee(checkedAddress.getName());
       order.setMobile(checkedAddress.getMobile());
-      //提交时不显示省市区，只显示详细地址
-      // TODO 确认显示的详细地址信息是否有必要显示这么完全
       order.setAddress(addressService.getFullDetailAddress(checkedAddress));
       order.setGoodsPrice(checkedGoodsPrice);
       order.setFreightPrice(freightPrice);
