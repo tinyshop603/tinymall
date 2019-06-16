@@ -523,6 +523,7 @@ public class WxOrderController {
       order.setAddress(addressService.getFullDetailAddress(checkedAddress));
       order.setGoodsPrice(checkedGoodsPrice);
       order.setFreightPrice(freightPrice);
+      order.setDeliverFee(freightPrice);
       order.setCouponPrice(couponPrice);
       order.setIntegralPrice(integralPrice);
       order.setOrderPrice(orderTotalPrice);
@@ -817,11 +818,22 @@ public class WxOrderController {
       return ResponseUtil.badArgumentValue();
     }
 
+    // 取消并退款
+    if (!(Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_REFUNDING)
+          .contains(order.getOrderStatus()) && PayStatusEnum.PAID == order.getPayStatus())) {
+      return ResponseUtil.fail(403, String.format("当前订单状态: %s 不允许取消并退款", order.getOrderStatus().getMessage()));
+    }else{
+      boolean refundSuccess = orderService.refundOrder(orderId);
+      if (!refundSuccess) {
+          return ResponseUtil.fail(403, "取消并退款失败, 请联系工程师");
+      }
+    }
+
     // TODO 检测是否能够取消
-//    OrderHandleOption handleOption = OrderUtil.build(order);
-//    if (!handleOption.isCancel()) {
-//      return ResponseUtil.fail(403, "订单不能取消");
-//    }
+    OrderHandleOption handleOption = buildOption(order);
+    if (!handleOption.isCancel()) {
+      return ResponseUtil.fail(403, "订单不能取消");
+    }
 
     // 开启事务管理
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
@@ -883,10 +895,10 @@ public class WxOrderController {
     }
 
     // TODO
-//    OrderHandleOption handleOption = OrderUtil.build(order);
-//    if (!handleOption.isRefund()) {
-//      return ResponseUtil.fail(403, "订单不能申请退款");
-//    }
+    OrderHandleOption handleOption = buildOption(order);
+    if (!handleOption.isRefund()) {
+      return ResponseUtil.fail(403, "订单不能申请退款");
+    }
 
     // 设置订单申请退款状态
     order.setOrderStatus(OrderStatusEnum.MERCHANT_REFUNDING);
@@ -931,10 +943,10 @@ public class WxOrderController {
       return ResponseUtil.badArgumentValue();
     }
     // TODO
-//    OrderHandleOption handleOption = OrderUtil.build(order);
-//    if (!handleOption.isConfirm()) {
-//      return ResponseUtil.fail(403, "订单不能确认收货");
-//    }
+    OrderHandleOption handleOption = buildOption(order);
+    if (!handleOption.isConfirm()) {
+      return ResponseUtil.fail(403, "订单不能确认收货");
+    }
     order.setOrderStatus(COMPLETE);
 
     order.setConfirmTime(LocalDateTime.now());
@@ -976,10 +988,10 @@ public class WxOrderController {
       return ResponseUtil.badArgumentValue();
     }
     // TODO
-//    OrderHandleOption handleOption = OrderUtil.build(order);
-//    if (!handleOption.isDelete()) {
-//      return ResponseUtil.fail(403, "订单不能删除");
-//    }
+    OrderHandleOption handleOption = buildOption(order);
+    if (!handleOption.isDelete()) {
+      return ResponseUtil.fail(403, "订单不能删除");
+    }
 
     // 订单order_status没有字段用于标识删除
     // 而是存在专门的delete字段表示是否删除
