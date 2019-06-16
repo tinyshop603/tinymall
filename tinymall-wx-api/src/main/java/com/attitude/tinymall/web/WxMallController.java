@@ -9,10 +9,9 @@ import com.attitude.tinymall.service.LitemallAdminService;
 import com.attitude.tinymall.service.LitemallCategoryService;
 import com.attitude.tinymall.service.LitemallGoodsService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +30,8 @@ public class WxMallController {
 
   @Autowired
   private LitemallGoodsService goodsService;
+
+  private static String replacePic = "?x-oss-process=image/resize,m_fixed,h_120,w_120";
 
   @GetMapping
   public Object getMallDetail(@PathVariable("storeId") String appid) {
@@ -58,7 +59,7 @@ public class WxMallController {
   // TODO 分类改造首页 返回全部商品 采用图片懒加载及锚点技术实现
   @GetMapping("/new/category")
   public Object getAllDetail(@PathVariable("storeId") String appid) {
-    final String replacePic = "x-oss-process=image/resize,m_fixed,h_120,w_120" ;//"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+    System.out.println("category/开始:"+new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
     LitemallAdmin litemallAdmin = litemallAdminService.findAdminByOwnerId(appid);
     // 此处查询出的数据必定size为1或者0
     List<LitemallCategory> litemallCategories = categoryService
@@ -76,16 +77,24 @@ public class WxMallController {
     Map<String, Object> data = new HashMap();
     List<List<LitemallGoods>> allGoodsList = new ArrayList<>();
     if (categoryList.size() > 0) {
-      for (int i = 0; i < categoryList.size() ; i++) {
-        int categoryId = categoryList.get(i).getId();
+//      for (int i = 0; i < categoryList.size() ; i++) {
+        int categoryId = categoryList.get(0).getId();
         List<LitemallGoods> goodsList = goodsService
                 .querySelective(categoryId, null, null, null, null, 0, Integer.MAX_VALUE, null, null);
+        //截取图片格式
+        if (goodsList.size() > 0) {
+            for (int i = 0; i < goodsList.size(); i++) {
+                String newPicUrl = goodsList.get(i).getListPicUrl() + replacePic;
+                goodsList.get(i).setListPicUrl(newPicUrl);
+            }
+        }
+
         allGoodsList.add(goodsList);
-      }
+//      }
     }
     data.put("categoryList", categoryList);
     data.put("allGoodsList", allGoodsList);
-
+    System.out.println("category/结束:"+new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
 //
 //    int categoryId = 0;
 //    if (categoryList.size() > 0) {
@@ -129,7 +138,6 @@ public class WxMallController {
 
   @GetMapping("/category")
   public Object getMallCategoryDetail(@PathVariable("storeId") String appid) {
-    final String replacePic = "x-oss-process=image/resize,m_fixed,h_120,w_120";// "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
     LitemallAdmin litemallAdmin = litemallAdminService.findAdminByOwnerId(appid);
     // 此处查询出的数据必定size为1或者0
     List<LitemallCategory> litemallCategories = categoryService
@@ -158,14 +166,7 @@ public class WxMallController {
       //截取图片格式
       if (goodsList.size() > 0) {
         for (int i = 0; i < goodsList.size(); i++) {
-          String oldPicUrl = goodsList.get(i).getListPicUrl();
-          String newPicUrl = new String();
-          if(oldPicUrl.indexOf("fuss10")!= -1){
-            newPicUrl =  oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + replacePic;
-          }else{
-            newPicUrl = oldPicUrl;
-          }
-
+          String newPicUrl = goodsList.get(i).getListPicUrl() + replacePic;
           goodsList.get(i).setListPicUrl(newPicUrl);
         }
       }
