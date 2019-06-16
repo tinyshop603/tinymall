@@ -818,17 +818,6 @@ public class WxOrderController {
       return ResponseUtil.badArgumentValue();
     }
 
-    // 取消并退款
-    if (!(Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_REFUNDING)
-          .contains(order.getOrderStatus()) && PayStatusEnum.PAID == order.getPayStatus())) {
-      return ResponseUtil.fail(403, String.format("当前订单状态: %s 不允许取消并退款", order.getOrderStatus().getMessage()));
-    }else{
-      boolean refundSuccess = orderService.refundOrder(orderId);
-      if (!refundSuccess) {
-          return ResponseUtil.fail(403, "取消并退款失败, 请联系工程师");
-      }
-    }
-
     // TODO 检测是否能够取消
     OrderHandleOption handleOption = buildOption(order);
     if (!handleOption.isCancel()) {
