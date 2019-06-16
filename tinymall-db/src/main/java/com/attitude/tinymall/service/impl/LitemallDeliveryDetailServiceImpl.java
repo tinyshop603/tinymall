@@ -86,7 +86,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         LitemallAdmin admin = adminService.findById(order.getAdminId());
         String deliveryId = IdGeneratorUtil.generateId("TPD");
         List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
-        StringBuilder orderInfo = new StringBuilder("商品详情:+\t\r\n");
+        StringBuilder orderInfo = new StringBuilder("商品详情:\t\r\n");
         for(LitemallOrderGoods orderGood : orderGoodsList){
             orderInfo.append(orderGood.getGoodsName()+"\t"+"x"+orderGood.getNumber()+"\t\r\n");
         }
