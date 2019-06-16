@@ -54,4 +54,9 @@ public interface AliyunOssService {
   String getForeSizeFileUrl(String fileName, int with, int height);
 
   ByteArrayOutputStream getOutputByQueryString(String fileName,String queryString);
+
+  String getFilePublicUrl(String fileName, boolean supportHttps);
+
+  String getFilePublicAdaptiveUrl(String fileName);
+
 }
