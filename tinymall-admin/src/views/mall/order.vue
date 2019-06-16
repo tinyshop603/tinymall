@@ -385,12 +385,12 @@ export default {
           return
         }
         const updatedOrder = responseData.data
-        this.updateOrderItemStatus(updatedOrder)
         this.$notify({
           title:'成功',
           message:'取消成功, 并将钱已退回客户钱包',
           type:'success'
         })
+        this.updateOrderItemStatus(updatedOrder)
       })
     },
     handleDownload() {
