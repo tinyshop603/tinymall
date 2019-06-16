@@ -24,63 +24,70 @@ import java.util.Random;
 public interface LitemallOrderService {
 
 
-   int add(LitemallOrder order, String appId) ;
+  int add(LitemallOrder order, String appId);
 
-   List<LitemallOrder> query(Integer userId, String appId) ;
+  List<LitemallOrder> query(Integer userId, String appId);
 
-   int count(Integer userId) ;
+  int count(Integer userId);
 
-   LitemallOrder findById(Integer orderId);
-   String getRandomNum(Integer num) ;
+  LitemallOrder findById(Integer orderId);
 
-   LitemallOrder queryByOrderSn(Integer userId, String orderSn) ;
+  String getRandomNum(Integer num);
 
-   int countByOrderSn(Integer userId, String orderSn) ;
+  LitemallOrder queryByOrderSn(Integer userId, String orderSn);
+
+  int countByOrderSn(Integer userId, String orderSn);
 
   // TODO 这里应该产生一个唯一的订单，但是实际上这里仍然存在两个订单相同的可能性
-   String generateOrderSn(Integer userId);
+  String generateOrderSn(Integer userId);
 
-   List<LitemallOrder> queryByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus) ;
+  List<LitemallOrder> queryByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus);
 
-   int countByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus) ;
+  int countByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus);
 
-   int update(LitemallOrder order);
-
-
-   List<LitemallOrder> listAdminOrdersByAdminId(Integer adminId, Integer userId,
-                                                               String orderSn, Integer page, Integer size, String sort, String order) ;
-
-   List<LitemallOrder> listAdminOrdersByStatus(Integer adminId, List<OrderStatusEnum> orderStatus, Integer page, Integer size, String sort, String order);
+  int update(LitemallOrder order);
 
 
-   int countAdminOrdersByAdminId(Integer adminId, Integer userId, String orderSn) ;
+  List<LitemallOrder> listAdminOrdersByAdminId(Integer adminId, Integer userId,
+      String orderSn, Integer page, Integer size, String sort, String order);
+
+  List<LitemallOrder> listAdminOrdersByStatus(Integer adminId, List<OrderStatusEnum> orderStatus,
+      Integer page, Integer size, String sort, String order);
 
 
-   List<LitemallOrderWithGoods> querySelective(Integer userId, String orderSn, Integer page,
-                                                     Integer size, String sort, String order) ;
-    int countSelective(Integer userId, String orderSn, Integer page, Integer size, String sort,
-                       String order);
-
-   void updateById(LitemallOrder order);
-
-   void deleteById(Integer id) ;
-
-   int count() ;
-
-   int countByAdminId(Integer adminId) ;
-
-   List<LitemallOrder> queryUnPaid() ;
-
-   List<LitemallOrder> queryUnConfirm() ;
-
-   LitemallOrder findBySn(String orderSn) ;
+  int countAdminOrdersByAdminId(Integer adminId, Integer userId, String orderSn);
 
 
-   LitemallOrder findByDeliveryId(String deliveryId);
+  List<LitemallOrderWithGoods> querySelective(Integer userId, String orderSn, Integer page,
+      Integer size, String sort, String order);
+
+  int countSelective(Integer userId, String orderSn, Integer page, Integer size, String sort,
+      String order);
+
+  void updateById(LitemallOrder order);
+
+  void deleteById(Integer id);
+
+  int count();
+
+  int countByAdminId(Integer adminId);
+
+  List<LitemallOrder> queryUnPaid();
+
+  List<LitemallOrder> queryUnConfirm();
+
+  LitemallOrder findBySn(String orderSn);
+
+
+  LitemallOrder findByDeliveryId(String deliveryId);
 
   /**
    * 退还订单中所有的商品
-   * @param orderId
    */
   void refundOrderGoodsByOrderId(Integer orderId);
+
+  /**
+   * 退还订单 退还资金 退还商品
+   */
+  boolean refundOrder(Integer orderId);
 }
