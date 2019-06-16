@@ -46,6 +46,7 @@ import static com.attitude.tinymall.enums.OrderStatusEnum.COMPLETE;
 @RequestMapping("/wx/{storeId}/order")
 @Slf4j
 public class WxOrderController {
+
   private final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
   private final Log logger = LogFactory.getLog(WxOrderController.class);
@@ -149,7 +150,7 @@ public class WxOrderController {
 //        orderGoodsVoList.add(orderGoodsVo);
 //      }
 //      orderVo.put("goodsList", orderGoodsVoList);
-        orderVo.put("goodsList", orderGoodsList);
+      orderVo.put("goodsList", orderGoodsList);
 
       orderVoList.add(orderVo);
     }
@@ -160,97 +161,89 @@ public class WxOrderController {
 
     return ResponseUtil.ok(result);
   }
-    /**
-     *  订单分类
-     */
+
+  /**
+   * 订单分类
+   */
 
   public static List<OrderStatusEnum> orderStatus(Integer showType) {
 
-      List<OrderStatusEnum> status = new ArrayList<OrderStatusEnum>(2);
-      // 全部订单
-      if (showType.equals(0)) {
-          status = Arrays.asList(OrderStatusEnum.values());
-      }
-      else if (showType.equals(1)) {
-          // 待付款
-          status.add(OrderStatusEnum.PENDING_PAYMENT); // 等待用户支付
-      }
-      else if (showType.equals(2)) {
-          //  待收货
-          status.add(OrderStatusEnum.CUSTOMER_PAIED); // 用户已付款
-          status.add(OrderStatusEnum.MERCHANT_ACCEPT); // 商家已接单
-          status.add(OrderStatusEnum.MERCHANT_SHIP);// 商家已发货
-          status.add(OrderStatusEnum.ONGOING);// 达达订单进行中
-          status.add(OrderStatusEnum.MERCHANT_REFUNDING);// 用户申请退款
-      }
-      else if (showType.equals(3)) {
-          // 已完成
-          status.add(OrderStatusEnum.COMPLETE); // 订单已完成
-          status.add(OrderStatusEnum.SYSTEM_AUTO_COMPLETE);// 系统自动完成
-      }
-      else {
-          return null;
-      }
+    List<OrderStatusEnum> status = new ArrayList<OrderStatusEnum>(2);
+    // 全部订单
+    if (showType.equals(0)) {
+      status = Arrays.asList(OrderStatusEnum.values());
+    } else if (showType.equals(1)) {
+      // 待付款
+      status.add(OrderStatusEnum.PENDING_PAYMENT); // 等待用户支付
+    } else if (showType.equals(2)) {
+      //  待收货
+      status.add(OrderStatusEnum.CUSTOMER_PAIED); // 用户已付款
+      status.add(OrderStatusEnum.MERCHANT_ACCEPT); // 商家已接单
+      status.add(OrderStatusEnum.MERCHANT_SHIP);// 商家已发货
+      status.add(OrderStatusEnum.ONGOING);// 达达订单进行中
+      status.add(OrderStatusEnum.MERCHANT_REFUNDING);// 用户申请退款
+    } else if (showType.equals(3)) {
+      // 已完成
+      status.add(OrderStatusEnum.COMPLETE); // 订单已完成
+      status.add(OrderStatusEnum.SYSTEM_AUTO_COMPLETE);// 系统自动完成
+    } else {
+      return null;
+    }
 //      status.add(OrderStatusEnum.REFUND_COMPLETE);// 订单退款已完成
 //      status.add(OrderStatusEnum.SYSTEM_AUTO_CANCEL);// 超时自动取消
 //      status.add(OrderStatusEnum.CUSTOMER_CANCEL);// 用户取消订单
-      // TODO 已下单 商家超时未接单 取消订单并退款
+    // TODO 已下单 商家超时未接单 取消订单并退款
 //      status.add(OrderStatusEnum.MERCHANT_CANCEL);// 商家取消订单
-      return status;
+    return status;
   }
-    /**
-     *  订单权限(功能)判断
-     */
-    public static OrderHandleOption buildOption(LitemallOrder order){
-        OrderStatusEnum status = order.getOrderStatus();
-        OrderHandleOption handleOption = new OrderHandleOption();
 
-        if (OrderStatusEnum.PENDING_PAYMENT.equals(status)) {// 用户待支付
-            // 如果订单没有被取消，且没有支付，则可支付，可取消
-            handleOption.setCancel(true);
-            handleOption.setPay(true);
-        }
-        else if (OrderStatusEnum.CUSTOMER_CANCEL.equals(status)   // 用户取消订单
-                || OrderStatusEnum.MERCHANT_CANCEL.equals(status)  // 商家取消订单
-                || OrderStatusEnum.SYSTEM_AUTO_CANCEL.equals(status)) { // 系统自动取消订单
-            // 已取消
-            // 如果订单已经取消或是已完成，则可删除
-            handleOption.setDelete(true);
-        }
-        else if (OrderStatusEnum.CUSTOMER_PAIED.equals(status)) { // 用户已付款
-            // 已付款未发货
-            // 如果订单已付款，没有发货，则可退款
-            handleOption.setRefund(true);
-        }
-        else if (OrderStatusEnum.MERCHANT_REFUNDING.equals(status)) { // 用户申请退款
-            // 如果订单申请退款中，商家可以退款
-            handleOption.setSeller_refund(true);
-        }
-        else if (OrderStatusEnum.REFUND_COMPLETE.equals(status)) {  // 订单退款已完成
-            // 退款成功
-            // 如果订单已经退款，则可删除
-            handleOption.setDelete(true);
-            handleOption.setRefundSuccess(true);
-        }
-        else if (OrderStatusEnum.MERCHANT_ACCEPT.equals(status) // 商家确认接受订单
-                || OrderStatusEnum.MERCHANT_SHIP.equals(status)  // 商家已发货
-                || OrderStatusEnum.ONGOING.equals(status)) { // 达达订单进行中
-            // 如果订单已经发货，没有收货，则可收货操作
-            // 此时不能取消订单
-            handleOption.setConfirm(true);
-        }
-        else if (OrderStatusEnum.SYSTEM_AUTO_COMPLETE.equals(status) // 系统自动完成
-                || OrderStatusEnum.COMPLETE.equals(status)) { // 完成
-            //已完成
-            // 如果订单已经支付，且已经收货，则可删除、去评论和再次购买
-            handleOption.setDelete(true);
-            handleOption.setComment(true);
-            handleOption.setRebuy(true);
-        }else {
-            throw new IllegalStateException("status不支持");
-        }
-        return handleOption;
+  /**
+   * 订单权限(功能)判断
+   */
+  public static OrderHandleOption buildOption(LitemallOrder order) {
+    OrderStatusEnum status = order.getOrderStatus();
+    OrderHandleOption handleOption = new OrderHandleOption();
+
+    if (OrderStatusEnum.PENDING_PAYMENT.equals(status)) {// 用户待支付
+      // 如果订单没有被取消，且没有支付，则可支付，可取消
+      handleOption.setCancel(true);
+      handleOption.setPay(true);
+    } else if (OrderStatusEnum.CUSTOMER_CANCEL.equals(status)   // 用户取消订单
+        || OrderStatusEnum.MERCHANT_CANCEL.equals(status)  // 商家取消订单
+        || OrderStatusEnum.SYSTEM_AUTO_CANCEL.equals(status)) { // 系统自动取消订单
+      // 已取消
+      // 如果订单已经取消或是已完成，则可删除
+      handleOption.setDelete(true);
+    } else if (OrderStatusEnum.CUSTOMER_PAIED.equals(status)) { // 用户已付款
+      // 已付款未发货
+      // 如果订单已付款，没有发货，则可退款
+      handleOption.setRefund(true);
+    } else if (OrderStatusEnum.MERCHANT_REFUNDING.equals(status)) { // 用户申请退款
+      // 如果订单申请退款中，商家可以退款
+      handleOption.setSeller_refund(true);
+    } else if (OrderStatusEnum.REFUND_COMPLETE.equals(status)) {  // 订单退款已完成
+      // 退款成功
+      // 如果订单已经退款，则可删除
+      handleOption.setDelete(true);
+      handleOption.setRefundSuccess(true);
+    } else if (OrderStatusEnum.MERCHANT_ACCEPT.equals(status) // 商家确认接受订单
+        || OrderStatusEnum.MERCHANT_SHIP.equals(status)  // 商家已发货
+        || OrderStatusEnum.ONGOING.equals(status)) { // 达达订单进行中
+      // 如果订单已经发货，没有收货，则可收货操作
+      // 此时不能取消订单
+      handleOption.setConfirm(true);
+    } else if (OrderStatusEnum.SYSTEM_AUTO_COMPLETE.equals(status) // 系统自动完成
+        || OrderStatusEnum.COMPLETE.equals(status)) { // 完成
+      //已完成
+      // 如果订单已经支付，且已经收货，则可删除、去评论和再次购买
+      handleOption.setDelete(true);
+      handleOption.setComment(true);
+      handleOption.setRebuy(true);
+    } else {
+      throw new IllegalStateException("status不支持");
     }
+    return handleOption;
+  }
 
   /**
    * 订单详情
@@ -288,16 +281,17 @@ public class WxOrderController {
     orderVo.put("goodsPrice", order.getGoodsPrice());
     orderVo.put("freightPrice", order.getFreightPrice());
     orderVo.put("actualPrice", order.getActualPrice());
-    orderVo.put("orderStatusText",showTxt.get("orderStatusText") );
+    orderVo.put("orderStatusText", showTxt.get("orderStatusText"));
     orderVo.put("handleOption", this.buildOption(order));
-    orderVo.put("titleText",showTxt.get("titleText"));
+    orderVo.put("titleText", showTxt.get("titleText"));
     // 添加骑手信息
     String deliveryId = order.getDeliveryId();
     if (deliveryId != null && !("").equals(deliveryId)) {
-        LitemallDeliveryDetail deliveryDetails = deliveryDetailService.getDeliveryDetailByDeliveryId(deliveryId);
-        orderVo.put("deliveryDetails", deliveryDetails);
-    }else{
-        orderVo.put("deliveryDetails", "");
+      LitemallDeliveryDetail deliveryDetails = deliveryDetailService
+          .getDeliveryDetailByDeliveryId(deliveryId);
+      orderVo.put("deliveryDetails", deliveryDetails);
+    } else {
+      orderVo.put("deliveryDetails", "");
     }
 
     List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(order.getId());
@@ -322,73 +316,65 @@ public class WxOrderController {
 
   }
 
-    /**
-     *  订单详情显示信息
-     */
-    public Map<String, String> buildShowTxt(LitemallOrder order){
-        Map<String, String> showTxt = new HashMap<>();
-        OrderStatusEnum status = order.getOrderStatus();
-        String titleText = "";
-        String orderStatusText = "";
-        // 待支付
-        if (OrderStatusEnum.PENDING_PAYMENT.equals(status)) {// 用户待支付
-            titleText = "待付款";
-            orderStatusText = "";
-        }
-        // 已取消
-        else if (OrderStatusEnum.CUSTOMER_CANCEL.equals(status)) {  // 用户取消订单
-            titleText = "已取消";
-            orderStatusText = "您已取消订单";
-        }
-        else if (OrderStatusEnum.SYSTEM_AUTO_CANCEL.equals(status) ) {  // 系统自动取消订单
-            titleText = "已取消";
-            orderStatusText = "超时取消订单";
-        }
-        else if (OrderStatusEnum.MERCHANT_CANCEL.equals(status) ) {  // 商家取消订单
-            titleText = "已取消";
-            orderStatusText = "商家未接单";
-        }
-        else if (OrderStatusEnum.MERCHANT_REFUNDING.equals(status)  // 用户申请退款
-            || OrderStatusEnum.REFUND_COMPLETE.equals(status)) {   // 订单退款已完成
-            titleText = "已取消";
-            orderStatusText = "您已取消订单";
-        }
-        // 待收货
-        else if (OrderStatusEnum.CUSTOMER_PAIED.equals(status)) { // 用户已付款
-            titleText = "待接单";
-            orderStatusText = "";
-        }
-        else if (OrderStatusEnum.MERCHANT_ACCEPT.equals(status) ) { // 商家确认接受订单
-            titleText = "店家正在配货";
-            orderStatusText = "预计送达：";
-        }
-        else if (OrderStatusEnum.MERCHANT_SHIP.equals(status) ) { // 商家已发货
-            titleText = "骑手正在赶往商家";
-            orderStatusText = "预计送达：";
-        }
-        else if (OrderStatusEnum.ONGOING.equals(status) ) {  // 达达订单进行中
-            titleText = "骑手正在配送中";
-            orderStatusText = "预计送达：";
-        }
-        // 已完成
-        else if ( OrderStatusEnum.COMPLETE.equals(status)) { // 完成
-            titleText = "已完成";
-            orderStatusText = "您已完成订单";
-        }
-        else if (OrderStatusEnum.SYSTEM_AUTO_COMPLETE.equals(status)) {  // 系统自动完成
-            titleText = "已完成";
-            orderStatusText = "系统自动完成";
-        }
-        else {
-            throw new IllegalStateException("status不支持");
-        }
-        showTxt.put("titleText", titleText);
-        showTxt.put("orderStatusText", orderStatusText);
-        return showTxt;
+  /**
+   * 订单详情显示信息
+   */
+  public Map<String, String> buildShowTxt(LitemallOrder order) {
+    Map<String, String> showTxt = new HashMap<>();
+    OrderStatusEnum status = order.getOrderStatus();
+    String titleText = "";
+    String orderStatusText = "";
+    // 待支付
+    if (OrderStatusEnum.PENDING_PAYMENT.equals(status)) {// 用户待支付
+      titleText = "待付款";
+      orderStatusText = "";
     }
+    // 已取消
+    else if (OrderStatusEnum.CUSTOMER_CANCEL.equals(status)) {  // 用户取消订单
+      titleText = "已取消";
+      orderStatusText = "您已取消订单";
+    } else if (OrderStatusEnum.SYSTEM_AUTO_CANCEL.equals(status)) {  // 系统自动取消订单
+      titleText = "已取消";
+      orderStatusText = "超时取消订单";
+    } else if (OrderStatusEnum.MERCHANT_CANCEL.equals(status)) {  // 商家取消订单
+      titleText = "已取消";
+      orderStatusText = "商家未接单";
+    } else if (OrderStatusEnum.MERCHANT_REFUNDING.equals(status)  // 用户申请退款
+        || OrderStatusEnum.REFUND_COMPLETE.equals(status)) {   // 订单退款已完成
+      titleText = "已取消";
+      orderStatusText = "您已取消订单";
+    }
+    // 待收货
+    else if (OrderStatusEnum.CUSTOMER_PAIED.equals(status)) { // 用户已付款
+      titleText = "待接单";
+      orderStatusText = "";
+    } else if (OrderStatusEnum.MERCHANT_ACCEPT.equals(status)) { // 商家确认接受订单
+      titleText = "店家正在配货";
+      orderStatusText = "预计送达：";
+    } else if (OrderStatusEnum.MERCHANT_SHIP.equals(status)) { // 商家已发货
+      titleText = "骑手正在赶往商家";
+      orderStatusText = "预计送达：";
+    } else if (OrderStatusEnum.ONGOING.equals(status)) {  // 达达订单进行中
+      titleText = "骑手正在配送中";
+      orderStatusText = "预计送达：";
+    }
+    // 已完成
+    else if (OrderStatusEnum.COMPLETE.equals(status)) { // 完成
+      titleText = "已完成";
+      orderStatusText = "您已完成订单";
+    } else if (OrderStatusEnum.SYSTEM_AUTO_COMPLETE.equals(status)) {  // 系统自动完成
+      titleText = "已完成";
+      orderStatusText = "系统自动完成";
+    } else {
+      throw new IllegalStateException("status不支持");
+    }
+    showTxt.put("titleText", titleText);
+    showTxt.put("orderStatusText", orderStatusText);
+    return showTxt;
+  }
 
 
-    /**
+  /**
    * 提交订单 1. 根据购物车ID、地址ID、优惠券ID，创建订单表项 2. 购物车清空 3. TODO 优惠券设置已用 4. 商品货品数量减少
    *
    * @param userId 用户ID
@@ -454,28 +440,30 @@ public class WxOrderController {
       checkedGoodsPrice = checkedGoodsPrice
           .add(checkGoods.getRetailPrice().multiply(new BigDecimal(checkGoods.getNumber())));
     }
-      // 商家信息
-      LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
-      Integer adminId = admin.getId();
+    // 商家信息
+    LitemallAdmin admin = adminService.findAdminByOwnerId(appId);
+    Integer adminId = admin.getId();
 
-      BigDecimal deliveryFee;
-      try {
-          logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + checkedAddress.getId());
-          Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, checkedAddress);
-          if(deliveryObj != null && ("0").equals(((HashMap) deliveryObj).get("errno").toString())){
-              double fee = Double.parseDouble(((HashMap) deliveryObj).get("data").toString());
-              logger.info("获取运费：" + fee);
-              deliveryFee = new BigDecimal(fee);
-          }else{
-              return deliveryObj;
-          }
-      }catch (Exception e){
-          logger.error(e.getMessage());
-          return ResponseUtil.fail(-1,"提交订单失败");
+    BigDecimal deliveryFee;
+    try {
+      logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + checkedAddress
+          .getId());
+      Object deliveryObj = deliveryDetailService
+          .queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, checkedAddress);
+      if (deliveryObj != null && ("0").equals(((HashMap) deliveryObj).get("errno").toString())) {
+        double fee = Double.parseDouble(((HashMap) deliveryObj).get("data").toString());
+        logger.info("获取运费：" + fee);
+        deliveryFee = new BigDecimal(fee);
+      } else {
+        return deliveryObj;
       }
+    } catch (Exception e) {
+      logger.error(e.getMessage());
+      return ResponseUtil.fail(-1, "提交订单失败");
+    }
 
     // 根据订单商品总价计算运费，满88则免运费，否则8元；
-      BigDecimal freightPrice = deliveryFee;
+    BigDecimal freightPrice = deliveryFee;
 //    BigDecimal freightPrice = new BigDecimal(0.00);
 //    if (checkedGoodsPrice.compareTo(new BigDecimal(88.00)) < 0) {
 //      freightPrice = new BigDecimal(8.00);
@@ -771,7 +759,9 @@ public class WxOrderController {
       dataSoc.put("adminId", admin.getId());
       dataSoc.put("orderData", orderWithGoods);
       messageInfo.setDomainData(dataSoc);
-      client.emit(SocketEvent.SUBMIT_ORDER, JSONObject.toJSONString(messageInfo));
+      String orderMsg = JSONObject.toJSONString(messageInfo);
+      log.info("正在发送订单提交信息{}", SocketEvent.SUBMIT_ORDER, orderMsg);
+      client.emit(SocketEvent.SUBMIT_ORDER, orderMsg);
 
       return WxPayNotifyResponse.success("处理成功!");
     } catch (Exception e) {
@@ -920,7 +910,7 @@ public class WxOrderController {
     if (!order.getUserId().equals(userId)) {
       return ResponseUtil.badArgumentValue();
     }
-  // TODO
+    // TODO
 //    OrderHandleOption handleOption = OrderUtil.build(order);
 //    if (!handleOption.isConfirm()) {
 //      return ResponseUtil.fail(403, "订单不能确认收货");
