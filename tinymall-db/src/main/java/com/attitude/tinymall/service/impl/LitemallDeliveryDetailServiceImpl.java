@@ -90,6 +90,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         for(LitemallOrderGoods orderGood : orderGoodsList){
             orderInfo.append(orderGood.getGoodsName()+"\t"+"x"+orderGood.getNumber()+"\t\r\n");
         }
+        String originMarkNo = order.getOriginMarkNo().substring(1,order.getOriginMarkNo().length());
         AddOrderParams orderParams = AddOrderParams.builder()
                 .shopNo(admin.getTpdShopNo().toString())
                 //北京地区
@@ -104,17 +105,12 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .callback(dadaCallbackAddress)
                 .originId(deliveryId)
                 .info(orderInfo.toString())
-                //测试数据 //TODO
                 .cargoType(9)
-                .originMark("2")
-                .originMarkNo("3")
-                .cargoWeight(1.50)
-                .cargoNum(4)
+                .originMarkNo(originMarkNo)
                 .build();
 
         ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
         if (res.isSuccess()) {
-            order.setDeliverFee(res.getResult().getFee());
             LitemallDeliveryDetail litemallDeliveryDetail = new LitemallDeliveryDetail();
             litemallDeliveryDetail.setDeliveryId(deliveryId);
             litemallDeliveryDetail.setDistance("" + res.getResult().getDistance());

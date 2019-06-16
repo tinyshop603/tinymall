@@ -2181,53 +2181,123 @@ public class LitemallOrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeEqualTo(Integer value) {
+        public Criteria andDeliverFeeEqualTo(BigDecimal value) {
             addCriterion("deliver_fee =", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeNotEqualTo(Integer value) {
+        public Criteria andDeliverFeeNotEqualTo(BigDecimal value) {
             addCriterion("deliver_fee <>", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeGreaterThan(Integer value) {
+        public Criteria andDeliverFeeGreaterThan(BigDecimal value) {
             addCriterion("deliver_fee >", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeGreaterThanOrEqualTo(Integer value) {
+        public Criteria andDeliverFeeGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("deliver_fee >=", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeLessThan(Integer value) {
+        public Criteria andDeliverFeeLessThan(BigDecimal value) {
             addCriterion("deliver_fee <", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeLessThanOrEqualTo(Integer value) {
+        public Criteria andDeliverFeeLessThanOrEqualTo(BigDecimal value) {
             addCriterion("deliver_fee <=", value, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeIn(List<Integer> values) {
+        public Criteria andDeliverFeeIn(List<BigDecimal> values) {
             addCriterion("deliver_fee in", values, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeNotIn(List<Integer> values) {
+        public Criteria andDeliverFeeNotIn(List<BigDecimal> values) {
             addCriterion("deliver_fee not in", values, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeBetween(Integer value1, Integer value2) {
+        public Criteria andDeliverFeeBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("deliver_fee between", value1, value2, "deliverFee");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverFeeNotBetween(Integer value1, Integer value2) {
+        public Criteria andDeliverFeeNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("deliver_fee not between", value1, value2, "deliverFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoIsNull() {
+            addCriterion("origin_mark_no is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoIsNotNull() {
+            addCriterion("origin_mark_no is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoEqualTo(String value) {
+            addCriterion("origin_mark_no =", value, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoNotEqualTo(String value) {
+            addCriterion("origin_mark_no <>", value, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoGreaterThan(String value) {
+            addCriterion("origin_mark_no >", value, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoGreaterThanOrEqualTo(String value) {
+            addCriterion("origin_mark_no >=", value, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoLessThan(String value) {
+            addCriterion("origin_mark_no <", value, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoLessThanOrEqualTo(String value) {
+            addCriterion("origin_mark_no <=", value, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoLike(String value) {
+            addCriterion("origin_mark_no like", value, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoNotLike(String value) {
+            addCriterion("origin_mark_no not like", value, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoIn(List<String> values) {
+            addCriterion("origin_mark_no in", values, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoNotIn(List<String> values) {
+            addCriterion("origin_mark_no not in", values, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoBetween(String value1, String value2) {
+            addCriterion("origin_mark_no between", value1, value2, "originMarkNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginMarkNoNotBetween(String value1, String value2) {
+            addCriterion("origin_mark_no not between", value1, value2, "originMarkNo");
             return (Criteria) this;
         }
     }

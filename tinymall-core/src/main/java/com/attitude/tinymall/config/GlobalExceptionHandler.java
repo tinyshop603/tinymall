@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
@@ -14,15 +15,20 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   @ResponseBody
-  public Object argumentHandler(MethodArgumentTypeMismatchException e) {
-    log.info("invalid input error: {}", e.getMessage());
+  public Object argumentHandler(MethodArgumentTypeMismatchException e,
+      HandlerMethod handlerMethod) {
+    String errorMsg = String.format("method name:%s invalid input error: %s",
+        handlerMethod.getMethod().getName(), e.getMessage());
+    log.info(errorMsg);
     return ResponseUtil.badArgumentValue();
   }
 
   @ExceptionHandler(Exception.class)
   @ResponseBody
-  public Object exceptionHandler(Exception e) {
-    log.error("un except error", e);
+  public Object exceptionHandler(Exception e, HandlerMethod handlerMethod) {
+    String errorMsg = String.format("method name:%s  un excepted error: %s",
+        handlerMethod.getMethod().getName(), e.getMessage());
+    log.error(errorMsg, e);
     return ResponseUtil.serious();
   }
 

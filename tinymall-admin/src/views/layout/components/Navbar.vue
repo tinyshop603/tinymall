@@ -65,7 +65,7 @@ export default {
         store.commit('SET_SUBMIT_ORDER', newOrder)
         this.comePlayer.play()
         const credentialData = {
-          'shopName':'789便利店',
+          'shopName':`${newOrder.order.originMarkNo}   789便利店`,
           'shopQRurl':'https://www.bjguangchi.top/static/789shop-b.png',
           'payStyle':'在线支付(已支付)',
           'orderNO':`订单编号:${newOrder.order.orderSn}`,
