@@ -120,18 +120,6 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
     return (int) orderMapper.countByExample(example);
   }
 
-  // TODO 这里应该产生一个唯一的订单，但是实际上这里仍然存在两个订单相同的可能性
-  @Override
-  public String generateOrderSn(Integer userId) {
-    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd");
-    String now = df.format(LocalDate.now());
-    String orderSn = now + getRandomNum(6);
-    while (countByOrderSn(userId, orderSn) != 0) {
-      orderSn = getRandomNum(6);
-    }
-    return orderSn;
-  }
-
   @Override
   public List<LitemallOrder> queryByOrderStatus(Integer userId, List<OrderStatusEnum> orderStatus) {
     LitemallOrderExample example = new LitemallOrderExample();

@@ -169,7 +169,7 @@ function fillPrinterData(LODOP, printData) {
 
   // /标题:商店名称
   const SHOP_TITLE_HEIGTH = 30
-  LODOP.ADD_PRINT_TEXT(topY += 10, marginLeft += (MAX_PAGE_WITH / 3 - 15), MAX_PAGE_WITH, SHOP_TITLE_HEIGTH, printData.shopName)
+  LODOP.ADD_PRINT_TEXT(topY += 10, marginLeft += (MAX_PAGE_WITH / 3), MAX_PAGE_WITH, SHOP_TITLE_HEIGTH, printData.shopName)
   LODOP.SET_PRINT_STYLEA(0, 'FontSize', 13) // 0代表当前样式
   LODOP.SET_PRINT_STYLEA(0, 'Bold', 1)
 
@@ -295,11 +295,11 @@ function fillPrinterData(LODOP, printData) {
   LODOP.SET_PRINT_STYLEA(0, 'FontSize', 13) // 0代表当前样式
   LODOP.SET_PRINT_STYLEA(0, 'Bold', 1)
   // 电话
-  LODOP.ADD_PRINT_TEXT(topY += (20 * Math.ceil((printData.customerInfo.address.length / 12))), marginLeft, MAX_PAGE_WITH, 30, printData.customerInfo.phoneNumber)
+  LODOP.ADD_PRINT_TEXT(topY += (22 * Math.ceil((printData.customerInfo.address.length / 12))), marginLeft, MAX_PAGE_WITH, 30, printData.customerInfo.phoneNumber)
   LODOP.SET_PRINT_STYLEA(0, 'FontSize', 13) // 0代表当前样式
   LODOP.SET_PRINT_STYLEA(0, 'Bold', 1)
   // 姓名
-  LODOP.ADD_PRINT_TEXT(topY += 20, marginLeft, MAX_PAGE_WITH, 30, printData.customerInfo.name)
+  LODOP.ADD_PRINT_TEXT(topY += 25, marginLeft, MAX_PAGE_WITH, 30, printData.customerInfo.name)
   LODOP.SET_PRINT_STYLEA(0, 'FontSize', 13) // 0代表当前样式
   LODOP.SET_PRINT_STYLEA(0, 'Bold', 1)
 

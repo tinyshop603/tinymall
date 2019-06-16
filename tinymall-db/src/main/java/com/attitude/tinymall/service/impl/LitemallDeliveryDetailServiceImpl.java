@@ -111,7 +111,6 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
 
         ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
         if (res.isSuccess()) {
-            order.setDeliverFee(res.getResult().getFee());
             LitemallDeliveryDetail litemallDeliveryDetail = new LitemallDeliveryDetail();
             litemallDeliveryDetail.setDeliveryId(deliveryId);
             litemallDeliveryDetail.setDistance("" + res.getResult().getDistance());
