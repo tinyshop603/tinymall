@@ -146,6 +146,7 @@ public class AdminGoodsController {
             return ResponseUtil.unlogin();
         }
       //  goods.setCategoryId(Integer.parseInt(goods.getcategoryName()));
+        goods.setCounterPrice(goods.getRetailPrice());
         goodsService.updateById(goods);
         return ResponseUtil.ok(goods);
     }
