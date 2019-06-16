@@ -32,8 +32,8 @@
               <span>{{ props.row.goodsDesc }}</span>
             </el-form-item>
             <el-form-item label="商品主图">
-              <img :src="props.row.primaryPicUrl" class="image"></img>
-            </el-form-item>
+              <img :src="props.row.primaryPicUrl + '?x-oss-process=image/resize,m_fixed,h_200,w_200'" class="image"></img>
+            </el-form-item>./a
             <el-form-item label="商品单位">
               <span>{{ props.row.goodsUnit }}</span>
             </el-form-item>

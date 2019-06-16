@@ -123,7 +123,7 @@ Page({
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
             let oldPicUrl = res.data.goodsList[i].listPicUrl;
-            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!240x240r/gravity/Center/crop/240x240/";
+            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_240,w_240";// "?imageMogr/thumbnail/!240x240r/gravity/Center/crop/240x240/";
           }
         }
         that.setData({
@@ -280,7 +280,7 @@ Page({
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
             let oldPicUrl = res.data.goodsList[i].listPicUrl;
-            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"?imageMogr/thumbnail/!240x240r/gravity/Center/crop/240x240/";
+            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_240,w_240"// "?imageMogr/thumbnail/!240x240r/gravity/Center/crop/240x240/";
           }
         }
         that.setData({

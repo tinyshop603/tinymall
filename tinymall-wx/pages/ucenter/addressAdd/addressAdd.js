@@ -7,8 +7,8 @@ Page({
   data: {
     address: {
       id:0,
-      provinceId: 0,
-      cityId: 0,
+      provinceId: 1, // 默认 北京市
+      cityId: 32, //  默认 市辖区
       areaId: 0,
       address: '',
       addressDetail:'',

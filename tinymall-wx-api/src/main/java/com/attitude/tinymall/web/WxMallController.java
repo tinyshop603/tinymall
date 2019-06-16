@@ -58,7 +58,7 @@ public class WxMallController {
   // TODO 分类改造首页 返回全部商品 采用图片懒加载及锚点技术实现
   @GetMapping("/new/category")
   public Object getAllDetail(@PathVariable("storeId") String appid) {
-    final String replacePic = "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+    final String replacePic = "x-oss-process=image/resize,m_fixed,h_120,w_120" ;//"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
     LitemallAdmin litemallAdmin = litemallAdminService.findAdminByOwnerId(appid);
     // 此处查询出的数据必定size为1或者0
     List<LitemallCategory> litemallCategories = categoryService
@@ -129,7 +129,7 @@ public class WxMallController {
 
   @GetMapping("/category")
   public Object getMallCategoryDetail(@PathVariable("storeId") String appid) {
-    final String replacePic = "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+    final String replacePic = "x-oss-process=image/resize,m_fixed,h_120,w_120";// "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
     LitemallAdmin litemallAdmin = litemallAdminService.findAdminByOwnerId(appid);
     // 此处查询出的数据必定size为1或者0
     List<LitemallCategory> litemallCategories = categoryService
