@@ -1,5 +1,6 @@
 package com.attitude.tinymall.web;
 
+import com.attitude.tinymall.domain.LitemallRegion;
 import com.attitude.tinymall.domain.baidu.address.Location;
 import com.attitude.tinymall.domain.baidu.address.PoiAddress;
 import com.attitude.tinymall.domain.baidu.geocode.GeoDecodingAddress;
@@ -22,6 +23,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -126,10 +128,11 @@ public class WxAddressController {
         data.put("name", address.getName());
         data.put("provinceId", address.getProvinceId());
         data.put("cityId", address.getCityId());
+        data.put("areaId", address.getCityId());
         data.put("districtId", address.getAreaId());
-        data.put("mobile", address.getMobile());
         data.put("address", address.getAddress());
         data.put("addressDetail", address.getAddressDetail());
+        data.put("mobile", address.getMobile());
         data.put("isDefault", address.getIsDefault());
         String pname = regionService.findById(address.getProvinceId()).getName();
         data.put("provinceName", pname);
@@ -156,6 +159,17 @@ public class WxAddressController {
         }
         if (address == null) {
             return ResponseUtil.badArgument();
+        }
+
+        // 借用areaId传递areaType,保存时需要转换一下
+        if (address.getAreaId() != null){
+            LitemallRegion areaRegion = regionService.queryByCode(address.getAreaId());
+            if(areaRegion == null){
+                logger.error("保存地址code转换错误：" + address.getAreaId());
+                return ResponseUtil.badArgument();
+            }else{
+                address.setAreaId(areaRegion.getId());
+            }
         }
 
         // 测试收货手机号码是否正确
@@ -186,6 +200,9 @@ public class WxAddressController {
         if (address.getId() == null || address.getId().equals(0)) {
             address.setId(null);
             address.setUserId(userId);
+            address.setAddTime(LocalDateTime.now());
+            address.setProvinceId(1); // 北京市 默认
+            address.setCityId(32); // 市辖区 默认
             addressService.add(address, appId);
         } else {
             address.setUserId(userId);

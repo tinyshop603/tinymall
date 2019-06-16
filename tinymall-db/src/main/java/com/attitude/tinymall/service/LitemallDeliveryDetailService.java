@@ -41,7 +41,7 @@ public interface LitemallDeliveryDetailService {
      * @param
      * @return  Map:String setdeliveryNo String setdeliveryNo
      */
-    Object queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , LitemallAddress address);
+    Object queryDeliverFee4WX(Integer userId , Integer adminId , BigDecimal actualPrice , LitemallAddress checkedAddress);
 
     /**
      * 取消订单

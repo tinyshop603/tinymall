@@ -6,16 +6,23 @@
 
     <view class="line"></view>
 
-    <view class="title">附近地址</view>
+    <view class="title" wx:if="{{keyWord == 'keyWord'}}">附近地址</view>
 
     <view class="nearby-address">
-      <view class="item" wx:for="{{keywordsNearbyAddresses}}" wx:key="{{item.name}}" data-address="{{item.address}}" data-name="{{item.name}}" data-in="{{item.inDistributionScope}}" bindtap="getAddress">{{item.name}}</view>
-      <!-- <view class="item" bindtap="getAddress">北店嘉园</view>
+      <view class="item" wx:for="{{keywordsNearbyAddresses}}" wx:key="{{item.name}}" data-address="{{item.address}}" data-name="{{item.name}}" data-in="{{item.inDistributionScope}}" bindtap="getAddress">
+          <text class="l">{{item.name}}</text>
+          <text class="r" wx:if="{{!item.inDistributionScope}}">不在配送范围内</text>
+          <view class="clear"></view>
+      </view>
+      <!-- <view class="item" bindtap="getAddress">
+          <text class="l">北店嘉园</text>
+          <text class="r">不在配送范围内</text>
+      </view>
       <view class="item" bindtap="getAddress">回龙观</view>
       <view class="item" bindtap="getAddress">北店嘉园南区</view>
       <view class="item" bindtap="getAddress">北店嘉园北区</view>
       <view class="item" bindtap="getAddress">龙禧园二区</view> -->
     </view>
-    <view wx:if="{{keywordsNearbyAddresses == ''}}">没有结果呦！</view>
+    <view class="no-res" wx:if="{{keywordsNearbyAddresses == '' && showNoRes == true}}">没有结果呦！</view>
 </view>
 

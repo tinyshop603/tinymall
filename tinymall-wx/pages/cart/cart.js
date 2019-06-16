@@ -56,7 +56,6 @@ Page({
     }
 
     this.setData({
-      isEditCart: false,
       hasLogin: app.globalData.hasLogin
     });
 
@@ -117,7 +116,7 @@ Page({
 
     let productIds = [];
     productIds.push(that.data.cartGoods[itemIndex].productId);
-    if (!this.data.isEditCart) {
+    // if (!this.data.isEditCart) {
       util.request(api.CartChecked, { productIds: productIds, isChecked: that.data.cartGoods[itemIndex].checked ? 0 : 1 }, 'POST').then(function (res) {
         if (res.errno === 0) {
           //wz-截取图片格式
@@ -139,22 +138,22 @@ Page({
           checkedAllStatus: that.isCheckedAll()
         });
       });
-    } else {
-      //编辑状态
-      let tmpCartData = this.data.cartGoods.map(function (element, index, array) {
-        if (index == itemIndex){
-          element.checked = !element.checked;
-        }
+    // } else {
+    //   //编辑状态
+    //   let tmpCartData = this.data.cartGoods.map(function (element, index, array) {
+    //     if (index == itemIndex){
+    //       element.checked = !element.checked;
+    //     }
         
-        return element;
-      });
+    //     return element;
+    //   });
 
-      that.setData({
-        cartGoods: tmpCartData,
-        checkedAllStatus: that.isCheckedAll(),
-        'cartTotal.checkedGoodsCount': that.getCheckedGoodsCount()
-      });
-    }
+    //   that.setData({
+    //     cartGoods: tmpCartData,
+    //     checkedAllStatus: that.isCheckedAll(),
+    //     'cartTotal.checkedGoodsCount': that.getCheckedGoodsCount()
+    //   });
+    // }
   },
   //TODO wz-用于变更商品数量时计算总量，接口可优化
   checkedNum: function (event) {
@@ -194,7 +193,7 @@ Page({
   checkedAll: function () {
     let that = this;
 
-    if (!this.data.isEditCart) {
+    // if (!this.data.isEditCart) {
       var productIds = this.data.cartGoods.map(function (v) {
         return v.productId;
       });
@@ -220,45 +219,45 @@ Page({
           checkedAllStatus: that.isCheckedAll()
         });
       });
-    } else {
-      //编辑状态
-      let checkedAllStatus = that.isCheckedAll();
-      let tmpCartData = this.data.cartGoods.map(function (v) {
-        v.checked = !checkedAllStatus;
-        return v;
-      });
+    // } else {
+    //   //编辑状态
+    //   let checkedAllStatus = that.isCheckedAll();
+    //   let tmpCartData = this.data.cartGoods.map(function (v) {
+    //     v.checked = !checkedAllStatus;
+    //     return v;
+    //   });
       
-      that.setData({
-        cartGoods: tmpCartData,
-        checkedAllStatus: that.isCheckedAll(),
-        'cartTotal.checkedGoodsCount': that.getCheckedGoodsCount()
-      });
-    }
+    //   that.setData({
+    //     cartGoods: tmpCartData,
+    //     checkedAllStatus: that.isCheckedAll(),
+    //     'cartTotal.checkedGoodsCount': that.getCheckedGoodsCount()
+    //   });
+    // }
 
   },
-  editCart: function () {
-    var that = this;
-    if (this.data.isEditCart) {
-      this.getCartList();
-      this.setData({
-        isEditCart: !this.data.isEditCart
-      });
-    } else {
-      //编辑状态
-      let tmpCartList = this.data.cartGoods.map(function (v) {
-        v.checked = false;
-        return v;
-      });
-      this.setData({
-        editCartList: this.data.cartGoods,
-        cartGoods: tmpCartList,
-        isEditCart: !this.data.isEditCart,
-        checkedAllStatus: that.isCheckedAll(),
-        'cartTotal.checkedGoodsCount': that.getCheckedGoodsCount()
-      });
-    }
+  // editCart: function () {
+  //   var that = this;
+  //   if (this.data.isEditCart) {
+  //     this.getCartList();
+  //     this.setData({
+  //       isEditCart: !this.data.isEditCart
+  //     });
+  //   } else {
+  //     //编辑状态
+  //     let tmpCartList = this.data.cartGoods.map(function (v) {
+  //       v.checked = false;
+  //       return v;
+  //     });
+  //     this.setData({
+  //       editCartList: this.data.cartGoods,
+  //       cartGoods: tmpCartList,
+  //       isEditCart: !this.data.isEditCart,
+  //       checkedAllStatus: that.isCheckedAll(),
+  //       'cartTotal.checkedGoodsCount': that.getCheckedGoodsCount()
+  //     });
+  //   }
 
-  },
+  // },
   updateCart: function (productId, goodsId, number, id, event) {
     let that = this;
 
@@ -319,6 +318,7 @@ Page({
     // storage中设置了cartId，则是购物车购买
     try {
       wx.setStorageSync('cartId', 0);
+      wx.setStorageSync('addressId', 0);
       wx.navigateTo({
         url: '../shopping/checkout/checkout'
       })

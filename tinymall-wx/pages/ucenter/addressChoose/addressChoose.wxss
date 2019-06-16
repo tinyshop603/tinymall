@@ -42,7 +42,28 @@ page {
   color: #ccc;
 }
 .nearby-address .item{
-  height: 80rpx;
+  /* height: 80rpx; */
   margin: 20rpx;
   border-bottom: 1px solid #ccc;
+}
+
+.nearby-address .l{
+  width: 450rpx;
+  float: left;
+  padding: 20rpx;
+  overflow: hidden;
+}
+
+
+.nearby-address .r{
+  float:right;
+  padding: 20rpx;
+  color: #7A7A7A;
+}
+
+.no-res{
+  margin: auto;
+}
+.clear{
+  clear:both;
 }

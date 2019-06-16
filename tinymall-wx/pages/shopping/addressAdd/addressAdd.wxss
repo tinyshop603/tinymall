@@ -18,10 +18,29 @@ page{
     padding-right: 31.25rpx;
 }
 
+.add-address .form-txt{
+    color:#7A7A7A;
+}
+
+.add-address .icon{
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABFElEQVQ4T6VTwa3DIAzFiCNIzTESRB2hI2SEjpARGCEjZISM0BH6N/gjfAFSjqkExwgqV40UpSn9Vbggg/3s52cD2XlgZzzJAjjnTphASvn7LtEmgLW2TilpSukVA2OMJwDolVIPe3leAIZhOE7TpJVSelmBtbZjjHVlWf5lAdCRc96GEDQA3NA5pXTgnHchhBaBswDGmL6qqma+0XnrbQZ5oTBX4L2vAQB7kQghP0KI678qePKupZTdOI4HzFQUxc1a2wLAZa3IpgrGmIsQosFABEAg7z1SO39UAR2eSjRKqRZtzM4Y69cK4N/bQXLO6RjjQzJK6REpbQ1TdhKxoRi0li4r4/ITuc99+GqUv1mw3dt4ByMLhhHDNyjNAAAAAElFTkSuQmCC) no-repeat;
+    width: 32rpx;
+    height: 32rpx;
+}
+
 .add-address .input{
     flex: 1;
     height: 44rpx;
     line-height: 44rpx;
+    overflow: hidden;
+}
+.add-address .placeholder{
+    color:#E3E3E3;
+}
+.add-address .fwidth{
+    width:400rpx;
+    height: 100%;
+    padding: 36rpx 0;
     overflow: hidden;
 }
 
@@ -46,8 +65,8 @@ page{
 }
 
 .default-input.selected{
-    background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/sprites/checkbox-sed825af9d3-a6b8540d42.png) 0 -192rpx no-repeat;
-    background-size: 38rpx 486rpx;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAACaUlEQVQ4T52U20tUURTGv++MN9JRJ1BLcjTyoctDF0pByuhCF+ghqKTHoLcg6MEsKJOjBqEQWBA99B8IWeBDEJghEhUoRBARxYxdDC+Zls2kzf7inEFrZpwZx/NwHtb+1m+tvdbai0jyaaRtA4STko4CWg+wDMAMoM8iBiwPeriu5clS7ow3aqxjjQmH2imekeRJFtSxk3hBspH+awP/62Kg+thaK4MeSWtTwWIAhKGsy6xq7lywL0JdYET9AvKWC4zTXfdUtVx1b+D8nCsrFB7KJMOlAltEAytbul1oZMS+B4OzK8xw0Y3kKLPLqul0WdLbdE1JGrBgO1i4G/py25VYsJqoYNslI3NjRVl6a0DfYWi6H5iODgCJIZqg/VRCfcbQwjpYvoMwU4+BmWcx7jQBOyjAnwmURXuBonpo6hHw42WCK02gNSwo1z3JrQCYA4TfJ43B4gNAYR30rRf4ObykzoGOCSpxT721oO8Q9L0PmBlMzMB3BPDuhCYfALOvkwc2AXtYwLZFhXeXW3zMvoImewGYaANWHwMKtkIT94Ffb1JWi5GgfQvC+RhVXjVYcgKYG3XBLKoH8jdD491A6F1qoDOr+mTvM3/Ql6DMLgVLT4NZxZD5HQWGP6TvJ3nXfVEmaD+XUJNYxCwgpxyYHwdMKC2Q4Dw93BJ9+yOteyT1S7DSeqYSEF2eypYL/7ZUoO2igelYKZTkIP0b95MNczH7NBKw2wFcyRTsArNXHWd544Q7KfEABe1TAruWswadGoq6Y/k3NTkZLrASoG6Nv3bmIxw+J5rTEnbEB3ZWnICHlsWbrGhOmLG/VQL0O7yvvB4AAAAASUVORK5CYII=) no-repeat;
+    background-size: 36rpx 36rpx;
 }
 
 .add-address .btns{
@@ -76,7 +95,7 @@ page{
 }
 
 .add-address .save{
-    background: #b4282d;
+    background: #FFD827;
 }
 
 
@@ -139,8 +158,6 @@ page{
 .region-select .done.disabled{
   color: #999;
 }
-
-
 
 .region-select .bd{
   height: 492rpx;

@@ -49,7 +49,7 @@
       <view class="list">
         <view class="group-item">
           <view class="goods">
-            <view class="item {{isEditCart ? 'edit' : ''}}" wx:for="{{cartGoods}}" wx:key="id">
+            <view class="item" wx:for="{{cartGoods}}" wx:key="id">
               <view class="checkbox {{item.checked ? 'checked' : ''}}" bindtap="checkedItem" data-item-index="{{index}}"></view>
               <view class="cart-goods">
                 <image class="img" src="{{item.picUrl}}"></image>
@@ -88,8 +88,8 @@
         <!-- <view class="checkout" bindtap="deleteCart" wx:if="{{isEditCart}}">删除</view> -->
         <view class="delete" bindtap="preDeleteCart">删除</view>
         <!-- <view class="label">商品合计：</view> -->
-        <view class="total"><text class="label">商品合计：</text>{{!isEditCart ? '￥'+cartTotal.checkedGoodsAmount : ''}}</view>
-        <view class="checkout" bindtap="checkoutOrder" wx:if="{{!isEditCart}}">去结算</view>
+        <view class="total"><text class="label">商品合计：</text>{{'￥'+cartTotal.checkedGoodsAmount}}</view>
+        <view class="{{cartTotal.checkedGoodsCount === 0 ? 'noOrder' : 'checkout'}}" bindtap="checkoutOrder">去结算</view>
       </view>
     </view>
   </view>
