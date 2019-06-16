@@ -291,7 +291,7 @@ function fillPrinterData(LODOP, printData) {
 
   // 地址
   marginLeft = 0 // 重置左偏移量
-  LODOP.ADD_PRINT_TEXT(topY += 30, marginLeft, MAX_PAGE_WITH, 30, printData.customerInfo.address)
+  LODOP.ADD_PRINT_TEXT(topY += 30, marginLeft, MAX_PAGE_WITH, (20 * Math.ceil((printData.customerInfo.address.length / 12))), printData.customerInfo.address)
   LODOP.SET_PRINT_STYLEA(0, 'FontSize', 13) // 0代表当前样式
   LODOP.SET_PRINT_STYLEA(0, 'Bold', 1)
   // 电话
