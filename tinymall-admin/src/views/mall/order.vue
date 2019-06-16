@@ -365,11 +365,18 @@ export default {
       })
     },
     merchantConfirmCancelAndRefund() {
+      this.refundAndCancleDialogFormVisible = false
+      const loading = this.$loading({
+        lock:true,
+        text:'正在努力退款中',
+        spinner:'el-icon-loading',
+        background:'rgba(0, 0, 0, 0.7)'
+      })
       // 更改当前的订单的状态为完成状态
       refundOrder(this.dataForm).then(response => {
-        this.refundAndCancleDialogFormVisible = false
         const responseData = response.data
         if (responseData.errno !== 0) {
+          loading.close()
           this.$notify({
             title:'失败',
             message:responseData.errmsg,

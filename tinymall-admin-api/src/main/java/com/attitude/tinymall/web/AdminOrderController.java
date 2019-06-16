@@ -303,8 +303,8 @@ public class AdminOrderController {
    * @param body 订单信息，{ orderId：xxx }
    * @return 订单操作结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
    */
-  @PostMapping("refundConfirm")
-  public Object refundConfirm(@LoginAdmin Integer adminId, @RequestBody String body) {
+  @PostMapping("cancel-and-refund")
+  public Object cancelAndRefundConfirm(@LoginAdmin Integer adminId, @RequestBody String body) {
     if (adminId == null) {
       return ResponseUtil.unlogin();
     }
@@ -312,9 +312,6 @@ public class AdminOrderController {
     if (orderId == null) {
       return ResponseUtil.badArgument();
     }
-//    return refundConf(adminId, orderId);
-//  }
-
     LitemallOrder order = orderService.findById(orderId);
     if (order == null) {
       return ResponseUtil.badArgument();
@@ -328,11 +325,11 @@ public class AdminOrderController {
     }
     if (!(Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_REFUNDING)
         .contains(order.getOrderStatus()) && PayStatusEnum.PAID == order.getPayStatus())) {
-      return ResponseUtil.fail(403, "订单不能退款成功");
+      return ResponseUtil.fail(403, String.format("当前订单状态: %s 不允许取消并退款", order.getOrderStatus().getMessage()));
     }
     boolean refundSuccess = orderService.refundOrder(orderId);
     if (!refundSuccess) {
-      return ResponseUtil.fail(403, "退款失败, 请联系工程师");
+      return ResponseUtil.fail(403, "取消并退款失败, 请联系工程师");
     }
     return ResponseUtil.ok(adminService.findById(orderId));
   }

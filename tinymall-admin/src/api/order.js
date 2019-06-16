@@ -94,7 +94,7 @@ export function updateOrderCode(data) {
  */
 export function refundOrder(data) {
   return request({
-    url:'/order/refundConfirm/',
+    url:'/order/cancel-and-refund/',
     method:'post',
     data:{
       orderId:data.id
