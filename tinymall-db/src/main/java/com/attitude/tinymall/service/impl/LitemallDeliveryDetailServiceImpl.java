@@ -104,6 +104,12 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .callback(dadaCallbackAddress)
                 .originId(deliveryId)
                 .info(orderInfo.toString())
+                //测试数据 //TODO
+                .cargoType(9)
+                .originMark("2")
+                .originMarkNo("3")
+                .cargoWeight(1.50)
+                .cargoNum(4)
                 .build();
 
         ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);

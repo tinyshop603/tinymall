@@ -47,5 +47,19 @@ public class AddOrderParams {
 
   private String info;//订单备注
 
+  @JSONField(name = "cargo_type")
+  private Integer cargoType; //订单商品类型
+
+  @JSONField(name = "origin_mark")
+  private String originMark; //订单来源标识
+
+  @JSONField(name = "origin_mark_no")
+  private String originMarkNo; //订单来源编号
+
+  @JSONField(name = "cargo_weight")
+  private Double cargoWeight; //订单重量
+
+  @JSONField(name = "cargo_num")
+  private Integer cargoNum;  //订单商品数量
 
 }
