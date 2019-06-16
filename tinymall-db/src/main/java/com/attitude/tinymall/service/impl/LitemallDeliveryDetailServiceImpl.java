@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,6 +62,8 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
     @Autowired
     private LitemallAdminService adminService;
 
+    @Autowired
+    private LitemallOrderGoodsService orderGoodsService;
     @Value("${delivery.dada.callback-address}")
     public String dadaCallbackAddress;
 
@@ -82,6 +85,11 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         location = CoodinateCovertorUtil.bd09ToGcj02(location);
         LitemallAdmin admin = adminService.findById(order.getAdminId());
         String deliveryId = IdGeneratorUtil.generateId("TPD");
+        List<LitemallOrderGoods> orderGoodsList = orderGoodsService.queryByOid(orderId);
+        StringBuilder orderInfo = new StringBuilder("商品详情:+\t\r\n");
+        for(LitemallOrderGoods orderGood : orderGoodsList){
+            orderInfo.append(orderGood.getGoodsName()+"\t"+"x"+orderGood.getNumber()+"\t\r\n");
+        }
         AddOrderParams orderParams = AddOrderParams.builder()
                 .shopNo(admin.getTpdShopNo().toString())
                 //北京地区
@@ -95,6 +103,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .receiverPhone(order.getMobile())
                 .callback(dadaCallbackAddress)
                 .originId(deliveryId)
+                .info(orderInfo.toString())
                 .build();
 
         ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
@@ -202,7 +211,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .callback(dadaCallbackAddress)
                 .originId(deliveryId)
                 .build();
-        ResponseEntity<QueryOrderDeliverFeeResult> res = new  ResponseEntity<QueryOrderDeliverFeeResult>();
+        ResponseEntity<QueryOrderDeliverFeeResult> res ;
         try {
                 res = remoteDadaDeliveryClient.queryOrderDeliverFee(orderParams);
                 if (res.isSuccess()) {
