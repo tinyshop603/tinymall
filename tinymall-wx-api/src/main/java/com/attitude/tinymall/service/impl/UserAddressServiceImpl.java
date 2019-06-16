@@ -88,7 +88,6 @@ public class UserAddressServiceImpl implements IUserAddressService {
 
       for (int i = 0; i < poiAddresses.size(); i++) {
         PoiAddress it = poiAddresses.get(i);
-        int finalIndex = i;
         executorService.execute(() -> {
           boolean validLocationWithinFence = false;
           try {
@@ -100,8 +99,7 @@ public class UserAddressServiceImpl implements IUserAddressService {
           } finally {
             countDownLatch.countDown();
           }
-          poiAddressVOs.add(finalIndex,
-              new PoiAddressVO(it.getAddress(), it.getName(), validLocationWithinFence));
+          poiAddressVOs.add(new PoiAddressVO(it.getAddress(), it.getName(), validLocationWithinFence));
         });
       }
 
