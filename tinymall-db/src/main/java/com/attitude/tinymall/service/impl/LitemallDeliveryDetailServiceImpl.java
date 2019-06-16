@@ -80,7 +80,6 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
         Location location = baiduFenceService.geocoding(order.getAddress()).getLocation();
         // 百度坐标转化为高德坐标
         location = CoodinateCovertorUtil.bd09ToGcj02(location);
-        LitemallAddress userDefaultAddress = addressService.findDefault(order.getUserId());
         LitemallAdmin admin = adminService.findById(order.getAdminId());
         String deliveryId = IdGeneratorUtil.generateId("TPD");
         AddOrderParams orderParams = AddOrderParams.builder()
@@ -89,11 +88,11 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .cityCode("010")
                 .cargoPrice(order.getActualPrice())
                 .isPrepay(0)
-                .receiverName(user.getUsername())
+                .receiverName(order.getConsignee())
                 .receiverAddress(order.getAddress())
                 .receiverLat(Float.parseFloat("" + location.getLat()))
                 .receiverLng(Float.parseFloat("" + location.getLng()))
-                .receiverPhone(userDefaultAddress.getMobile())
+                .receiverPhone(order.getMobile())
                 .callback(dadaCallbackAddress)
                 .originId(deliveryId)
                 .build();
@@ -107,6 +106,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
             litemallDeliveryDetail.setDeliverFee(new BigDecimal(res.getResult().getDeliverFee().intValue()));
             litemallDeliveryDetail.setFee(new BigDecimal(res.getResult().getFee().intValue()));
             litemallDeliveryDetail.setCreateTime(LocalDateTime.now());
+            litemallDeliveryDetail.setUpdateTime(litemallDeliveryDetail.getCreateTime());
             order.setDeliveryId(deliveryId);
             order.setTpdStatus(TPDStatusEnum.WAITING);
             order.setOrderStatus(OrderStatusEnum.ONGOING);
@@ -194,7 +194,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .cityCode("010")
                 .cargoPrice(actualPrice)
                 .isPrepay(0)
-                .receiverName(user.getUsername())
+                .receiverName(checkedAddress.getName())
                 .receiverAddress(checkedAddress.getAddress())
                 .receiverLat(Float.parseFloat("" + location.getLat()))
                 .receiverLng(Float.parseFloat("" + location.getLng()))
@@ -218,6 +218,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                     litemallPreDeliveryDetail.setTips(res.getResult().getTips());
                     litemallPreDeliveryDetail.setInsuranceFee(res.getResult().getInsuranceFee());
                     litemallPreDeliveryDetail.setCreateTime(LocalDateTime.now());
+                    litemallPreDeliveryDetail.setUpdateTime(litemallPreDeliveryDetail.getCreateTime());
                     litemallPreDeliveryDetailMapper.insert(litemallPreDeliveryDetail);
                     return ResponseUtil.ok(res.getResult().getDeliverFee());
                 }else{

@@ -1,9 +1,10 @@
-package com.attitude.tinymall.service;
+package com.attitude.tinymall.service.impl;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.GetObjectRequest;
+import com.attitude.tinymall.service.AliyunOssService;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -71,9 +72,9 @@ public class AliyunOssServiceImpl implements AliyunOssService {
   public InputStream downloadGeometricScalingFileByName(String fileName, int with, int height) {
     try {
       GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, fileName);
-      if (with == -1 || height == -1){
+      if (with == -1 || height == -1) {
         getObjectRequest.setProcess("image/resize,p_100");
-      }else {
+      } else {
         getObjectRequest.setProcess("image/resize,m_fixed,w_" + with + ",h_" + height);
       }
       return oss.getObject(getObjectRequest).getObjectContent();
@@ -130,10 +131,25 @@ public class AliyunOssServiceImpl implements AliyunOssService {
         swapStream.write(ch);
       }
       return swapStream;
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
     }
     return null;
+  }
+
+  @Override
+  public String getFilePublicUrl(String fileName, boolean supportHttps) {
+    String http = "http";
+    if (supportHttps) {
+      http = "https";
+    }
+    return http.concat(getFilePublicAdaptiveUrl(fileName));
+  }
+
+  @Override
+  public String getFilePublicAdaptiveUrl(String fileName) {
+    return "://".concat(bucket).concat(".").concat(endpoint)
+        .concat("/").concat(fileName);
   }
 
   private String getFileUrlByProcessRequest(String fileName, GeneratePresignedUrlRequest request) {
