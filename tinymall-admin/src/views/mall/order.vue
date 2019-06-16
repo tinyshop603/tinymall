@@ -395,7 +395,7 @@ export default {
         this.updateOrderItemStatus(updatedOrder)
         this.$notify({
           title:'成功',
-          message:responseData.errmsg,
+          message:'退款成功',
           type:'success'
         })
       })

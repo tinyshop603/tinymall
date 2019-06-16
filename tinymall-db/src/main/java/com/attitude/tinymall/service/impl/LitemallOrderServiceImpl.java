@@ -399,7 +399,7 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
         if (resultCode.equals("SUCCESS")) {
           log.info("退款成功");
           refundOrderGoodsByOrderId(orderId);
-          order.setOrderStatus(OrderStatusEnum.COMPLETE);
+          order.setOrderStatus(OrderStatusEnum.REFUND_COMPLETE);
           order.setPayStatus(PayStatusEnum.REFUNDED);
           order.setEndTime(LocalDateTime.now());
           this.update(order);

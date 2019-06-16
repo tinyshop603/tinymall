@@ -334,7 +334,7 @@ public class AdminOrderController {
     if (!refundSuccess) {
       return ResponseUtil.fail(403, "退款失败, 请联系工程师");
     }
-    return ResponseUtil.ok();
+    return ResponseUtil.ok(adminService.findById(orderId));
   }
 
   /**
