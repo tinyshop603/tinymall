@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class UserAddressServiceImpl implements IUserAddressService {
+
   @Autowired
   private BaiduFenceService baiduFenceService;
   @Autowired
@@ -51,7 +52,7 @@ public class UserAddressServiceImpl implements IUserAddressService {
   private final int CORE_SIZE = 5;
   private ExecutorService executorService = new ThreadPoolExecutor(CORE_SIZE, CORE_SIZE,
       0L, TimeUnit.MILLISECONDS,
-      new LinkedBlockingQueue<>(),namedThreadFactory);
+      new LinkedBlockingQueue<>(), namedThreadFactory);
 
   @Override
   public LocationVO getLocationDetailByGeoParams(
@@ -77,27 +78,34 @@ public class UserAddressServiceImpl implements IUserAddressService {
       } else {
         // TODO region应根据店铺位置来, 目前只是在北京
         poiAddresses = baiduFenceService.listPlacesByKeywords(keyword, "北京");
-
       }
 
+      final int endIndex = poiAddresses.size() > 5 ? 4 : poiAddresses.size() - 1;
+      poiAddresses = poiAddresses.subList(0, endIndex);
+
       final CountDownLatch countDownLatch = new CountDownLatch(poiAddresses.size());
-      List<PoiAddressVO> poiAddressVOs = Collections.synchronizedList(new ArrayList<>(10));
+      List<PoiAddressVO> poiAddressVOs = Collections.synchronizedList(new ArrayList<>(5));
 
-      poiAddresses.forEach(it -> executorService.execute(()->{
-        boolean validLocationWithinFence = false;
-        try {
-          validLocationWithinFence = baiduFenceService
-              .isValidLocationWithinFence(temUserId, it.getLocation(), shopFenceId);
-        } catch (Exception e) {
-          e.printStackTrace();
-          log.info("批量判断是否在配送范围内出错: {}", e.getMessage());
-        }finally {
-          countDownLatch.countDown();
-        }
-        poiAddressVOs.add(new PoiAddressVO(it.getAddress(), it.getName(), validLocationWithinFence));
-      }));
+      for (int i = 0; i < poiAddresses.size(); i++) {
+        PoiAddress it = poiAddresses.get(i);
+        int finalIndex = i;
+        executorService.execute(() -> {
+          boolean validLocationWithinFence = false;
+          try {
+            validLocationWithinFence = baiduFenceService
+                .isValidLocationWithinFence(temUserId, it.getLocation(), shopFenceId);
+          } catch (Exception e) {
+            e.printStackTrace();
+            log.info("批量判断是否在配送范围内出错: {}", e.getMessage());
+          } finally {
+            countDownLatch.countDown();
+          }
+          poiAddressVOs.add(finalIndex,
+              new PoiAddressVO(it.getAddress(), it.getName(), validLocationWithinFence));
+        });
+      }
+
       countDownLatch.await();
-
       locationVO.setKeywordsNearbyAddresses(poiAddressVOs);
       // 从围栏中删除监控对象
       baiduFenceService.deleteMonitorPersonToFence(temUserId, shopFenceId);

@@ -164,7 +164,7 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
       criteria.andOrderSnEqualTo(orderSn);
     }
     criteria.andDeletedEqualTo(false);
-
+    criteria.andOrderStatusNotEqualTo(OrderStatusEnum.PENDING_PAYMENT);
     return orderMapper.selectByExample(example);
   }
   @Override
@@ -194,6 +194,7 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
     if (!StringUtils.isEmpty(orderSn)) {
       criteria.andOrderSnEqualTo(orderSn);
     }
+    criteria.andOrderStatusNotEqualTo(OrderStatusEnum.PENDING_PAYMENT);
     criteria.andDeletedEqualTo(false);
 
     return (int) orderMapper.countByExample(example);
