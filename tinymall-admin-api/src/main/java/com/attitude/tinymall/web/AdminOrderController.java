@@ -326,8 +326,8 @@ public class AdminOrderController {
     if (!order.getAdminId().equals(adminId)) {
       return ResponseUtil.badArgumentValue();
     }
-    if (Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_REFUNDING)
-        .contains(order.getOrderStatus()) && PayStatusEnum.PAID == order.getPayStatus()) {
+    if (!(Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_REFUNDING)
+        .contains(order.getOrderStatus()) && PayStatusEnum.PAID == order.getPayStatus())) {
       return ResponseUtil.fail(403, "订单不能退款成功");
     }
     boolean refundSuccess = orderService.refundOrder(orderId);
