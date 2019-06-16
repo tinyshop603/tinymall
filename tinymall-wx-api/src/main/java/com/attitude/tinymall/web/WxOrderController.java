@@ -265,7 +265,6 @@ public class WxOrderController {
 
     // 订单信息
     LitemallOrder order = orderService.findById(orderId);
-      String estimateTime = estimateTime(order);
     if (null == order) {
       return ResponseUtil.fail(403, "订单不存在");
     }
