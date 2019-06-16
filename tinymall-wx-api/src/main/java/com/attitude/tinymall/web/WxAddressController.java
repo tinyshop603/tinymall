@@ -201,8 +201,6 @@ public class WxAddressController {
             address.setId(null);
             address.setUserId(userId);
             address.setAddTime(LocalDateTime.now());
-            address.setProvinceId(1); // 北京市 默认
-            address.setCityId(32); // 市辖区 默认
             addressService.add(address, appId);
         } else {
             address.setUserId(userId);
