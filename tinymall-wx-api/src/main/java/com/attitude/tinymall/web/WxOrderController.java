@@ -379,13 +379,14 @@ public class WxOrderController {
   }
 
   /**
-   *  预计到达时间 每米权重为0.36(10公里/小时，小区骑行较慢) 超出5千米不予计算
-   *  1km以内20min算 1km-5km 按权重算 (s - 1000)*0.36 + 1200 时间区间在 15min-44min
-   * */
-  private String estimateTime(LitemallOrder order){
-    LitemallDeliveryDetail deliveryDetail = deliveryDetailService.getDeliveryDetailByDeliveryId(order.getDeliveryId());
+   * 预计到达时间 每米权重为0.36(10公里/小时，小区骑行较慢) 超出5千米不予计算 1km以内20min算 1km-5km 按权重算 (s - 1000)*0.36 + 1200
+   * 时间区间在 15min-44min
+   */
+  private String estimateTime(LitemallOrder order) {
+    LitemallDeliveryDetail deliveryDetail = deliveryDetailService
+        .getDeliveryDetailByDeliveryId(order.getDeliveryId());
     double distance = Double.parseDouble(deliveryDetail.getDistance());
-    long estimateInterval = (long)((distance - 1000)*0.36 + 1200);
+    long estimateInterval = (long) ((distance - 1000) * 0.36 + 1200);
     LocalDateTime dateTime = deliveryDetail.getCreateTime();
     LocalDateTime estimateTime = dateTime.plusSeconds(estimateInterval);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -817,25 +818,8 @@ public class WxOrderController {
     if (!handleOption.isCancel()) {
       return ResponseUtil.fail(403, "订单不能取消");
     }
-
-    // 开启事务管理
-    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-    TransactionStatus status = txManager.getTransaction(def);
-    //判断是否为未支付状态取消，如果是，后台不进行实时更新。
-    boolean isNotPayCancel = false;
-    if (order.getPayStatus() == PayStatusEnum.UNPAID) {
-      isNotPayCancel = true;
-    }
-    // 设置订单已取消状态
-    if (isNotPayCancel) {
-      order.setOrderStatus(OrderStatusEnum.CUSTOMER_CANCEL);
-    }
-    order.setEndTime(LocalDateTime.now());
-    orderService.update(order);
-
-    // 商品货品数量增加
-    orderService.refundOrderGoodsByOrderId(orderId);
+    boolean isNotPayCancel = order.getPayStatus() == PayStatusEnum.UNPAID;
+    orderService.cancelOrder(order.getId());
     //想办法提醒管理端进行刷新,在线支付未支付订单取消
     if (!isNotPayCancel) {
       messageInfo.setMsgType("order-cancel");

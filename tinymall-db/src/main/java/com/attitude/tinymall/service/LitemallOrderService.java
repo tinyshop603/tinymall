@@ -87,4 +87,9 @@ public interface LitemallOrderService {
    * 退还订单 退还资金 退还商品
    */
   boolean refundOrder(Integer orderId);
+
+  /**
+   * 取消订单 退还资金 退还商品
+   */
+  void cancelOrder(Integer orderId);
 }

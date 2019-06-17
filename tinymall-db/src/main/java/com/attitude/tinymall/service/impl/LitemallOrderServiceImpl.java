@@ -62,9 +62,9 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
 
   @Override
   public int add(LitemallOrder order, String appId) {
-    Integer orderCount =  orderMapper.queryCountByAdminAndDate(order.getAdminId())+1;
+    Integer orderCount = orderMapper.queryCountByAdminAndDate(order.getAdminId()) + 1;
 //    order.setOrderSn();
-    order.setOriginMarkNo("#"+orderCount);
+    order.setOriginMarkNo("#" + orderCount);
     LitemallAdmin litemallAdmin = adminService.findAdminByOwnerId(appId);
     if (null != litemallAdmin) {
       // 关联外键
@@ -407,4 +407,21 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
     return isSuccess;
 
   }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void cancelOrder(Integer orderId) {
+    LitemallOrder order = this.findById(orderId);
+    boolean isNotPayCancel = order.getPayStatus() == PayStatusEnum.UNPAID;
+    // 设置订单已取消状态
+    if (isNotPayCancel) {
+      order.setOrderStatus(OrderStatusEnum.CUSTOMER_CANCEL);
+    }
+    order.setEndTime(LocalDateTime.now());
+    this.update(order);
+
+    // 商品货品数量增加
+    this.refundOrderGoodsByOrderId(orderId);
+  }
+
 }
