@@ -76,7 +76,7 @@ public class WxGoodsController {
     @Autowired
     private LitemallGoodsSpecificationService goodsSpecificationService;
 
-    private String replacePic = "x-oss-process=image/resize,m_fixed,h_120,w_120";// "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
+    private String replacePic = "?x-oss-process=image/resize,m_fixed,h_120,w_120";// "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
 
 
     /**
@@ -468,13 +468,7 @@ public class WxGoodsController {
             //截取图片格式
             if (goodsList.size() > 0){
                 for (int i=0; i < goodsList.size(); i++){
-                    String oldPicUrl = goodsList.get(i).getListPicUrl();
-                    String newPicUrl = new String();
-                    if(oldPicUrl.indexOf("fuss10")!= -1){
-                      newPicUrl =  oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + replacePic;
-                    }else{
-                      newPicUrl = oldPicUrl;
-                    }
+                    String newPicUrl = goodsList.get(i).getListPicUrl() + replacePic;
                     goodsList.get(i).setListPicUrl(newPicUrl);
                 }
             }
@@ -531,13 +525,7 @@ public class WxGoodsController {
         //截取图片格式
         if (goodsList.size() > 0){
             for (int i=0; i < goodsList.size(); i++){
-                String oldPicUrl = goodsList.get(i).getListPicUrl();
-                String newPicUrl = new String();
-                if(oldPicUrl.indexOf("fuss10")!= -1){
-                  newPicUrl =  oldPicUrl.substring(0, oldPicUrl.indexOf("?")) + replacePic;
-                }else{
-                  newPicUrl = oldPicUrl;
-                }
+                String newPicUrl = goodsList.get(i).getListPicUrl() + replacePic;
                 goodsList.get(i).setListPicUrl(newPicUrl);
             }
         }

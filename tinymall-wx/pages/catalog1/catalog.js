@@ -4,7 +4,7 @@ var app = getApp();
 Page({
   data: {
     storeId: "",
-    addressText: "未获取位置信息",
+    addressText: "点击获取位置信息",
     page: 1,
     size: 100,
     goodsCount: 0,
@@ -101,6 +101,7 @@ Page({
           // currentSubCategoryList:res.data.currentSubCategoryList,
           allGoodsList: res.data.allGoodsList
         });
+        console.log("Catalog:" + new Date());
         wx.hideLoading();
       });
     that.caluSubHeight();
@@ -164,6 +165,7 @@ Page({
             self.setData({
               addressText: address,
             })
+            console.log("location:"+new Date());
           });
       },
       // fail: function (res) {

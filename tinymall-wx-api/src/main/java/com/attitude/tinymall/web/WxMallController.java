@@ -77,20 +77,20 @@ public class WxMallController {
     Map<String, Object> data = new HashMap();
     List<List<LitemallGoods>> allGoodsList = new ArrayList<>();
     if (categoryList.size() > 0) {
-//      for (int i = 0; i < categoryList.size() ; i++) {
+      for (int i = 0; i < categoryList.size() ; i++) {
         int categoryId = categoryList.get(0).getId();
         List<LitemallGoods> goodsList = goodsService
                 .querySelective(categoryId, null, null, null, null, 0, Integer.MAX_VALUE, null, null);
         //截取图片格式
         if (goodsList.size() > 0) {
-            for (int i = 0; i < goodsList.size(); i++) {
-                String newPicUrl = goodsList.get(i).getListPicUrl() + replacePic;
-                goodsList.get(i).setListPicUrl(newPicUrl);
+            for (int j = 0; j < goodsList.size(); j++) {
+                String newPicUrl = goodsList.get(j).getListPicUrl() + replacePic;
+                goodsList.get(j).setListPicUrl(newPicUrl);
             }
         }
 
         allGoodsList.add(goodsList);
-//      }
+      }
     }
     data.put("categoryList", categoryList);
     data.put("allGoodsList", allGoodsList);

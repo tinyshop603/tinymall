@@ -25,7 +25,7 @@
                   
                   <view class="listItem1 {{item.isOnSale ? '':'notOnSale' }}" id="g{{item.id}}">
                       <view class="itemImg">
-                        <image wx:if="{{item.listPicUrl}}" style="width:100%;height:100%;" src="{{item.listPicUrl}}"></image> 
+                        <image wx:if="{{item.listPicUrl}}" lazy-load='true' src="{{item.listPicUrl}}" style="width:100%;height:100%;"></image> 
                       </view>
                       <view class="food-tit">
                         <view class="txt"style="font-size: 30rpx;">{{item.name}}</view>

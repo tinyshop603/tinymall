@@ -37,7 +37,8 @@ Page({
     userHasCollect: 0,
     checkedSpecPrice: 0,
     collectBackImage: '/static/images/icon_collect.png',
-    relatedGoods: []
+    relatedGoods: [],
+    picUrlSuffix: "?x-oss-process=image/resize,m_fixed,h_120,w_120"
   },
   //右上角转发分享功能
   onShareAppMessage: function () {
@@ -122,8 +123,7 @@ Page({
         //wz-截取图片格式
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
-            let oldPicUrl = res.data.goodsList[i].listPicUrl;
-            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_240,w_240";// "?imageMogr/thumbnail/!240x240r/gravity/Center/crop/240x240/";
+            res.data.goodsList[i].listPicUrl = res.data.goodsList[i].listPicUrl + picUrlSuffix;
           }
         }
         that.setData({
@@ -279,8 +279,7 @@ Page({
         //wz-截取图片格式
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
-            let oldPicUrl = res.data.goodsList[i].listPicUrl;
-            res.data.goodsList[i].listPicUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_240,w_240"// "?imageMogr/thumbnail/!240x240r/gravity/Center/crop/240x240/";
+            res.data.goodsList[i].listPicUrl = res.data.goodsList[i].listPicUrl + picUrlSuffix;
           }
         }
         that.setData({

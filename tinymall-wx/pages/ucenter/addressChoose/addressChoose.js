@@ -11,7 +11,8 @@ Page({
     keywordsNearbyAddresses:[],// 搜索结果
     keyWord:"keyWord", // 关键词搜索
     showNoRes:false, // 初始化不显示无结果view，第一次查询后一直为true
-    searchWaitNum:0 // 等待查询数量
+    searchWaitNum:0, // 等待查询数量
+    areaCode:0 // 区域code
   },
 
   /**
@@ -65,21 +66,25 @@ Page({
     util.request(api.ConsumerLocation, { lat: lat, lng: lng, keyword: key}, "GET")
       .then(function (res) {
         console.log(res);
-        if(res.errno === -1){
+        if(res.errno == 0){
+          self.setData({
+            keywordsNearbyAddresses: res.data.keywordsNearbyAddresses,
+            areaCode: res.data.addressComponent.adcode,
+            showNoRes: true
+            
+          })
+        }else{
           self.setData({
             keywordsNearbyAddresses: "",
-            keyWord:"",
+            areaCode: 0,
+            keyWord: "",
             showNoRes: true
           })
           wx.showToast({
             title: '查询错误，请重试',
             icon: 'none'
           })
-        }else{
-          self.setData({
-            keywordsNearbyAddresses: res.data.keywordsNearbyAddresses,
-            showNoRes: true
-          })
+          
         }
         wx.hideLoading();
       });
@@ -179,7 +184,8 @@ Page({
 
     //直接调用上一个页面的setData()方法，把数据存到上一个页面中去
     let address = prevPage.data.address;
-    address.address = e.currentTarget.dataset.name
+    address.address = e.currentTarget.dataset.name;
+    address.areaId = this.data.areaCode;
 
     prevPage.setData({
       address: address

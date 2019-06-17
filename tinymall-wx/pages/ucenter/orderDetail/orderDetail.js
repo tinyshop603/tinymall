@@ -32,10 +32,7 @@ Page({
         //wz-截取图片格式
         if (res.data.orderGoods.length > 0) {
           for (let i = 0; i < res.data.orderGoods.length; i++) {
-            let oldPicUrl = res.data.orderGoods[i].picUrl;
-            if(oldPicUrl.indexOf("fuss10") != -1){
-              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_120,w_120";//"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-            }          
+              res.data.orderGoods[i].picUrl = res.data.orderGoods[i].picUrl+"?x-oss-process=image/resize,m_fixed,h_120,w_120";   
           }
         }
         that.setData({
@@ -184,6 +181,14 @@ Page({
         }
       }
     });
+  },
+  phoneCall: function (e) {
+    wx.makePhoneCall({
+      phoneNumber: e.currentTarget.dataset.replyPhone,
+      success: function () {
+        console.log("成功拨打电话")
+      },
+    })
   },
   onReady: function () {
     // 页面渲染完成

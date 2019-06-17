@@ -53,10 +53,7 @@ Page({
         //wz-截取图片格式
         if (res.data.checkedGoodsList.length > 0) {
           for (let i = 0; i < res.data.checkedGoodsList.length; i++) {
-            let oldPicUrl = res.data.checkedGoodsList[i].picUrl;
-            if(oldPicUrl.indexOf("fuss10") != -1){
-              res.data.checkedGoodsList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_120,w_120";// "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-            }          
+              res.data.checkedGoodsList[i].picUrl = res.data.checkedGoodsList[i].picUrl + "?x-oss-process=image/resize,m_fixed,h_120,w_120";       
           }
         }
         that.setData({

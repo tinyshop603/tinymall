@@ -16,7 +16,8 @@ Page({
     isEditCart: false,
     checkedAllStatus: true,
     editCartList: [],
-    hasLogin: false
+    hasLogin: false,
+    picUrlSuffix: "?x-oss-process=image/resize,m_fixed,h_120,w_120"
   },
   //右上角转发分享功能
   onShareAppMessage: function () {
@@ -76,11 +77,7 @@ Page({
         //wz-截取图片格式
         if (res.data.cartList.length > 0) {
           for (let i = 0; i < res.data.cartList.length; i++) {
-            let oldPicUrl = res.data.cartList[i].picUrl;
-            if(oldPicUrl.indexOf("fuss10") != -1){
-              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+ "x-oss-process=image/resize,m_fixed,h_120,w_120";// "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-            }
-            
+            res.data.cartList[i].picUrl = res.data.cartList[i].picUrl + that.data.picUrlSuffix;
           }
         }
         that.setData({
@@ -122,10 +119,7 @@ Page({
           //wz-截取图片格式
           if (res.data.cartList.length > 0) {
             for (let i = 0; i < res.data.cartList.length; i++) {
-              let oldPicUrl = res.data.cartList[i].picUrl;
-              if(oldPicUrl.indexOf("fuss10") != -1){
-                res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_120,w_120"; // "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-              }
+              res.data.cartList[i].picUrl = res.data.cartList[i].picUrl + that.data.picUrlSuffix;
             }
           }
           that.setData({
@@ -203,10 +197,7 @@ Page({
           //wz-截取图片格式
           if (res.data.cartList.length > 0) {
             for (let i = 0; i < res.data.cartList.length; i++) {
-              let oldPicUrl = res.data.cartList[i].picUrl;
-              if(oldPicUrl.indexOf("fuss10") != -1){
-                res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_120,w_120"; //"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-              }           
+              res.data.cartList[i].picUrl = res.data.cartList[i].picUrl + that.data.picUrlSuffix;           
             }
           }
           that.setData({
@@ -376,10 +367,7 @@ Page({
         //wz-截取图片格式
         if (res.data.cartList.length > 0) {
           for (let i = 0; i < res.data.cartList.length; i++) {
-            let oldPicUrl = res.data.cartList[i].picUrl;
-            if(oldPicUrl.indexOf("fuss10") != -1){
-              res.data.cartList[i].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_120,w_120"; // "?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-            }          
+            res.data.cartList[i].picUrl = res.data.cartList[i].picUrl + that.data.picUrlSuffix;        
           }
         }
         that.setData({
