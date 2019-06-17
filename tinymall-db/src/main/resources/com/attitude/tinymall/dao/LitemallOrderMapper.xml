@@ -36,7 +36,8 @@
     <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
     <result column="tpd_status" jdbcType="VARCHAR" property="tpdStatus" />
     <result column="delivery_id" jdbcType="VARCHAR" property="deliveryId" />
-    <result column="deliver_fee" jdbcType="INTEGER" property="deliverFee" />
+    <result column="deliver_fee" jdbcType="DECIMAL" property="deliverFee" />
+    <result column="origin_mark_no" jdbcType="VARCHAR" property="originMarkNo" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--
@@ -113,7 +114,7 @@
     freight_price, coupon_price, integral_price, order_price, actual_price, pay_id, pay_status, 
     pay_time, ship_sn, ship_channel, ship_start_time, ship_end_time, confirm_time, end_time, 
     add_time, deleted, remark, payment_way, transaction_id, tpd_status, delivery_id, 
-    deliver_fee
+    deliver_fee, origin_mark_no
   </sql>
   <select id="selectByExample" parameterType="com.attitude.tinymall.domain.LitemallOrderExample" resultMap="BaseResultMap">
     <!--
@@ -154,7 +155,7 @@
           freight_price, coupon_price, integral_price, order_price, actual_price, pay_id, 
           pay_status, pay_time, ship_sn, ship_channel, ship_start_time, ship_end_time, confirm_time, 
           end_time, add_time, deleted, remark, payment_way, transaction_id, tpd_status, delivery_id, 
-          deliver_fee
+          deliver_fee, origin_mark_no
       </otherwise>
     </choose>
     from tinymall_order
@@ -217,7 +218,7 @@
           freight_price, coupon_price, integral_price, order_price, actual_price, pay_id, 
           pay_status, pay_time, ship_sn, ship_channel, ship_start_time, ship_end_time, confirm_time, 
           end_time, add_time, deleted, remark, payment_way, transaction_id, tpd_status, delivery_id, 
-          deliver_fee
+          deliver_fee, origin_mark_no
       </otherwise>
     </choose>
     from tinymall_order
@@ -258,8 +259,8 @@
       ship_start_time, ship_end_time, confirm_time, 
       end_time, add_time, deleted, 
       remark, payment_way, transaction_id, 
-      tpd_status, delivery_id, deliver_fee
-      )
+      tpd_status, delivery_id, deliver_fee, 
+      origin_mark_no)
     values (#{adminId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderSn,jdbcType=VARCHAR}, 
       #{orderStatus,jdbcType=VARCHAR}, #{consignee,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{address,jdbcType=VARCHAR}, #{goodsPrice,jdbcType=DECIMAL}, #{freightPrice,jdbcType=DECIMAL}, 
@@ -269,8 +270,8 @@
       #{shipStartTime,jdbcType=TIMESTAMP}, #{shipEndTime,jdbcType=TIMESTAMP}, #{confirmTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{addTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, 
       #{remark,jdbcType=VARCHAR}, #{paymentWay,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, 
-      #{tpdStatus,jdbcType=VARCHAR}, #{deliveryId,jdbcType=VARCHAR}, #{deliverFee,jdbcType=INTEGER}
-      )
+      #{tpdStatus,jdbcType=VARCHAR}, #{deliveryId,jdbcType=VARCHAR}, #{deliverFee,jdbcType=DECIMAL}, 
+      #{originMarkNo,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.attitude.tinymall.domain.LitemallOrder">
     <!--
@@ -372,6 +373,9 @@
       <if test="deliverFee != null">
         deliver_fee,
       </if>
+      <if test="originMarkNo != null">
+        origin_mark_no,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="adminId != null">
@@ -462,7 +466,10 @@
         #{deliveryId,jdbcType=VARCHAR},
       </if>
       <if test="deliverFee != null">
-        #{deliverFee,jdbcType=INTEGER},
+        #{deliverFee,jdbcType=DECIMAL},
+      </if>
+      <if test="originMarkNo != null">
+        #{originMarkNo,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -574,7 +581,10 @@
         delivery_id = #{record.deliveryId,jdbcType=VARCHAR},
       </if>
       <if test="record.deliverFee != null">
-        deliver_fee = #{record.deliverFee,jdbcType=INTEGER},
+        deliver_fee = #{record.deliverFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.originMarkNo != null">
+        origin_mark_no = #{record.originMarkNo,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -617,7 +627,8 @@
       transaction_id = #{record.transactionId,jdbcType=VARCHAR},
       tpd_status = #{record.tpdStatus,jdbcType=VARCHAR},
       delivery_id = #{record.deliveryId,jdbcType=VARCHAR},
-      deliver_fee = #{record.deliverFee,jdbcType=INTEGER}
+      deliver_fee = #{record.deliverFee,jdbcType=DECIMAL},
+      origin_mark_no = #{record.originMarkNo,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -717,7 +728,10 @@
         delivery_id = #{deliveryId,jdbcType=VARCHAR},
       </if>
       <if test="deliverFee != null">
-        deliver_fee = #{deliverFee,jdbcType=INTEGER},
+        deliver_fee = #{deliverFee,jdbcType=DECIMAL},
+      </if>
+      <if test="originMarkNo != null">
+        origin_mark_no = #{originMarkNo,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -757,7 +771,8 @@
       transaction_id = #{transactionId,jdbcType=VARCHAR},
       tpd_status = #{tpdStatus,jdbcType=VARCHAR},
       delivery_id = #{deliveryId,jdbcType=VARCHAR},
-      deliver_fee = #{deliverFee,jdbcType=INTEGER}
+      deliver_fee = #{deliverFee,jdbcType=DECIMAL},
+      origin_mark_no = #{originMarkNo,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectOneByExample" parameterType="com.attitude.tinymall.domain.LitemallOrderExample" resultMap="BaseResultMap">
@@ -795,7 +810,7 @@
           freight_price, coupon_price, integral_price, order_price, actual_price, pay_id, 
           pay_status, pay_time, ship_sn, ship_channel, ship_start_time, ship_end_time, confirm_time, 
           end_time, add_time, deleted, remark, payment_way, transaction_id, tpd_status, delivery_id, 
-          deliver_fee
+          deliver_fee, origin_mark_no
       </otherwise>
     </choose>
     from tinymall_order
@@ -827,4 +842,12 @@
     update tinymall_order set deleted = 1
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--
+  根据adminId 查询当天门店订单数量
+  -->
+  <select id="queryCountByAdminAndDate" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM tinymall_order WHERE admin_id = #{adminId}
+    AND DATE_FORMAT(add_time,'%Y%m%d')=DATE_FORMAT(NOW(),'%Y%m%d')
+  </select>
 </mapper>
