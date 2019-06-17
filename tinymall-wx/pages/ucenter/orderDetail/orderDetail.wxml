@@ -19,14 +19,22 @@
         </view>
         <view class="clear"></view>
         <view class="msg">
+            <!-- <view class="item">
+                <text class="item-k">配货员:</text><text class="item-sv">testtttt</text>
+            </view >
+            <view class="item">
+                <text class="item-k">联系电话:</text><text class="item-sv">12384679687</text>
+                <view class="icon r"  bindtap="phoneCall"></view>
+            </view> -->
             <view class="item" wx:if="{{orderInfo.deliveryDetails != ''}}">
                 <text class="item-k">配货员:</text><text class="item-v">{{orderInfo.deliveryDetails.dmName}}</text>
             </view >
             <view class="item" wx:if="{{orderInfo.deliveryDetails != ''}}">
                 <text class="item-k">联系电话:</text><text class="item-v">{{orderInfo.deliveryDetails.dmMobile}}</text>
+                 <view class="icon r" data-reply-phone="{{orderInfo.deliveryDetails.dmMobile}}" bindtap="phoneCall"></view>
             </view>
             <view class="item">
-                <text class="item-k">收货人:</text><text class="item-v">{{orderInfo.consignee}}</text>
+                <text class="item-k">收货人:</text><text class="item-sv">{{orderInfo.consignee}}</text>
             </view>
             <view class="item">
                 <text class="item-k">联系电话:</text><text class="item-v">{{orderInfo.mobile}}</text>
@@ -84,7 +92,7 @@
     <view class="order-info box">
         <view class="item-b">订单编号：{{orderInfo.orderSn}}</view>
         <view class="item-b">下单时间：{{orderInfo.addTime}}</view>
-        <view class="item-a">支付时间：{{orderInfo.payTime}}</view>
+        <view class="item-a" wx:if="{{ orderInfo.payTime }}">支付时间：{{orderInfo.payTime}}</view>
     </view>
 
 

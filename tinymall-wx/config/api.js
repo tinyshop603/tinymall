@@ -2,11 +2,11 @@
 // 本机开发时使用
 //  var WxApiRoot = 'http://localhost:8082/wx/';
 // 局域网测试使用
-var WxApiRoot = 'http://192.168.5.105:8082/wx/';
+// var WxApiRoot = 'http://192.168.17.1:8082/wx/';
 // 云平台部署时使用
 //  var WxApiRoot = 'http://127.0.0.1:8082/wx/';
 // 云平台上线时使用
-// var WxApiRoot = 'https://www.bjguangchi.top/wx/';
+var WxApiRoot = 'https://www.bjguangchi.top/wx/';
 
 // 以下是图片存储服务器API地址
 // 本机开发时使用
@@ -24,8 +24,8 @@ WxApiRoot +=APP_ID;
 
 module.exports = {
     // FirstScreenUrl: WxApiRoot+'mall/category', // 首屏的分类效果
-  FirstScreenUrl: WxApiRoot + 'mall/new/category', // 首屏的分类效果
-  ConsumerLocation: WxApiRoot + 'address/location', //获取用户位置
+    FirstScreenUrl: WxApiRoot + 'mall/new/category', // 首屏的分类效果
+    ConsumerLocation: WxApiRoot + 'address/location', //获取用户位置
 
     IndexUrl: WxApiRoot + 'home/index', //首页数据接口
     CatalogList: WxApiRoot + 'catalog/index',  //分类目录全部分类数据接口

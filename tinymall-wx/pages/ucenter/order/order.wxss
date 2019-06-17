@@ -100,7 +100,7 @@ page {
 
 .order .h{
     display: flex;
-    height: 100.6rpx;
+    /* height: 100.6rpx; */
     line-height: 39.3rpx;
     /* margin-left: 31.25rpx; */
     padding: 12rpx;

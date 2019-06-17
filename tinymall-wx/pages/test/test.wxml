@@ -1,1 +1,2 @@
 <view bindtap="openLocationSetting">重新获取位置</view>
+<image src="http://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg?x-oss-process=image/resize,m_fixed,h_10,w_10"></image>

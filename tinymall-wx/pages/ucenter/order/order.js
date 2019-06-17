@@ -47,10 +47,7 @@ Page({
         if (res.data.data.length > 0) {
           for (let i = 0; i < res.data.data.length; i++) {
             for (let j = 0; j < res.data.data[i].goodsList.length; j++){
-              let oldPicUrl = res.data.data[i].goodsList[j].picUrl;
-              if(oldPicUrl.indexOf("fuss10") != -1){
-                res.data.data[i].goodsList[j].picUrl = oldPicUrl.substring(0, oldPicUrl.indexOf("?"))+"x-oss-process=image/resize,m_fixed,h_120,w_120";//"?imageMogr/thumbnail/!120x120r/gravity/Center/crop/120x120/";
-              }            
+                res.data.data[i].goodsList[j].picUrl = res.data.data[i].goodsList[j].picUrl+"?x-oss-process=image/resize,m_fixed,h_120,w_120"; 
             }           
           }
         }
