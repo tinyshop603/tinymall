@@ -43,7 +43,7 @@
       <el-table-column align="center" min-width="80px" label="配送状态" prop="order.tpdStatus">
         <template slot-scope="scope">
           <el-tag>
-            {{scope.row.order.tpdStatusMsg}}
+            {{scope.row.order.tpdStatusMsg?scope.row.order.tpdStatusMsg:'--/--'}}
           </el-tag>
         </template>
       </el-table-column>
