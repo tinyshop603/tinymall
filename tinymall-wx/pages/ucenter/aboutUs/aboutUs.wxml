@@ -1,12 +1,12 @@
 <view class="container">
    <view class="t">
     <view class="showPic" >
-      <image class="logo" src="/static/images/logo.jpg"/>
-      <text>789便利店</text>
+      <image class="logo" src="/static/images/logo.png"/>
+      <!-- <text>789便利店</text> -->
     </view>
    </view>
    <view class="busPhone" data-reply-phone="18811452696" bindtap="phoneCall">
-    <text class="l">联系电话</text>
+    <text class="l">联系电话:</text>
     <view class="r">
       <text >18811452696</text>
       <image class="call" src="/static/images/address_right.png"/>

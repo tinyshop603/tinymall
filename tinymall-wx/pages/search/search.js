@@ -6,9 +6,6 @@ var app = getApp();
 Page({
   data: {
     storeId: "",
-
-
-
     keywrod: '',
     searchStatus: false,
     goodsList: [],

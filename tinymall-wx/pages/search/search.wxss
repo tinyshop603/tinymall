@@ -15,7 +15,7 @@ page{
     width: 750rpx;
     height: 148rpx;
     display: flex;
-    background: #fff;
+    background: #f4f4f4;
     border-bottom: 1px solid rgba(0,0,0,.15);
     padding: 0 31.25rpx;
     font-size: 29rpx;
@@ -31,7 +31,7 @@ page{
     height: 59rpx;
     line-height: 59rpx;
     padding: 0 20rpx;
-    background: #f4f4f4;
+    background: #fff;
 }
 
 .search-header .icon{
@@ -45,10 +45,11 @@ page{
 
 .search-header .del{
     position: absolute;
-    top: 3rpx;
+    top: 13rpx;
     right: 10rpx;
-    width: 53rpx;
-    height: 53rpx;
+    /* padding:10rpx; */
+    width: 33rpx;
+    height: 33rpx;
     z-index: 10;
 }
 

@@ -3,7 +3,7 @@
     <view class="input-box">
       <view class="icon"></view>
       <input name="input" class="keywrod" focus="true" value="{{keyword}}" confirm-type="search" bindinput="inputChange" bindfocus="inputFocus" bindconfirm="onKeywordConfirm" placeholder="{{defaultKeyword.keyword}}" />
-      <image class="del" wx:if="{{keyword}}" bindtap="clearKeyword" src="http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/clearIpt-f71b83e3c2.png"></image>
+      <image class="del" wx:if="{{keyword}}" bindtap="clearKeyword" src="/static/images/clearIpt.png"></image>
     </view>
     <!-- <view class="right" bindtap="closeSearch">取消</view> -->
   </view>

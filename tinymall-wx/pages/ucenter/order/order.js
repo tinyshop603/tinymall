@@ -87,7 +87,7 @@ Page({
                 mask: false,
                 success: function () {
                   that.setData({
-                    showType: 5
+                    showType: 0
                   });
                   that.getOrderList();
                 }
@@ -157,7 +157,7 @@ Page({
                 mask: false,
                 success: function () {
                   that.setData({
-                    showType: 4
+                    showType: 3
                   });
                   that.getOrderList();
                 }

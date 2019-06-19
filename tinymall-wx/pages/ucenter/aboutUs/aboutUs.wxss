@@ -9,18 +9,18 @@ page{
 }
 
 .t{
-  height: 400rpx;
+  height: 284rpx;
   width: 100%;
   background-color: #fff;
-  margin-top: 5rpx;
+  margin-top: 10rpx;
 }
 .t .showPic{
-  padding-top: 100rpx;
+  padding-top: 42rpx;
   padding-left: 295rpx;
 }
 .t .showPic .logo{
-  width: 160rpx;
-  height: 160rpx;
+  width: 180rpx;
+  height: 180rpx;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,15 +33,15 @@ page{
 }
 
 .busPhone{
-  height:130rpx;
+  height:100rpx;
   width:100%;
   background-color: #fff;
-  margin-top: 35rpx;
+  border-top:1rpx solid #D8D8D8;
 }
 
 .busPhone .l{
   float:left;
-  line-height: 128rpx;
+  line-height: 100rpx;
   font-size: 35rpx;
   margin-left: 55rpx;
 }
@@ -50,14 +50,14 @@ page{
   margin-right: 18rpx;
 }
 .busPhone .r text{
-  line-height: 128rpx;
+  line-height: 100rpx;
   font-size: 33rpx;
   color: #a2a2a2;
   margin-right: 18rpx;
 }
 .busPhone .r .call{
   float:right;
-  margin-top: 40.5rpx;
+  margin-top: 25.5rpx;
   width: 48rpx;
   height: 48rpx;
   display: flex;
@@ -66,14 +66,14 @@ page{
 }
 
 .busAddress{
-  height:130rpx;
+  height:100rpx;
   width:100%;
   background-color: #fff;
-  margin-top: 35rpx;
+  border-top:1rpx solid #D8D8D8;
 }
 .busAddress .l{
   float:left;
-  line-height: 128rpx;
+  line-height: 100rpx;
   font-size: 35rpx;
   margin-left: 55rpx;
 }

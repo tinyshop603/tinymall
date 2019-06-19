@@ -78,7 +78,7 @@ public class WxMallController {
     List<List<LitemallGoods>> allGoodsList = new ArrayList<>();
     if (categoryList.size() > 0) {
       for (int i = 0; i < categoryList.size() ; i++) {
-        int categoryId = categoryList.get(0).getId();
+        int categoryId = categoryList.get(i).getId();
         List<LitemallGoods> goodsList = goodsService
                 .querySelective(categoryId, null, null, null, null, 0, Integer.MAX_VALUE, null, null);
         //截取图片格式
