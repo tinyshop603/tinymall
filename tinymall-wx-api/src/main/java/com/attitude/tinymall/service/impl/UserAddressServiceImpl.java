@@ -99,7 +99,13 @@ public class UserAddressServiceImpl implements IUserAddressService {
           } finally {
             countDownLatch.countDown();
           }
-          poiAddressVOs.add(new PoiAddressVO(it.getAddress(), it.getName(), validLocationWithinFence));
+          poiAddressVOs.add(new PoiAddressVO(
+              it.getProvince(),
+              it.getCity(),
+              it.getArea(),
+              it.getAddress(),
+              it.getName(),
+              validLocationWithinFence));
         });
       }
 

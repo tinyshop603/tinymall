@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PoiAddressVO {
-    private String address;
-    private String name;
-    private Boolean inDistributionScope;
+
+  private String province;
+  private String city;
+  private String area;
+  private String address;
+  private String name;
+  private Boolean inDistributionScope;
 }
