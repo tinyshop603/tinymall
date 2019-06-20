@@ -46,5 +46,34 @@ public class WxRegionController {
         return ResponseUtil.ok(regionList);
     }
 
+    /**
+     * 区域数据
+     *
+     * 根据父区域ID，返回子区域数据。
+     * 如果父区域ID是0，则返回省级区域数据；
+     *
+     * @param name 区域名称
+     * @return 区域code
+     *   成功则
+     *  {
+     *      errno: 0,
+     *      errmsg: '成功',
+     *      data: xxx
+     *  }
+     *   失败则 { errno: XXX, errmsg: XXX }
+     */
+    @GetMapping("code")
+    public Object list(String name) {
+        if(name == null || ("").equals(name)){
+            return ResponseUtil.badArgument();
+        }
+        LitemallRegion region = regionService.queryByName(name);
+        if(region == null) {
+            logger.error("地址-未通过名称找到code：" + name);
+            return ResponseUtil.badArgument();
+        }
+        return ResponseUtil.ok(region.getCode());
+    }
+
 
 }

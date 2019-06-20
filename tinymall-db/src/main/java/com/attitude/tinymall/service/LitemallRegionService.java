@@ -21,4 +21,6 @@ public interface LitemallRegionService {
      LitemallRegion queryByCode(Integer code);
 
      int countSelective(String name, Integer code, Integer page, Integer size, String sort, String order) ;
+
+     LitemallRegion queryByName(String name);
 }

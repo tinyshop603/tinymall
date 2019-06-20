@@ -2,11 +2,11 @@
 // 本机开发时使用
 //  var WxApiRoot = 'http://localhost:8082/wx/';
 // 局域网测试使用
-var WxApiRoot = 'http://192.168.17.1:8082/wx/';
+// var WxApiRoot = 'http://192.168.17.1:8082/wx/';
 // 云平台部署时使用
 //  var WxApiRoot = 'http://127.0.0.1:8082/wx/';
 // 云平台上线时使用
-// var WxApiRoot = 'https://www.bjguangchi.top/wx/';
+var WxApiRoot = 'https://www.bjguangchi.top/wx/';
 
 // 以下是图片存储服务器API地址
 // 本机开发时使用
@@ -80,7 +80,7 @@ module.exports = {
     AddressDelete: WxApiRoot+ 'address/delete',  //保存收货地址
 
     RegionList: WxApiRoot + 'region/list',  //获取区域列表
-
+    RegionCode: WxApiRoot + 'region/code',  //通过name获取code
     OrderSubmit: WxApiRoot + 'order/submit', // 提交订单
     OrderPrepay: WxApiRoot + 'order/prepay', // 订单的预支付会话
     OrderList: WxApiRoot + 'order/list',  //订单列表

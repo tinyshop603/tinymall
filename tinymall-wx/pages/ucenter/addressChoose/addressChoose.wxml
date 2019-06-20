@@ -9,7 +9,7 @@
     <view class="title" wx:if="{{keyWord == 'keyWord'}}">附近地址</view>
 
     <view class="nearby-address">
-      <view class="item" wx:for="{{keywordsNearbyAddresses}}" wx:key="{{item.name}}" data-address="{{item.address}}" data-name="{{item.name}}" data-in="{{item.inDistributionScope}}" bindtap="getAddress">
+      <view class="item" wx:for="{{keywordsNearbyAddresses}}" wx:key="{{item.name}}" data-address="{{item.address}}" data-area="{{item.area}}" data-name="{{item.name}}" data-in="{{item.inDistributionScope}}" bindtap="getAddress">
           <text class="l">{{item.name}}</text>
           <text class="r" wx:if="{{!item.inDistributionScope}}">不在配送范围内</text>
           <view class="clear"></view>
