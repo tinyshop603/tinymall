@@ -155,7 +155,7 @@ Page({
       keyWord: key,
       searchWaitNum: searchWaitNumPlus
     });
-    setTimeout(function () {
+    var timeoutId = setTimeout(function () {
       // console.log("延迟调用============");
       let searchWaitNum = self.data.searchWaitNum;
       if (searchWaitNum <= 1){
@@ -171,7 +171,9 @@ Page({
           searchWaitNum: searchWaitNumSub
         })
       }
-    }, 500)
+    }, 500);
+    // 清除定时器
+    clearTimeout(timeoutId);
     
   },
   /**

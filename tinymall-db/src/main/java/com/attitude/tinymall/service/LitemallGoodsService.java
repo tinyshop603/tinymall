@@ -28,7 +28,7 @@ public interface LitemallGoodsService {
    int countByCategory(Integer catId, Integer page, Integer size) ;
 
   //wz-增加categoryIds字段以适应一次获取多区域商品
-   List<LitemallGoods> querySelective(Integer catId, Integer brandId, String keyword,
+   List<LitemallGoods> querySelective(Integer categoryId, Integer brandId, String keyword,
       Integer isHot, Integer isNew, Integer offset, Integer limit, String sort,
       List<Integer> categoryIds) ;
 

@@ -321,7 +321,7 @@ page{
     flex: 1;
     height: 100rpx;
     line-height: 100rpx;
-    color: #ffd827;
+    color: #ff4a00;
     background: #fff;
     font-size: 33rpx;
     padding-left: 31.25rpx;

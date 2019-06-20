@@ -65,7 +65,7 @@ public class LitemallGoodsServiceImpl implements LitemallGoodsService {
 
   //wz-增加categoryIds字段以适应一次获取多区域商品
   @Override
-  public List<LitemallGoods> querySelective(Integer catId, Integer brandId, String keyword,
+  public List<LitemallGoods> querySelective(Integer categoryId, Integer brandId, String keyword,
       Integer isHot, Integer isNew, Integer offset, Integer limit, String sort,
       List<Integer> categoryIds) {
     LitemallGoodsExample example = new LitemallGoodsExample();
@@ -74,8 +74,8 @@ public class LitemallGoodsServiceImpl implements LitemallGoodsService {
     if (categoryIds != null) {
       criteria.andCategoryIdIn(categoryIds);
     }
-    if (catId != null && catId != 0) {
-      criteria.andCategoryIdEqualTo(catId);
+    if (categoryId != null && categoryId != 0) {
+      criteria.andCategoryIdEqualTo(categoryId);
     }
     if (brandId != null) {
       criteria.andBrandIdEqualTo(brandId);

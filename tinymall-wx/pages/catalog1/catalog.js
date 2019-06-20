@@ -116,11 +116,14 @@ Page({
   caluSubHeight:function () {
     let that = this;
     var categoryList = this.data.categoryList;
+    var timeoutId;
     if (categoryList.length === 0){
-      setTimeout(function () {
+      var timeoutId = setTimeout(function () {
         that.caluSubHeight();
       }, 500)
     }
+    // 清除定时器
+    clearTimeout(timeoutId);
     var index = 0;
     for (var i = 0; i < categoryList.length; i++) {
       wx.createSelectorQuery().select("#g" + categoryList[i].id).fields({
