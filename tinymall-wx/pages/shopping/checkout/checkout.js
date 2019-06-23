@@ -179,7 +179,7 @@ Page({
     //    })
     //    return false;
     //  }
-    if (!res.data.isValidAddress) {
+    if (!this.data.isValidAddress) {
       that.showAdressOutBox();
     }
 

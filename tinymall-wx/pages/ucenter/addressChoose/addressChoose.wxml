@@ -10,7 +10,10 @@
 
     <view class="nearby-address">
       <view class="item" wx:for="{{keywordsNearbyAddresses}}" wx:key="{{item.name}}" data-address="{{item.address}}" data-area="{{item.area}}" data-name="{{item.name}}" data-in="{{item.inDistributionScope}}" bindtap="getAddress">
-          <text class="l">{{item.name}}</text>
+          <view>
+              <view class="la">{{item.name}}</view>
+              <view class="lb">{{item.address}}</view>
+          </view>
           <text class="r" wx:if="{{!item.inDistributionScope}}">不在配送范围内</text>
           <view class="clear"></view>
       </view>

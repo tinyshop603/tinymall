@@ -47,11 +47,19 @@ page {
   border-bottom: 1px solid #ccc;
 }
 
-.nearby-address .l{
+.nearby-address .la{
   width: 450rpx;
   float: left;
-  padding: 20rpx;
+  padding-top: 20rpx;
+  padding-bottom: 10rpx;
   overflow: hidden;
+}
+.nearby-address .lb{
+  width: 450rpx;
+  float: left;
+  overflow: hidden;
+  color: #ccc;
+  padding-bottom: 20rpx;
 }
 
 

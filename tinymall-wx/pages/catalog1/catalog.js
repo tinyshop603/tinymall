@@ -163,7 +163,7 @@ Page({
             var address;
             if (res.erron === -1){
               console.log("位置获取错误");
-            }else if(res.data.poiRegions.length > 0){
+            } else if (res.data.poiRegions && res.data.poiRegions.length > 0){
               address = res.data.poiRegions[0].name;
             }else{
               address = res.data.formattedAddress;
@@ -172,12 +172,15 @@ Page({
               addressText: address,
             })
             // 超出配送范围提示
-            wx.showModal({
-              content: '您当前位置超出服务范围',
-              confirmText: '知道了',
-              confirmColor: '#2F9F42',
-              showCancel:false
-            })
+            if (res.data.distributionStatus == 'out') {
+              wx.showModal({
+                content: '您当前位置超出服务范围',
+                confirmText: '知道了',
+                confirmColor: '#2F9F42',
+                showCancel: false
+              })
+            }
+            
             console.log("location:"+new Date());
           });
       },
