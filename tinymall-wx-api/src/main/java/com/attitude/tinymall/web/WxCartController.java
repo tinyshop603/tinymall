@@ -64,6 +64,9 @@ public class WxCartController {
             return ResponseUtil.unlogin();
         }
 
+        List<LitemallCart> oldCartList = cartService.queryByUid(userId);
+        // TODO 检查购物车货品为最新 后续会优化
+        this.updataCartGoods(oldCartList);
         List<LitemallCart> cartList = cartService.queryByUid(userId);
         Integer goodsCount = 0;
         BigDecimal goodsAmount = new BigDecimal(0.00);
@@ -88,6 +91,24 @@ public class WxCartController {
         result.put("cartTotal", cartTotal);
 
         return ResponseUtil.ok(result);
+    }
+
+    /**
+     *  authot:wz
+     *  date:2019-6-23
+     *  description: 临时处理方法，每次打开购物车界面修改购物车商品 名称 价钱 及 图片链接 以保持最新
+     */
+    public void updataCartGoods( List<LitemallCart> cartList) {
+        if(cartList.size() != 0){
+            for(int i = 0; i < cartList.size(); i++) {
+                LitemallCart cart = cartList.get(i);
+                LitemallGoods goods = goodsService.findById(cart.getGoodsId());
+                cart.setGoodsName((goods.getName()));
+                cart.setPicUrl(goods.getPrimaryPicUrl());
+                cart.setRetailPrice(goods.getRetailPrice());
+                cartService.update(cart);
+            }
+        }
     }
 
     /**

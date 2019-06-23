@@ -54,13 +54,13 @@
         <sqlMapGenerator targetPackage="com.attitude.tinymall.dao" targetProject="src/main/resources" />
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.attitude.tinymall.dao" targetProject="src/main/java" />
         <!--表名-->
-        <table tableName="tinymall_admin" domainObjectName="LitemallAdmin">
+        <table tableName="tinymall_address" domainObjectName="LitemallAddress">
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride javaType="java.time.LocalDateTime" column="pay_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="ship_start_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="ship_end_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="confirm_time"/>
-            <columnOverride javaType="java.time.LocalDateTime" column="end_time"/>
+            <!--<columnOverride javaType="java.time.LocalDateTime" column="pay_time"/>-->
+            <!--<columnOverride javaType="java.time.LocalDateTime" column="ship_start_time"/>-->
+            <!--<columnOverride javaType="java.time.LocalDateTime" column="ship_end_time"/>-->
+            <!--<columnOverride javaType="java.time.LocalDateTime" column="confirm_time"/>-->
+            <!--<columnOverride javaType="java.time.LocalDateTime" column="end_time"/>-->
             <columnOverride javaType="java.time.LocalDateTime" column="add_time"/>
 
             <columnOverride javaType="java.time.LocalDateTime" column="update_time"/>

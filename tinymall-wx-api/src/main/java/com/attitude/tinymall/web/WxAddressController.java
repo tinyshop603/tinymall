@@ -152,12 +152,16 @@ public class WxAddressController {
 
         // 借用areaId传递areaType,保存时需要转换一下
         if (address.getAreaId() != null){
-            LitemallRegion areaRegion = regionService.queryByCode(address.getAreaId());
-            if(areaRegion == null){
-                logger.error("保存地址code转换错误：" + address.getAreaId());
-                return ResponseUtil.badArgument();
+            if(address.getAreaId().toString().length() != 6){
+                logger.error("非正常转换：" + address.getAreaId());
             }else{
-                address.setAreaId(areaRegion.getId());
+                LitemallRegion areaRegion = regionService.queryByCode(address.getAreaId());
+                if(areaRegion == null){
+                    logger.error("保存地址code转换错误：" + address.getAreaId());
+                    return ResponseUtil.badArgument();
+                }else{
+                    address.setAreaId(areaRegion.getId());
+                }
             }
         }
 

@@ -15,5 +15,6 @@ App({
   globalData: {
     hasLogin: false,
     storeId: 1042876//回龙观
+    // storeId: 1044297 // 测试用
   }
 })

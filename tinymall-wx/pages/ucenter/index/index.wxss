@@ -88,12 +88,11 @@ page{
     width: 33.33%;
 }
 .profile-info .orderDetail image{
-    height: 50rpx;
-    width: 50rpx;
+    height: 80rpx;
+    width: 80rpx;
 }
 .profile-info .orderDetail text{
     display: block;
-    margin: 20rpx;
 }
 
 .user-menu{

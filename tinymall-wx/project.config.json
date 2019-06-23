@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
+			"current": 19,
 			"list": [
 				{
 					"id": -1,
@@ -136,6 +136,18 @@
 					"id": -1,
 					"name": "地址选择",
 					"pathName": "pages/ucenter/addressChoose/addressChoose",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "地址添加",
+					"pathName": "pages/ucenter/addressAdd/addressAdd",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "编辑地址",
+					"pathName": "pages/ucenter/addressAdd/addressAdd",
 					"query": ""
 				}
 			]
