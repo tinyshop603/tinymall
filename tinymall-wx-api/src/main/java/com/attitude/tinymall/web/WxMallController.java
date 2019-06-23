@@ -9,9 +9,17 @@ import com.attitude.tinymall.service.LitemallAdminService;
 import com.attitude.tinymall.service.LitemallCategoryService;
 import com.attitude.tinymall.service.LitemallGoodsService;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +38,16 @@ public class WxMallController {
 
   @Autowired
   private LitemallGoodsService goodsService;
+  private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+      .setNameFormat("category_and_goods-request-pool-%d").build();
+  /**
+   * 当前百度返回的默认的最多天数
+   */
+  private final int CORE_SIZE = 5;
+  private ExecutorService executorService = new ThreadPoolExecutor(CORE_SIZE, CORE_SIZE,
+      0L, TimeUnit.MILLISECONDS,
+      new LinkedBlockingQueue<>(), namedThreadFactory);
+
 
   private static String replacePic = "?x-oss-process=image/resize,m_fixed,h_120,w_120";
 
@@ -58,12 +76,13 @@ public class WxMallController {
 
   // TODO 分类改造首页 返回全部商品 采用图片懒加载及锚点技术实现
   @GetMapping("/new/category")
-  public Object getAllDetail(@PathVariable("storeId") String appid) {
-    System.out.println("category/开始:"+new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
+  public Object getAllDetail(@PathVariable("storeId") String appid) throws InterruptedException {
+    System.out.println(
+        "category/开始:" + new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
     LitemallAdmin litemallAdmin = litemallAdminService.findAdminByOwnerId(appid);
     // 此处查询出的数据必定size为1或者0
     List<LitemallCategory> litemallCategories = categoryService
-            .queryByPid(litemallAdmin.getId());
+        .queryByPid(litemallAdmin.getId());
     Integer storeId = null;
     if (litemallCategories != null && litemallCategories.size() == 1) {
       storeId = litemallCategories.get(0).getId();
@@ -74,28 +93,34 @@ public class WxMallController {
     }
     // 当前所有L2分类
     List<LitemallCategory> categoryList = categoryService.queryByPid(storeId);
-    Map<String, Object> data = new HashMap();
-    List<List<LitemallGoods>> allGoodsList = new ArrayList<>();
-    if (categoryList.size() > 0) {
-      for (int i = 0; i < categoryList.size() ; i++) {
-        int categoryId = categoryList.get(i).getId();
-        List<LitemallGoods> goodsList = goodsService
-                .querySelective(categoryId, null, null, null, null, 0, Integer.MAX_VALUE, null, null);
-        //截取图片格式
-        if (goodsList.size() > 0) {
-            for (int j = 0; j < goodsList.size(); j++) {
-                String newPicUrl = goodsList.get(j).getListPicUrl() + replacePic;
-                goodsList.get(j).setListPicUrl(newPicUrl);
-            }
-        }
+    Map<Integer, List<LitemallGoods>> allGoodsMap = new ConcurrentHashMap<>(16);
+    final CountDownLatch countDownLatch = new CountDownLatch(categoryList.size());
 
-        allGoodsList.add(goodsList);
+    if (categoryList.size() > 0) {
+      for (int i = 0; i < categoryList.size(); i++) {
+        final int categoryId = categoryList.get(i).getId();
+        executorService.execute(() -> {
+          try {
+            List<LitemallGoods> goodsList = goodsService
+                .querySelective(categoryId, null, null,
+                    null, null, 0,
+                    Integer.MAX_VALUE, null, null);
+            allGoodsMap.put(categoryId, goodsList);
+          } finally {
+            countDownLatch.countDown();
+          }
+        });
       }
     }
+    countDownLatch.await();
+    List<List<LitemallGoods>> allGoodsList = Collections.synchronizedList(new ArrayList<>());
+    categoryList.forEach((value) -> {
+      Integer categoryId = value.getId();
+      allGoodsList.add(allGoodsMap.get(categoryId));
+    });
+    Map<String, Object> data = new HashMap();
     data.put("categoryList", categoryList);
     data.put("allGoodsList", allGoodsList);
-    System.out.println("category/结束:"+new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
-//
 //    int categoryId = 0;
 //    if (categoryList.size() > 0) {
 //      LitemallCategory currentCategory = categoryList.get(0);
@@ -129,7 +154,7 @@ public class WxMallController {
   }
 
   @GetMapping("/location")
-  public Object getConsumerLocation(double latitude,double longitude){
+  public Object getConsumerLocation(double latitude, double longitude) {
     Map<String, Object> data = new HashMap();
     data.put("locationName", "北店嘉园南里");
     data.put("canDistribution", false);
