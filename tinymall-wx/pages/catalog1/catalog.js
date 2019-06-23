@@ -136,6 +136,7 @@ Page({
         context: true,
       }, function (result) {
         var height = parseInt(that.data.subHeightArr[index]) + result.height;
+
           that.setData({
             subHeightArr: that.data.subHeightArr.concat(height)
           })
