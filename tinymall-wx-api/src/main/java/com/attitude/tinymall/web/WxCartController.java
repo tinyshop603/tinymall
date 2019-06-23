@@ -521,21 +521,24 @@ public class WxCartController {
             checkedGoodsPrice = checkedGoodsPrice.add(cart.getRetailPrice().multiply(new BigDecimal(cart.getNumber())));
         }
 
-        BigDecimal deliveryFee;
-        try {
-            logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + checkedAddress.getId());
-            Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, checkedAddress);
-            if(deliveryObj != null && ("0").equals(((HashMap) deliveryObj).get("errno").toString())){
-                double fee = Double.parseDouble(((HashMap) deliveryObj).get("data").toString());
-                logger.info("获取运费：" + fee);
-                deliveryFee = new BigDecimal(fee);
-            }else{
-                return deliveryObj;
+        BigDecimal deliveryFee = new BigDecimal(0.00);
+        if(checkedAddress.getId() != 0) {
+            try {
+                logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + checkedAddress.getId());
+                Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, checkedAddress);
+                if(deliveryObj != null && ("0").equals(((HashMap) deliveryObj).get("errno").toString())){
+                    double fee = Double.parseDouble(((HashMap) deliveryObj).get("data").toString());
+                    logger.info("获取运费：" + fee);
+                    deliveryFee = new BigDecimal(fee);
+                }else{
+                    return deliveryObj;
+                }
+            }catch (Exception e){
+                logger.error(e.getMessage());
+                return ResponseUtil.fail(-1,"提交订单失败");
             }
-        }catch (Exception e){
-            logger.error(e.getMessage());
-            return ResponseUtil.fail(-1,"提交订单失败");
         }
+
 
 //        logger.info("获取运费：" + deliveryFee);
 

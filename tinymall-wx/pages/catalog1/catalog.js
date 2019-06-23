@@ -20,6 +20,13 @@ Page({
   },
   onLoad: function () {
     let that = this;
+
+    wx.showToast({
+      title: '成功',
+      icon: 'success',
+      duration: 2000
+    })
+
     // 页面加载时获取定位
     this.getLocation();
     // 根据手机可用高度动态赋予容器高度
@@ -105,11 +112,6 @@ Page({
         wx.hideLoading();
       });
     that.caluSubHeight();
-    // util.request(api.GoodsCount, { storeid:that.data.storeId}).then(function (res) {
-    //   that.setData({
-    //     goodsCount: res.data.goodsCount
-    //   });
-    // });
   },
 
   // 计算右侧高度进行数组
@@ -167,6 +169,14 @@ Page({
             }
             self.setData({
               addressText: address,
+            })
+            // 提示
+            wx.showModal({
+              // title: '提示',
+              content: '您当前位置超出服务范围',
+              confirmText: '知道了',
+              confirmColor: '#2F9F42',
+              showCancel:false
             })
             console.log("location:"+new Date());
           });
