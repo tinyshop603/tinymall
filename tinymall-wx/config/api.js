@@ -19,6 +19,7 @@ var WxApiRoot = 'https://www.bjguangchi.top/wx/';
 var StorageApi = 'https://www.bjguangchi.top/os/storage/create';
 // 新增的api反馈形式,将所有的api在请求的时候带上该商家的唯一标示
 let APP_ID = 'wx6453a69f8a24f675'+'/';
+// let APP_ID = 'wx497ee4ebf39f0f95' + '/'; // 测试用
 
 WxApiRoot +=APP_ID;
 

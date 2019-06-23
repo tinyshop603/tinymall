@@ -18,6 +18,8 @@ Page({
     addressId: 0,
     couponId: 0,
     remark:"",
+    isValidAddress:false
+
     // pickerIndex: 1,
     // array: ['货到付款', '在线支付'],
     // objectArray:[
@@ -67,11 +69,29 @@ Page({
           goodsTotalPrice: res.data.goodsTotalPrice,
           orderTotalPrice: res.data.orderTotalPrice,
           addressId: res.data.addressId,
-          couponId: res.data.couponId
+          couponId: res.data.couponId,
+          isValidAddress: res.data.isValidAddress
         });
+        if (!res.data.isValidAddress) {
+          that.showAdressOutBox();
+        }
       }
       wx.hideLoading();
     });
+  },
+  showAdressOutBox: function () {
+    var that = this;
+    // 超出配送范围提示
+    wx.showModal({
+      content: '收货地址超出服务范围',
+      confirmText: '重选地址',
+      confirmColor: '#2F9F42',
+      success(res) {
+        if (res.confirm) {
+          that.selectAddress();
+        }
+      }
+    })
   },
   selectAddress() {
     wx.navigateTo({
@@ -159,6 +179,9 @@ Page({
     //    })
     //    return false;
     //  }
+    if (!res.data.isValidAddress) {
+      that.showAdressOutBox();
+    }
 
     that.submitPrepay();
 

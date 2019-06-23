@@ -125,7 +125,7 @@ Page({
       }, 500)
     }
     // 清除定时器
-    clearTimeout(timeoutId);
+    // clearTimeout(timeoutId);
     var index = 0;
     for (var i = 0; i < categoryList.length; i++) {
       wx.createSelectorQuery().select("#g" + categoryList[i].id).fields({
@@ -170,9 +170,8 @@ Page({
             self.setData({
               addressText: address,
             })
-            // 提示
+            // 超出配送范围提示
             wx.showModal({
-              // title: '提示',
               content: '您当前位置超出服务范围',
               confirmText: '知道了',
               confirmColor: '#2F9F42',

@@ -29,6 +29,7 @@ Page({
     ],
     regionType: 1,
     regionList: [],
+    isValidAddress: true,
     selectRegionDone: false
   },
   bindinputMobile(event) {

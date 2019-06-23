@@ -9,9 +9,12 @@
             <input class="input" bindinput="bindinputMobile" value="{{address.mobile}}" placeholder="配送员联系您的手机号" placeholder-class="placeholder"/>
         </view>
         <view class="form-item">
-            <text class="form-txt">收货地址：</text>
+            <text class="form-txt-adress">收货地址：</text>
             <text class="icon" wx:if="{{address.address == ''}}"></text>
-            <text class="fwidth {{address.address == '' ? 'placeholder' : ''}}" bindtap="chooseAddress">{{address.address == "" ? "点击获取" : address.address}}</text>
+            <view class="form-content" bindtap="chooseAddress">
+                <view class="fwidth {{address.address == '' ? 'placeholder' : ''}}" >{{address.address == "" ? "点击获取" : address.address}}</view>
+                <view class="no-valid-adress" wx:if="{{!isValidAddress}}">不在配送范围内</view>
+            </view>
         </view>
         <!-- <view class="form-item">
             <text class="form-txt">省份、城市、区县：</text>

@@ -1,17 +1,10 @@
 package com.attitude.tinymall.web;
 
 import com.attitude.tinymall.domain.LitemallRegion;
-import com.attitude.tinymall.domain.baidu.address.Location;
-import com.attitude.tinymall.domain.baidu.address.PoiAddress;
-import com.attitude.tinymall.domain.baidu.geocode.GeoDecodingAddress;
-import com.attitude.tinymall.service.BaiduFenceService;
 import com.attitude.tinymall.service.IUserAddressService;
-import com.attitude.tinymall.util.CoodinateCovertorUtil;
 import com.attitude.tinymall.util.ResponseUtil;
 import com.attitude.tinymall.service.LitemallAdminService;
 import com.attitude.tinymall.vo.LocationVO;
-import com.attitude.tinymall.vo.PoiAddressVO;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.attitude.tinymall.util.RegexUtil;
@@ -19,13 +12,11 @@ import com.attitude.tinymall.domain.LitemallAddress;
 import com.attitude.tinymall.service.LitemallAddressService;
 import com.attitude.tinymall.service.LitemallRegionService;
 import com.attitude.tinymall.annotation.LoginUser;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/wx/{storeId}/address")
@@ -36,8 +27,6 @@ public class WxAddressController {
     private LitemallAddressService addressService;
     @Autowired
     private LitemallRegionService regionService;
-    @Autowired
-    private BaiduFenceService baiduFenceService;
     @Autowired
     private LitemallAdminService adminService;
     @Autowired
@@ -175,20 +164,6 @@ public class WxAddressController {
         // 测试收货手机号码是否正确
         String mobile = address.getMobile();
         if (!RegexUtil.isMobileExact(mobile)) {
-            return ResponseUtil.badArgument();
-        }
-
-        //  TODO 需要修改验证逻辑 验证地址是否在合法的范围内
-        try {
-            boolean isValidAddress = baiduFenceService
-                    .isValidLocationWithinFence(userId.toString(), addressService.getFullDetailAddress(address),
-                            adminService.findAdminByOwnerId(appId).getShopFenceId());
-            if (!isValidAddress) {
-                logger.info("地址未在配送范围：" + address.getAddress());
-                return ResponseUtil.unReachAddress();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtil.badArgument();
         }
 

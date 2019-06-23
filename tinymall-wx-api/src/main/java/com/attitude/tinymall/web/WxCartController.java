@@ -38,6 +38,8 @@ public class WxCartController {
     private LitemallDeliveryDetailService deliveryDetailService;
     @Autowired
     private LitemallAdminService adminService;
+    @Autowired
+    private BaiduFenceService baiduFenceService;
 
     /**
      * 购物车
@@ -489,13 +491,25 @@ public class WxCartController {
             else{
                 addressId = checkedAddress.getId();
             }
-
         }
         else {
             checkedAddress = addressService.findById(addressId);
             // 如果null, 则报错
             if(checkedAddress == null){
                 return ResponseUtil.badArgumentValue();
+            }
+        }
+
+        // 判断地址是否在商家配送范围内
+        boolean isValidAddress = true;
+        if(checkedAddress.getId() != 0) {
+            try {
+                isValidAddress = baiduFenceService
+                        .isValidLocationWithinFence(userId.toString(), addressService.getFullDetailAddress(checkedAddress),
+                                adminService.findAdminByOwnerId(appId).getShopFenceId());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseUtil.badArgument();
             }
         }
 
@@ -568,6 +582,7 @@ public class WxCartController {
         data.put("orderTotalPrice", orderTotalPrice);
         data.put("actualPrice", actualPrice);
         data.put("checkedGoodsList", checkedGoodsList);
+        data.put("isValidAddress", isValidAddress);
         return ResponseUtil.ok(data);
     }
 

@@ -22,6 +22,11 @@ page{
     color:#7A7A7A;
 }
 
+.add-address .form-txt-adress{
+    color:#7A7A7A;
+    width: 200rpx;
+}
+
 .add-address .icon{
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABFElEQVQ4T6VTwa3DIAzFiCNIzTESRB2hI2SEjpARGCEjZISM0BH6N/gjfAFSjqkExwgqV40UpSn9Vbggg/3s52cD2XlgZzzJAjjnTphASvn7LtEmgLW2TilpSukVA2OMJwDolVIPe3leAIZhOE7TpJVSelmBtbZjjHVlWf5lAdCRc96GEDQA3NA5pXTgnHchhBaBswDGmL6qqma+0XnrbQZ5oTBX4L2vAQB7kQghP0KI678qePKupZTdOI4HzFQUxc1a2wLAZa3IpgrGmIsQosFABEAg7z1SO39UAR2eSjRKqRZtzM4Y69cK4N/bQXLO6RjjQzJK6REpbQ1TdhKxoRi0li4r4/ITuc99+GqUv1mw3dt4ByMLhhHDNyjNAAAAAElFTkSuQmCC) no-repeat;
     width: 32rpx;
@@ -37,11 +42,21 @@ page{
 .add-address .placeholder{
     color:#E3E3E3;
 }
-.add-address .fwidth{
-    width:400rpx;
-    height: 100%;
-    padding: 36rpx 0;
+
+.add-address .form-content {
+    height: 116rpx;
+    width:100%;
+}
+
+.add-address .fwidth {
+    width:100%;
+    height: auto;
+    padding-top: 36rpx;
     overflow: hidden;
+}
+
+.add-address .no-valid-adress {
+    color:#E3E3E3;
 }
 
 .add-address .form-default{

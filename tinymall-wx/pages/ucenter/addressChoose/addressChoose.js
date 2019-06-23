@@ -192,9 +192,10 @@ Page({
           let address = prevPage.data.address;
           address.address = e.currentTarget.dataset.name;
           address.areaId = res.data;
-
+          var isValidAddress = e.currentTarget.dataset.in
           prevPage.setData({
-            address: address
+            address: address,
+            isValidAddress: isValidAddress
           });
           wx.navigateBack({
             delta: 1
