@@ -120,7 +120,7 @@ Page({
         //wz-截取图片格式
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
-            res.data.goodsList[i].listPicUrl = res.data.goodsList[i].listPicUrl + picUrlSuffix;
+            res.data.goodsList[i].listPicUrl = res.data.goodsList[i].listPicUrl + that.data.picUrlSuffix;
           }
         }
         that.setData({
@@ -276,7 +276,7 @@ Page({
         //wz-截取图片格式
         if (res.data.goodsList.length > 0) {
           for (let i = 0; i < res.data.goodsList.length; i++) {
-            res.data.goodsList[i].listPicUrl = res.data.goodsList[i].listPicUrl + picUrlSuffix;
+            res.data.goodsList[i].listPicUrl = res.data.goodsList[i].listPicUrl + that.data.picUrlSuffix;
           }
         }
         that.setData({

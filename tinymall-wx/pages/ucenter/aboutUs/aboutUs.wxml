@@ -2,7 +2,7 @@
    <view class="t">
     <view class="showPic" >
       <image class="logo" src="/static/images/logo.png"/>
-      <!-- <text>789便利店</text> -->
+      <!-- <text>咱家小卖铺</text> -->
     </view>
    </view>
    <view class="busPhone" data-reply-phone="18811452696" bindtap="phoneCall">
