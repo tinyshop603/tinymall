@@ -1,6 +1,7 @@
 package com.attitude.tinymall;
 
 import com.attitude.tinymall.dao.LitemallAdminMapper;
+import com.attitude.tinymall.domain.LitemallAddress;
 import com.attitude.tinymall.domain.LitemallAdmin;
 import com.attitude.tinymall.domain.dada.ResponseEntity;
 import com.attitude.tinymall.domain.dada.order.*;
@@ -47,132 +48,142 @@ public class DadaServiceTest {
 
   @Autowired
   LitemallAdminService litemallAdminService;
+
   @Test
   public void testDadaAddOrder() {
     AddOrderParams orderParams = AddOrderParams
-            .builder()
-            .shopNo("11047059")
-            .cityCode("021")
-            .cargoPrice(new BigDecimal(100))
-            .isPrepay(0)
-            .receiverName("测试")
-            .receiverAddress("北京市回龙观")
-            .receiverLat(new Float("50.05703033345938"))
-            .receiverLng(new Float("116.3084202915042"))
-            .receiverPhone("13693002107")
-            .originId("AA001")
-            .callback("http://39.107.81.107:8084/dada-order/callback/status")
-            .info("test")
-            .build();
+        .builder()
+        .shopNo("11047059")
+        .cityCode("021")
+        .cargoPrice(new BigDecimal(100))
+        .isPrepay(0)
+        .receiverName("测试")
+        .receiverAddress("北京市回龙观")
+        .receiverLat(new Float("50.05703033345938"))
+        .receiverLng(new Float("116.3084202915042"))
+        .receiverPhone("13693002107")
+        .originId("AA001")
+        .callback("http://39.107.81.107:8084/dada-order/callback/status")
+        .info("test")
+        .build();
     ResponseEntity<AddOrderResult> res = remoteDadaDeliveryClient.addOrder(orderParams);
     log.error(res.toString());
   }
+
   @Test
   public void testDadaReAddOrder() {
     ReAddOrderParams orderParams = ReAddOrderParams
-            .builder()
-            .shopNo("11047059")
-            .cityCode("021")
-            .cargoPrice(new BigDecimal(100))
-            .isPrepay(0)
-            .receiverName("测试")
-            .receiverAddress("北京市回龙观")
-            .receiverLat(new Float("50.05703033345938"))
-            .receiverLng(new Float("116.3084202915042"))
-            .receiverPhone("13693002107")
-            .originId("A1234568")
-            .callback("http://www.abc.com")
-            .info("test")
-            .build();
+        .builder()
+        .shopNo("11047059")
+        .cityCode("021")
+        .cargoPrice(new BigDecimal(100))
+        .isPrepay(0)
+        .receiverName("测试")
+        .receiverAddress("北京市回龙观")
+        .receiverLat(new Float("50.05703033345938"))
+        .receiverLng(new Float("116.3084202915042"))
+        .receiverPhone("13693002107")
+        .originId("A1234568")
+        .callback("http://www.abc.com")
+        .info("test")
+        .build();
     ResponseEntity<ReAddOrderResult> res = remoteDadaDeliveryClient.reAddOrder(orderParams);
     log.error(res.toString());
   }
+
   @Test
   public void queryOrderDeliverFee() {
     QueryDeliverFeeParams orderParams = QueryDeliverFeeParams
-            .builder()
-            .shopNo("11047059")
-            .cityCode("021")
-            .cargoPrice(new BigDecimal(100))
-            .isPrepay(0)
-            .receiverName("测试")
-            .receiverAddress("北京市回龙观")
-            .receiverLat(new Float("50.05703033345938"))
-            .receiverLng(new Float("116.3084202915042"))
-            .receiverPhone("13693002107")
-            .originId("B1")
-            .callback("http://39.107.81.107:8084/dada-order/callback/status")
-            .build();
-    ResponseEntity<QueryOrderDeliverFeeResult> res = remoteDadaDeliveryClient.queryOrderDeliverFee(orderParams);
+        .builder()
+        .shopNo("11047059")
+        .cityCode("021")
+        .cargoPrice(new BigDecimal(100))
+        .isPrepay(0)
+        .receiverName("测试")
+        .receiverAddress("北京市回龙观")
+        .receiverLat(new Float("50.05703033345938"))
+        .receiverLng(new Float("116.3084202915042"))
+        .receiverPhone("13693002107")
+        .originId("B1")
+        .callback("http://39.107.81.107:8084/dada-order/callback/status")
+        .build();
+    ResponseEntity<QueryOrderDeliverFeeResult> res = remoteDadaDeliveryClient
+        .queryOrderDeliverFee(orderParams);
     log.info(res.toString());
   }
 
   @Test
   public void addOrderTip() {
     AddTipParams orderParams = AddTipParams
-            .builder()
-            .tips(new BigDecimal(10))
-            .cityCode("021")
-            .orderId("A1234568")
-            .info("test")
-            .build();
+        .builder()
+        .tips(new BigDecimal(10))
+        .cityCode("021")
+        .orderId("A1234568")
+        .info("test")
+        .build();
     ResponseEntity<AddOrderTipResult> res = remoteDadaDeliveryClient.addOrderTip(orderParams);
     log.error(res.toString());
   }
+
   @Test
   public void addOrderAfterQuery() {
     AddAfterQueryParams orderParams = AddAfterQueryParams
-            .builder()
-            .deliveryNo("123456879")
-            .build();
+        .builder()
+        .deliveryNo("123456879")
+        .build();
     ResponseEntity res = remoteDadaDeliveryClient.addOrderAfterQuery(orderParams);
     log.error(res.toString());
   }
+
   @Test
   public void queryOrderStatus() {
     QueryOrderParams orderParams = QueryOrderParams
-            .builder()
-            .orderId("123456879")
-            .build();
-    ResponseEntity<QueryOrderStatusResult> res = remoteDadaDeliveryClient.queryOrderStatus(orderParams);
+        .builder()
+        .orderId("123456879")
+        .build();
+    ResponseEntity<QueryOrderStatusResult> res = remoteDadaDeliveryClient
+        .queryOrderStatus(orderParams);
     log.error(res.toString());
   }
 
   @Test
   public void formalCancelOrder() {
     FormalCancelParams orderParams = FormalCancelParams
-            .builder()
-            .orderId("123456879")
-            .cancelReasonId("1")
-            .cancelReason("fail")
-            .build();
-    ResponseEntity<FormalCancelOrderResult> res = remoteDadaDeliveryClient.formalCancelOrder(orderParams);
+        .builder()
+        .orderId("123456879")
+        .cancelReasonId(1)
+        .cancelReason("fail")
+        .build();
+    ResponseEntity<FormalCancelOrderResult> res = remoteDadaDeliveryClient
+        .formalCancelOrder(orderParams);
     log.error(res.toString());
   }
 
   @Test
   public void cancelOrderReasons() {
-    ResponseEntity<List<CancelOrderReasonsResult>> res = remoteDadaDeliveryClient.cancelOrderReasons();
+    ResponseEntity<List<CancelOrderReasonsResult>> res = remoteDadaDeliveryClient
+        .cancelOrderReasons();
     log.error(res.toString());
   }
 
   @Test
   public void existOrderAppoint() {
     ExistOrderParams orderParams = ExistOrderParams
-            .builder()
-            .shopNo("366782")
-            .transporterId(92257)
-            .orderId("123")
-            .build();
+        .builder()
+        .shopNo("366782")
+        .transporterId(92257)
+        .orderId("123")
+        .build();
     ResponseEntity res = remoteDadaDeliveryClient.existOrderAppoint(orderParams);
     log.error(res.toString());
   }
+
   @Test
   public void cancelOrderAppoint() {
     CancelOrderParams orderParams = CancelOrderParams
-            .builder()
-            .orderId("123")
-            .build();
+        .builder()
+        .orderId("123")
+        .build();
     ResponseEntity res = remoteDadaDeliveryClient.cancelOrderAppoint(orderParams);
     log.error(res.toString());
   }
@@ -180,23 +191,26 @@ public class DadaServiceTest {
   @Test
   public void transporterOrderAppoint() {
     TransporterParams orderParams = TransporterParams
-            .builder()
-            .shopNo("12316")
-            .build();
-    ResponseEntity<TransporterOrderAppointResult> res = remoteDadaDeliveryClient.transporterOrderAppoint(orderParams);
+        .builder()
+        .shopNo("12316")
+        .build();
+    ResponseEntity<TransporterOrderAppointResult> res = remoteDadaDeliveryClient
+        .transporterOrderAppoint(orderParams);
     log.error(res.toString());
   }
 
   @Test
   public void dadaComplaint() {
     DadaParams orderParams = DadaParams
-            .builder()
-            .orderId("123")
-            .reasonId(123456)
-            .build();
-    ResponseEntity<TransporterOrderAppointResult> res = remoteDadaDeliveryClient.dadaComplaint(orderParams);
+        .builder()
+        .orderId("123")
+        .reasonId(123456)
+        .build();
+    ResponseEntity<TransporterOrderAppointResult> res = remoteDadaDeliveryClient
+        .dadaComplaint(orderParams);
     log.error(res.toString());
   }
+
   @Test
   public void complaintReasons() {
     ResponseEntity<List<ComplaintReasonsResult>> res = remoteDadaDeliveryClient.complaintReasons();
@@ -206,9 +220,9 @@ public class DadaServiceTest {
   @Test
   public void confirmOrderGoods() {
     GoodsParam orderParams = GoodsParam
-            .builder()
-            .orderId("123456")
-            .build();
+        .builder()
+        .orderId("123456")
+        .build();
     ResponseEntity res = remoteDadaDeliveryClient.confirmOrderGoods(orderParams);
     log.error(res.toString());
   }
@@ -217,22 +231,24 @@ public class DadaServiceTest {
   @Test
   public void testAddShop() {
     AddShopParams shopParams = AddShopParams
-            .builder()
-            .stationName("新门店1")
-            .originShopId("shoxp002")
-            .areaName("浦东新区")
-            .contactName("xxx")
-            .cityName("上海")
-            .business(1)
-            .lng(new Float("121.515014"))
-            .lat(new Float("31.229081"))
-            .phone("13012345678")
-            .stationAddress("详细地址")
-            .build();
+        .builder()
+        .stationName("新门店1")
+        .originShopId("shoxp002")
+        .areaName("浦东新区")
+        .contactName("xxx")
+        .cityName("上海")
+        .business(1)
+        .lng(new Float("121.515014"))
+        .lat(new Float("31.229081"))
+        .phone("13012345678")
+        .stationAddress("详细地址")
+        .build();
 
-    ResponseEntity<AddShopResult> shopResult = remoteDadaDeliveryClient.addShop(Arrays.asList(shopParams));
+    ResponseEntity<AddShopResult> shopResult = remoteDadaDeliveryClient
+        .addShop(Arrays.asList(shopParams));
     log.info(shopResult.toString());
   }
+
   @Test
   public void getCityCodeList() {
 
@@ -240,18 +256,19 @@ public class DadaServiceTest {
 
     log.info(result.toString());
   }
+
   @Test
   public void addMerchant() {
-    MerchantAddParams   shopParams = MerchantAddParams
-            .builder()
-            .mobile("13942471958")
-            .cityName("北京")
-            .enterpriseName("烟酒茶行")
-            .enterpriseAddress("回龙观")
-            .contactName("xxx")
-            .contactPhone("13054897542")
-            .email("101987@qq.com")
-            .build();
+    MerchantAddParams shopParams = MerchantAddParams
+        .builder()
+        .mobile("13942471958")
+        .cityName("北京")
+        .enterpriseName("烟酒茶行")
+        .enterpriseAddress("回龙观")
+        .contactName("xxx")
+        .contactPhone("13054897542")
+        .email("101987@qq.com")
+        .build();
     ResponseEntity shopResult = remoteDadaDeliveryClient.addMerchant(shopParams);
 
     log.info(shopResult.toString());
@@ -260,20 +277,22 @@ public class DadaServiceTest {
   @Test
   public void shopUpdate() {
     ShopUpdateParams shopParams = ShopUpdateParams
-            .builder()
-            .originShopId("6666666")
-            .build();
+        .builder()
+        .originShopId("6666666")
+        .build();
     ResponseEntity shopResult = remoteDadaDeliveryClient.shopUpdate(shopParams);
 
     log.info(shopResult.toString());
   }
+
   @Test
   public void getShopDetail() {
     ShopDetailParams shopParams = ShopDetailParams
-            .builder()
-            .originShopId("6666666")
-            .build();
-    ResponseEntity<ShopDetailResult> shopResult = remoteDadaDeliveryClient.getShopDetail(shopParams);
+        .builder()
+        .originShopId("6666666")
+        .build();
+    ResponseEntity<ShopDetailResult> shopResult = remoteDadaDeliveryClient
+        .getShopDetail(shopParams);
 
     log.info(shopResult.toString());
   }
@@ -284,60 +303,65 @@ public class DadaServiceTest {
   @Test
   public void abnormalBackOrder() {
     AbnormalBackOrderParams orderParams = AbnormalBackOrderParams
-            .builder()
-            .orderId("6666666")
-            .build();
+        .builder()
+        .orderId("6666666")
+        .build();
     ResponseEntity orderResult = remoteDadaDeliveryClient.abnormalBackOrder(orderParams);
 
     log.info(orderResult.toString());
   }
+
   @Test
   public void acceptOrder() {
     AcceptOrderParams orderParams = AcceptOrderParams
-            .builder()
-            .orderId("6666666")
-            .build();
+        .builder()
+        .orderId("6666666")
+        .build();
     ResponseEntity orderResult = remoteDadaDeliveryClient.acceptOrder(orderParams);
 
     log.info(orderResult.toString());
   }
+
   @Test
   public void cancelOrder() {
     TestCancelOrderParams orderParams = TestCancelOrderParams
-            .builder()
-            .orderId("6666666")
-            .reason("fall")
-            .build();
+        .builder()
+        .orderId("6666666")
+        .reason("fall")
+        .build();
     ResponseEntity orderResult = remoteDadaDeliveryClient.cancelOrder(orderParams);
 
     log.info(orderResult.toString());
   }
+
   @Test
   public void expireOrder() {
     ExpireOrderParams orderParams = ExpireOrderParams
-            .builder()
-            .orderId("6666666")
-            .build();
+        .builder()
+        .orderId("6666666")
+        .build();
     ResponseEntity orderResult = remoteDadaDeliveryClient.expireOrder(orderParams);
 
     log.info(orderResult.toString());
   }
+
   @Test
   public void fetchOrder() {
     FetchOrderParams orderParams = FetchOrderParams
-            .builder()
-            .orderId("6666666")
-            .build();
+        .builder()
+        .orderId("6666666")
+        .build();
     ResponseEntity orderResult = remoteDadaDeliveryClient.fetchOrder(orderParams);
 
     log.info(orderResult.toString());
   }
+
   @Test
   public void finishOrder() {
     FinishOrderParams orderParams = FinishOrderParams
-            .builder()
-            .orderId("6666666")
-            .build();
+        .builder()
+        .orderId("6666666")
+        .build();
     ResponseEntity orderResult = remoteDadaDeliveryClient.finishOrder(orderParams);
 
     log.info(orderResult.toString());
@@ -345,19 +369,22 @@ public class DadaServiceTest {
 
   @Test
   public void addDADA() {
-    boolean a  = litemallDeliveryDetailService.dadaAddOrder(622);
+    boolean a = litemallDeliveryDetailService.dadaAddOrder(622);
     System.out.println(a);
   }
 
   @Test
   public void queryadmin() {
     LitemallAdmin litemallAdmin = litemallAdminService.findById(1);
-    String a ;
-}
- @Test
-  public void preAddOrder(){
-   Map res = (Map)litemallDeliveryDetailService.queryDeliverFee4WX(50 , 1, new BigDecimal(3)
-            ,"兴隆都市馨园");
-   System.out.println(res);
- }
+    String a;
   }
+
+  @Test
+  public void preAddOrder() {
+    LitemallAddress litemallAddress = new LitemallAddress();
+    litemallAddress.setAddress("兴隆都市馨园");
+    Map res = (Map) litemallDeliveryDetailService.queryDeliverFee4WX(50, 1, new BigDecimal(3)
+        , litemallAddress);
+    System.out.println(res);
+  }
+}

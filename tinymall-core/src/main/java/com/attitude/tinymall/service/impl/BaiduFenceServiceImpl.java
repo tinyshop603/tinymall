@@ -48,7 +48,10 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     try {
       HttpClientResult httpClientResult = HttpClientUtil
           .doGet("http://api.map.baidu.com/geocoder/v2/", params);
-      BaiduResponse<GeoCodingAddress> result = JSON.parseObject(httpClientResult.getContent(),
+
+      String response = httpClientResult.getContent();
+      log.info("geocoder: {}", response);
+      BaiduResponse<GeoCodingAddress> result = JSON.parseObject(response,
           new TypeReference<BaiduResponse<GeoCodingAddress>>() {
           });
       return result.getResult();
@@ -69,6 +72,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     try {
       HttpClientResult httpClientResult = HttpClientUtil
           .doGet("http://api.map.baidu.com/geocoder/v2/", params);
+      String response = httpClientResult.getContent();
+      log.info("reverseGeocoding: {}", response);
       BaiduResponse<GeoDecodingAddress> result = JSON.parseObject(httpClientResult.getContent(),
           new TypeReference<BaiduResponse<GeoDecodingAddress>>() {
           });
@@ -112,6 +117,9 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     try {
       HttpClientResult httpClientResult = HttpClientUtil
           .doPost("http://yingyan.baidu.com/api/v3/fence/createcirclefence", params);
+
+      String response = httpClientResult.getContent();
+      log.info("createCircleFence: {}", response);
       return JSON.parseObject(httpClientResult.getContent(), ShopFenceResult.class);
     } catch (Exception e) {
       e.printStackTrace();
@@ -146,6 +154,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     try {
       HttpClientResult httpClientResult = HttpClientUtil
           .doPost("http://yingyan.baidu.com/api/v3/fence/updatecirclefence ", params);
+      String response = httpClientResult.getContent();
+      log.info("updateCreateCircleFence: {}", response);
       Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
       return result.get("status").equals(0);
     } catch (Exception e) {
@@ -166,6 +176,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
       try {
         HttpClientResult httpClientResult = HttpClientUtil
             .doPost("http://yingyan.baidu.com/api/v3/fence/addmonitoredperson", params);
+        String response = httpClientResult.getContent();
+        log.info("addMonitorPersonToFence: {}", response);
         Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
         log.info("add the user: {}, to the fence: {}, result is: {}", userId, fenceId, result.toString());
         return result.get("status").equals(0);
@@ -187,6 +199,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     try {
       HttpClientResult httpClientResult = HttpClientUtil
           .doPost("http://yingyan.baidu.com/api/v3/fence/deletemonitoredperson", params);
+      String response = httpClientResult.getContent();
+      log.info("deleteMonitorPersonToFence: {}", response);
       Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
       log.info("delete the user: {}, to the fence: {}, result is: {}", userId, fenceId, result.toString());
       // 删除终端的实体对象
@@ -218,6 +232,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     params.put("coord_type", mapCoordtype);
     HttpClientResult httpClientResult = HttpClientUtil
         .doGet("http://yingyan.baidu.com/api/v3/fence/querystatusbylocation", params);
+    String response = httpClientResult.getContent();
+    log.info("isValidLocationWithinFence: {}", response);
     QueryFenceLocationResult result = JSON
         .parseObject(httpClientResult.getContent(), QueryFenceLocationResult.class);
     return result.getMonitoredStatuses().get(0).getMonitoredStatus()
@@ -238,6 +254,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     params.put("region", region);
     params.put("query", keywords);
     HttpClientResult httpClientResult = HttpClientUtil.doGet("http://api.map.baidu.com/place/v2/search", params);
+    String response = httpClientResult.getContent();
+    log.info("listPlacesByKeywords: {}", response);
     BaiduResponse<List<PoiAddress>> result = JSON.parseObject(httpClientResult.getContent(),
             new TypeReference<BaiduResponse<List<PoiAddress>>>() {
             });
@@ -268,6 +286,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
 
     params.put("query", "住宅区$宿舍$写字楼$政府机构$公司企业");
     HttpClientResult httpClientResult = HttpClientUtil.doGet("http://api.map.baidu.com/place/v2/search", params);
+    String response = httpClientResult.getContent();
+    log.info("listCirclePlacesByLocation: {}", response);
     BaiduResponse<List<PoiAddress>> result = JSON.parseObject(httpClientResult.getContent(),
         new TypeReference<BaiduResponse<List<PoiAddress>>>() {
         });
@@ -290,6 +310,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     try {
       HttpClientResult httpClientResult = HttpClientUtil
           .doPost("http://yingyan.baidu.com/api/v3/entity/add", params);
+      String response = httpClientResult.getContent();
+      log.info("hangUpPerson: {}", response);
       Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
       return result.get("status").equals(0) || result.get("status").equals(3005);
     } catch (Exception e) {
@@ -307,6 +329,8 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     try {
       HttpClientResult httpClientResult = HttpClientUtil
           .doPost("http://yingyan.baidu.com/api/v3/entity/delete", params);
+      String response = httpClientResult.getContent();
+      log.info("deleteHangUpPersion: {}", response);
       Map result = JSON.parseObject(httpClientResult.getContent(), Map.class);
       return result.get("status").equals(0) || result.get("status").equals(3005);
     } catch (Exception e) {
