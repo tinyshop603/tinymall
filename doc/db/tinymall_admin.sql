@@ -9,6 +9,6 @@ alter table tinymall_admin add tpd_shop_no int(11) ;
 update tinymall_admin set
 shop_name ='烟酒茶行',
 shop_address = '北京市昌平区回龙观镇龙禧三街北店嘉园南区底商2号',
-shop_fence_id = 12, -- 11 是百度api的gcj02
+shop_fence_id = 12, -- 11 是百度api的gcj02  --2 是百度的api的商家版
 tpd_shop_no = 9410766
 where id = 1;

@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.list.SynchronizedList;
@@ -88,6 +89,7 @@ public class UserAddressServiceImpl implements IUserAddressService {
 
       for (int i = 0; i < poiAddresses.size(); i++) {
         PoiAddress it = poiAddresses.get(i);
+        AtomicInteger orderIndex = new AtomicInteger(i);
         executorService.execute(() -> {
           boolean validLocationWithinFence = false;
           try {
@@ -99,7 +101,7 @@ public class UserAddressServiceImpl implements IUserAddressService {
           } finally {
             countDownLatch.countDown();
           }
-          poiAddressVOs.add(new PoiAddressVO(
+          poiAddressVOs.add(orderIndex.intValue(), new PoiAddressVO(
               it.getProvince(),
               it.getCity(),
               it.getArea(),
