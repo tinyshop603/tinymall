@@ -66,7 +66,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作"  class-name="small-padding fixed-width" prop="type">
         <template slot-scope="scope">
-          <el-dropdown trigger="click" @command="handleOrderOptionCommand">
+          <el-dropdown hide-timeout="0" show-timeout="0" trigger="click" @command="handleOrderOptionCommand">
             <el-button type="primary">
               订单操作<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>

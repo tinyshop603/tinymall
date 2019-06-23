@@ -206,7 +206,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
                 .cargoPrice(actualPrice)
                 .isPrepay(0)
                 .receiverName(checkedAddress.getName())
-                .receiverAddress(checkedAddress.getAddress())
+                .receiverAddress(checkedAddress.getAddress()+checkedAddress.getAddressDetail())
                 .receiverLat(Float.parseFloat("" + location.getLat()))
                 .receiverLng(Float.parseFloat("" + location.getLng()))
                 .receiverPhone(checkedAddress.getMobile())
