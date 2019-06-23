@@ -378,7 +378,7 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
         "<sign>" + sign + "</sign>" +
         "</xml>";
     String resultStr = wxPayEngine.post(REFUND_URL, xmlParam, admin.getMchId().toString());
-
+    log.info("订单: {}, 微信执行退款回调: {}", orderId, resultStr);
     boolean isSuccess = false;
 
     //解析结果
@@ -396,10 +396,10 @@ public class LitemallOrderServiceImpl implements LitemallOrderService {
           this.update(order);
           isSuccess = true;
         } else {
-          log.error("退款失败：" + map.get("return_msg").toString());
+          log.error("退款失败：" + map.get("err_code_des").toString());
         }
       } else {
-        log.error("退款失败：" + map.get("return_msg").toString());
+        log.error("退款失败：" + map.get("err_code_des").toString());
       }
     } catch (Exception e) {
       log.error("退款失败", e);

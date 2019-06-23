@@ -421,6 +421,8 @@ export default {
     },
     viewOrderDetail(currentData) {
       // 获取订单的详细信息
+      // 重置配送信息
+      this.deliveryDetailsDialogData = []
 
       if (currentData.order) {
         getOrderDetail({ 'id':currentData.order.id }).then(response => {
