@@ -14,7 +14,9 @@ import com.attitude.tinymall.vo.LocationVO;
 import com.attitude.tinymall.vo.PoiAddressVO;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -83,13 +85,15 @@ public class UserAddressServiceImpl implements IUserAddressService {
 
       final int endIndex = poiAddresses.size() > 5 ? 4 : poiAddresses.size() - 1;
       poiAddresses = poiAddresses.subList(0, endIndex);
+      for (int i = 0; i < poiAddresses.size(); i++) {
+        poiAddresses.get(i).setOrderIndex(i);
+      }
 
       final CountDownLatch countDownLatch = new CountDownLatch(poiAddresses.size());
-      List<PoiAddressVO> poiAddressVOs = Collections.synchronizedList(new ArrayList<>(5));
+      final List<PoiAddressVO> poiAddressVOs = Collections.synchronizedList(new ArrayList<>(5));
 
       for (int i = 0; i < poiAddresses.size(); i++) {
         PoiAddress it = poiAddresses.get(i);
-        AtomicInteger orderIndex = new AtomicInteger(i);
         executorService.execute(() -> {
           boolean validLocationWithinFence = false;
           try {
@@ -101,7 +105,8 @@ public class UserAddressServiceImpl implements IUserAddressService {
           } finally {
             countDownLatch.countDown();
           }
-          poiAddressVOs.add(orderIndex.intValue(), new PoiAddressVO(
+          poiAddressVOs.add(new PoiAddressVO(
+              it.getOrderIndex(),
               it.getProvince(),
               it.getCity(),
               it.getArea(),
@@ -112,7 +117,10 @@ public class UserAddressServiceImpl implements IUserAddressService {
       }
 
       countDownLatch.await();
-      locationVO.setKeywordsNearbyAddresses(poiAddressVOs);
+      locationVO.setKeywordsNearbyAddresses(poiAddressVOs
+          .stream()
+          .sorted(Comparator.comparingInt(PoiAddressVO::getOrderIndex))
+          .collect(Collectors.toList()));
       // 从围栏中删除监控对象
       baiduFenceService.deleteMonitorPersonToFence(temUserId, shopFenceId);
       return locationVO;

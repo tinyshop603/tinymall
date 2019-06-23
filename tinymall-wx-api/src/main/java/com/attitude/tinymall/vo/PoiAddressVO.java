@@ -9,10 +9,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PoiAddressVO {
 
+  /**
+   * 排序索引
+   */
+  private Integer orderIndex;
+
   private String province;
   private String city;
   private String area;
   private String address;
   private String name;
   private Boolean inDistributionScope;
+
 }

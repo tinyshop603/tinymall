@@ -35,6 +35,7 @@ public class PoiAddress {
     private int detail;
     @JSONField(name = "street_id")
     private String streetId;
+    private int orderIndex;
 
 
 }

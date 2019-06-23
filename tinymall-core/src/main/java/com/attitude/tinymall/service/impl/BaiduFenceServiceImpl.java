@@ -250,6 +250,7 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
     params.put("scope", "1");
     params.put("output", "json");
     params.put("city_limit", "true");
+    params.put("filter", "sort_name:distance|sort_rule:1");
     params.put("coord_type", mapCoordtype);
     params.put("region", region);
     params.put("query", keywords);
@@ -280,7 +281,7 @@ public class BaiduFenceServiceImpl implements BaiduFenceService {
 
     params.put("location", location.getLat() + "," +  location.getLng());
     params.put("radius", radius);
-    params.put("filter", "true");
+    params.put("filter", "sort_name:distance|sort_rule:1");
 
     params.put("radius_limit", "true");
 
