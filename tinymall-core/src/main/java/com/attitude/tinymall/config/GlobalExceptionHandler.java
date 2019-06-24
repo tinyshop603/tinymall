@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
   public Object argumentHandler(MethodArgumentTypeMismatchException e,
       HandlerMethod handlerMethod) {
     String errorMsg = String.format("method name:%s invalid input error: %s",
-        handlerMethod.getMethod().getName(), e.getMessage());
+        handlerMethod.getShortLogMessage(), e.getMessage());
     log.info(errorMsg);
     return ResponseUtil.badArgumentValue();
   }
@@ -26,8 +26,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(Exception.class)
   @ResponseBody
   public Object exceptionHandler(Exception e, HandlerMethod handlerMethod) {
-    String errorMsg = String.format("method name:%s  un excepted error: %s",
-        handlerMethod.getMethod().getName(), e.getMessage());
+    String errorMsg = String.format("method %s  un excepted error: %s",
+        handlerMethod.getShortLogMessage(), e.getMessage());
     log.error(errorMsg, e);
     return ResponseUtil.serious();
   }
