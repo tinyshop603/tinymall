@@ -194,7 +194,7 @@ public class LitemallDeliveryDetailServiceImpl implements LitemallDeliveryDetail
             ,LitemallAddress checkedAddress ) {
         LitemallUser user = litemalluserService.findById(userId);
         // 百度坐标转化为高德坐标
-        Location location = baiduFenceService.geocoding(checkedAddress.getAddress()).getLocation();
+        Location location = baiduFenceService.geocoding(addressService.getFullDetailAddress(checkedAddress)).getLocation();
         location = CoodinateCovertorUtil.bd09ToGcj02(location);
         LitemallAdmin admin = adminService.findById(adminId);
 
