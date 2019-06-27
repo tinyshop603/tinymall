@@ -542,8 +542,7 @@ public class WxCartController {
         List<LitemallCart> checkedGoodsList = null;
         if(cartId == null || cartId.equals(0)) {
             checkedGoodsList = cartService.queryByUidAndChecked(userId);
-        }
-        else {
+        } else {
             LitemallCart cart = cartService.findById(cartId);
             if (cart == null){
                 return ResponseUtil.badArgumentValue();
@@ -557,7 +556,8 @@ public class WxCartController {
         }
 
         BigDecimal deliveryFee = new BigDecimal(0.00);
-        if(checkedAddress.getId() != 0) {
+        // TODO 活动商品不添加运费 163为活动物品ID
+        if(checkedAddress.getId() != 0 && !(checkedGoodsList.size() == 1 && checkedGoodsList.get(0).getGoodsId() == 1330941)) {
             try {
                 logger.info("运费参数：" + userId + "," + adminId + "," + checkedGoodsPrice + "," + checkedAddress.getId());
                 Object  deliveryObj = deliveryDetailService.queryDeliverFee4WX(userId, adminId, checkedGoodsPrice, checkedAddress);
