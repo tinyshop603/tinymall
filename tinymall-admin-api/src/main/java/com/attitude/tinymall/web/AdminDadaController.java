@@ -47,7 +47,7 @@ public class AdminDadaController {
     log.info("订单: {} 正在创建dada的第三方订单", orderId);
     LitemallOrder currentOrder = orderService.findById(orderId);
     // 能够呼叫达达的订单状态
-    if (Arrays.asList(OrderStatusEnum.CUSTOMER_PAIED, OrderStatusEnum.MERCHANT_ACCEPT,
+    if (Arrays.asList(OrderStatusEnum.MERCHANT_ACCEPT,
         OrderStatusEnum.MERCHANT_SHIP).contains(currentOrder.getOrderStatus())) {
       if (litemallDeliveryDetailService.dadaAddOrder(currentOrder.getId())) {
         return ResponseUtil.ok();
