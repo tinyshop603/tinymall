@@ -3,7 +3,7 @@
 <configuration debug="false">
     <property name="LOG_PATH" value="logs"/>
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
-    <springProperty scope="context" name="project" source="spring.project.name" defaultValue="danakilat"/>
+    <springProperty scope="context" name="project" source="spring.project.name" defaultValue="wechat"/>
     <springProperty scope="context" name="module" source="spring.application.name" defaultValue="ERROR_MODULE"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
